@@ -25,6 +25,15 @@ class FreelancerPortfolioLoaded extends FreelancerPortfolioState {
   }
 }
 
+class FreelancerPortfolioItemDetailsLoaded extends FreelancerPortfolioState {
+  final PortfolioItemEntity item;
+
+  const FreelancerPortfolioItemDetailsLoaded(this.item);
+
+  @override
+  List<Object?> get props => [item];
+}
+
 class FreelancerPortfolioError extends FreelancerPortfolioState {
   final String message;
 

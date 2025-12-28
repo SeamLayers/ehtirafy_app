@@ -7,6 +7,9 @@ abstract class FreelancerGigsRepository {
   /// Get all gigs for the freelancer
   Future<Either<Failure, List<GigEntity>>> getGigs();
 
+  /// Get details of a specific gig
+  Future<Either<Failure, GigEntity>> getGigById(String id);
+
   /// Add a new gig
   Future<Either<Failure, GigEntity>> addGig({
     required String title,

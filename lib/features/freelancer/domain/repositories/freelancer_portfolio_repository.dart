@@ -5,6 +5,9 @@ import '../entities/portfolio_item_entity.dart';
 abstract class FreelancerPortfolioRepository {
   /// Get all portfolio items
   Future<Either<Failure, List<PortfolioItemEntity>>> getPortfolio();
+
+  /// Get details of a specific portfolio item
+  Future<Either<Failure, PortfolioItemEntity>> getPortfolioItemById(String id);
   Future<Either<Failure, PortfolioItemEntity>> addPortfolioItem({
     required String title,
     required String description,

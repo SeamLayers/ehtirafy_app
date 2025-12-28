@@ -24,6 +24,18 @@ class FreelancerGigsRepositoryImpl implements FreelancerGigsRepository {
   }
 
   @override
+  Future<Either<Failure, GigEntity>> getGigById(String id) async {
+    try {
+      final gig = await remoteDataSource.getGigById(id);
+      return Right(gig);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      return const Left(ServerFailure('فشل في جلب تفاصيل الخدمة'));
+    }
+  }
+
+  @override
   Future<Either<Failure, GigEntity>> addGig({
     required String title,
     required String description,

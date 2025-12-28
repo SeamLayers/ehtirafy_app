@@ -53,21 +53,19 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
 
   // Image picker
   File? _pickedImage;
+  String? _existingImageUrl;
   final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
-    // Load gigs and categories when screen opens (after first frame)
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<FreelancerGigsCubit>().loadGigs();
+      if (widget.gig != null) {
+        context.read<FreelancerGigsCubit>().loadGigDetails(widget.gig!.id);
+      } else {
+        context.read<FreelancerGigsCubit>().loadGigs();
+      }
     });
-
-    if (widget.gig != null) {
-      _titleController.text = widget.gig!.title;
-      _descriptionController.text = widget.gig!.description;
-      _priceController.text = widget.gig!.price.toString();
-    }
   }
 
   @override
@@ -109,7 +107,36 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
       ),
       body: BlocListener<FreelancerGigsCubit, FreelancerGigsState>(
         listener: (context, state) {
-          if (state is FreelancerGigAdded) {
+          if (state is FreelancerGigDetailsLoaded) {
+            _titleController.text = state.gig.title;
+            _descriptionController.text = state.gig.description;
+            _priceController.text = state.gig.price.toInt().toString();
+
+            // Handle existing image if available
+            if (state.gig.coverImage.isNotEmpty) {
+              _existingImageUrl = state.gig.coverImage;
+            }
+
+            // Set days availability
+            setState(() {
+              _selectedDays.clear();
+              _selectedDays.addAll(state.gig.availability);
+            });
+
+            // Set category
+            if (state.categories.isNotEmpty) {
+              try {
+                // Find matching category by ID
+                final category = state.categories.firstWhere(
+                  (c) => c.id.toString() == state.gig.category.toString(),
+                  orElse: () => state.categories.first, // Fallback if mismtach?
+                );
+                setState(() => _selectedCategory = category);
+              } catch (e) {
+                // If filtering fails
+              }
+            }
+          } else if (state is FreelancerGigAdded) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('تم إضافة الخدمة بنجاح')),
             );
@@ -409,6 +436,25 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
             ? ClipRRect(
                 borderRadius: BorderRadius.circular(12.r),
                 child: Image.file(_pickedImage!, fit: BoxFit.cover),
+              )
+            : (_existingImageUrl != null && _existingImageUrl!.isNotEmpty)
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(12.r),
+                child: Image.network(
+                  _existingImageUrl!,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.broken_image, size: 32.sp, color: Colors.grey),
+                      SizedBox(height: 4.h),
+                      Text(
+                        'خطأ في تحميل الصورة',
+                        style: TextStyle(fontSize: 12.sp, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
               )
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,

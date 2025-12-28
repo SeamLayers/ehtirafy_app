@@ -9,6 +9,8 @@ class PhotographerEntity extends Equatable {
   final String location;
   final int price;
   final String imageUrl;
+  final List<String> daysAvailability;
+  final String freelancerId;
 
   const PhotographerEntity({
     required this.id,
@@ -19,6 +21,8 @@ class PhotographerEntity extends Equatable {
     required this.location,
     required this.price,
     required this.imageUrl,
+    this.daysAvailability = const [],
+    required this.freelancerId,
   });
 
   @override
@@ -31,5 +35,7 @@ class PhotographerEntity extends Equatable {
     location,
     price,
     imageUrl,
+    daysAvailability,
+    freelancerId,
   ];
 }

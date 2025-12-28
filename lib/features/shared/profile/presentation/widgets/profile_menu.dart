@@ -66,20 +66,23 @@ class ProfileMenu extends StatelessWidget {
           icon: Icons.logout,
           isDestructive: true,
           onTap: () {
+            // Capture the cubit from the current context
+            final profileCubit = context.read<ProfileCubit>();
+
             showDialog(
               context: context,
-              builder: (context) => AlertDialog(
+              builder: (dialogContext) => AlertDialog(
                 title: Text(AppStrings.profileLogoutConfirmationTitle.tr()),
                 content: Text(AppStrings.profileLogoutConfirmationMessage.tr()),
                 actions: [
                   TextButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => Navigator.pop(dialogContext),
                     child: Text(AppStrings.cancel.tr()),
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
-                      context.read<ProfileCubit>().logout();
+                      Navigator.pop(dialogContext);
+                      profileCubit.logout();
                     },
                     child: Text(AppStrings.confirm.tr()),
                   ),

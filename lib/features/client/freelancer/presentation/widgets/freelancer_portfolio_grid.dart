@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ehtirafy_app/features/client/freelancer/domain/entities/freelancer_entity.dart';
+import 'package:go_router/go_router.dart';
 
 class FreelancerPortfolioGrid extends StatelessWidget {
   final List<PortfolioItemEntity> portfolio;
@@ -22,38 +23,44 @@ class FreelancerPortfolioGrid extends StatelessWidget {
       itemCount: portfolio.length,
       itemBuilder: (context, index) {
         final item = portfolio[index];
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12.r),
-            image: DecorationImage(
-              image: NetworkImage(item.imageUrl),
-              fit: BoxFit.cover,
-            ),
-          ),
+        return GestureDetector(
+          onTap: () {
+            // Navigate to work details
+            context.push('/work/${item.id}');
+          },
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.r),
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  Colors.black.withValues(alpha: 0.7),
-                ],
-                stops: const [0.6, 1.0],
+              image: DecorationImage(
+                image: NetworkImage(item.imageUrl),
+                fit: BoxFit.cover,
               ),
             ),
-            alignment: Alignment.bottomRight,
-            padding: EdgeInsets.all(12.w),
-            child: Text(
-              item.title,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 12.sp,
-                fontWeight: FontWeight.bold,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.r),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withValues(alpha: 0.7),
+                  ],
+                  stops: const [0.6, 1.0],
+                ),
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+              alignment: Alignment.bottomRight,
+              padding: EdgeInsets.all(12.w),
+              child: Text(
+                item.title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
         );

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/repositories/freelancer_gigs_repository.dart';
+import '../../domain/entities/gig_entity.dart';
 import 'freelancer_gigs_state.dart';
 
 class FreelancerGigsCubit extends Cubit<FreelancerGigsState> {
@@ -28,6 +29,27 @@ class FreelancerGigsCubit extends Cubit<FreelancerGigsState> {
     emit(
       FreelancerGigsLoaded(gigs: gigs.cast(), categories: categories.cast()),
     );
+  }
+
+  Future<void> loadGigDetails(String id) async {
+    emit(FreelancerGigsLoading());
+
+    // We also need categories for the edit form
+    final results = await Future.wait([
+      repository.getGigById(id).then((r) => r.fold((l) => null, (r) => r)),
+      repository.getCategories().then(
+        (r) => r.fold((l) => <dynamic>[], (r) => r),
+      ),
+    ]);
+
+    final gig = results[0] as GigEntity?;
+    final categories = results[1] as List<dynamic>;
+
+    if (gig != null) {
+      emit(FreelancerGigDetailsLoaded(gig: gig, categories: categories.cast()));
+    } else {
+      emit(const FreelancerGigsError('فشل في جلب تفاصيل الخدمة'));
+    }
   }
 
   Future<void> addGig({

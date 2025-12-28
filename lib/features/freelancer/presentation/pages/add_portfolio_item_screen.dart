@@ -26,13 +26,20 @@ class _AddPortfolioItemScreenState extends State<AddPortfolioItemScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
 
+  File? _pickedImage;
+  String? _existingImageUrl;
+  final ImagePicker _picker = ImagePicker();
+
   @override
   void initState() {
     super.initState();
-    if (widget.portfolioItem != null) {
-      _titleController.text = widget.portfolioItem!.title;
-      _descriptionController.text = widget.portfolioItem!.description;
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.portfolioItem != null) {
+        context.read<FreelancerPortfolioCubit>().loadPortfolioItemDetails(
+          widget.portfolioItem!.id,
+        );
+      }
+    });
   }
 
   @override
@@ -50,7 +57,15 @@ class _AddPortfolioItemScreenState extends State<AddPortfolioItemScreen> {
       ),
       child: BlocListener<FreelancerPortfolioCubit, FreelancerPortfolioState>(
         listener: (context, state) {
-          if (state is FreelancerPortfolioItemAdded) {
+          if (state is FreelancerPortfolioItemDetailsLoaded) {
+            _titleController.text = state.item.title;
+            _descriptionController.text = state.item.description;
+            if (state.item.image != null && state.item.image!.isNotEmpty) {
+              setState(() {
+                _existingImageUrl = state.item.image;
+              });
+            }
+          } else if (state is FreelancerPortfolioItemAdded) {
             context.pop(true);
           } else if (state is FreelancerPortfolioError) {
             ScaffoldMessenger.of(
@@ -210,9 +225,6 @@ class _AddPortfolioItemScreenState extends State<AddPortfolioItemScreen> {
     );
   }
 
-  File? _pickedImage;
-  final ImagePicker _picker = ImagePicker();
-
   Future<void> _pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
@@ -239,6 +251,25 @@ class _AddPortfolioItemScreenState extends State<AddPortfolioItemScreen> {
             ? ClipRRect(
                 borderRadius: BorderRadius.circular(12.r),
                 child: Image.file(_pickedImage!, fit: BoxFit.cover),
+              )
+            : (_existingImageUrl != null && _existingImageUrl!.isNotEmpty)
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(12.r),
+                child: Image.network(
+                  _existingImageUrl!,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.broken_image, size: 32.sp, color: Colors.grey),
+                      SizedBox(height: 4.h),
+                      Text(
+                        'خطأ في تحميل الصورة',
+                        style: TextStyle(fontSize: 12.sp, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
               )
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,

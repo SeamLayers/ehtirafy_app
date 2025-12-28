@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/repositories/freelancer_portfolio_repository.dart';
+
 import 'freelancer_portfolio_state.dart';
 
 class FreelancerPortfolioCubit extends Cubit<FreelancerPortfolioState> {
@@ -16,6 +17,15 @@ class FreelancerPortfolioCubit extends Cubit<FreelancerPortfolioState> {
     result.fold(
       (failure) => emit(FreelancerPortfolioError(failure.message)),
       (items) => emit(FreelancerPortfolioLoaded(items: items)),
+    );
+  }
+
+  Future<void> loadPortfolioItemDetails(String id) async {
+    emit(FreelancerPortfolioLoading());
+    final result = await repository.getPortfolioItemById(id);
+    result.fold(
+      (failure) => emit(FreelancerPortfolioError(failure.message)),
+      (item) => emit(FreelancerPortfolioItemDetailsLoaded(item)),
     );
   }
 

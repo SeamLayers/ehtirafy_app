@@ -265,7 +265,10 @@ class CategoryAdvertisementsScreen extends StatelessWidget {
                         final photographer = state.photographers[index - 1];
                         return Padding(
                           padding: EdgeInsets.only(bottom: 16.h),
-                          child: _PhotographerCard(photographer: photographer),
+                          child: _PhotographerCard(
+                            photographer: photographer,
+                            index: index - 1,
+                          ),
                         );
                       }, childCount: state.photographers.length + 1),
                     ),
@@ -453,238 +456,277 @@ class CategoryAdvertisementsScreen extends StatelessWidget {
 
 class _PhotographerCard extends StatelessWidget {
   final PhotographerEntity photographer;
+  final int index;
 
-  const _PhotographerCard({required this.photographer});
+  const _PhotographerCard({required this.photographer, required this.index});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => context.push('/freelancer/${photographer.id}'),
-      child: Container(
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Profile Image with gradient border
-            Container(
-              padding: EdgeInsets.all(3.w),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.gold,
-                    AppColors.gold.withValues(alpha: 0.5),
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        return Transform.translate(
+          offset: Offset(0, 50 * (1 - value)),
+          child: Opacity(opacity: value, child: child),
+        );
+      },
+      child: GestureDetector(
+        onTap: () {
+          // Use the ID directly in the path for path parameters
+          context.push(
+            '/advertisement/${photographer.id}',
+            extra: {
+              'freelancerId': photographer.freelancerId,
+              'freelancerName': photographer.name,
+            },
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04), // Reduced shadow
+                blurRadius: 20,
+                offset: const Offset(0, 4),
+              ),
+            ],
+            border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Top Section: Image/Placeholder & Basic Info
+              Padding(
+                padding: EdgeInsets.all(16.w),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Profile/Service Image
+                    _buildServiceImage(),
+                    SizedBox(width: 16.w),
+
+                    // Title & Category
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            photographer
+                                .category, // Using category as the main title
+                            style: TextStyle(
+                              color: const Color(0xFF1A1A1A),
+                              fontSize: 16.sp,
+                              fontFamily: 'Cairo',
+                              fontWeight: FontWeight.w700,
+                              height: 1.3,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(height: 6.h),
+
+                          // Rating Badge (if valid)
+                          if (photographer.rating > 0)
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.w,
+                                vertical: 4.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFF9E6), // Light yellow
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.star_rounded,
+                                    color: const Color(0xFFFFB800),
+                                    size: 16.sp,
+                                  ),
+                                  SizedBox(width: 4.w),
+                                  Text(
+                                    photographer.rating.toStringAsFixed(1),
+                                    style: TextStyle(
+                                      color: const Color(0xFFB38200),
+                                      fontSize: 12.sp,
+                                      fontFamily: 'Cairo',
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          else
+                            Text(
+                              'خدمة مميزة',
+                              style: TextStyle(
+                                color: AppColors.gold,
+                                fontSize: 12.sp,
+                                fontFamily: 'Cairo',
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
-              child: CircleAvatar(
-                radius: 32.r,
-                backgroundColor: Colors.grey[200],
-                backgroundImage: photographer.imageUrl.isNotEmpty
-                    ? NetworkImage(photographer.imageUrl)
-                    : null,
-                child: photographer.imageUrl.isEmpty
-                    ? Icon(Icons.person, size: 32.sp, color: Colors.grey[400])
-                    : null,
-              ),
-            ),
-            SizedBox(width: 16.w),
 
-            // Details
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Name and Rating Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          photographer.name,
-                          style: TextStyle(
-                            color: const Color(0xFF2B2B2B),
-                            fontSize: 16.sp,
-                            fontFamily: 'Cairo',
-                            fontWeight: FontWeight.w600,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+              // Middle Divider
+              Divider(height: 1, color: Colors.grey.withValues(alpha: 0.1)),
+
+              // Bottom Section: Details & Price
+              Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 12.w, 16.w, 16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Availability Chips (if any)
+                    if (photographer.daysAvailability.isNotEmpty) ...[
+                      SizedBox(
+                        height: 28.h,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: photographer.daysAvailability.length,
+                          separatorBuilder: (_, __) => SizedBox(width: 8.w),
+                          itemBuilder: (context, index) {
+                            return Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10.w),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF5F5F5),
+                                borderRadius: BorderRadius.circular(20.r),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                photographer.daysAvailability[index],
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 11.sp,
+                                  fontFamily: 'Cairo',
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8.w,
-                          vertical: 4.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.gold.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
+                      SizedBox(height: 16.h),
+                    ],
+
+                    // Price & Action Button
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        // Price
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(
-                              Icons.star,
-                              color: AppColors.gold,
-                              size: 14.sp,
-                            ),
-                            SizedBox(width: 4.w),
                             Text(
-                              photographer.rating.toStringAsFixed(1),
+                              'سعر الخدمة',
                               style: TextStyle(
-                                color: AppColors.gold,
-                                fontSize: 12.sp,
+                                color: Colors.grey[500],
+                                fontSize: 11.sp,
                                 fontFamily: 'Cairo',
-                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            SizedBox(height: 2.h),
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: '${photographer.price}',
+                                    style: TextStyle(
+                                      color: const Color(0xFF1A1A1A),
+                                      fontSize: 20.sp,
+                                      fontFamily: 'Cairo',
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: ' ر.س',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontSize: 12.sp,
+                                      fontFamily: 'Cairo',
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8.h),
 
-                  // Category
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.category_outlined,
-                        size: 14.sp,
-                        color: Colors.grey[500],
-                      ),
-                      SizedBox(width: 4.w),
-                      Expanded(
-                        child: Text(
-                          photographer.category,
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 13.sp,
-                            fontFamily: 'Cairo',
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 4.h),
-
-                  // Location
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.location_on_outlined,
-                        size: 14.sp,
-                        color: Colors.grey[500],
-                      ),
-                      SizedBox(width: 4.w),
-                      Expanded(
-                        child: Text(
-                          photographer.location,
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 13.sp,
-                            fontFamily: 'Cairo',
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 12.h),
-
-                  // Price and View Button
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Price
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'ابتداءً من ',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 12.sp,
-                                fontFamily: 'Cairo',
+                        // Action Button
+                        Container(
+                          width: 44.w,
+                          height: 44.w,
+                          decoration: BoxDecoration(
+                            color: const Color(
+                              0xFF1A1A1A,
+                            ), // Dark elegant button
+                            borderRadius: BorderRadius.circular(14.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
                               ),
-                            ),
-                            TextSpan(
-                              text: '${photographer.price.toInt()} ر.س',
-                              style: TextStyle(
-                                color: AppColors.gold,
-                                fontSize: 14.sp,
-                                fontFamily: 'Cairo',
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // View Button
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 8.h,
-                        ),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColors.gold,
-                              AppColors.gold.withValues(alpha: 0.8),
                             ],
                           ),
-                          borderRadius: BorderRadius.circular(10.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.gold.withValues(alpha: 0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
+                          child: Icon(
+                            Icons.arrow_forward_rounded,
+                            color: Colors.white,
+                            size: 20.sp,
+                          ),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'عرض الملف',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12.sp,
-                                fontFamily: 'Cairo',
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            SizedBox(width: 4.w),
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              color: Colors.white,
-                              size: 12.sp,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildServiceImage() {
+    return Container(
+      width: 70.w,
+      height: 70.w,
+      decoration: BoxDecoration(
+        color: const Color(0xFFF9F9F9),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
+      ),
+      child: photographer.imageUrl.isNotEmpty
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(16.r),
+              child: Image.network(
+                photographer.imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => _buildPlaceholderIcon(),
+              ),
+            )
+          : _buildPlaceholderIcon(),
+    );
+  }
+
+  Widget _buildPlaceholderIcon() {
+    return Center(
+      child: Icon(
+        Icons.camera_alt_outlined,
+        color: Colors.grey[400],
+        size: 28.sp,
       ),
     );
   }

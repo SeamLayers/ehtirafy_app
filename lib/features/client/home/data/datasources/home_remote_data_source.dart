@@ -111,7 +111,6 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
         final data = response.data;
         if (data['data'] != null && data['data'] is List) {
           return (data['data'] as List)
-              .where((json) => json['advertisement'] != null)
               .map((json) => PhotographerModel.fromJson(json))
               .toList();
         }

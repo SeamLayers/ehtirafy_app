@@ -10,6 +10,8 @@ class PhotographerModel extends PhotographerEntity {
     required super.location,
     required super.price,
     required super.imageUrl,
+    super.daysAvailability,
+    required super.freelancerId,
   });
 
   factory PhotographerModel.fromJson(Map<String, dynamic> json) {
@@ -17,26 +19,30 @@ class PhotographerModel extends PhotographerEntity {
     final user = json['user'] as Map<String, dynamic>?;
     final advertisement = json['advertisement'] as Map<String, dynamic>?;
 
-    // Get user ID - prefer user_id, then nested user.id
+    // Get user ID (Freelancer ID)
     final userId =
         json['user_id']?.toString() ??
         user?['id']?.toString() ??
         json['id']?.toString() ??
         '';
 
+    // Get Entity ID (Advertisement ID or User ID depending on context)
+    // If it's an advertisement response, use advertisement ID or root ID
+    // If it's a user response, it will reuse json['id'] which matches userId
+    final entityId =
+        advertisement?['id']?.toString() ?? json['id']?.toString() ?? userId;
+
     // Get name from nested user object
     final name = user?['name']?.toString() ?? json['name']?.toString() ?? '';
 
-    // Parse localized title from advertisement
+    // Parse localized title from advertisement or root json
     String category = '';
-    if (advertisement != null) {
-      final title = advertisement['title'];
-      if (title is Map) {
-        // Prefer Arabic, fallback to English
-        category = title['ar']?.toString() ?? title['en']?.toString() ?? '';
-      } else if (title != null) {
-        category = title.toString();
-      }
+    final title = advertisement?['title'] ?? json['title'];
+    if (title is Map) {
+      // Prefer Arabic, fallback to English
+      category = title['ar']?.toString() ?? title['en']?.toString() ?? '';
+    } else if (title != null) {
+      category = title.toString();
     }
 
     // Get rating from rate field
@@ -48,15 +54,13 @@ class PhotographerModel extends PhotographerEntity {
       rating = double.tryParse(ratingValue) ?? 0.0;
     }
 
-    // Get price from advertisement
+    // Get price from advertisement or root json
     int price = 0;
-    if (advertisement != null) {
-      final priceValue = advertisement['price'];
-      if (priceValue is num) {
-        price = priceValue.toInt();
-      } else if (priceValue is String) {
-        price = double.tryParse(priceValue)?.toInt() ?? 0;
-      }
+    final priceValue = advertisement?['price'] ?? json['price'];
+    if (priceValue is num) {
+      price = priceValue.toInt();
+    } else if (priceValue is String) {
+      price = double.tryParse(priceValue)?.toInt() ?? 0;
     }
 
     // Location is not in the API, use empty or country_code from user
@@ -70,15 +74,40 @@ class PhotographerModel extends PhotographerEntity {
         json['imageUrl']?.toString() ??
         '';
 
+    // Parse days availability
+    List<String> daysAvailability = [];
+    final daysString =
+        advertisement?['days_availability']?.toString() ??
+        json['days_availability']?.toString();
+
+    if (daysString != null) {
+      try {
+        // Handle stringified JSON array: "["sat","sun"]"
+        if (daysString.startsWith('[') && daysString.endsWith(']')) {
+          final cleanString = daysString.substring(1, daysString.length - 1);
+          if (cleanString.isNotEmpty) {
+            daysAvailability = cleanString
+                .split(',')
+                .map((e) => e.trim().replaceAll('"', '').replaceAll("'", ""))
+                .toList();
+          }
+        }
+      } catch (e) {
+        // Fallback or log error if needed
+      }
+    }
+
     return PhotographerModel(
-      id: userId,
+      id: entityId,
       name: name,
       category: category,
       rating: rating,
-      reviewsCount: 0, // Not provided in this API
+      reviewsCount: 0,
       location: location,
       price: price,
       imageUrl: imageUrl,
+      daysAvailability: daysAvailability,
+      freelancerId: userId,
     );
   }
 

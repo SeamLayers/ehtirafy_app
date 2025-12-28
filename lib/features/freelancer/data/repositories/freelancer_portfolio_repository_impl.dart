@@ -24,6 +24,20 @@ class FreelancerPortfolioRepositoryImpl
   }
 
   @override
+  Future<Either<Failure, PortfolioItemEntity>> getPortfolioItemById(
+    String id,
+  ) async {
+    try {
+      final item = await remoteDataSource.getPortfolioItemById(id);
+      return Right(item);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      return const Left(ServerFailure('فشل في جلب تفاصيل العمل'));
+    }
+  }
+
+  @override
   Future<Either<Failure, PortfolioItemEntity>> addPortfolioItem({
     required String title,
     required String description,

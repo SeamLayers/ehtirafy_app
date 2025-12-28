@@ -33,6 +33,19 @@ class FreelancerGigsLoaded extends FreelancerGigsState {
   }
 }
 
+class FreelancerGigDetailsLoaded extends FreelancerGigsState {
+  final GigEntity gig;
+  final List<CategoryEntity> categories;
+
+  const FreelancerGigDetailsLoaded({
+    required this.gig,
+    required this.categories,
+  });
+
+  @override
+  List<Object?> get props => [gig, categories];
+}
+
 class FreelancerGigsError extends FreelancerGigsState {
   final String message;
 
