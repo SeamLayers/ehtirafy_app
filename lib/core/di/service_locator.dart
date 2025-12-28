@@ -29,6 +29,7 @@ import 'package:ehtirafy_app/features/client/notifications/data/datasources/noti
 import 'package:ehtirafy_app/features/client/notifications/data/repositories/notifications_repository_impl.dart';
 import 'package:ehtirafy_app/features/client/notifications/domain/repositories/notifications_repository.dart';
 import 'package:ehtirafy_app/features/client/notifications/domain/usecases/get_notifications_usecase.dart';
+import 'package:ehtirafy_app/features/client/notifications/domain/usecases/mark_notification_read_usecase.dart';
 import 'package:ehtirafy_app/features/client/notifications/presentation/cubits/notifications_cubit.dart';
 import 'package:ehtirafy_app/features/client/search/data/datasources/search_remote_data_source.dart';
 import 'package:ehtirafy_app/features/client/search/data/datasources/search_local_data_source.dart';
@@ -168,8 +169,14 @@ Future<void> setupLocator() async {
   );
 
   // Features - Notifications
-  sl.registerFactory(() => NotificationsCubit(getNotificationsUseCase: sl()));
+  sl.registerFactory(
+    () => NotificationsCubit(
+      getNotificationsUseCase: sl(),
+      markNotificationReadUseCase: sl(),
+    ),
+  );
   sl.registerLazySingleton(() => GetNotificationsUseCase(sl()));
+  sl.registerLazySingleton(() => MarkNotificationReadUseCase(sl()));
   sl.registerLazySingleton<NotificationsRepository>(
     () => NotificationsRepositoryImpl(remoteDataSource: sl()),
   );

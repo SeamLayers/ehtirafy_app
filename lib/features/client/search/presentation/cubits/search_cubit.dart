@@ -81,7 +81,7 @@ class SearchCubit extends Cubit<SearchState> {
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {
       case ServerFailure:
-        return AppStrings.failureServer;
+        return failure.message;
       case CacheFailure:
         return AppStrings.failureCache;
       case NetworkFailure:

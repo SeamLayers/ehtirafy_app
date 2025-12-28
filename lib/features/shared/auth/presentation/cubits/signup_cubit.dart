@@ -57,7 +57,7 @@ class SignupCubit extends Cubit<SignupState> {
   }
 
   String _mapFailureToMessage(Failure failure) {
-    if (failure is ServerFailure) return AppStrings.failureServer;
+    if (failure is ServerFailure) return failure.message;
     if (failure is CacheFailure) return AppStrings.failureCache;
     if (failure is NetworkFailure) return AppStrings.failureNetwork;
     return AppStrings.failureUnexpected;

@@ -5,6 +5,7 @@ import 'package:ehtirafy_app/features/client/notifications/data/models/notificat
 
 abstract class NotificationsRemoteDataSource {
   Future<List<NotificationModel>> getNotifications();
+  Future<void> markAsRead(String id);
 }
 
 class NotificationsRemoteDataSourceImpl
@@ -29,6 +30,23 @@ class NotificationsRemoteDataSourceImpl
       } else {
         throw ServerException(
           response.data['message'] ?? 'Failed to fetch notifications',
+        );
+      }
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<void> markAsRead(String id) async {
+    try {
+      final response = await dioClient.get(ApiConstants.readNotification(id));
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw ServerException(
+          response.data['message'] ?? 'Failed to mark notification as read',
         );
       }
     } catch (e) {

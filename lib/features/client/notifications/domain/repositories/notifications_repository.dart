@@ -4,4 +4,5 @@ import 'package:ehtirafy_app/features/client/notifications/domain/entities/notif
 
 abstract class NotificationsRepository {
   Future<Either<Failure, List<NotificationEntity>>> getNotifications();
+  Future<Either<Failure, void>> markAsRead(String id);
 }

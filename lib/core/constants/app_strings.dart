@@ -107,6 +107,7 @@ class AppStrings {
   static const quality = 'quality';
   static const validationRequired = 'validation_required';
   static const String noDataFound = 'general.noDataFound';
+  static const String retry = 'general.retry';
 
   // Booking / Requests
   static const bookingRequestsTitle = 'booking.requests.title';

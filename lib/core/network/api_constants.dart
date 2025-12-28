@@ -13,6 +13,8 @@ class ApiConstants {
 
   // Notifications Endpoint
   static const String notifications = '/api/$version/notifications';
+  static String readNotification(String id) =>
+      '/api/$version/notifications/$id/read';
 
   // Freelancer Profile Endpoint
   static String freelancerProfile(String id) =>

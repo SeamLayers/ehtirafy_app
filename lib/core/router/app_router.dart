@@ -6,7 +6,7 @@ import 'package:ehtirafy_app/features/shared/auth/presentation/screens/signup_sc
 import 'package:ehtirafy_app/features/client/home/presentation/pages/client_home_screen.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/pages/client_main_layout.dart';
 import 'package:ehtirafy_app/features/freelancer/domain/entities/gig_entity.dart';
-import 'package:ehtirafy_app/features/client/home/presentation/pages/notifications_screen.dart';
+import 'package:ehtirafy_app/features/client/notifications/presentation/pages/notifications_screen.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/pages/search_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ehtirafy_app/core/di/service_locator.dart';
