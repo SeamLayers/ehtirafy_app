@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import '../../domain/entities/user_role.dart';
 import '../../domain/repositories/user_role_repository.dart';
-import '../../../../../core/error/failures.dart';
+import 'package:ehtirafy_app/core/error/failures.dart';
 import '../datasources/user_role_local_data_source.dart';
 
 /// Implementation of UserRoleRepository
@@ -10,9 +10,8 @@ class UserRoleRepositoryImpl implements UserRoleRepository {
   final UserRoleLocalDataSource localDataSource;
   final StreamController<UserRoleEntity> _roleController;
 
-  UserRoleRepositoryImpl({
-    required this.localDataSource,
-  }) : _roleController = StreamController<UserRoleEntity>.broadcast();
+  UserRoleRepositoryImpl({required this.localDataSource})
+    : _roleController = StreamController<UserRoleEntity>.broadcast();
 
   @override
   Future<Either<Failure, UserRoleEntity>> getCurrentRole() async {
@@ -31,7 +30,7 @@ class UserRoleRepositoryImpl implements UserRoleRepository {
       return Right(roleEntity);
     } catch (e) {
       // CacheFailure now uses localized message from failures.cache
-      return Left(CacheFailure());
+      return const Left(CacheFailure('failures.cache'));
     }
   }
 
@@ -51,7 +50,7 @@ class UserRoleRepositoryImpl implements UserRoleRepository {
       return Right(roleEntity);
     } catch (e) {
       // CacheFailure now uses localized message from failures.cache
-      return Left(CacheFailure());
+      return const Left(CacheFailure('failures.cache'));
     }
   }
 
@@ -62,7 +61,7 @@ class UserRoleRepositoryImpl implements UserRoleRepository {
       return const Right(unit);
     } catch (e) {
       // CacheFailure now uses localized message from failures.cache
-      return Left(CacheFailure());
+      return const Left(CacheFailure('failures.cache'));
     }
   }
 
@@ -79,7 +78,7 @@ class UserRoleRepositoryImpl implements UserRoleRepository {
       return const Right(unit);
     } catch (e) {
       // CacheFailure now uses localized message from failures.cache
-      return Left(CacheFailure());
+      return const Left(CacheFailure('failures.cache'));
     }
   }
 

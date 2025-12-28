@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+/// Reusable AppLogo widget with constrained size
 class AppLogo extends StatelessWidget {
-  final double size; // logical size reference (pre-scale)
-  final String assetPath;
+  /// Width of the logo (responsive using screenutil)
+  final double width;
 
-  const AppLogo({super.key, this.size = 120, this.assetPath = 'assets/images/logo.png'});
+  /// Optional BoxFit for the image
+  final BoxFit fit;
+
+  const AppLogo({
+    super.key,
+    this.width = 145,
+    this.fit = BoxFit.contain,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: size.w,
-      height: size.w,
-      child: Image.asset(assetPath, fit: BoxFit.contain),
+      width: width.w,
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Image.asset(
+          'assets/images/logo.png',
+          fit: fit,
+        ),
+      ),
     );
   }
 }

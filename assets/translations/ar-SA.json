@@ -3,27 +3,30 @@
   "welcome": "مرحباً بك",
   "login": "تسجيل الدخول",
   "signup": "إنشاء حساب",
-  "logout": "تسجيل الخروج",
+  "logout": "تسجيل خروج",
   "email": "البريد الإلكتروني",
   "password": "كلمة المرور",
   "client": "عميل",
-  "freelancer": "مصور محترف",
   "switch_to_client": "التبديل إلى وضع العميل",
   "switch_to_freelancer": "التبديل إلى وضع المصور",
   "home": "الرئيسية",
-  "bookings": "الحجوزات",
+  "bookings": "حجوزاتي",
   "dashboard": "لوحة التحكم",
   "my_gigs": "خدماتي",
-  "profile": "الملف الشخصي",
-  "settings": "الإعدادات",
-  "chat": "الرسائل",
   "error": "خطأ",
   "loading": "جارٍ التحميل...",
   "success": "تم بنجاح",
   "cancel": "إلغاء",
   "confirm": "تأكيد",
   "save": "حفظ",
-
+  "label_freelancer": "مصور محترف",
+  "label_booking": "الحجوزات",
+  "label_profile": "الملف الشخصي",
+  "label_chat": "المحادثات",
+  "register": "إنشاء حساب",
+  "skip": "تخطي",
+  "next": "التالي",
+  "start": "ابدأ الآن",
   "auth": {
     "welcomeBack": "مرحباً بعودتك",
     "loginSubtitle": "سجّل دخولك للمتابعة",
@@ -34,19 +37,50 @@
     "forgotPassword": "نسيت كلمة المرور؟",
     "loginButton": "تسجيل الدخول",
     "noAccount": "ليس لديك حساب؟",
-    "createAccount": "إنشاء حساب",
-
+    "createAccount": "إنشاء حساب جديد",
     "signupTitle": "إنشاء حساب",
     "signupSubtitle": "أنشئ حسابك كمستخدم جديد",
     "fullNameLabel": "الاسم الكامل",
     "fullNameHint": "الاسم كما في الهوية",
     "signupButton": "إنشاء حساب",
-
-    "otpTitle": "رمز التحقق",
-    "otpSubtitle": "أدخل الرمز المرسل إلى جوالك",
-    "otpConfirm": "تأكيد"
+    "passwordRequirements": "يجب أن تحتوي على 8 أحرف على الأقل",
+    "confirmPasswordLabel": "تأكيد كلمة المرور",
+    "confirmPasswordHint": "••••••••",
+    "otpTitle": "أدخل رمز التحقق",
+    "otpSubtitle": "لقد أرسلنا رمز التحقق إلى",
+    "otpConfirm": "تأكيد",
+    "otpSentTo": "لقد أرسلنا رمز التحقق إلى",
+    "otpPhoneMask": "+966 xxx xxx xxx",
+    "otpEnterCode": "أدخل رمز التحقق",
+    "otpResendAfter": "إعادة إرسال الرمز بعد",
+    "otpSeconds": "ثانية",
+    "otpResend": "إعادة إرسال الرمز",
+    "otpCanResend": "يمكنك إرسال رمز آخر",
+    "otpLabel": "رمز التحقق",
+    "otpHint": "123456",
+    "otpWhyTitle": "لماذا نحتاج رمز التحقق؟",
+    "otpWhyDesc": "نحتاج للتحقق من رقمك لضمان أمان حسابك وحماية معلوماتك الشخصية",
+    "or": "أو",
+    "loginGoogle": "تسجيل الدخول بواسطة Google",
+    "loginApple": "تسجيل الدخول بواسطة Apple",
+    "phoneLabel": "رقم الهاتف",
+    "phoneHint": "+966 xxx xxx xxx",
+    "haveAccount": "لديك حساب بالفعل؟",
+    "loginNow": "تسجيل الدخول",
+    "termsPrefix": "بإنشاء حساب، أنت توافق على ",
+    "terms": "الشروط والأحكام",
+    "and": " و ",
+    "privacy": "سياسة الخصوصية",
+    "resetPasswordTitle": "تعيين كلمة المرور",
+    "resetPasswordSubtitle": "أدخل كلمة المرور الجديدة",
+    "resetPasswordButton": "حفظ كلمة المرور",
+    "sexLabel": "الجنس",
+    "male": "ذكر",
+    "female": "أنثى",
+    "maritalStatusLabel": "الحالة الاجتماعية",
+    "single": "أعزب/عزباء",
+    "married": "متزوج/متزوجة"
   },
-
   "failures": {
     "server": "حدث خطأ في الخادم",
     "cache": "حدث خطأ في التخزين المحلي",
@@ -56,11 +90,9 @@
     "authorization": "ليس لديك صلاحية للوصول",
     "unexpected": "حدث خطأ غير متوقع"
   },
-
   "splash": {
     "tagline": "بوابتك الاحترافية لعالم التصوير"
   },
-
   "nav": {
     "home": "الرئيسية",
     "requests": "طلباتي",
@@ -70,7 +102,6 @@
     "myGigs": "خدماتي",
     "orders": "الطلبات"
   },
-
   "role": {
     "current": "الدور الحالي",
     "client": "عميل",
@@ -78,12 +109,18 @@
     "switchedToClient": "تم التبديل إلى وضع العميل",
     "switchedToFreelancer": "تم التبديل إلى وضع المصور"
   },
-
   "onboarding": {
     "welcomeTitle": "مرحباً بك في احترافي",
     "subtitle": "بوابتك الاحترافية لعالم التصوير الفوتوغرافي",
     "login": "تسجيل الدخول",
-    "signup": "إنشاء حساب جديد"
+    "signup": "إنشاء حساب جديد",
+    "bannerTitle": "انضم إلى أكبر منصة",
+    "bannerSubtitle": "للمصورين المحترفين في المملكة العربية السعودية",
+    "disclaimer": "بالمتابعة، أنت توافق على شروط الخدمة وسياسة الخصوصية",
+    "servicesSubtitle": "جميع المجالات",
+    "photographersSubtitle": "+500 مصور",
+    "growthSubtitle": "آلاف المشاريع",
+    "qualitySubtitle": "4.8+ تقييم"
   },
   "booking": {
     "requests": {
@@ -100,7 +137,37 @@
       "bookButton": "حجز الخدمة",
       "currencySuffix": "ريال",
       "photographerPrefix": "المصور",
-      "clientPrefix": "العميل"
+      "clientPrefix": "العميل",
+      "requestTitle": "طلب حجز خدمة",
+      "serviceRequired": "الخدمة المطلوبة",
+      "photographer": "المصور",
+      "price": "السعر",
+      "detailsTitle": "تفاصيل الحجز",
+      "detailsSubtitle": "يرجى تحديد تاريخ ووقت المناسبة ليتمكن المصور من تأكيد توفره",
+      "eventDate": "تاريخ المناسبة",
+      "startTime": "وقت البدء المتوقع",
+      "location": "الموقع",
+      "locationHint": "مثال: قاعة الأفراح - حي النخيل، الرياض",
+      "notesTitle": "أضف ملاحظات للمصور",
+      "notesHint": "أضف أي تفاصيل إضافية قد تساعد المصور (نوع المناسبة، عدد الساعات المطلوبة، متطلبات خاصة...)",
+      "charCount": "0/500 حرف",
+      "importantNoteTitle": "ملاحظة هامة",
+      "importantNoteBody": "سيقوم المصور بمراجعة طلبك والتأكد من توفره في التاريخ والوقت المحددين. ستتلقى إشعاراً فور قبول الطلب لإتمام عملية الدفع.",
+      "submitButton": "إرسال طلب الحجز",
+      "successTitle": "تم إرسال طلبك للمصور!",
+      "successSubtitle": "سيقوم المصور بمراجعة طلبك (التاريخ والوقت). ستتلقى إشعاراً للقيام بالدفع فور موافقته.",
+      "step1Title": "في انتظار الموافقة",
+      "step1Desc": "المصور يراجع توفره في التاريخ والوقت المطلوب",
+      "step2Title": "سنرسل لك إشعاراً",
+      "step2Desc": "فور موافقة المصور لإتمام عملية الدفع وتأكيد الحجز",
+      "step3Title": "تابع طلبك",
+      "step3Desc": "يمكنك متابعة حالة الطلب من صفحة \"طلباتي\"",
+      "nextStepsTitle": "الخطوات التالية",
+      "nextStep1": "مراجعة المصور للطلب",
+      "nextStep2": "موافقة المصور",
+      "nextStep3": "إتمام الدفع وتأكيد الحجز",
+      "viewRequestsButton": "عرض طلباتي",
+      "backHomeButton": "العودة للرئيسية"
     }
   },
   "chat": {
@@ -109,7 +176,13 @@
       "photographerPrefix": "المصور",
       "clientPrefix": "العميل",
       "placeholderMessage": "مرحباً، هل يمكنني الاستفسار عن...",
-      "timePlaceholder": "10:30 ص"
+      "timePlaceholder": "10:30 ص",
+      "noMessages": "لا توجد رسائل",
+      "startConversation": "ابدأ محادثة مع أحد المصورين",
+      "findPhotographer": "إيجاد مصور",
+      "ago": "منذ",
+      "minute": "دقيقة",
+      "hour": "ساعة"
     },
     "room": {
       "title": "المحادثة",
@@ -117,7 +190,8 @@
         "mine": "هذا مثال لرسالتي",
         "other": "هذه رسالة من الطرف الآخر"
       },
-      "inputHint": "اكتب رسالة..."
+      "inputHint": "اكتب رسالتك...",
+      "onlineNow": "متصل الآن"
     }
   },
   "freelancer": {
@@ -130,18 +204,305 @@
       "newStatus": "جديد"
     }
   },
+  "freelancerDashboard": {
+    "welcome": "مرحباً",
+    "online": "متصل",
+    "offline": "غير متصل",
+    "totalEarnings": "إجمالي الأرباح",
+    "activeOrders": "الطلبات النشطة",
+    "profileViews": "مشاهدات الملف",
+    "portfolioSection": "معرض الأعمال",
+    "managePortfolio": "إدارة المعرض",
+    "servicesSection": "خدماتي",
+    "addService": "إضافة خدمة",
+    "recentRequests": "آخر الطلبات",
+    "viewAll": "عرض الكل",
+    "emptyPortfolio": "لا توجد أعمال بعد",
+    "emptyServices": "لا توجد خدمات بعد",
+    "addFirstWork": "أضف أعمالك لجذب العملاء"
+  },
+  "freelancerGigs": {
+    "title": "إدارة خدماتي",
+    "createTitle": "إعلان جديد",
+    "editTitle": "تعديل الإعلان",
+    "titleLabel": "العنوان",
+    "titleHint": "مثال: تصوير حفلات زفاف احترافي",
+    "descriptionLabel": "وصف الخدمة",
+    "descriptionHint": "اكتب وصفاً تفصيلياً لخدمتك...",
+    "priceLabel": "السعر",
+    "priceHint": "0",
+    "categoryLabel": "التصنيف",
+    "coverImageLabel": "صورة الغلاف",
+    "selectCoverImage": "اختيار صورة",
+    "statusActive": "نشط",
+    "statusPending": "قيد المراجعة",
+    "statusInactive": "غير نشط",
+    "submitForReview": "إرسال للمراجعة",
+    "saveChanges": "حفظ التغييرات",
+    "deleteGig": "حذف الإعلان",
+    "emptyState": "لا توجد خدمات بعد",
+    "emptyStateSubtitle": "أضف خدمتك الأولى لجذب العملاء",
+    "addFirstGig": "إضافة خدمة",
+    "charCount": "0/1000 حرف"
+  },
+  "freelancerPortfolio": {
+    "title": "معرض الأعمال",
+    "addWork": "اضافة عمل",
+    "addWorkTitle": "اضافة عمل لمعرض اعمالك",
+    "addWorkSubtitle": "املأ البيانات وسيتم مراجعتها من قبل الإدارة",
+    "emptyTitle": "معرض أعمالك فارغ",
+    "emptySubtitle": "أضف أعمالك لجذب العملاء",
+    "addButton": "إضافة",
+    "workTitleLabel": "العنوان",
+    "workTitleHint": "مثال: تصوير حفل زفاف في الرياض",
+    "cameraTypeLabel": "نوع الكاميرا المستخدمة",
+    "cameraTypeHint": "مثال: Canon EOS R5",
+    "workDescriptionLabel": "وصف العمل",
+    "workDescriptionHint": "اكتب وصفاً تفصيلياً لهذا العمل، التجهيزات المستخدمة، مدة التصوير، عدد الصور ونوع الكاميرا...",
+    "uploadImages": "رفع صور الإعلان",
+    "uploadHint": "أضف صوراً عالية الجودة لخدمتك (حتى 6 صور)",
+    "selectImages": "اختيار الصور",
+    "importantNote": "ملاحظة مهمة",
+    "reviewNote": "سيتم مراجعة إعلانك من قبل فريق الإدارة للتأكد من مطابقته للمعايير. يرجى التأكد من وضوح الوصف وجودة الصور.",
+    "submitForReview": "إرسال للمراجعة",
+    "charCount": "0/1000 حرف",
+    "workTitle": "عنوان العمل",
+    "cameraType": "نوع الكاميرا",
+    "workDescription": "وصف العمل"
+  },
+  "general": {
+    "delete": "حذف",
+    "deleteConfirmation": "تأكيد الحذف",
+    "deletePortfolioItemConfirmation": "هل أنت متأكد من حذف هذا العمل؟"
+  },
+  "freelancerOrders": {
+    "title": "طلباتي",
+    "tabRequests": "العروض",
+    "tabActive": "العقود النشطة",
+    "tabArchived": "المؤرشفة",
+    "accept": "قبول",
+    "reject": "رفض",
+    "viewDetails": "عرض التفاصيل",
+    "chat": "محادثة",
+    "clientLabel": "العميل",
+    "statusPending": "قيد المراجعة",
+    "statusInProgress": "جاري العمل",
+    "statusCompleted": "مكتمل",
+    "statusCancelled": "ملغي",
+    "noRequests": "لا توجد طلبات جديدة",
+    "noActiveOrders": "لا توجد عقود نشطة",
+    "noArchivedOrders": "لا توجد أعمال مؤرشفة"
+  },
   "profile": {
-    "title": "الملف الشخصي",
-    "transactions": "السجل المالي",
-    "settings": "الإعدادات",
+    "title": "حسابي",
+    "browsing_as": "أنت تتصفح كـ",
+    "role_client": "عميل",
+    "role_freelancer": "مصور",
+    "switch_to_freelancer": "التبديل إلى وضع المصور",
+    "switch_to_client": "التبديل إلى وضع العميل",
+    "menu": {
+      "edit_profile": "تعديل الملف الشخصي",
+      "payment_methods": "طرق الدفع",
+      "settings": "الإعدادات",
+      "my_gigs": "إدارة خدماتي",
+      "portfolio": "معرض الأعمال",
+      "logout": "تسجيل الخروج"
+    },
+    "edit": {
+      "full_name": "الاسم الكامل",
+      "email_read_only": "لا يمكن تغيير البريد الإلكتروني",
+      "phone": "رقم الهاتف",
+      "bio": "نبذة عني",
+      "bio_hint": "اكتب نبذة مختصرة عن خبراتك ومهاراتك..."
+    },
     "logout": "تسجيل الخروج",
+    "logout_dialog": {
+      "title": "تسجيل الخروج",
+      "message": "هل أنت متأكد من رغبتك في تسجيل الخروج؟"
+    },
+    "transactions": "السجل المالي",
     "clientRole": "دورك: عميل",
     "freelancerRole": "دورك: مصور"
   },
-  "transactions": {
-    "itemLabel": "عملية",
-    "status": {
-      "paid": "مدفوع"
+  "settings": {
+    "change_password": "تغيير كلمة المرور",
+    "language": "اللغة",
+    "notifications": "إعدادات الإشعارات",
+    "help_support": "المساعدة والدعم",
+    "privacy_policy": "سياسة الخصوصية",
+    "terms_conditions": "الشروط والأحكام"
+  },
+  "wallet": {
+    "title": "المحفظة",
+    "total_balance": "الرصيد الكلي",
+    "withdraw": "سحب الرصيد",
+    "recent_transactions": "آخر العمليات",
+    "deposit_from_client": "إيداع من عميل",
+    "withdrawal": "سحب رصيد",
+    "status_completed": "مكتمل",
+    "withdrawal_amount": "مبلغ السحب",
+    "available_balance": "الرصيد المتاح",
+    "bank_account": "الحساب البنكي",
+    "withdrawal_success": "تم تقديم طلب السحب بنجاح"
+  },
+  "currency": "ر.س",
+  "view_all": "عرض الكل",
+  "services": "خدمات متنوعة",
+  "growth": "نمو مستمر",
+  "quality": "جودة عالية",
+  "roleSelection": {
+    "title": "كيف تريد استخدام احترافي؟",
+    "subtitle": "اختر الدور المناسب لك",
+    "clientTitle": "عميل",
+    "clientSubtitle": "أبحث عن مصورين",
+    "clientDesc": "تصفح إعلانات المصورين واطلب الخدمات التي تحتاجها",
+    "clientBadge1": "طلب خدمات",
+    "clientBadge2": "تصفح الإعلانات",
+    "freelancerTitle": "مصور محترف",
+    "freelancerSubtitle": "أقدم خدمات التصوير",
+    "freelancerDesc": "أنشئ إعلانات لخدماتك واحصل على طلبات من العملاء",
+    "freelancerBadge1": "استقبال طلبات",
+    "freelancerBadge2": "إنشاء إعلانات",
+    "footerNote": "يمكنك التبديل بين الدورين في أي وقت من الإعدادات",
+    "confirm": "تأكيد الاختيار"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "unread": "غير المقروءة",
+    "all": "الكل",
+    "markAllRead": "تحديد الكل كمقروء",
+    "empty": "لا توجد إشعارات"
+  },
+  "search": {
+    "recentSearches": "عمليات البحث الأخيرة",
+    "mostSearched": "الأكثر بحثاً",
+    "hint": "ابحث عن خدمات التصوير...",
+    "filter": {
+      "title": "تصفية النتائج",
+      "priceRange": "نطاق السعر",
+      "rating": "التقييم",
+      "apply": "تطبيق"
     }
-  }
+  },
+  "freelancerProfile": {
+    "title": "الملف الشخصي",
+    "message": "مراسلة",
+    "orderNow": "اطلب الآن",
+    "reviews": "التقييمات",
+    "services": "الخدمات",
+    "portfolio": "سابقة الأعمال",
+    "projects": "مشروع",
+    "response": "الرد",
+    "withinHour": "خلال ساعة",
+    "memberSince": "عضو منذ",
+    "bookNow": "احجز الآن",
+    "requestService": "طلب الخدمة",
+    "reviewsCount": "({count} تقييم)"
+  },
+  "myRequests": {
+    "title": "طلباتي",
+    "tabs": {
+      "active": "النشطة",
+      "underReview": "قيد المراجعة",
+      "completed": "المنتهية"
+    },
+    "empty": {
+      "noRequests": "لا توجد طلبات بعد",
+      "startRequesting": "ابدأ بطلب خدمة من أحد المصورين",
+      "browsePhotographers": "تصفح المصورين"
+    },
+    "card": {
+      "photographer": "المصور",
+      "currency": "ريال"
+    },
+    "status": {
+      "approved": "تمت الموافقة!",
+      "underReview": "قيد المراجعة",
+      "active": "نشط",
+      "completed": "مكتمل",
+      "cancelled": "ملغي"
+    },
+    "action": {
+      "payNow": "إتمام الدفع الآن",
+      "rateService": "قيّم الخدمة"
+    },
+    "message": {
+      "paymentRequired": "وافق المصور على طلبك! قم بالدفع الآن لتأكيد الحجز.",
+      "approvedSince": "تمت الموافقة منذ"
+    }
+  },
+  "contract_date_and_time": "الوقت والتاريخ",
+  "contract_location": "موقع التصوير",
+  "contract_required_amount": "المبلغ المطلوب",
+  "contract": {
+    "details": {
+      "title": "تفاصيل الطلب"
+    },
+    "status": {
+      "inProgress": "قيد التنفيذ",
+      "photographerApproved": "وافق المصور على طلبك",
+      "approvedBadge": "تمت الموافقة",
+      "cancelledArchived": "ملغي / مؤرشف"
+    },
+    "description": {
+      "label": "الوصف"
+    },
+    "location": {
+      "label": "الموقع"
+    },
+    "date": {
+      "label": "تاريخ المناسبة"
+    },
+    "budget": {
+      "label": "الميزانية"
+    },
+    "paymentStatus": {
+      "label": "حالة الدفع",
+      "deposited": "تم إيداع المبلغ لدى احترافي",
+      "secureMessage": "المبلغ محفوظ بشكل آمن وسيتم تحويله للمصور بعد الإتمام"
+    },
+    "workStages": {
+      "label": "مراحل العمل",
+      "confirmBooking": "تأكيد الحجز",
+      "shooting": "تصوير الحفل",
+      "deliveringPhotos": "تسليم الصور"
+    },
+    "paymentWarning": {
+      "title": "تنبيه: الوقت المتبقي للدفع",
+      "body": "يرجى الدفع خلال 24 ساعة لتأكيد الحجز وإلا سيتم إلغاء الطلب تلقائياً."
+    },
+    "action": {
+      "payNow": "ادفع الآن وأكد الحجز"
+    },
+    "payment": {
+      "secureNote": "سيتم حفظ المبلغ بشكل آمن ولن يتم تحويله للمصور إلا بعد إتمام الخدمة."
+    },
+    "timeline": {
+      "title": "ماذا سيحدث بعد الدفع؟",
+      "step1": "سيتم تأكيد الحجز فوراً",
+      "step2": "المصور سيستعد للموعد المحدد",
+      "step3": "يمكنك التواصل معه عبر الرسائل"
+    },
+    "requiredAmount": {
+      "label": "المبلغ المطلوب"
+    }
+  },
+  "time": {
+    "minute": "دقيقة",
+    "hour": "ساعة"
+  },
+  "booking_service_label": "الخدمة",
+  "booking_photographer_label": "المصور",
+  "booking_date_label": "تاريخ الحجز",
+  "booking_time_label": "وقت الحجز",
+  "booking_notes_label": "ملاحظات إضافية",
+  "booking_success_message": "سيقوم المصور بمراجعة طلبك والرد عليك قريباً",
+  "booking_back_to_home": "العودة للرئيسية",
+  "validation_required": "هذا الحقل مطلوب",
+  "pending_view_status_text": "بانتظار موافقة المصور",
+  "pending_view_badge_text": "قيد المراجعة",
+  "pending_view_timeline_title": "ماذا سيحدث بعد موافقة المصور؟",
+  "pending_view_timeline_step1": "سيتم دفع مبلغ الحجز من جهتك",
+  "pending_view_timeline_step2": "المصور سيستعد للموعد المحدد",
+  "pending_view_timeline_step3": "يمكنك التواصل معه عبر الرسائل"
 }

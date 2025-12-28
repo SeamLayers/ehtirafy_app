@@ -1,122 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../../../../core/router/app_router.dart';
-import '../../../../../core/theme/app_colors.dart';
-import '../../../../../core/widgets/app_logo.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/di/service_locator.dart';
+import '../cubits/splash_cubit.dart';
 
-/// Splash Screen with fade & scale animations
-/// Auto-navigates to Onboarding after 2 seconds
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => sl<SplashCubit>()..initSplash(),
+      child: const _SplashView(),
+    );
+  }
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with TickerProviderStateMixin {
-  late AnimationController _fadeController;
-  late AnimationController _scaleController;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Fade animation controller
-    _fadeController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    );
-
-    // Scale animation controller
-    _scaleController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    );
-
-    // Fade animation
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _fadeController, curve: Curves.easeIn),
-    );
-
-    // Scale animation
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _scaleController, curve: Curves.easeOutBack),
-    );
-
-    // Start animations
-    _startAnimations();
-
-    // Auto-navigate after 2 seconds
-    _navigateToOnboarding();
-  }
-
-  void _startAnimations() {
-    Future.delayed(const Duration(milliseconds: 100), () {
-      if (mounted) {
-        _fadeController.forward();
-        _scaleController.forward();
-      }
-    });
-  }
-
-  void _navigateToOnboarding() {
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        context.go(AppRoutes.onboarding);
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _fadeController.dispose();
-    _scaleController.dispose();
-    super.dispose();
-  }
+class _SplashView extends StatelessWidget {
+  const _SplashView();
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Scaffold(
-      backgroundColor: isDark ? AppColors.dark : AppColors.backgroundLight,
-      body: Center(
-        child: AnimatedBuilder(
-          animation: Listenable.merge([_fadeController, _scaleController]),
-          builder: (context, child) {
-            return FadeTransition(
-              opacity: _fadeAnimation,
-              child: ScaleTransition(
-                scale: _scaleAnimation,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // App Logo (145.w as specified)
-                    const AppLogo(size: 145),
-                    SizedBox(height: 24.h),
-                    // Tagline
-                    Text(
-                      'Your Professional Photography Partner',
-                      style: GoogleFonts.cairo(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                        color: isDark
-                            ? AppColors.grey400
-                            : AppColors.textSecondary,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+    return BlocListener<SplashCubit, SplashState>(
+      listener: (context, state) {
+        if (state is SplashNavigateToOnboarding) {
+          context.go('/onboarding');
+        } else if (state is SplashNavigateToHome) {
+          context.go('/home');
+        } else if (state is SplashNavigateToFreelancerDashboard) {
+          context.go('/freelancer/dashboard');
+        }
+      },
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light.copyWith(
+          statusBarColor: Colors.transparent,
+        ),
+        child: Scaffold(
+          backgroundColor: const Color(0xFF1C1D18),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Logo
+                Image.asset(
+                  'assets/images/logo.png',
+                  width: 180.w,
+                  fit: BoxFit.contain,
                 ),
-              ),
-            );
-          },
+                SizedBox(height: 24.h),
+                // Tagline
+                Text(
+                  AppStrings.splashTagline.tr(),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'Cairo',
+                    color: AppColors.gold,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1076914372824",
+    "project_id": "ehtirafy-6",
+    "storage_bucket": "ehtirafy-6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1076914372824:android:638c883f8235f20c3a17ad",
+        "android_client_info": {
+          "package_name": "com.elgohary.ehtirafy_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgY_Dk4qnj4gbi-aI1Vf6sLXdLNpcZHLc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
