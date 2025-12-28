@@ -1,0 +1,63 @@
+name: Build and Notify
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+          channel: 'stable'
+
+      - name: Get Dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+  notify:
+    needs: build
+    runs-on: ubuntu-latest
+    if: success()
+    
+    steps:
+      - name: Download APK
+        uses: actions/download-artifact@v4
+        with:
+          name: release-apk
+          
+      - name: Send Email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_PASSWORD }}
+          subject: New Build Available - ${{ github.repository }}
+          body: |
+            A new build was triggered by ${{ github.actor }}.
+            Commit: ${{ github.sha }}
+            Message: ${{ github.event.head_commit.message }}
+            
+            You can download the APK from the GitHub Actions run page: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          to: ${{ secrets.TESTER_EMAIL }}
+          from: ${{ secrets.GMAIL_USERNAME }}
+          content_type: text/plain
