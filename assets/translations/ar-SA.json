@@ -485,7 +485,8 @@
     },
     "requiredAmount": {
       "label": "المبلغ المطلوب"
-    }
+    },
+    "history": "سجل النشاط"
   },
   "time": {
     "minute": "دقيقة",
@@ -504,5 +505,10 @@
   "pending_view_timeline_title": "ماذا سيحدث بعد موافقة المصور؟",
   "pending_view_timeline_step1": "سيتم دفع مبلغ الحجز من جهتك",
   "pending_view_timeline_step2": "المصور سيستعد للموعد المحدد",
-  "pending_view_timeline_step3": "يمكنك التواصل معه عبر الرسائل"
+  "pending_view_timeline_step3": "يمكنك التواصل معه عبر الرسائل",
+  "contract_status_under_review": "طلبك قيد المراجعة حالياً",
+  "contract_status_under_review_badge": "قيد المراجعة",
+  "contract_photographer_name": "المصور: {}",
+  "contract_contact_photographer": "مراسلة المصور",
+  "contract_finish_service": "تأكيد استلام الخدمة"
 }

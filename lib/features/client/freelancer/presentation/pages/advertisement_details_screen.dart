@@ -127,15 +127,24 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
-                    // Background gradient with decorative elements
+                    // Background Image
+                    if (ad.images.isNotEmpty)
+                      Image.network(
+                        ad.images.first,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Container(color: const Color(0xFF2B2B2B)),
+                      ),
+
+                    // Background gradient overlay (always show to ensure text readability)
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
                           colors: [
-                            AppColors.gold.withValues(alpha: 0.2),
-                            const Color(0xFF2B2B2B),
+                            Colors.black.withValues(alpha: 0.1),
+                            const Color(0xFF2B2B2B), // Dark at bottom for text
                           ],
                         ),
                       ),
@@ -423,6 +432,7 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                         'photographerName': freelancerName ?? '',
                         'serviceName': ad.title,
                         'price': ad.price,
+                        'availableDays': ad.daysAvailability,
                       },
                     );
                   } else {

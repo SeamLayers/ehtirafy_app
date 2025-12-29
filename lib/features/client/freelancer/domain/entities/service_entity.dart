@@ -11,8 +11,20 @@ class ServiceEntity extends Equatable {
     required this.title,
     required this.price,
     required this.description,
+    this.imageUrl,
+    this.daysAvailability = const [],
   });
 
+  final String? imageUrl;
+  final List<String> daysAvailability;
+
   @override
-  List<Object> get props => [id, title, price, description];
+  List<Object?> get props => [
+    id,
+    title,
+    price,
+    description,
+    imageUrl,
+    daysAvailability,
+  ];
 }

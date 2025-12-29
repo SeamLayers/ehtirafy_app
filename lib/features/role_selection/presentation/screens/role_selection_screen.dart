@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/primary_button.dart';
-import '../../../../core/router/app_router.dart';
 
 /// Role Selection Screen
 /// Allows user to select their role: Client or Photographer
@@ -29,13 +28,13 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
       await prefs.setString('user_role', _selectedRole!);
 
       if (mounted) {
-        context.go(AppRoutes.home);
+        context.go('/home');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error saving role: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error saving role: $e')));
       }
     } finally {
       if (mounted) {
@@ -92,8 +91,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                     // Photographer Role Card
                     _RoleCard(
                       title: 'Photographer',
-                      description:
-                          'Offer your photography skills and services',
+                      description: 'Offer your photography skills and services',
                       icon: Icons.camera_alt_rounded,
                       isSelected: _selectedRole == 'photographer',
                       onTap: () =>
@@ -154,7 +152,7 @@ class _RoleCard extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: isSelected
-                  ? AppColors.gold.withOpacity(0.2)
+                  ? AppColors.gold.withValues(alpha: 0.2)
                   : AppColors.shadowLight,
               blurRadius: isSelected ? 16 : 8,
               offset: const Offset(0, 4),
@@ -169,7 +167,7 @@ class _RoleCard extends StatelessWidget {
               height: 60.w,
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColors.gold.withOpacity(0.1)
+                    ? AppColors.gold.withValues(alpha: 0.1)
                     : (isDark ? AppColors.grey700 : AppColors.grey100),
                 borderRadius: BorderRadius.circular(12.r),
               ),
@@ -199,8 +197,9 @@ class _RoleCard extends StatelessWidget {
                   Text(
                     description,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color:
-                          isDark ? AppColors.grey400 : AppColors.textSecondary,
+                      color: isDark
+                          ? AppColors.grey400
+                          : AppColors.textSecondary,
                     ),
                   ),
                 ],
@@ -220,11 +219,7 @@ class _RoleCard extends StatelessWidget {
                 color: isSelected ? AppColors.gold : Colors.transparent,
               ),
               child: isSelected
-                  ? Icon(
-                      Icons.check,
-                      size: 16.sp,
-                      color: Colors.white,
-                    )
+                  ? Icon(Icons.check, size: 16.sp, color: Colors.white)
                   : null,
             ),
           ],

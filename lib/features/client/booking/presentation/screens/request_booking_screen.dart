@@ -22,6 +22,7 @@ class RequestBookingScreen extends StatefulWidget {
   final String photographerName;
   final String serviceName;
   final double price;
+  final List<String> availableDays;
 
   const RequestBookingScreen({
     super.key,
@@ -30,6 +31,7 @@ class RequestBookingScreen extends StatefulWidget {
     required this.photographerName,
     required this.serviceName,
     required this.price,
+    this.availableDays = const [],
   });
 
   @override
@@ -41,6 +43,51 @@ class _RequestBookingScreenState extends State<RequestBookingScreen> {
   final _dateController = TextEditingController();
   final _timeController = TextEditingController();
   final _notesController = TextEditingController();
+
+  bool _isDayAvailable(DateTime day) {
+    if (widget.availableDays.isEmpty) return true;
+
+    // Map weekday number to day name
+    // DateTime.monday = 1, ... DateTime.sunday = 7
+    final dayName = _getDayName(day.weekday);
+    return widget.availableDays.any(
+      (availableDay) => availableDay.toLowerCase() == dayName.toLowerCase(),
+    );
+  }
+
+  String _getDayName(int weekday) {
+    switch (weekday) {
+      case DateTime.saturday:
+        return 'saturday';
+      case DateTime.sunday:
+        return 'sunday';
+      case DateTime.monday:
+        return 'monday';
+      case DateTime.tuesday:
+        return 'tuesday';
+      case DateTime.wednesday:
+        return 'wednesday';
+      case DateTime.thursday:
+        return 'thursday';
+      case DateTime.friday:
+        return 'friday';
+      default:
+        return '';
+    }
+  }
+
+  DateTime _getInitialDate() {
+    final now = DateTime.now();
+    if (widget.availableDays.isEmpty) return now;
+
+    for (int i = 0; i < 365; i++) {
+      final day = now.add(Duration(days: i));
+      if (_isDayAvailable(day)) {
+        return day;
+      }
+    }
+    return now;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,13 +154,15 @@ class _RequestBookingScreenState extends State<RequestBookingScreen> {
                       ),
                       readOnly: true,
                       onTap: () async {
+                        final initialDate = _getInitialDate();
                         final date = await showDatePicker(
                           context: context,
-                          initialDate: DateTime.now(),
+                          initialDate: initialDate,
                           firstDate: DateTime.now(),
                           lastDate: DateTime.now().add(
                             const Duration(days: 365),
                           ),
+                          selectableDayPredicate: _isDayAvailable,
                         );
                         if (date != null) {
                           _dateController.text = DateFormat(

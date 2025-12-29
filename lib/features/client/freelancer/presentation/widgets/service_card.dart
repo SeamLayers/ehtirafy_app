@@ -17,8 +17,11 @@ class ServiceCard extends StatelessWidget {
     required this.title,
     required this.price,
     required this.description,
+    this.imageUrl,
     this.onTap,
   });
+
+  final String? imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -38,74 +41,102 @@ class ServiceCard extends StatelessWidget {
             ),
           ],
         ),
-        child: Column(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF2B2B2B),
-                    ),
-                    overflow: TextOverflow.ellipsis,
+            if (imageUrl != null && imageUrl!.isNotEmpty) ...[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12.r),
+                child: Image.network(
+                  imageUrl!,
+                  width: 80.w,
+                  height: 80.w,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: 80.w,
+                    height: 80.w,
+                    color: Colors.grey[200],
+                    child: Icon(Icons.broken_image, color: Colors.grey[400]),
                   ),
                 ),
-                SizedBox(width: 8.w),
-                Text(
-                  '$price ${AppStrings.bookingCurrency.tr()}',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.gold,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              description,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: AppColors.textSecondary,
-                height: 1.5,
               ),
-            ),
-            if (onTap != null) ...[
-              SizedBox(height: 12.h),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                decoration: BoxDecoration(
-                  color: AppColors.gold.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.calendar_today_outlined,
-                      color: AppColors.gold,
-                      size: 14.sp,
+              SizedBox(width: 16.w),
+            ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF2B2B2B),
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      Text(
+                        '$price ${AppStrings.bookingCurrency.tr()}',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.gold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(
+                    description,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: AppColors.textSecondary,
+                      height: 1.5,
                     ),
-                    SizedBox(width: 4.w),
-                    Text(
-                      'احجز الآن',
-                      style: TextStyle(
-                        color: AppColors.gold,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.bold,
+                  ),
+                  if (onTap != null) ...[
+                    SizedBox(height: 12.h),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 8.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.gold.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.calendar_today_outlined,
+                            color: AppColors.gold,
+                            size: 14.sp,
+                          ),
+                          SizedBox(width: 4.w),
+                          Text(
+                            'احجز الآن',
+                            style: TextStyle(
+                              color: AppColors.gold,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
-                ),
+                ],
               ),
-            ],
+            ),
           ],
         ),
       ),

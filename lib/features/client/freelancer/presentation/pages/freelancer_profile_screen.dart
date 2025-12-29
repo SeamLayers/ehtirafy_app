@@ -622,12 +622,14 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
             title: service.title,
             price: service.price,
             description: service.description,
+            imageUrl: service.imageUrl,
             onTap: () {
               context.push(
                 '/advertisement/${service.id}',
                 extra: {
                   'freelancerId': freelancer.id,
                   'freelancerName': freelancer.name,
+                  'availableDays': service.daysAvailability,
                 },
               );
             },

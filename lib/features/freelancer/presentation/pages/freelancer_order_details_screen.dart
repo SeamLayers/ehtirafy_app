@@ -8,71 +8,158 @@ import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import '../../domain/entities/freelancer_order_entity.dart';
 import '../cubit/freelancer_orders_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ehtirafy_app/core/di/service_locator.dart';
+import 'package:ehtirafy_app/features/client/contract/presentation/manager/contract_details_cubit.dart';
+import 'package:ehtirafy_app/features/client/contract/presentation/manager/contract_details_state.dart';
+import 'package:ehtirafy_app/features/client/contract/domain/entities/contract_details_entity.dart';
 
-class FreelancerOrderDetailsScreen extends StatelessWidget {
+class FreelancerOrderDetailsScreen extends StatefulWidget {
   final FreelancerOrderEntity order;
 
   const FreelancerOrderDetailsScreen({super.key, required this.order});
 
   @override
+  State<FreelancerOrderDetailsScreen> createState() =>
+      _FreelancerOrderDetailsScreenState();
+}
+
+class _FreelancerOrderDetailsScreenState
+    extends State<FreelancerOrderDetailsScreen> {
+  late ContractDetailsCubit _contractCubit;
+  ContractDetailsEntity? _details;
+
+  @override
+  void initState() {
+    super.initState();
+    _contractCubit = sl<ContractDetailsCubit>();
+    _contractCubit.getContractDetails(widget.order.id);
+  }
+
+  @override
+  void dispose() {
+    _contractCubit.close();
+    super.dispose();
+  }
+
+  // Getters to abstract data source (Order vs Details)
+  FreelancerOrderStatus get status {
+    if (_details != null) {
+      if (_details!.status == ContractStatus.completed) {
+        return FreelancerOrderStatus.completed;
+      }
+      if (_details!.status == ContractStatus.cancelled ||
+          _details!.status == ContractStatus.rejected ||
+          _details!.status == ContractStatus.archived) {
+        return FreelancerOrderStatus.cancelled;
+      }
+      if (_details!.status == ContractStatus.inProgress ||
+          _details!.status == ContractStatus.underReview) {
+        return FreelancerOrderStatus.inProgress;
+      }
+      if (_details!.status == ContractStatus.awaitingPayment) {
+        return FreelancerOrderStatus.pending;
+      }
+    }
+    return widget.order.status;
+  }
+
+  String get serviceTitle =>
+      _details?.serviceTitle ?? widget.order.serviceTitle;
+  String get location => _details?.location ?? widget.order.location;
+  DateTime get eventDate => _details?.date ?? widget.order.eventDate;
+  double get price => _details?.budget ?? widget.order.price;
+  String get clientName => _details?.customerName ?? widget.order.clientName;
+  // Note: ContractDetailsEntity uses customerImage, but FreelancerOrderEntity uses clientImage
+  // We should check if we have customerImage in _details
+  String get clientImage => _details?.customerImage ?? widget.order.clientImage;
+  String get description => _details?.description ?? '';
+
+  @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light.copyWith(
-        statusBarColor: Colors.transparent,
-      ),
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF9F9F9),
-        body: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(24.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (order.status == FreelancerOrderStatus.pending)
-                      _buildNewRequestBanner(context),
-                    if (order.status == FreelancerOrderStatus.inProgress)
-                      _buildStatusDateRow(context),
-                    if (order.status == FreelancerOrderStatus.inProgress)
-                      _buildTitle(context),
-                    SizedBox(height: 16.h),
-                    if (order.status == FreelancerOrderStatus.pending)
-                      _buildRequestedServiceCard(context),
-                    if (order.status == FreelancerOrderStatus.pending)
-                      SizedBox(height: 16.h),
-                    if (order.status == FreelancerOrderStatus.pending)
-                      _buildBookingDetailsCard(context),
-                    if (order.status == FreelancerOrderStatus.pending)
-                      SizedBox(height: 16.h),
-                    if (order.status == FreelancerOrderStatus.pending)
-                      _buildClientMessageCard(context),
-                    _buildClientInfoCard(context),
-                    SizedBox(height: 16.h),
-                    if (order.status == FreelancerOrderStatus.inProgress) ...[
-                      _buildDescriptionCard(context),
-                      SizedBox(height: 16.h),
-                      _buildDetailsCard(context),
-                      SizedBox(height: 16.h),
-                      _buildPaymentStatusCard(context),
-                    ],
-                    if (order.status == FreelancerOrderStatus.pending)
-                      _buildReminderCard(context),
-                    SizedBox(height: 100.h),
-                  ],
-                ),
-              ),
+    return BlocProvider.value(
+      value: _contractCubit,
+      child: BlocConsumer<ContractDetailsCubit, ContractDetailsState>(
+        listener: (context, state) {
+          if (state is ContractDetailsSuccess) {
+            setState(() {
+              _details = state.contract;
+            });
+            // If contract is completed via action, pop or show success
+            if (state.contract.status == ContractStatus.completed &&
+                widget.order.status != FreelancerOrderStatus.completed) {
+              Navigator.of(context).pop();
+            }
+          }
+          if (state is ContractDetailsError) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
+          }
+        },
+        builder: (context, state) {
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle.light.copyWith(
+              statusBarColor: Colors.transparent,
             ),
-          ],
-        ),
-        bottomNavigationBar: _buildBottomActions(context),
+            child: Scaffold(
+              backgroundColor: const Color(0xFFF9F9F9),
+              body: state is ContractDetailsLoading && _details == null
+                  ? const Center(child: CircularProgressIndicator())
+                  : Column(
+                      children: [
+                        _buildHeader(context),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            padding: EdgeInsets.all(24.w),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (status == FreelancerOrderStatus.pending)
+                                  _buildNewRequestBanner(context),
+                                if (status == FreelancerOrderStatus.inProgress)
+                                  _buildStatusDateRow(context),
+                                if (status == FreelancerOrderStatus.inProgress)
+                                  _buildTitle(context),
+                                SizedBox(height: 16.h),
+                                if (status == FreelancerOrderStatus.pending)
+                                  _buildRequestedServiceCard(context),
+                                if (status == FreelancerOrderStatus.pending)
+                                  SizedBox(height: 16.h),
+                                if (status == FreelancerOrderStatus.pending)
+                                  _buildBookingDetailsCard(context),
+                                if (status == FreelancerOrderStatus.pending)
+                                  SizedBox(height: 16.h),
+                                if (status == FreelancerOrderStatus.pending)
+                                  _buildClientMessageCard(context),
+                                _buildClientInfoCard(context),
+                                SizedBox(height: 16.h),
+                                if (status ==
+                                    FreelancerOrderStatus.inProgress) ...[
+                                  _buildDescriptionCard(context),
+                                  SizedBox(height: 16.h),
+                                  _buildDetailsCard(context),
+                                  SizedBox(height: 16.h),
+                                  _buildPaymentStatusCard(context),
+                                ],
+                                if (status == FreelancerOrderStatus.pending)
+                                  _buildReminderCard(context),
+                                SizedBox(height: 100.h),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+              bottomNavigationBar: _buildBottomActions(context),
+            ),
+          );
+        },
       ),
     );
   }
 
   Widget _buildHeader(BuildContext context) {
-    final title = order.status == FreelancerOrderStatus.pending
+    final title = status == FreelancerOrderStatus.pending
         ? 'مراجعة طلب حجز'
         : 'تفاصيل العقد';
 
@@ -203,7 +290,7 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: 16.h),
       child: Text(
-        order.serviceTitle,
+        serviceTitle,
         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
           color: const Color(0xFF2B2B2B),
           fontSize: 24.sp,
@@ -245,7 +332,7 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      order.serviceTitle,
+                      serviceTitle,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: const Color(0xFF2B2B2B),
                         fontSize: 16.sp,
@@ -269,7 +356,7 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
                         ),
                         SizedBox(width: 4.w),
                         Text(
-                          order.price.toInt().toString(),
+                          price.toInt().toString(),
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(
                                 color: AppColors.gold,
@@ -338,7 +425,7 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
             context,
             icon: Icons.calendar_today_outlined,
             label: 'تاريخ المناسبة',
-            value: DateFormat('dd MMMM yyyy', 'ar').format(order.eventDate),
+            value: DateFormat('dd MMMM yyyy', 'ar').format(eventDate),
           ),
           SizedBox(height: 12.h),
           _buildBookingDetailRow(
@@ -352,7 +439,7 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
             context,
             icon: Icons.location_on_outlined,
             label: 'الموقع',
-            value: order.location,
+            value: location,
           ),
         ],
       ),
@@ -497,7 +584,7 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      order.clientName,
+                      clientName,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: const Color(0xFF2B2B2B),
                         fontSize: 16.sp,
@@ -555,7 +642,7 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
               ),
             ],
           ),
-          if (order.status == FreelancerOrderStatus.pending) ...[
+          if (status == FreelancerOrderStatus.pending) ...[
             SizedBox(height: 12.h),
             Row(
               children: [
@@ -650,6 +737,7 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildDescriptionCard(BuildContext context) {
+    if (description.isEmpty) return const SizedBox.shrink();
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
@@ -674,7 +762,7 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           Text(
-            'نحتاج تصوير احترافي لمنتجاتنا الجديدة للاستخدام في التسويق الرقمي',
+            description,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               color: const Color(0xFF2B2B2B),
               fontSize: 16.sp,
@@ -704,14 +792,14 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
             context,
             icon: Icons.location_on_outlined,
             label: 'الموقع',
-            value: order.location,
+            value: location,
           ),
           Divider(color: const Color(0xFFE5E5E5), height: 24.h),
           _buildDetailRow(
             context,
             icon: Icons.calendar_today_outlined,
             label: 'التاريخ',
-            value: DateFormat('dd MMMM yyyy', 'ar').format(order.eventDate),
+            value: DateFormat('dd MMMM yyyy', 'ar').format(eventDate),
           ),
           Divider(color: const Color(0xFFE5E5E5), height: 24.h),
           _buildPriceRow(context),
@@ -779,7 +867,7 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    order.price.toInt().toString(),
+                    price.toInt().toString(),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: AppColors.gold,
                       fontSize: 18.sp,
@@ -915,7 +1003,7 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildBottomActions(BuildContext context) {
-    if (order.status == FreelancerOrderStatus.pending) {
+    if (status == FreelancerOrderStatus.pending) {
       return Container(
         padding: EdgeInsets.only(
           top: 17.h,
@@ -935,7 +1023,9 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
               child: GestureDetector(
                 onTap: () {
                   // Accept order
-                  context.read<FreelancerOrdersCubit>().acceptOrder(order.id);
+                  context.read<FreelancerOrdersCubit>().acceptOrder(
+                    widget.order.id,
+                  );
                   context.pop();
                 },
                 child: Container(
@@ -971,7 +1061,9 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
               child: GestureDetector(
                 onTap: () {
                   // Reject order
-                  context.read<FreelancerOrdersCubit>().rejectOrder(order.id);
+                  context.read<FreelancerOrdersCubit>().rejectOrder(
+                    widget.order.id,
+                  );
                   context.pop();
                 },
                 child: Container(
@@ -1032,9 +1124,9 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
               context.push(
                 '/chat/conversation',
                 extra: {
-                  'id': order.id,
-                  'name': order.clientName,
-                  'image': order.clientImage,
+                  'id': widget.order.id,
+                  'name': clientName,
+                  'image': clientImage,
                   'userType': 'freelancer',
                 },
               );
@@ -1075,7 +1167,6 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
           SizedBox(height: 12.h),
           GestureDetector(
             onTap: () {
-              final cubit = context.read<FreelancerOrdersCubit>();
               // Show confirmation dialog
               showDialog(
                 context: context,
@@ -1110,9 +1201,12 @@ class FreelancerOrderDetailsScreen extends StatelessWidget {
                       TextButton(
                         onPressed: () {
                           // Deliver service (Complete contract)
-                          cubit.completeOrder(order.id);
+                          // Use ContractDetailsCubit to update status
+                          _contractCubit.completeContract(
+                            widget.order.id,
+                            isPhotographer: true,
+                          );
                           Navigator.of(dialogContext).pop(); // Close dialog
-                          context.pop(); // Close screen
                         },
                         child: Text(
                           'تأكيد',

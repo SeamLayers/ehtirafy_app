@@ -86,6 +86,15 @@ class AdvertisementDetailsModel extends AdvertisementDetailsEntity {
           .toList();
     }
 
+    // Add cover_image or root image if not in list
+    final coverImage =
+        json['cover_image']?.toString() ?? json['image']?.toString();
+    if (coverImage != null &&
+        coverImage.isNotEmpty &&
+        !images.contains(coverImage)) {
+      images.insert(0, coverImage);
+    }
+
     // Format created date
     String formattedDate = '';
     final createdAt = json['created_at'];

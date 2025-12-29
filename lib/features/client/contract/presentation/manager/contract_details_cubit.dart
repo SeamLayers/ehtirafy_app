@@ -81,14 +81,17 @@ class ContractDetailsCubit extends Cubit<ContractDetailsState> {
     );
   }
 
-  Future<void> completeContract(String id) async {
+  Future<void> completeContract(
+    String id, {
+    bool isPhotographer = false,
+  }) async {
     emit(ContractDetailsLoading());
 
     // Call update status to 'Completed'
     final result = await updateContractStatusUseCase(
       id: id,
       status: 'Completed',
-      isPhotographer: false, // Customer action
+      isPhotographer: isPhotographer,
     );
 
     result.fold(

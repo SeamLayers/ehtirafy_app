@@ -68,7 +68,12 @@ class PhotographerModel extends PhotographerEntity {
 
     // Image URL - check for avatar in user object
     // Note: Current API doesn't return avatars, using placeholder
+    // Image URL - check for advertisement image first, then user avatar
     final imageUrl =
+        advertisement?['cover_image']?.toString() ??
+        advertisement?['image']?.toString() ??
+        json['cover_image']?.toString() ??
+        json['image']?.toString() ??
         user?['avatar']?.toString() ??
         json['avatar']?.toString() ??
         json['imageUrl']?.toString() ??
