@@ -171,24 +171,55 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Status badge
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12.w,
-                              vertical: 4.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: _getStatusColor(ad.status),
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            child: Text(
-                              _getStatusText(ad.status),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 11.sp,
-                                fontFamily: 'Cairo',
-                                fontWeight: FontWeight.w600,
+                          Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 12.w,
+                                  vertical: 4.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: _getStatusColor(ad.status),
+                                  borderRadius: BorderRadius.circular(20.r),
+                                ),
+                                child: Text(
+                                  _getStatusText(ad.status),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11.sp,
+                                    fontFamily: 'Cairo',
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
-                            ),
+                              if (ad.categoryName.isNotEmpty) ...[
+                                SizedBox(width: 8.w),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w,
+                                    vertical: 4.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.5),
+                                    borderRadius: BorderRadius.circular(20.r),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.3,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    ad.categoryName,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 11.sp,
+                                      fontFamily: 'Cairo',
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                           SizedBox(height: 12.h),
                           // Title
@@ -291,6 +322,16 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                     // Info cards row
                     Row(
                       children: [
+                        if (ad.categoryName.isNotEmpty) ...[
+                          Expanded(
+                            child: _buildInfoCard(
+                              Icons.category_outlined,
+                              'التصنيف',
+                              ad.categoryName,
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+                        ],
                         Expanded(
                           child: _buildInfoCard(
                             Icons.visibility_outlined,

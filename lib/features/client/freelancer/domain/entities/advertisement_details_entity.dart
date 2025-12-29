@@ -10,6 +10,7 @@ class AdvertisementDetailsEntity extends Equatable {
   final double price;
   final String userId;
   final String createdAt;
+  final String categoryName;
   final List<String> daysAvailability;
   final List<String> images;
 
@@ -23,6 +24,7 @@ class AdvertisementDetailsEntity extends Equatable {
     required this.price,
     required this.userId,
     required this.createdAt,
+    this.categoryName = '',
     this.daysAvailability = const [],
     this.images = const [],
   });
@@ -38,6 +40,7 @@ class AdvertisementDetailsEntity extends Equatable {
     price,
     userId,
     createdAt,
+    categoryName,
     daysAvailability,
     images,
   ];

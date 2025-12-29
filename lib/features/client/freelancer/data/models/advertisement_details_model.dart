@@ -12,81 +12,109 @@ class AdvertisementDetailsModel extends AdvertisementDetailsEntity {
     required super.price,
     required super.userId,
     required super.createdAt,
+    super.categoryName = '',
     super.daysAvailability,
     super.images,
   });
 
   factory AdvertisementDetailsModel.fromJson(Map<String, dynamic> json) {
-    // Handle localized title
-    String title = '';
-    final titleData = json['title'];
-    if (titleData is Map) {
-      title = titleData['ar']?.toString() ?? titleData['en']?.toString() ?? '';
-    } else if (titleData != null) {
-      title = titleData.toString();
-    }
-
-    // Handle localized description
-    String description = '';
-    final descData = json['description'];
-    if (descData is Map) {
-      description =
-          descData['ar']?.toString() ?? descData['en']?.toString() ?? '';
-    } else if (descData != null) {
-      description = descData.toString();
-    }
-
-    // Handle price as string or number
-    double price = 0.0;
-    final priceData = json['price'];
-    if (priceData is num) {
-      price = priceData.toDouble();
-    } else if (priceData is String) {
-      price = double.tryParse(priceData) ?? 0.0;
-    }
-
-    // Handle viewer count
-    int viewerCount = 0;
-    final viewerData = json['count_viewer'];
-    if (viewerData is num) {
-      viewerCount = viewerData.toInt();
-    } else if (viewerData is String) {
-      viewerCount = int.tryParse(viewerData) ?? 0;
-    }
-
-    // Handle days availability as JSON string or list
-    List<String> daysAvailability = [];
-    final daysData = json['days_availability'];
-    if (daysData is String) {
-      try {
-        final decoded = jsonDecode(daysData);
-        if (decoded is List) {
-          daysAvailability = decoded.map((e) => e.toString()).toList();
-        }
-      } catch (e) {
-        // If not valid JSON, try splitting by comma
-        daysAvailability = daysData.split(',').map((e) => e.trim()).toList();
+    // Helper to safely get String from localized or simple field
+    String getString(dynamic data) {
+      if (data == null) return '';
+      if (data is Map) {
+        return data['ar']?.toString() ?? data['en']?.toString() ?? '';
       }
-    } else if (daysData is List) {
-      daysAvailability = daysData.map((e) => e.toString()).toList();
+      return data.toString();
     }
 
-    // Handle images array
-    List<String> images = [];
-    final imagesData = json['images'];
-    if (imagesData != null && imagesData is List) {
-      images = imagesData
-          .map((e) {
-            if (e is Map) {
-              return e['url']?.toString() ?? e['image']?.toString() ?? '';
-            }
-            return e.toString();
-          })
-          .where((s) => s.isNotEmpty)
-          .toList();
+    // Helper to safely parse localized category name
+    String getCategoryName(dynamic categoryData) {
+      if (categoryData == null) return '';
+      if (categoryData is Map) {
+        final nameData = categoryData['name'];
+        return getString(nameData);
+      }
+      if (categoryData is String) return categoryData;
+      return '';
     }
 
-    // Add cover_image or root image if not in list
+    // Safely parse double
+    double getDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is num) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
+    // Safely parse int
+    int getInt(dynamic value) {
+      if (value == null) return 0;
+      if (value is num) return value.toInt();
+      if (value is String) return int.tryParse(value) ?? 0;
+      return 0;
+    }
+
+    // Safely parse formatted date
+    String getFormattedDate(dynamic dateData) {
+      if (dateData == null) return '';
+      try {
+        final date = DateTime.parse(dateData.toString());
+        return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+      } catch (_) {
+        return dateData.toString();
+      }
+    }
+
+    // Safely parse list of strings
+    List<String> getList(dynamic data) {
+      if (data == null) return [];
+      if (data is List) {
+        return data
+            .map((e) => e?.toString() ?? '')
+            .where((s) => s.isNotEmpty)
+            .toList();
+      }
+      if (data is String) {
+        try {
+          final decoded = jsonDecode(data);
+          if (decoded is List) {
+            return decoded
+                .map((e) => e?.toString() ?? '')
+                .where((s) => s.isNotEmpty)
+                .toList();
+          }
+        } catch (_) {
+          // Try splitting by comma if not JSON
+          return data
+              .split(',')
+              .map((e) => e.trim())
+              .where((s) => s.isNotEmpty)
+              .toList();
+        }
+      }
+      return [];
+    }
+
+    // Safely parse images
+    List<String> getImages(dynamic data) {
+      if (data == null) return [];
+      if (data is List) {
+        return data
+            .map((e) {
+              if (e is Map) {
+                return e['url']?.toString() ?? e['image']?.toString() ?? '';
+              }
+              return e?.toString() ?? '';
+            })
+            .where((s) => s.isNotEmpty)
+            .toList();
+      }
+      return [];
+    }
+
+    final images = getImages(json['images']);
+
+    // Add cover_image to images if needed
     final coverImage =
         json['cover_image']?.toString() ?? json['image']?.toString();
     if (coverImage != null &&
@@ -95,30 +123,18 @@ class AdvertisementDetailsModel extends AdvertisementDetailsEntity {
       images.insert(0, coverImage);
     }
 
-    // Format created date
-    String formattedDate = '';
-    final createdAt = json['created_at'];
-    if (createdAt != null) {
-      try {
-        final date = DateTime.parse(createdAt.toString());
-        formattedDate =
-            '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-      } catch (e) {
-        formattedDate = createdAt.toString();
-      }
-    }
-
     return AdvertisementDetailsModel(
       id: json['id']?.toString() ?? '',
       categoryId: json['category_id']?.toString() ?? '',
-      title: title,
-      description: description,
-      viewerCount: viewerCount,
+      title: getString(json['title']),
+      description: getString(json['description']),
+      viewerCount: getInt(json['count_viewer']),
       status: json['status']?.toString() ?? '',
-      price: price,
+      price: getDouble(json['price']),
       userId: json['user_id']?.toString() ?? '',
-      createdAt: formattedDate,
-      daysAvailability: daysAvailability,
+      createdAt: getFormattedDate(json['created_at']),
+      categoryName: getCategoryName(json['category']),
+      daysAvailability: getList(json['days_availability']),
       images: images,
     );
   }
@@ -134,6 +150,7 @@ class AdvertisementDetailsModel extends AdvertisementDetailsEntity {
       'price': price,
       'user_id': userId,
       'created_at': createdAt,
+      'category_name': categoryName,
       'days_availability': daysAvailability,
       'images': images,
     };
