@@ -13,13 +13,16 @@ class ApiErrorHandler {
 
         case DioExceptionType.badResponse:
           final statusCode = error.response?.statusCode;
+          final data = error.response?.data;
+
+          // Extract message from response for any status code
+          if (data is Map<String, dynamic> && data['message'] != null) {
+            return ServerFailure(data['message'].toString());
+          }
+
           if (statusCode != null) {
-            if (statusCode == 400 || statusCode == 401 || statusCode == 403) {
-              final data = error.response?.data;
-              if (data is Map<String, dynamic>) {
-                final message = data['message'] ?? 'فشل في المصادقة';
-                return ServerFailure(message.toString());
-              }
+            if (statusCode >= 400 && statusCode < 500) {
+              // All client errors (400, 401, 403, 404, 409, etc.)
               return const ServerFailure('فشل في الطلب');
             } else if (statusCode >= 500) {
               return const ServerFailure('خطأ في الخادم الداخلي');
