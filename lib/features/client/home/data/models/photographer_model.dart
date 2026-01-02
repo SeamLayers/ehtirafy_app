@@ -79,6 +79,15 @@ class PhotographerModel extends PhotographerEntity {
         json['imageUrl']?.toString() ??
         '';
 
+    // Fallback to first image from images list if imageUrl is empty
+    String finalImageUrl = imageUrl;
+    if (finalImageUrl.isEmpty) {
+      final imagesList = advertisement?['images'] ?? json['images'];
+      if (imagesList is List && imagesList.isNotEmpty) {
+        finalImageUrl = imagesList.first.toString();
+      }
+    }
+
     // Parse days availability
     List<String> daysAvailability = [];
     final daysString =
@@ -110,7 +119,7 @@ class PhotographerModel extends PhotographerEntity {
       reviewsCount: 0,
       location: location,
       price: price,
-      imageUrl: imageUrl,
+      imageUrl: finalImageUrl,
       daysAvailability: daysAvailability,
       freelancerId: userId,
     );

@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import '../../../../../core/error/failures.dart';
 import '../../domain/entities/user_profile_entity.dart';
 import '../../domain/repositories/profile_repository.dart';
@@ -15,6 +16,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
       final userModel = await remoteDataSource.getUserProfile();
       return Right(userModel);
     } catch (e) {
+      if (e is DioException) {
+        final message =
+            e.response?.data['message'] ?? e.message ?? e.toString();
+        return Left(ServerFailure(message));
+      }
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -27,6 +33,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
       final userModel = await remoteDataSource.switchUserRole(newRole);
       return Right(userModel);
     } catch (e) {
+      if (e is DioException) {
+        final message =
+            e.response?.data['message'] ?? e.message ?? e.toString();
+        return Left(ServerFailure(message));
+      }
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -39,6 +50,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
       final userModel = await remoteDataSource.updateProfile(body);
       return Right(userModel);
     } catch (e) {
+      if (e is DioException) {
+        final message =
+            e.response?.data['message'] ?? e.message ?? e.toString();
+        return Left(ServerFailure(message));
+      }
       return Left(ServerFailure(e.toString()));
     }
   }

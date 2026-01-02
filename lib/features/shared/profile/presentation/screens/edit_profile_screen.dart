@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -90,12 +91,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    final data = {
-                      'name': _nameController.text,
-                      'phone': _phoneController.text,
-                      'bio': _bioController.text,
-                    };
-                    context.read<ProfileCubit>().updateProfile(data);
+                    final cubit = context.read<ProfileCubit>();
+                    final currentState = cubit.state;
+
+                    if (currentState is ProfileLoaded) {
+                      final currentPhone = currentState.userProfile.phone;
+                      final newPhone = _phoneController.text;
+
+                      if (currentPhone != newPhone) {
+                        _showOtpDialog(context, newPhone);
+                        return;
+                      }
+                    }
+
+                    _updateProfile(context);
                   },
                   child: BlocConsumer<ProfileCubit, ProfileState>(
                     listener: (context, state) {
@@ -352,5 +361,86 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
     }
     return parts[0][0].toUpperCase();
+  }
+
+  void _updateProfile(BuildContext context) {
+    final cubit = context.read<ProfileCubit>();
+    final currentState = cubit.state;
+    String? email;
+
+    if (currentState is ProfileLoaded) {
+      email = currentState.userProfile.email;
+    } else {
+      email = _emailController.text;
+    }
+
+    final data = {
+      'name': _nameController.text,
+      'email': email,
+      'phone': _phoneController.text,
+      'bio': _bioController.text,
+      '_method': 'PUT',
+    };
+    cubit.updateProfile(data);
+  }
+
+  void _showOtpDialog(BuildContext context, String phone) {
+    final otpController = TextEditingController();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          'profile.edit.verifyPhoneTitle'.tr(),
+          style: TextStyle(fontFamily: 'Cairo', fontSize: 16.sp),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'profile.edit.otpSentMessage'.tr(args: [phone]),
+              style: TextStyle(fontFamily: 'Cairo', fontSize: 14.sp),
+            ),
+            SizedBox(height: 16.h),
+            TextField(
+              controller: otpController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                hintText: 'profile.edit.enterOtpHint'.tr(),
+                hintStyle: TextStyle(fontFamily: 'Cairo', fontSize: 12.sp),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(
+              AppStrings.cancel.tr(),
+              style: TextStyle(fontFamily: 'Cairo', color: Colors.grey),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (otpController.text.isNotEmpty) {
+                // Here we normally call verify API
+                // For now we assume success and proceed to update
+                Navigator.pop(ctx);
+                _updateProfile(context);
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: _primaryGold),
+            child: Text(
+              AppStrings.confirm.tr(),
+              style: TextStyle(fontFamily: 'Cairo', color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

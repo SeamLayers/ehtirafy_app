@@ -28,7 +28,7 @@ class ContractRemoteDataSourceImpl implements ContractRemoteDataSource {
     if (data['status'] == 200) {
       return ContractModel.fromJson(data['data']);
     } else {
-      throw ServerException(data['message'] ?? 'Failed to create contract');
+      throw ServerException(data['message'] ?? 'فشل في إنشاء العقد');
     }
   }
 
@@ -56,7 +56,7 @@ class ContractRemoteDataSourceImpl implements ContractRemoteDataSource {
       // Returning a dummy model to satisfy signature if data missing but unlikely.
       return ContractModel.fromJson(data['data'] ?? {});
     } else {
-      throw ServerException(data['message'] ?? 'Failed to update contract');
+      throw ServerException(data['message'] ?? 'فشل في تحديث العقد');
     }
   }
 
@@ -77,7 +77,7 @@ class ContractRemoteDataSourceImpl implements ContractRemoteDataSource {
       final List list = data['data'];
       return list.map((e) => ContractModel.fromJson(e)).toList();
     } else {
-      throw ServerException(data['message'] ?? 'Failed to fetch contracts');
+      throw ServerException(data['message'] ?? 'فشل في جلب العقود');
     }
   }
 
@@ -92,12 +92,10 @@ class ContractRemoteDataSourceImpl implements ContractRemoteDataSource {
       if (list.isNotEmpty) {
         return ContractDetailsModel.fromJson(list.first);
       } else {
-        throw const ServerException('Contract not found');
+        throw const ServerException('العقد غير موجود');
       }
     } else {
-      throw ServerException(
-        data['message'] ?? 'Failed to fetch contract details',
-      );
+      throw ServerException(data['message'] ?? 'فشل في جلب تفاصيل العقد');
     }
   }
 }

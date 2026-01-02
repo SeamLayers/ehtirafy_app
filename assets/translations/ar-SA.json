@@ -64,7 +64,7 @@
     "loginGoogle": "تسجيل الدخول بواسطة Google",
     "loginApple": "تسجيل الدخول بواسطة Apple",
     "phoneLabel": "رقم الهاتف",
-    "phoneHint": "+966 xxx xxx xxx",
+    "phoneHint": "123 456 789",
     "haveAccount": "لديك حساب بالفعل؟",
     "loginNow": "تسجيل الدخول",
     "termsPrefix": "بإنشاء حساب، أنت توافق على ",
@@ -89,6 +89,10 @@
     "authentication": "فشلت عملية المصادقة",
     "authorization": "ليس لديك صلاحية للوصول",
     "unexpected": "حدث خطأ غير متوقع"
+  },
+  "validation": {
+    "passwordMismatch": "كلمة المرور غير متطابقة",
+    "passwordLength": "يجب أن تكون كلمة المرور 8 أحرف على الأقل"
   },
   "splash": {
     "tagline": "بوابتك الاحترافية لعالم التصوير"
@@ -313,7 +317,10 @@
       "email_read_only": "لا يمكن تغيير البريد الإلكتروني",
       "phone": "رقم الهاتف",
       "bio": "نبذة عني",
-      "bio_hint": "اكتب نبذة مختصرة عن خبراتك ومهاراتك..."
+      "bio_hint": "اكتب نبذة مختصرة عن خبراتك ومهاراتك...",
+      "verifyPhoneTitle": "التحقق من رقم الهاتف",
+      "otpSentMessage": "تم إرسال رمز التحقق إلى {}",
+      "enterOtpHint": "أدخل رمز التحقق"
     },
     "logout": "تسجيل الخروج",
     "logout_dialog": {

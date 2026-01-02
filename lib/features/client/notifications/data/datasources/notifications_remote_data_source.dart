@@ -29,7 +29,7 @@ class NotificationsRemoteDataSourceImpl
         return [];
       } else {
         throw ServerException(
-          response.data['message'] ?? 'Failed to fetch notifications',
+          response.data['message'] ?? 'فشل في جلب الإشعارات',
         );
       }
     } catch (e) {
@@ -46,7 +46,7 @@ class NotificationsRemoteDataSourceImpl
         return;
       } else {
         throw ServerException(
-          response.data['message'] ?? 'Failed to mark notification as read',
+          response.data['message'] ?? 'فشل في تحديد الإشعار كمقروء',
         );
       }
     } catch (e) {

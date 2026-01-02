@@ -26,7 +26,7 @@ class FreelancerDashboardRemoteDataSourceImpl
         return FreelancerStatisticsModel.fromJson(response.data['data']);
       } else {
         throw ServerException(
-          response.data['message'] ?? 'Failed to fetch statistics',
+          response.data['message'] ?? 'فشل في جلب الإحصائيات',
         );
       }
     } catch (e) {
@@ -52,7 +52,7 @@ class FreelancerDashboardRemoteDataSourceImpl
             .toList();
       } else {
         throw ServerException(
-          response.data['message'] ?? 'Failed to fetch last contracts',
+          response.data['message'] ?? 'فشل في جلب آخر العقود',
         );
       }
     } catch (e) {

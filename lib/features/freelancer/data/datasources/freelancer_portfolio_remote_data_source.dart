@@ -39,7 +39,7 @@ class FreelancerPortfolioRemoteDataSourceImpl
       }
       return [];
     } else {
-      throw ServerException(data['message'] ?? 'Unknown Error');
+      throw ServerException(data['message'] ?? 'خطأ غير معروف');
     }
   }
 
@@ -55,9 +55,9 @@ class FreelancerPortfolioRemoteDataSourceImpl
       if (responseData is Map<String, dynamic>) {
         return PortfolioItemModel.fromJson(responseData);
       }
-      throw ServerException('Invalid response format');
+      throw ServerException('صيغة الاستجابة غير صالحة');
     } else {
-      throw ServerException(data['message'] ?? 'Unknown Error');
+      throw ServerException(data['message'] ?? 'خطأ غير معروف');
     }
   }
 
@@ -99,7 +99,7 @@ class FreelancerPortfolioRemoteDataSourceImpl
         createdAt: DateTime.now(),
       );
     } else {
-      throw ServerException(responseData['message'] ?? 'Failed to add item');
+      throw ServerException(responseData['message'] ?? 'فشل في إضافة العنصر');
     }
   }
 
@@ -144,7 +144,7 @@ class FreelancerPortfolioRemoteDataSourceImpl
         createdAt: DateTime.now(),
       );
     } else {
-      throw ServerException(responseData['message'] ?? 'Failed to update item');
+      throw ServerException(responseData['message'] ?? 'فشل في تحديث العنصر');
     }
   }
 

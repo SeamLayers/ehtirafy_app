@@ -41,7 +41,9 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         // Actually, the UI uses currentRole to toggle views.
         return profile.copyWith(currentRole: localRole);
       } else {
-        throw Exception(response.data['message'] ?? 'Failed to load profile');
+        throw Exception(
+          response.data['message'] ?? 'فشل في تحميل الملف الشخصي',
+        );
       }
     } catch (e) {
       // Return mock/cache if offline? Or rethrow.
@@ -69,7 +71,9 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         final data = response.data['data'];
         return UserProfileModel.fromJson(data);
       } else {
-        throw Exception(response.data['message'] ?? 'Failed to update profile');
+        throw Exception(
+          response.data['message'] ?? 'فشل في تحديث الملف الشخصي',
+        );
       }
     } catch (e) {
       rethrow;

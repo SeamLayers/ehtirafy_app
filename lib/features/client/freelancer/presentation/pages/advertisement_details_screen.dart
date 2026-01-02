@@ -105,7 +105,7 @@ class AdvertisementDetailsScreen extends StatelessWidget {
           slivers: [
             // Beautiful App Bar with gradient
             SliverAppBar(
-              expandedHeight: 220.h,
+              expandedHeight: 300.h,
               pinned: true,
               backgroundColor: const Color(0xFF2B2B2B),
               leading: GestureDetector(
@@ -113,7 +113,7 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                 child: Container(
                   margin: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.3),
+                    color: Colors.white.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
@@ -136,109 +136,70 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                             Container(color: const Color(0xFF2B2B2B)),
                       ),
 
-                    // Background gradient overlay (always show to ensure text readability)
+                    // Gradient Overlay
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            Colors.black.withValues(alpha: 0.1),
-                            const Color(0xFF2B2B2B), // Dark at bottom for text
+                            Colors.transparent,
+                            Colors.black.withValues(alpha: 0.2),
+                            Colors.black.withValues(alpha: 0.8),
                           ],
+                          stops: const [0.0, 0.6, 1.0],
                         ),
                       ),
                     ),
-                    // Decorative circles
+
+                    // Content Overlay
                     Positioned(
-                      top: -30.h,
-                      right: -30.w,
-                      child: Container(
-                        width: 150.w,
-                        height: 150.h,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.gold.withValues(alpha: 0.1),
-                        ),
-                      ),
-                    ),
-                    // Content
-                    Positioned(
-                      bottom: 20.h,
-                      left: 20.w,
-                      right: 20.w,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Status badge
-                          Row(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 12.w,
-                                  vertical: 4.h,
-                                ),
-                                decoration: BoxDecoration(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Padding(
+                        padding: EdgeInsets.all(20.w),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Badges Row
+                            Row(
+                              children: [
+                                _buildGlassBadge(
+                                  text: _getStatusText(ad.status),
                                   color: _getStatusColor(ad.status),
-                                  borderRadius: BorderRadius.circular(20.r),
+                                  isSolid: true,
                                 ),
-                                child: Text(
-                                  _getStatusText(ad.status),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 11.sp,
-                                    fontFamily: 'Cairo',
-                                    fontWeight: FontWeight.w600,
+                                if (ad.categoryName.isNotEmpty) ...[
+                                  SizedBox(width: 8.w),
+                                  _buildGlassBadge(
+                                    text: ad.categoryName,
+                                    icon: Icons.category_outlined,
                                   ),
-                                ),
-                              ),
-                              if (ad.categoryName.isNotEmpty) ...[
-                                SizedBox(width: 8.w),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 12.w,
-                                    vertical: 4.h,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withValues(alpha: 0.5),
-                                    borderRadius: BorderRadius.circular(20.r),
-                                    border: Border.all(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.3,
-                                      ),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    ad.categoryName,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 11.sp,
-                                      fontFamily: 'Cairo',
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                          SizedBox(height: 12.h),
-                          // Title
-                          Text(
-                            ad.title,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 22.sp,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Cairo',
-                              shadows: [
-                                Shadow(
-                                  color: Colors.black.withValues(alpha: 0.5),
-                                  blurRadius: 8,
-                                ),
+                                ],
                               ],
                             ),
-                          ),
-                        ],
+                            SizedBox(height: 16.h),
+                            // Title
+                            Text(
+                              ad.title,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24.sp,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Cairo',
+                                height: 1.3,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black.withValues(alpha: 0.5),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -246,194 +207,167 @@ class AdvertisementDetailsScreen extends StatelessWidget {
               ),
             ),
 
-            // Content
+            // Body Content
             SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.all(20.w),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF9F9F9),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(30.r),
+                  ),
+                ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Price card
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(20.w),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            AppColors.gold,
-                            AppColors.gold.withValues(alpha: 0.8),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(16.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.gold.withValues(alpha: 0.3),
-                            blurRadius: 15,
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // Price Card with generous spacing
+                    SizedBox(height: 32.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: _buildPremiumPriceCard(ad.price),
+                    ),
+
+                    SizedBox(height: 24.h),
+
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'سعر الخدمة',
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.8),
-                                  fontSize: 13.sp,
-                                  fontFamily: 'Cairo',
-                                ),
-                              ),
-                              SizedBox(height: 4.h),
-                              Text(
-                                '${ad.price.toStringAsFixed(0)} ر.س',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 26.sp,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Cairo',
-                                ),
-                              ),
-                            ],
-                          ),
+                          // Stats Row
                           Container(
-                            padding: EdgeInsets.all(12.w),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.attach_money_rounded,
-                              color: Colors.white,
-                              size: 28.sp,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: 24.h),
-
-                    // Info cards row
-                    Row(
-                      children: [
-                        if (ad.categoryName.isNotEmpty) ...[
-                          Expanded(
-                            child: _buildInfoCard(
-                              Icons.category_outlined,
-                              'التصنيف',
-                              ad.categoryName,
-                            ),
-                          ),
-                          SizedBox(width: 12.w),
-                        ],
-                        Expanded(
-                          child: _buildInfoCard(
-                            Icons.visibility_outlined,
-                            'المشاهدات',
-                            '${ad.viewerCount}',
-                          ),
-                        ),
-                        SizedBox(width: 12.w),
-                        Expanded(
-                          child: _buildInfoCard(
-                            Icons.calendar_today_outlined,
-                            'تاريخ الإنشاء',
-                            ad.createdAt,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: 24.h),
-
-                    // Days availability
-                    if (ad.daysAvailability.isNotEmpty) ...[
-                      Text(
-                        'أيام التوفر',
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Cairo',
-                          color: const Color(0xFF2B2B2B),
-                        ),
-                      ),
-                      SizedBox(height: 12.h),
-                      Wrap(
-                        spacing: 8.w,
-                        runSpacing: 8.h,
-                        children: ad.daysAvailability.map((day) {
-                          return Container(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 8.h,
+                              vertical: 16.h,
+                              horizontal: 12.w,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.gold.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(20.r),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.03),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: _buildStatItem(
+                                    icon: Icons.visibility_outlined,
+                                    label: 'المشاهدات',
+                                    value: '${ad.viewerCount}',
+                                  ),
+                                ),
+                                Container(
+                                  height: 30.h,
+                                  width: 1,
+                                  color: Colors.grey.withValues(alpha: 0.2),
+                                ),
+                                Expanded(
+                                  child: _buildStatItem(
+                                    icon: Icons.calendar_today_outlined,
+                                    label: 'التاريخ',
+                                    value: ad.createdAt,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          SizedBox(height: 24.h),
+
+                          // Days Availability
+                          if (ad.daysAvailability.isNotEmpty) ...[
+                            Text(
+                              'أيام التوفر',
+                              style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Cairo',
+                                color: const Color(0xFF2B2B2B),
+                              ),
+                            ),
+                            SizedBox(height: 12.h),
+                            Wrap(
+                              spacing: 8.w,
+                              runSpacing: 8.h,
+                              children: ad.daysAvailability.map((day) {
+                                return Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16.w,
+                                    vertical: 10.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12.r),
+                                    border: Border.all(
+                                      color: AppColors.gold.withValues(
+                                        alpha: 0.2,
+                                      ),
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppColors.gold.withValues(
+                                          alpha: 0.05,
+                                        ),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    _translateDay(day),
+                                    style: TextStyle(
+                                      color: AppColors.gold,
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'Cairo',
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                            SizedBox(height: 24.h),
+                          ],
+
+                          // Description
+                          Text(
+                            'وصف الخدمة',
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Cairo',
+                              color: const Color(0xFF2B2B2B),
+                            ),
+                          ),
+                          SizedBox(height: 12.h),
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(20.w),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16.r),
                               border: Border.all(
-                                color: AppColors.gold.withValues(alpha: 0.3),
+                                color: Colors.grey.withValues(alpha: 0.1),
                               ),
                             ),
                             child: Text(
-                              _translateDay(day),
+                              ad.description.isNotEmpty
+                                  ? ad.description
+                                  : 'لا يوجد وصف متاح',
                               style: TextStyle(
-                                color: AppColors.gold,
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w600,
+                                fontSize: 14.sp,
+                                color: const Color(0xFF555555),
                                 fontFamily: 'Cairo',
+                                height: 1.8,
                               ),
                             ),
-                          );
-                        }).toList(),
-                      ),
-                      SizedBox(height: 24.h),
-                    ],
-
-                    // Description
-                    Text(
-                      'وصف الخدمة',
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Cairo',
-                        color: const Color(0xFF2B2B2B),
-                      ),
-                    ),
-                    SizedBox(height: 12.h),
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(16.w),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
                           ),
+
+                          SizedBox(height: 120.h), // Space for bottom button
                         ],
                       ),
-                      child: Text(
-                        ad.description.isNotEmpty
-                            ? ad.description
-                            : 'لا يوجد وصف متاح',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          color: AppColors.textSecondary,
-                          fontFamily: 'Cairo',
-                          height: 1.8,
-                        ),
-                      ),
                     ),
-
-                    SizedBox(height: 100.h), // Space for bottom button
                   ],
                 ),
               ),
@@ -447,69 +381,67 @@ class AdvertisementDetailsScreen extends StatelessWidget {
           left: 0,
           right: 0,
           child: Container(
-            padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 12.h),
+            padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 32.h),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
-                  blurRadius: 15,
-                  offset: const Offset(0, -3),
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 20,
+                  offset: const Offset(0, -5),
                 ),
               ],
             ),
-            child: SafeArea(
-              top: false,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Navigate to booking
-                  if (freelancerId != null) {
-                    context.push(
-                      '/booking/request',
-                      extra: {
-                        'advertisementId': advertisementId,
-                        'photographerId': freelancerId,
-                        'photographerName': freelancerName ?? '',
-                        'serviceName': ad.title,
-                        'price': ad.price,
-                        'availableDays': ad.daysAvailability,
-                      },
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('لا يمكن الحجز حالياً')),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.gold,
-                  padding: EdgeInsets.symmetric(vertical: 14.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  elevation: 0,
+            child: ElevatedButton(
+              onPressed: () {
+                // Navigate to booking
+                if (freelancerId != null) {
+                  context.push(
+                    '/booking/request',
+                    extra: {
+                      'advertisementId': advertisementId,
+                      'photographerId': freelancerId,
+                      'photographerName': freelancerName ?? '',
+                      'serviceName': ad.title,
+                      'price': ad.price,
+                      'availableDays': ad.daysAvailability,
+                    },
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('لا يمكن الحجز حالياً')),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.gold,
+                padding: EdgeInsets.symmetric(vertical: 16.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.calendar_today_outlined,
+                elevation: 4,
+                shadowColor: AppColors.gold.withValues(alpha: 0.4),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'احجز الآن',
+                    style: TextStyle(
                       color: Colors.white,
-                      size: 18.sp,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Cairo',
                     ),
-                    SizedBox(width: 8.w),
-                    Text(
-                      'احجز الآن',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Cairo',
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                  SizedBox(width: 8.w),
+                  Icon(
+                    Icons.arrow_forward_rounded,
+                    color: Colors.white,
+                    size: 20.sp,
+                  ),
+                ],
               ),
             ),
           ),
@@ -518,51 +450,170 @@ class AdvertisementDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoCard(IconData icon, String label, String value) {
+  Widget _buildGlassBadge({
+    required String text,
+    Color? color,
+    IconData? icon,
+    bool isSolid = false,
+  }) {
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
+        color: isSolid ? color : Colors.white.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(30.r),
+        border: isSolid
+            ? null
+            : Border.all(color: Colors.white.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, color: Colors.white, size: 14.sp),
+            SizedBox(width: 6.w),
+          ],
+          Text(
+            text,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12.sp,
+              fontFamily: 'Cairo',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPremiumPriceCard(double price) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [const Color(0xFFD4AF37), const Color(0xFFC5A028)],
+        ),
+        borderRadius: BorderRadius.circular(24.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: const Color(0xFFD4AF37).withValues(alpha: 0.4),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
-      child: Column(
+
+      child: Stack(
         children: [
-          Container(
-            padding: EdgeInsets.all(10.w),
-            decoration: BoxDecoration(
-              color: AppColors.gold.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: AppColors.gold, size: 20.sp),
-          ),
-          SizedBox(height: 10.h),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: AppColors.textSecondary,
-              fontFamily: 'Cairo',
+          // Background Decoration
+          Positioned(
+            right: -20,
+            top: -20,
+            child: Icon(
+              Icons.monetization_on,
+              size: 100.sp,
+              color: Colors.white.withValues(alpha: 0.1),
             ),
           ),
-          SizedBox(height: 4.h),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Cairo',
-              color: const Color(0xFF2B2B2B),
-            ),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'سعر الخدمة',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      fontSize: 13.sp,
+                      fontFamily: 'Cairo',
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
+                      Text(
+                        price.toStringAsFixed(0),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 32.sp,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Cairo',
+                          height: 1,
+                        ),
+                      ),
+                      SizedBox(width: 6.w),
+                      Text(
+                        'ر.س',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.9),
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Cairo',
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.all(12.w),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Icon(
+                  Icons.arrow_forward,
+                  color: Colors.white,
+                  size: 24.sp,
+                ),
+              ),
+            ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildStatItem({
+    required IconData icon,
+    required String label,
+    required String value,
+    Color? iconColor,
+  }) {
+    return Column(
+      children: [
+        Icon(icon, color: iconColor ?? AppColors.textSecondary, size: 22.sp),
+        SizedBox(height: 6.h),
+        Text(
+          label,
+          style: TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 11.sp,
+            fontFamily: 'Cairo',
+          ),
+        ),
+        SizedBox(height: 2.h),
+        Text(
+          value,
+          style: TextStyle(
+            color: const Color(0xFF2B2B2B),
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'Cairo',
+          ),
+        ),
+      ],
     );
   }
 

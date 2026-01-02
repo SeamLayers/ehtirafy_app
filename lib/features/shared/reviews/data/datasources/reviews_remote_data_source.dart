@@ -38,7 +38,7 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
       );
 
       if (response.statusCode != 200 && response.statusCode != 201) {
-        throw ServerException(response.data['message'] ?? 'Unknown error');
+        throw ServerException(response.data['message'] ?? 'خطأ غير معروف');
       }
     } catch (e) {
       throw ServerException(e.toString());
@@ -63,7 +63,7 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
         }
         return [];
       } else {
-        throw ServerException(response.data['message'] ?? 'Unknown error');
+        throw ServerException(response.data['message'] ?? 'خطأ غير معروف');
       }
     } catch (e) {
       throw ServerException(e.toString());

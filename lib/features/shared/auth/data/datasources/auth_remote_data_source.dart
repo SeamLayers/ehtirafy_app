@@ -60,7 +60,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         return baseResponse.data!;
       } else {
         if (baseResponse.status == 200) {
-          throw const ServerException('Success status but no data');
+          throw const ServerException('الحالة ناجحة لكن لا توجد بيانات');
         }
         throw ServerException(baseResponse.message);
       }
@@ -92,7 +92,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         // Assuming Dio handles non-2xx status codes by throwing DioException unless configured otherwise.
         // If "status" field in JSON is business logic status:
         if (baseResponse.status == 200) {
-          throw const ServerException('Success status but no data');
+          throw const ServerException('الحالة ناجحة لكن لا توجد بيانات');
         }
         throw ServerException(baseResponse.message);
       }

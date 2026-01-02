@@ -223,6 +223,15 @@ class _SignupFormState extends State<_SignupForm> {
               obscureText: true,
             ),
             SizedBox(height: 16.h),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                AppStrings.authPasswordRequirements.tr(),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: AppColors.grey600,
+                ),
+              ),
+            ),
             // Sex Selector
             AuthSelector<String>(
               label: AppStrings.authSexLabel.tr(),
@@ -258,15 +267,7 @@ class _SignupFormState extends State<_SignupForm> {
                   setState(() => _selectedMaterialStatus = value),
             ),
             SizedBox(height: 8.h),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                AppStrings.authPasswordRequirements.tr(),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.grey600,
-                ),
-              ),
-            ),
+
             SizedBox(height: 16.h),
             PrimaryButton(
               text: AppStrings.authSignupButton.tr(),

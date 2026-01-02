@@ -88,9 +88,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           );
         }).toList();
       } else {
-        throw ServerException(
-          data['message'] ?? 'Failed to fetch conversations',
-        );
+        throw ServerException(data['message'] ?? 'فشل في جلب المحادثات');
       }
     } catch (e) {
       if (e is ServerException) rethrow;
@@ -196,7 +194,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
 
       final data = response.data;
       if (data['status'] != 200) {
-        throw ServerException(data['message'] ?? 'Failed to send message');
+        throw ServerException(data['message'] ?? 'فشل في إرسال الرسالة');
       }
 
       // Update cache with the returned contract data

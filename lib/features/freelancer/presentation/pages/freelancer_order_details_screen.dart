@@ -57,7 +57,7 @@ class _FreelancerOrderDetailsScreenState
         return FreelancerOrderStatus.inProgress;
       }
       if (_details!.status == ContractStatus.awaitingPayment) {
-        return FreelancerOrderStatus.pending;
+        return FreelancerOrderStatus.inProgress;
       }
     }
     return widget.order.status;
