@@ -59,4 +59,3 @@ jobs:
             You can download the APK from the GitHub Actions run page: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           to: ${{ secrets.TESTER_EMAIL }}
           from: ${{ secrets.GMAIL_USERNAME }}
-          content_type: text/plain
