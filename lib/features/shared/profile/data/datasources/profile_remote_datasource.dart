@@ -103,7 +103,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       // We will assume online for now or that getUserProfile handles it.
 
       // Fallback: return what we have in memory if possible (but we don't have it here).
-      throw e;
+      rethrow;
     }
   }
 

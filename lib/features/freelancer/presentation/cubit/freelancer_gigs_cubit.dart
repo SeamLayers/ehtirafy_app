@@ -22,8 +22,8 @@ class FreelancerGigsCubit extends Cubit<FreelancerGigsState> {
       ),
     ]);
 
-    final gigs = results[0] as List<dynamic>;
-    final categories = results[1] as List<dynamic>;
+    final gigs = results[0];
+    final categories = results[1];
 
     // Always emit Loaded state - the create form needs categories even if gigs fail
     emit(

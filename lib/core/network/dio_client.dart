@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:injectable/injectable.dart';
@@ -17,6 +20,7 @@ class DioClient {
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
+            'Accept-Language': Platform.localeName.split('_')[0],
           },
         ),
       ) {
@@ -29,7 +33,35 @@ class DioClient {
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }
+          // Ensure Accept-Language is set correctly from device locale
+          options.headers['Accept-Language'] = Platform.localeName.split(
+            '_',
+          )[0];
           handler.next(options);
+        },
+        onResponse: (response, handler) {
+          // Check for message in success response
+          final data = response.data;
+          if (data is Map<String, dynamic>) {
+            // Handle "message" field
+            if (data['message'] != null) {
+              _showToast(data['message'].toString());
+            }
+            // Handle "data" -> "message" nested (sometimes backends do this)
+            // But user example shows "message" at root.
+          }
+          handler.next(response);
+        },
+        onError: (e, handler) {
+          // Check for message in error response
+          final response = e.response;
+          if (response != null && response.data is Map<String, dynamic>) {
+            final data = response.data;
+            if (data['message'] != null) {
+              _showToast(data['message'].toString());
+            }
+          }
+          handler.next(e);
         },
       ),
     );
@@ -43,6 +75,17 @@ class DioClient {
         compact: true,
         maxWidth: 90,
       ),
+    );
+  }
+
+  void _showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.black87,
+      textColor: Colors.white,
+      fontSize: 16.0,
     );
   }
 

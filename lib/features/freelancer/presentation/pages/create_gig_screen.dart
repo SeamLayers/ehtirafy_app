@@ -255,7 +255,7 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
                     _buildLabel(AppStrings.freelancerGigsCategoryLabel.tr()),
                     SizedBox(height: 8.h),
                     DropdownButtonFormField<CategoryEntity>(
-                      value: _selectedCategory,
+                      initialValue: _selectedCategory,
                       decoration: _buildInputDecoration('اختر التصنيف'),
                       items: categories.map((category) {
                         return DropdownMenuItem(

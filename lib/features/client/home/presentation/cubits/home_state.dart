@@ -20,7 +20,7 @@ class HomeLoaded extends HomeState {
   final AppStatistics? appStatistics;
   final String userName;
 
-  HomeLoaded({
+  const HomeLoaded({
     required this.featuredPhotographers,
     required this.categories,
     this.appStatistics,
