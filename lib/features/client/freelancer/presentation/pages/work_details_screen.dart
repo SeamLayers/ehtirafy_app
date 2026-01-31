@@ -108,7 +108,9 @@ class WorkDetailsScreen extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                Icons.arrow_back_ios_new,
+                Directionality.of(context) == TextDirection.rtl
+                    ? Icons.arrow_forward_ios
+                    : Icons.arrow_back_ios,
                 color: Colors.white,
                 size: 18.sp,
               ),

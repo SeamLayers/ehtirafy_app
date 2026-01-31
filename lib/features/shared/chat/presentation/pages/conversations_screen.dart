@@ -164,18 +164,6 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
         icon: Icons.chat_bubble_outline,
         retryText: AppStrings.chatFindPhotographer.tr(),
         onRetry: () {
-          // Navigate logic here if needed, usually chat logic is different
-          // But based on original code it didn't have specific navigation in button?
-          // Original: Container with 'Find Photographer' text but NO onTap in previous file view?
-          // Ah, wait. In step 75 view_file of conversations_screen.dart:
-          // It was just a Container with text "AppStrings.chatFindPhotographer.tr()".
-          // It didn't seem to have a GestureDetector or InkWell.
-          // Let's re-read step 75.
-          // Lines 149-165: Container with text. No onTap.
-          // Line 110-168: Column.
-          // So it wasn't clickable? That's weird.
-          // I'll make it clickable to '/home' or just hide the button if no action is intended.
-          // However, making it clickable to search seems appropriate.
           context.push('/home');
         },
       ),

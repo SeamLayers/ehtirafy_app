@@ -116,7 +116,7 @@ class _SignupFormState extends State<_SignupForm> {
             ),
           );
 
-          context.go(
+          context.push(
             '/auth/otp?phone=${Uri.encodeComponent(_phoneController.text)}',
             extra: {
               'signupParams': {

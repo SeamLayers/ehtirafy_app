@@ -9,6 +9,8 @@ import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import '../cubit/freelancer_gigs_cubit.dart';
 import '../cubit/freelancer_gigs_state.dart';
 import '../../domain/entities/gig_entity.dart';
+import 'package:ehtirafy_app/core/widgets/empty_state_widget.dart';
+import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
 
 class MyGigsScreen extends StatefulWidget {
   const MyGigsScreen({super.key});
@@ -36,38 +38,23 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
           children: [
             _buildHeader(context),
             Expanded(
-              child: BlocConsumer<FreelancerGigsCubit, FreelancerGigsState>(
-                listener: (context, state) {
-                  if (state is FreelancerGigAdded) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('تم إضافة الخدمة بنجاح')),
-                    );
-                    context.read<FreelancerGigsCubit>().loadGigs();
-                  } else if (state is FreelancerGigAddError) {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text(state.message)));
-                  }
-                },
+              child: BlocBuilder<FreelancerGigsCubit, FreelancerGigsState>(
                 builder: (context, state) {
                   if (state is FreelancerGigsLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(
+                      child: CircularProgressIndicator(
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          AppColors.gold,
+                        ),
+                      ),
+                    );
                   }
 
                   if (state is FreelancerGigsError) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(state.message),
-                          SizedBox(height: 16.h),
-                          ElevatedButton(
-                            onPressed: () =>
-                                context.read<FreelancerGigsCubit>().loadGigs(),
-                            child: const Text('إعادة المحاولة'),
-                          ),
-                        ],
-                      ),
+                    return ErrorStateWidget(
+                      message: state.message,
+                      onRetry: () =>
+                          context.read<FreelancerGigsCubit>().loadGigs(),
                     );
                   }
 
@@ -79,6 +66,7 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
                     return RefreshIndicator(
                       onRefresh: () =>
                           context.read<FreelancerGigsCubit>().loadGigs(),
+                      color: AppColors.gold,
                       child: ListView.separated(
                         padding: EdgeInsets.all(16.w),
                         itemCount: state.gigs.length,
@@ -116,6 +104,7 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final isRtl = context.locale.languageCode == 'ar';
     return Container(
       color: AppColors.dark,
       child: SafeArea(
@@ -134,7 +123,7 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
               GestureDetector(
                 onTap: () => context.pop(),
                 child: Icon(
-                  Icons.arrow_back_ios,
+                  isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
                   color: Colors.white,
                   size: 20.sp,
                 ),
@@ -372,86 +361,17 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
 
   Widget _buildEmptyState(BuildContext context) {
     return Center(
-      child: Container(
-        width: 349.w,
-        padding: EdgeInsets.all(32.w),
-        decoration: ShapeDecoration(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14.r),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 80.w,
-              height: 80.h,
-              decoration: ShapeDecoration(
-                color: const Color(0xFFF9F9F9),
-                shape: RoundedRectangleBorder(
-                  side: const BorderSide(width: 2, color: Color(0xFFE5E5E5)),
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-              ),
-              child: Icon(
-                Icons.work_outline,
-                size: 40.sp,
-                color: const Color(0xFF888888),
-              ),
-            ),
-            SizedBox(height: 16.h),
-            Text(
-              AppStrings.freelancerGigsEmptyState.tr(),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: const Color(0xFF2B2B2B),
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                height: 1.50,
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              AppStrings.freelancerGigsEmptyStateSubtitle.tr(),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: const Color(0xFF888888),
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w400,
-                height: 1.50,
-              ),
-            ),
-            SizedBox(height: 16.h),
-            GestureDetector(
-              onTap: () async {
-                final result = await context.push('/freelancer/gigs/create');
-                if (result == true) {
-                  context.read<FreelancerGigsCubit>().loadGigs();
-                }
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                decoration: ShapeDecoration(
-                  color: AppColors.primary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                ),
-                child: Text(
-                  AppStrings.freelancerGigsAddFirstGig.tr(),
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                    height: 1.43,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+      child: EmptyStateWidget(
+        message: AppStrings.freelancerGigsEmptyState.tr(),
+        subMessage: AppStrings.freelancerGigsEmptyStateSubtitle.tr(),
+        icon: Icons.work_outline,
+        retryText: AppStrings.freelancerGigsAddFirstGig.tr(),
+        onRetry: () async {
+          final result = await context.push('/freelancer/gigs/create');
+          if (result == true) {
+            context.read<FreelancerGigsCubit>().loadGigs();
+          }
+        },
       ),
     );
   }

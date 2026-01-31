@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../domain/entities/user_profile_entity.dart';
+import '../../../../shared/auth/domain/entities/user_role.dart' as auth_role;
 import '../manager/profile_cubit.dart';
+import '../../../../shared/auth/presentation/cubits/role_cubit.dart';
+import '../../../../../core/di/service_locator.dart';
 
 class RoleSwitcherCard extends StatefulWidget {
   final UserRole currentRole;
@@ -18,6 +22,7 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _iconRotation;
+  bool _isSwitching = false;
 
   @override
   void initState() {
@@ -43,11 +48,30 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
   }
 
   void _onSwitchTap() async {
+    if (_isSwitching) return;
+    
+    setState(() => _isSwitching = true);
+    
     await _animationController.forward();
+    
     if (mounted) {
+      // Switch role through RoleCubit for proper navigation
+          final newRole = widget.currentRole == UserRole.client
+            ? auth_role.UserRole.freelancer
+            : auth_role.UserRole.client;
+      
+      // Update via RoleCubit
+      sl<RoleCubit>().switchRole(newRole);
+      
+      // Also update ProfileCubit for UI consistency
       context.read<ProfileCubit>().toggleRole();
     }
+    
     await _animationController.reverse();
+    
+    if (mounted) {
+      setState(() => _isSwitching = false);
+    }
   }
 
   @override
@@ -185,7 +209,7 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
             SizedBox(height: 16.h),
             // Switch Button with animation
             GestureDetector(
-              onTap: _onSwitchTap,
+              onTap: _isSwitching ? null : _onSwitchTap,
               child: Container(
                 width: double.infinity,
                 height: 48.h,
@@ -193,28 +217,46 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
-                    colors: [const Color(0xFFC8A44F), const Color(0xFFD4B85A)],
+                    colors: _isSwitching
+                        ? [
+                            const Color(0xFFC8A44F).withOpacity(0.6),
+                            const Color(0xFFD4B85A).withOpacity(0.6)
+                          ]
+                        : [const Color(0xFFC8A44F), const Color(0xFFD4B85A)],
                   ),
                   borderRadius: BorderRadius.circular(12.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFC8A44F).withOpacity(0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  boxShadow: _isSwitching
+                      ? []
+                      : [
+                          BoxShadow(
+                            color: const Color(0xFFC8A44F).withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.swap_horiz_rounded,
-                      color: Colors.white,
-                      size: 22.sp,
-                    ),
+                    if (_isSwitching)
+                      SizedBox(
+                        width: 20.sp,
+                        height: 20.sp,
+                        child: const CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          strokeWidth: 2,
+                        ),
+                      )
+                    else
+                      Icon(
+                        Icons.swap_horiz_rounded,
+                        color: Colors.white,
+                        size: 22.sp,
+                      ),
                     SizedBox(width: 8.w),
                     Text(
-                      switchText,
+                      _isSwitching ? 'جاري التبديل...' : switchText,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14.sp,

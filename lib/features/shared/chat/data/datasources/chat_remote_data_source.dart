@@ -41,8 +41,15 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       );
 
       final data = response.data;
-      if (data['status'] == 200) {
-        final List list = data['data'] ?? [];
+      if (data['status'] == 200 || data['success'] == true) {
+        final dynamic responseData = data['data'];
+        List list = [];
+        if (responseData is List) {
+          list = responseData;
+        } else if (responseData == null) {
+          list = [];
+        }
+
         _cachedContracts = list.map((e) => ContractModel.fromJson(e)).toList();
 
         // Filter contracts where chat is allowed (only accepted contracts)

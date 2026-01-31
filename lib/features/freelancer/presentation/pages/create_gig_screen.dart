@@ -87,21 +87,38 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isRtl = context.locale.languageCode == 'ar';
+    
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
       appBar: AppBar(
-        title: Text(
-          AppStrings.freelancerGigsCreateTitle.tr(),
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
-          ),
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              'إضافة خدمة جديدة',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: 4.h),
+            Text(
+              'قم بإنشاء حزمة خدمية احترافية',
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
-        elevation: 0,
+        elevation: 1,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(isRtl ? Icons.arrow_forward : Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
       ),
@@ -183,6 +200,41 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Info Card
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(12.w),
+                      decoration: BoxDecoration(
+                        color: AppColors.gold.withOpacity(0.1),
+                        border: Border.all(
+                          color: AppColors.gold.withOpacity(0.3),
+                          width: 1.5,
+                        ),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.info_outlined,
+                            color: AppColors.gold,
+                            size: 20.sp,
+                          ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: Text(
+                              'حزمة الخدمة الواحدة = عرض واحد يمكن للعملاء طلبه',
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 24.h),
+
                     // Image Upload Section
                     _buildImageUploadWidget(),
                     SizedBox(height: 24.h),

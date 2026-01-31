@@ -80,7 +80,12 @@ class _SearchScreenState extends State<SearchScreen> {
           child: Row(
             children: [
               IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                icon: Icon(
+                      context.locale.languageCode == 'ar'
+                      ? Icons.arrow_forward_ios
+                      : Icons.arrow_back_ios,
+                  color: Colors.white,
+                ),
                 onPressed: () => Navigator.pop(context),
               ),
               Expanded(

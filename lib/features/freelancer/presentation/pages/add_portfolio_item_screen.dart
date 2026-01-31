@@ -86,6 +86,41 @@ class _AddPortfolioItemScreenState extends State<AddPortfolioItemScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Info Card
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(12.w),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF17A2B8).withOpacity(0.1),
+                            border: Border.all(
+                              color: const Color(0xFF17A2B8).withOpacity(0.3),
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.image_outlined,
+                                color: const Color(0xFF17A2B8),
+                                size: 20.sp,
+                              ),
+                              SizedBox(width: 12.w),
+                              Expanded(
+                                child: Text(
+                                  'أضف أفضل أعمالك لجذب العملاء المزيد',
+                                  style: TextStyle(
+                                    fontSize: 13.sp,
+                                    color: AppColors.textPrimary,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 24.h),
+
                         // Image Upload Section at top
                         _buildImageUploadWidget(),
                         SizedBox(height: 24.h),
@@ -132,6 +167,7 @@ class _AddPortfolioItemScreenState extends State<AddPortfolioItemScreen> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final isRtl = context.locale.languageCode == 'ar';
     return Container(
       color: AppColors.dark,
       child: SafeArea(
@@ -150,21 +186,35 @@ class _AddPortfolioItemScreenState extends State<AddPortfolioItemScreen> {
               GestureDetector(
                 onTap: () => context.pop(),
                 child: Icon(
-                  Icons.arrow_back_ios,
+                  isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
                   color: Colors.white,
                   size: 20.sp,
                 ),
               ),
               Expanded(
                 child: Center(
-                  child: Text(
-                    AppStrings.freelancerPortfolioAddWork.tr(),
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w400,
-                      height: 1.50,
-                    ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'إضافة عمل في المحفظة',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          height: 1.50,
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        'اعرض أفضل أعمالك',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.8),
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

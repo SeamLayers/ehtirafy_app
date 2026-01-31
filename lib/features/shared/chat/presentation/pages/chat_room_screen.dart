@@ -64,7 +64,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           backgroundColor: const Color(0xFF2B2B2B),
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+            icon: Icon(
+                  context.locale.languageCode == 'ar'
+                  ? Icons.arrow_forward_ios
+                  : Icons.arrow_back_ios,
+              color: Colors.white,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
           title: Row(

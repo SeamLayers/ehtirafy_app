@@ -203,6 +203,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
   }
 
   Widget _buildBackButton() {
+    final isRtl = context.locale.languageCode == 'ar';
     return GestureDetector(
       onTap: () => context.pop(),
       child: Container(
@@ -211,8 +212,8 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
           color: Colors.black.withValues(alpha: 0.3),
           shape: BoxShape.circle,
         ),
-        child: const Icon(
-          Icons.arrow_back_ios_new,
+        child: Icon(
+          isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
           color: Colors.white,
           size: 18,
         ),

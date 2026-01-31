@@ -8,12 +8,16 @@ import 'package:ehtirafy_app/core/di/service_locator.dart';
 import 'package:ehtirafy_app/features/client/notifications/presentation/cubits/notifications_cubit.dart';
 import 'package:ehtirafy_app/features/client/notifications/presentation/cubits/notifications_state.dart';
 import 'package:ehtirafy_app/features/client/notifications/domain/entities/notification_entity.dart';
+import 'package:ehtirafy_app/core/widgets/empty_state_widget.dart';
+import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isRtl = context.locale.languageCode == 'ar';
+    
     return BlocProvider(
       create: (context) => sl<NotificationsCubit>()..getNotifications(),
       child: Scaffold(
@@ -23,7 +27,10 @@ class NotificationsScreen extends StatelessWidget {
           backgroundColor: AppColors.dark,
           foregroundColor: Colors.white,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+            icon: Icon(
+              isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
+              color: Colors.white,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -35,25 +42,11 @@ class NotificationsScreen extends StatelessWidget {
                   if (state is NotificationsLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is NotificationsError) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.error_outline,
-                            size: 48.w,
-                            color: Colors.red,
-                          ),
-                          SizedBox(height: 16.h),
-                          Text(state.message),
-                          TextButton(
-                            onPressed: () => context
-                                .read<NotificationsCubit>()
-                                .getNotifications(),
-                            child: Text(AppStrings.retry.tr()),
-                          ),
-                        ],
-                      ),
+                    return ErrorStateWidget(
+                      message: state.message,
+                      onRetry: () => context
+                          .read<NotificationsCubit>()
+                          .getNotifications(),
                     );
                   } else if (state is NotificationsLoaded) {
                     return Column(
@@ -62,8 +55,9 @@ class NotificationsScreen extends StatelessWidget {
                         Expanded(
                           child: state.notifications.isEmpty
                               ? Center(
-                                  child: Text(
-                                    AppStrings.notificationsEmpty.tr(),
+                                  child: EmptyStateWidget(
+                                    message: AppStrings.notificationsEmpty.tr(),
+                                    icon: Icons.notifications_off_outlined,
                                   ),
                                 )
                               : ListView.separated(

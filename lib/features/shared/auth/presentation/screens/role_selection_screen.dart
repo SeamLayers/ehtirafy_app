@@ -145,7 +145,7 @@ class _RoleSelectionView extends StatelessWidget {
                     builder: (context, roleState) {
                       final roleCubit = context.read<RoleCubit>();
                       final isSaving =
-                          roleState is RoleSaving ||
+                          roleState is RoleSwitching ||
                           signupState is SignupLoading;
 
                       return PrimaryButton(

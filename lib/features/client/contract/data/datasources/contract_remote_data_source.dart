@@ -51,9 +51,6 @@ class ContractRemoteDataSourceImpl implements ContractRemoteDataSource {
       if (data['data'] != null) {
         return ContractModel.fromJson(data['data']);
       }
-      // If data is null but success, return a partial model or re-fetch (returning partial for now)
-      // Actually usually data is returned. If not, the caller might just need success signal.
-      // Returning a dummy model to satisfy signature if data missing but unlikely.
       return ContractModel.fromJson(data['data'] ?? {});
     } else {
       throw ServerException(data['message'] ?? 'فشل في تحديث العقد');
@@ -73,9 +70,18 @@ class ContractRemoteDataSourceImpl implements ContractRemoteDataSource {
     );
 
     final data = response.data;
-    if (data['status'] == 200) {
-      final List list = data['data'];
-      return list.map((e) => ContractModel.fromJson(e)).toList();
+    // Handle both status 200 and success: true
+    if (data['status'] == 200 || data['success'] == true) {
+      final dynamic responseData = data['data'];
+      if (responseData is List) {
+        return responseData.map((e) => ContractModel.fromJson(e)).toList();
+      } else if (responseData == null) {
+        return [];
+      } else {
+        // If data is not a list but success is true, maybe it's wrapped or unexpected format
+        // For now, return empty list to avoid crash if not list
+        return [];
+      }
     } else {
       throw ServerException(data['message'] ?? 'فشل في جلب العقود');
     }

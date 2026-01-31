@@ -85,19 +85,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (baseResponse.data != null) {
         return baseResponse.data!;
       } else {
-        // If data is null (e.g. status 400 but code 200 returned by dio if validateStatus is loose,
-        // though usually 400 throws exception. If logic reaches here it means success structure but no data)
-        // For the specific API "status: 200" implies success.
-        // If status is not 200, typically we might want to throw.
-        // Assuming Dio handles non-2xx status codes by throwing DioException unless configured otherwise.
-        // If "status" field in JSON is business logic status:
         if (baseResponse.status == 200) {
           throw const ServerException('الحالة ناجحة لكن لا توجد بيانات');
         }
         throw ServerException(baseResponse.message);
       }
     } catch (e) {
-      // Allow Repository to handle DioExceptions or throw custom exceptions
       rethrow;
     }
   }
@@ -113,11 +106,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final baseResponse = BaseResponse<String>.fromJson(
         response.data,
         (json) => json
-            .toString(), // Data is strictly the message string in this specific response from user desc
+            .toString(),
       );
-
-      // User provided response: { "data": "Password reset link sent successfully." }
-      // BaseResponse parses data.
 
       if (baseResponse.data != null) {
         return baseResponse.data!;
@@ -174,9 +164,20 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
       print('Sent OTP Response Data: ${response.data}');
 
+      // Handle response with "success": true
+      if (response.data is Map<String, dynamic>) {
+        final json = response.data as Map<String, dynamic>;
+        if (json['success'] == true) {
+           final data = json['data'];
+           if (data is Map<String, dynamic>) {
+             return data['otp']?.toString() ?? data['code']?.toString() ?? '';
+           }
+           return data?.toString() ?? '';
+        }
+      }
+
       final baseResponse = BaseResponse<String>.fromJson(response.data, (json) {
         if (json is Map<String, dynamic>) {
-          // Handle if data is an object like {"code": "1234"} or {"otp": "1234"}
           return json['code']?.toString() ??
               json['otp']?.toString() ??
               json.toString();

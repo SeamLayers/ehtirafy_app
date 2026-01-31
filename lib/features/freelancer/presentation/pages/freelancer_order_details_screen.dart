@@ -159,6 +159,7 @@ class _FreelancerOrderDetailsScreenState
   }
 
   Widget _buildHeader(BuildContext context) {
+    final isRtl = context.locale.languageCode == 'ar';
     final title = status == FreelancerOrderStatus.pending
         ? 'مراجعة طلب حجز'
         : 'تفاصيل العقد';
@@ -181,7 +182,7 @@ class _FreelancerOrderDetailsScreenState
               GestureDetector(
                 onTap: () => context.pop(),
                 child: Icon(
-                  Icons.arrow_back_ios,
+                  isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
                   color: Colors.white,
                   size: 20.sp,
                 ),

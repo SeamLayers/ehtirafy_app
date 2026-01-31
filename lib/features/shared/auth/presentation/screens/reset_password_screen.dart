@@ -58,7 +58,11 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
       backgroundColor: isDark ? AppColors.dark : AppColors.backgroundLight,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(
+                context.locale.languageCode == 'ar'
+                ? Icons.arrow_forward
+                : Icons.arrow_back,
+          ),
           onPressed: () => context.pop(),
         ),
         backgroundColor: Colors.transparent,

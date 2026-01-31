@@ -91,6 +91,8 @@ class _RequestBookingScreenState extends State<RequestBookingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isRtl = context.locale.languageCode == 'ar';
+    
     return BlocProvider(
       create: (context) => sl<BookingCubit>(),
       child: Scaffold(
@@ -99,7 +101,10 @@ class _RequestBookingScreenState extends State<RequestBookingScreen> {
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+            icon: Icon(
+              isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
+              color: Colors.black,
+            ),
             onPressed: () => context.pop(),
           ),
           title: Text(

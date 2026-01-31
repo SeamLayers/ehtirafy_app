@@ -11,6 +11,8 @@ import '../cubit/freelancer_orders_state.dart';
 import '../widgets/freelancer_order_card.dart';
 import '../widgets/orders_filter_tab.dart';
 import 'package:ehtirafy_app/core/widgets/outlined_refresh_button.dart';
+import 'package:ehtirafy_app/core/widgets/empty_state_widget.dart';
+import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
 
 class FreelancerOrdersScreen extends StatefulWidget {
   const FreelancerOrdersScreen({super.key});
@@ -45,20 +47,10 @@ class _FreelancerOrdersScreenState extends State<FreelancerOrdersScreen> {
                   }
 
                   if (state is FreelancerOrdersError) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(state.message),
-                          SizedBox(height: 16.h),
-                          ElevatedButton(
-                            onPressed: () => context
-                                .read<FreelancerOrdersCubit>()
-                                .loadOrders(),
-                            child: const Text('إعادة المحاولة'),
-                          ),
-                        ],
-                      ),
+                    return ErrorStateWidget(
+                      message: state.message,
+                      onRetry: () =>
+                          context.read<FreelancerOrdersCubit>().loadOrders(),
                     );
                   }
 
@@ -216,42 +208,10 @@ class _FreelancerOrdersScreenState extends State<FreelancerOrdersScreen> {
         icon = Icons.inbox_outlined;
     }
 
-    return Container(
-      width: 349.w,
-      height: 268.h,
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14.r),
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 80.w,
-            height: 80.h,
-            decoration: ShapeDecoration(
-              color: const Color(0xFFF9F9F9),
-              shape: RoundedRectangleBorder(
-                side: const BorderSide(width: 2, color: Color(0xFFE5E5E5)),
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-            ),
-            child: Icon(icon, size: 40.sp, color: const Color(0xFF888888)),
-          ),
-          SizedBox(height: 16.h),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: const Color(0xFF2B2B2B),
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w400,
-              height: 1.50,
-            ),
-          ),
-        ],
+    return Center(
+      child: EmptyStateWidget(
+        message: message,
+        icon: icon,
       ),
     );
   }

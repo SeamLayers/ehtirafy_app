@@ -130,7 +130,7 @@ class MyRequestsScreen extends StatelessWidget {
                               child: AnimatedSwitcher(
                                 duration: const Duration(milliseconds: 300),
                                 child: state.filteredRequests.isEmpty
-                                    ? _buildEmptyState(context)
+                                    ? _buildEmptyState(context, state.selectedTabIndex)
                                     : ListView.separated(
                                         key: ValueKey<int>(
                                           state.selectedTabIndex,
@@ -212,16 +212,44 @@ class MyRequestsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context) {
+  Widget _buildEmptyState(BuildContext context, int tabIndex) {
+    String message;
+    String subMessage;
+    IconData icon;
+    String? retryText;
+    VoidCallback? onRetry;
+
+    switch (tabIndex) {
+      case 0: // Active
+        message = AppStrings.myRequestsNoRequests.tr();
+        subMessage = AppStrings.myRequestsStartRequesting.tr();
+        icon = Icons.camera_alt_outlined;
+        retryText = AppStrings.myRequestsBrowsePhotographers.tr();
+        onRetry = () => context.go('/home');
+        break;
+      case 1: // Under Review
+        message = 'لا توجد طلبات قيد المراجعة';
+        subMessage = 'ستظهر هنا الطلبات التي تنتظر الموافقة';
+        icon = Icons.pending_actions_outlined;
+        break;
+      case 2: // Completed
+        message = 'لا توجد طلبات مكتملة';
+        subMessage = 'ستظهر هنا الطلبات المكتملة والملغاة';
+        icon = Icons.history_outlined;
+        break;
+      default:
+        message = AppStrings.myRequestsNoRequests.tr();
+        subMessage = AppStrings.myRequestsStartRequesting.tr();
+        icon = Icons.camera_alt_outlined;
+    }
+
     return Center(
       child: EmptyStateWidget(
-        message: AppStrings.myRequestsNoRequests.tr(),
-        subMessage: AppStrings.myRequestsStartRequesting.tr(),
-        icon: Icons.camera_alt_outlined,
-        retryText: AppStrings.myRequestsBrowsePhotographers.tr(),
-        onRetry: () {
-          context.go('/home');
-        },
+        message: message,
+        subMessage: subMessage,
+        icon: icon,
+        retryText: retryText,
+        onRetry: onRetry,
       ),
     );
   }
