@@ -66,6 +66,7 @@ import 'package:ehtirafy_app/features/client/contract/data/datasources/contract_
 import 'package:ehtirafy_app/features/client/contract/domain/repositories/contract_repository.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/usecases/get_contract_details_usecase.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/usecases/update_contract_status_usecase.dart';
+import 'package:ehtirafy_app/features/client/contract/domain/usecases/confirm_payment_usecase.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/manager/contract_details_cubit.dart';
 import 'package:ehtirafy_app/features/shared/chat/data/datasources/chat_remote_data_source.dart';
 import 'package:ehtirafy_app/features/shared/chat/data/repositories/chat_repository_impl.dart';
@@ -258,9 +259,11 @@ Future<void> setupLocator() async {
     () => ContractDetailsCubit(
       getContractDetailsUseCase: sl(),
       updateContractStatusUseCase: sl(),
+      confirmPaymentUseCase: sl(),
     ),
   );
   sl.registerLazySingleton(() => GetContractDetailsUseCase(sl()));
+  sl.registerLazySingleton(() => ConfirmPaymentUseCase(sl()));
   sl.registerLazySingleton(() => UpdateContractStatusUseCase(sl()));
   sl.registerLazySingleton<ContractRepository>(
     () => ContractRepositoryImpl(remoteDataSource: sl()),

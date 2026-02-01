@@ -100,4 +100,19 @@ class ContractRepositoryImpl implements ContractRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, ContractEntity>> confirmPayment(String id) async {
+    try {
+      if (remoteDataSource == null) {
+        throw Exception("RemoteDataSource not initialized");
+      }
+      final contract = await remoteDataSource!.confirmPayment(id);
+      return Right(contract);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

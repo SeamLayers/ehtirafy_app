@@ -13,6 +13,7 @@ import '../widgets/role_switcher_card.dart';
 import 'package:ehtirafy_app/features/shared/auth/presentation/cubits/role_cubit.dart';
 import 'package:ehtirafy_app/features/shared/auth/domain/entities/user_role.dart'
     as auth_role;
+import 'package:ehtirafy_app/features/client/profile/presentation/pages/test_payment_screen.dart';
 
 class SharedProfileScreen extends StatefulWidget {
   const SharedProfileScreen({super.key});
@@ -103,6 +104,25 @@ class _SharedProfileScreenState extends State<SharedProfileScreen> {
                           ProfileHeader(user: user),
                           SizedBox(height: 24.h),
                           ProfileMenu(currentRole: user.currentRole),
+                          SizedBox(height: 24.h),
+                          Center(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const TestPaymentScreen(),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Colors.redAccent, // Distinct color
+                                foregroundColor: Colors.white,
+                              ),
+                              child: const Text('Run Payment Test (Fake Data)'),
+                            ),
+                          ),
                         ],
                       ),
                     ),

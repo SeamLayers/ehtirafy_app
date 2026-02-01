@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:easy_localization/easy_localization.dart';
 import '../../domain/entities/user_profile_entity.dart';
 import '../../../../shared/auth/domain/entities/user_role.dart' as auth_role;
 import '../manager/profile_cubit.dart';

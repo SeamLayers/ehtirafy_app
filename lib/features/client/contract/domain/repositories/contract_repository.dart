@@ -31,4 +31,7 @@ abstract class ContractRepository {
     bool isPhotographer = false,
     String? noteText,
   });
+
+  /// Confirm payment for contract
+  Future<Either<Failure, ContractEntity>> confirmPayment(String id);
 }

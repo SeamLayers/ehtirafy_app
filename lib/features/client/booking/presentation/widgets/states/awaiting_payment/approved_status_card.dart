@@ -6,6 +6,7 @@ import 'package:ehtirafy_app/features/client/contract/presentation/manager/contr
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ehtirafy_app/features/shared/payment/presentation/pages/mock_payment_form_screen.dart';
 
 class ApprovedStatusCard extends StatelessWidget {
   final ContractDetailsEntity contract;
@@ -217,7 +218,18 @@ class ApprovedStatusCard extends StatelessWidget {
             height: 48.h,
             child: ElevatedButton(
               onPressed: () {
-                context.read<ContractDetailsCubit>().payContract(contract.id);
+                // Navigate to Mock Payment Form with existing Cubit
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (ctx) => BlocProvider.value(
+                      value: context.read<ContractDetailsCubit>(),
+                      child: MockPaymentFormScreen(
+                        contractId: contract.id,
+                        amount: contract.budget.toDouble(),
+                      ),
+                    ),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.gold,
