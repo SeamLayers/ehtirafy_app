@@ -66,7 +66,7 @@ class _AddPortfolioItemScreenState extends State<AddPortfolioItemScreen> {
               });
             }
           } else if (state is FreelancerPortfolioItemAdded) {
-            context.pop(true);
+            context.go('/freelancer/portfolio');
           } else if (state is FreelancerPortfolioError) {
             ScaffoldMessenger.of(
               context,

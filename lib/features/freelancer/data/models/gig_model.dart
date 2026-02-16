@@ -18,17 +18,32 @@ class GigModel extends GigEntity {
   factory GigModel.fromJson(Map<String, dynamic> json) {
     // API might return 'title' directly or 'ar_title', 'en_title'
     // Handle both formats for compatibility
-    String parseTitle() {
-      if (json['title'] != null) return json['title'].toString();
-      return json['en_title']?.toString() ?? json['ar_title']?.toString() ?? '';
+    String parseLocalized(dynamic val) {
+      if (val == null) return '';
+      if (val is String) return val;
+      if (val is Map) {
+        // Handle nested localization: {ar: {ar: val, en: val}, en: ...}
+        // Or simple localization: {ar: val, en: val}
+
+        // Try getting 'ar' or 'en' directly
+        dynamic arVal = val['ar'];
+        dynamic enVal = val['en'];
+
+        // If arVal is also a Map, dive deeper
+        if (arVal is Map) {
+          return parseLocalized(arVal);
+        }
+        if (enVal is Map) {
+          return parseLocalized(enVal);
+        }
+        
+        return arVal?.toString() ?? enVal?.toString() ?? '';
+      }
+      return val.toString();
     }
 
-    String parseDescription() {
-      if (json['description'] != null) return json['description'].toString();
-      return json['en_description']?.toString() ??
-          json['ar_description']?.toString() ??
-          '';
-    }
+    String parseTitle() => parseLocalized(json['title']);
+    String parseDescription() => parseLocalized(json['description']);
 
     // Extract cover image from images array
     String parseCoverImage() {

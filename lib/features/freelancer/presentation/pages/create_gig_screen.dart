@@ -97,7 +97,7 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'إضافة خدمة جديدة',
+              widget.gig != null ? 'تعديل الخدمة الحالية' : 'إضافة خدمة جديدة',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
@@ -105,7 +105,9 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
             ),
             SizedBox(height: 4.h),
             Text(
-              'قم بإنشاء حزمة خدمية احترافية',
+              widget.gig != null
+                  ? 'قم بتعديل تفاصيل الخدمة الخاصة بك'
+                  : 'قم بإنشاء حزمة خدمية احترافية',
               style: TextStyle(
                 fontSize: 12.sp,
                 color: AppColors.textSecondary,
@@ -157,12 +159,12 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('تم إضافة الخدمة بنجاح')),
             );
-            context.pop(true);
+            context.go('/freelancer/gigs');
           } else if (state is FreelancerGigUpdated) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('تم تحديث الخدمة بنجاح')),
             );
-            context.pop(true);
+            context.go('/freelancer/gigs');
           } else if (state is FreelancerGigAddError) {
             ScaffoldMessenger.of(
               context,
@@ -187,6 +189,9 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
               debugPrint(
                 'Categories loaded: ${categories.length} - ${categories.map((c) => c.nameAr).join(", ")}',
               );
+            } else if (state is FreelancerGigDetailsLoaded) {
+              // Ensure categories are available in this state too
+              categories = state.categories;
             } else {
               debugPrint(
                 'State is ${state.runtimeType}, categories may be empty',

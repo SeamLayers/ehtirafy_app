@@ -30,7 +30,7 @@ class FreelancerPortfolioRemoteDataSourceImpl
     final data = response.data;
 
     // Manual parsing to avoid generic issues and handle flexibility
-    if (data['status'] == 200) {
+    if (data['success'] == true || data['status'] == 200) {
       final responseData = data['data'];
       if (responseData is List) {
         return responseData
@@ -50,7 +50,7 @@ class FreelancerPortfolioRemoteDataSourceImpl
     );
     final data = response.data;
 
-    if (data['status'] == 200) {
+    if (data['success'] == true || data['status'] == 200) {
       final responseData = data['data'];
       if (responseData is Map<String, dynamic>) {
         return PortfolioItemModel.fromJson(responseData);
@@ -85,7 +85,7 @@ class FreelancerPortfolioRemoteDataSourceImpl
     );
     final responseData = response.data;
 
-    if (responseData['status'] == 200) {
+    if (responseData['success'] == true || responseData['status'] == 200) {
       final innerData = responseData['data'];
       if (innerData is Map<String, dynamic>) {
         return PortfolioItemModel.fromJson(innerData);
@@ -131,7 +131,7 @@ class FreelancerPortfolioRemoteDataSourceImpl
     );
 
     final responseData = response.data;
-    if (responseData['status'] == 200) {
+    if (responseData['success'] == true || responseData['status'] == 200) {
       final innerData = responseData['data'];
       if (innerData is Map<String, dynamic>) {
         return PortfolioItemModel.fromJson(innerData);

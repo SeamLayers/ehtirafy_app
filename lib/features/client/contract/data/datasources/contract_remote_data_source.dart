@@ -26,7 +26,7 @@ class ContractRemoteDataSourceImpl implements ContractRemoteDataSource {
     );
 
     final data = response.data;
-    if (data['status'] == 200) {
+    if (data['status'] == 200 || data['success'] == true) {
       return ContractModel.fromJson(data['data']);
     } else {
       throw ServerException(data['message'] ?? 'فشل في إنشاء العقد');
@@ -91,7 +91,7 @@ class ContractRemoteDataSourceImpl implements ContractRemoteDataSource {
     );
 
     final data = response.data;
-    if (data['status'] == 200) {
+    if (data['status'] == 200 || data['success'] == true) {
       if (data['data'] != null) {
         return ContractModel.fromJson(data['data']);
       }

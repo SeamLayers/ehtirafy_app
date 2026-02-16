@@ -120,7 +120,7 @@ class _RequestBookingScreenState extends State<RequestBookingScreen> {
         body: BlocConsumer<BookingCubit, BookingState>(
           listener: (context, state) {
             if (state is BookingSuccess) {
-              context.go('/booking/success');
+              context.go('/my-requests');
             } else if (state is BookingError) {
               ScaffoldMessenger.of(
                 context,

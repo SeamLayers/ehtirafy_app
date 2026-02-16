@@ -84,9 +84,10 @@ class _MockPaymentFormScreenState extends State<MockPaymentFormScreen> {
                             if (_formKey.currentState!.validate()) {
                               setState(() => _isProcessing = true);
                               // Trigger the existing payment logic
-                              context.read<ContractDetailsCubit>().payContract(
+                              context
+                                  .read<ContractDetailsCubit>()
+                                  .confirmPayment(
                                     widget.contractId,
-                                    widget.amount,
                                   );
                             }
                           },

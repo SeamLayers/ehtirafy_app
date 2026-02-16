@@ -202,12 +202,19 @@ class FreelancerGigsRemoteDataSourceImpl
       data: formData,
     );
 
-    final baseResponse = BaseResponse<String>.fromJson(
+    final baseResponse = BaseResponse<Map<String, dynamic>>.fromJson(
       response.data,
-      (data) => data as String,
+      (data) => data as Map<String, dynamic>,
     );
 
-    if (baseResponse.status == 200) {
+    if (baseResponse.status == 200 || response.data['success'] == true) {
+      // Return a dummy model or parse the actual data if available
+      // The log shows data contains the updated object
+      final data = baseResponse.data;
+      if (data != null) {
+        return GigModel.fromJson(data);
+      }
+
       return const GigModel(
         id: 'temp',
         title: '',
