@@ -64,7 +64,10 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
           create: (context) =>
               sl<FreelancerCubit>()..getFreelancerProfile(widget.freelancerId),
         ),
-        BlocProvider(create: (context) => sl<ReviewsCubit>()),
+        BlocProvider(
+          create: (context) =>
+              sl<ReviewsCubit>()..getUserRates(userId: widget.freelancerId),
+        ),
       ],
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light.copyWith(
@@ -641,71 +644,110 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
   }
 
   Widget _buildReviewsTab(FreelancerEntity freelancer) {
-    final reviews = freelancer.reviews;
+    return BlocBuilder<ReviewsCubit, ReviewsState>(
+      builder: (context, state) {
+        if (state is ReviewsLoading) {
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.gold),
+          );
+        } else if (state is ReviewsError) {
+          return Center(
+            child: Text(
+              state.message,
+              style: TextStyle(color: AppColors.error),
+            ),
+          );
+        } else if (state is ReviewsLoaded) {
+          final reviews = state.reviews;
 
-    return SingleChildScrollView(
-      physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 80.h),
-      child: Column(
-        children: [
-          ReviewsSummaryWidget(
-            rating: freelancer.rating,
-            reviewsCount: freelancer.reviewsCount,
-            ratingDistribution: const {
-              5: 0.8,
-              4: 0.15,
-              3: 0.05,
-              2: 0.0,
-              1: 0.0,
-            },
-          ),
-          SizedBox(height: 20.h),
-          if (reviews.isEmpty)
-            Center(
-              child: Text(
-                AppStrings.noDataFound.tr(),
-                style: TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 14.sp,
+          // Calculate average rating and distribution
+          double averageRating = 0;
+          Map<int, double> distribution = {
+            5: 0.0,
+            4: 0.0,
+            3: 0.0,
+            2: 0.0,
+            1: 0.0,
+          };
+
+          if (reviews.isNotEmpty) {
+            double totalRating = 0;
+            for (var review in reviews) {
+              totalRating += review.rating;
+              int roundedRating = review.rating.round().clamp(1, 5);
+              distribution[roundedRating] =
+                  (distribution[roundedRating] ?? 0) + 1;
+            }
+            averageRating = totalRating / reviews.length;
+
+            // Convert counts to percentages
+            distribution.forEach((key, value) {
+              distribution[key] = value / reviews.length;
+            });
+          }
+
+          return SingleChildScrollView(
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 80.h),
+            child: Column(
+              children: [
+                ReviewsSummaryWidget(
+                  rating: averageRating,
+                  reviewsCount: reviews.length,
+                  ratingDistribution: distribution,
                 ),
-              ),
-            ),
-          ...reviews.map(
-            (review) => Padding(
-              padding: EdgeInsets.only(bottom: 12.h),
-              child: ReviewCard(
-                userName: review.userName,
-                userImage: review.userImage ?? '',
-                rating: review.rating,
-                date: review.date,
-                comment: review.comment,
-              ),
-            ),
-          ),
-          SizedBox(height: 20.h),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: () => _showAddReviewDialog(context, freelancer.id),
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: AppColors.primary),
-                padding: EdgeInsets.symmetric(vertical: 12.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
+                SizedBox(height: 20.h),
+                if (reviews.isEmpty)
+                  Center(
+                    child: Text(
+                      AppStrings.noDataFound.tr(),
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                  ),
+                ...reviews.map(
+                  (review) => Padding(
+                    padding: EdgeInsets.only(bottom: 12.h),
+                    child: ReviewCard(
+                      userName: review.userName,
+                      userImage: review.userImage ?? '',
+                      rating: review.rating,
+                      date: review.date,
+                      comment: review.comment,
+                    ),
+                  ),
                 ),
-              ),
-              child: Text(
-                'أضف تقييم', // localized ideally
-                style: TextStyle(
-                  color: AppColors.primary,
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.bold,
+                SizedBox(height: 20.h),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    onPressed: () =>
+                        _showAddReviewDialog(context, freelancer.id),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: AppColors.primary),
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                    ),
+                    child: Text(
+                      'أضف تقييم', // localized ideally
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ),
-        ],
-      ),
+          );
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 
@@ -767,15 +809,12 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                 BlocConsumer<ReviewsCubit, ReviewsState>(
                   listener: (context, state) {
                     if (state is ReviewsActionSuccess) {
+                      final reviewsCubit = context.read<ReviewsCubit>();
                       Navigator.pop(context);
                       ScaffoldMessenger.of(
                         context,
                       ).showSnackBar(SnackBar(content: Text(state.message)));
-                      // Refresh profile
-                      // Since we are popping dialog, we need access to FreelancerCubit from page context
-                      // But FreelancerProfileScreen rebuilds? No.
-                      // We need to trigger reload in parent.
-                      // Accessing FreelancerCubit?
+                      reviewsCubit.getUserRates(userId: freelancerId);
                     } else if (state is ReviewsError) {
                       ScaffoldMessenger.of(
                         context,
