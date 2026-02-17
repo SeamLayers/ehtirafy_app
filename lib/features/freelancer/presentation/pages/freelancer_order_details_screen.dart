@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import '../../domain/entities/freelancer_order_entity.dart';
 import '../cubit/freelancer_orders_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -159,7 +160,6 @@ class _FreelancerOrderDetailsScreenState
   }
 
   Widget _buildHeader(BuildContext context) {
-    final isRtl = context.locale.languageCode == 'ar';
     final title = status == FreelancerOrderStatus.pending
         ? 'مراجعة طلب حجز'
         : 'تفاصيل العقد';
@@ -179,14 +179,7 @@ class _FreelancerOrderDetailsScreenState
           ),
           child: Row(
             children: [
-              GestureDetector(
-                onTap: () => context.pop(),
-                child: Icon(
-                  isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
-                  color: Colors.white,
-                  size: 20.sp,
-                ),
-              ),
+              RtlBackButton(color: Colors.white, size: 20.sp),
               Expanded(
                 child: Center(
                   child: Text(

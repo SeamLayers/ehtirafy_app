@@ -10,14 +10,13 @@ import 'package:ehtirafy_app/features/client/notifications/presentation/cubits/n
 import 'package:ehtirafy_app/features/client/notifications/domain/entities/notification_entity.dart';
 import 'package:ehtirafy_app/core/widgets/empty_state_widget.dart';
 import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
+import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final isRtl = context.locale.languageCode == 'ar';
-    
     return BlocProvider(
       create: (context) => sl<NotificationsCubit>()..getNotifications(),
       child: Scaffold(
@@ -26,11 +25,8 @@ class NotificationsScreen extends StatelessWidget {
           title: Text(AppStrings.notificationsTitle.tr()),
           backgroundColor: AppColors.dark,
           foregroundColor: Colors.white,
-          leading: IconButton(
-            icon: Icon(
-              isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
-              color: Colors.white,
-            ),
+          leading: RtlBackButton(
+            color: Colors.white,
             onPressed: () => Navigator.pop(context),
           ),
         ),

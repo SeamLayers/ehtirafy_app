@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -59,6 +61,7 @@ class _RateServiceScreenState extends State<RateServiceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9F9),
       appBar: AppBar(
@@ -66,7 +69,7 @@ class _RateServiceScreenState extends State<RateServiceScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(
-            Icons.arrow_back_ios_new,
+            isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
             color: const Color(0xFF2B2B2B),
             size: 20.sp,
           ),

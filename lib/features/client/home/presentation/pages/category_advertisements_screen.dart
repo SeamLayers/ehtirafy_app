@@ -1,9 +1,12 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_entity.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/category_advertisements_cubit.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/category_advertisements_state.dart';
@@ -30,108 +33,75 @@ class CategoryAdvertisementsScreen extends StatelessWidget {
         statusBarColor: Colors.transparent,
       ),
       child: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFF1A1A2E), Color(0xFF16213E), Color(0xFF0F3460)],
-            ),
-          ),
-          child: SafeArea(
-            child: Column(
-              children: [
-                // Premium Header
-                _buildPremiumHeader(context),
+        backgroundColor: AppColors.backgroundLight,
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildHeader(context),
+              Expanded(
+                child:
+                    BlocBuilder<
+                      CategoryAdvertisementsCubit,
+                      CategoryAdvertisementsState
+                    >(
+                      builder: (context, state) {
+                        if (state is CategoryAdvertisementsLoading) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.gold,
+                              strokeWidth: 2,
+                            ),
+                          );
+                        }
 
-                // Content
-                Expanded(
-                  child:
-                      BlocBuilder<
-                        CategoryAdvertisementsCubit,
-                        CategoryAdvertisementsState
-                      >(
-                        builder: (context, state) {
-                          if (state is CategoryAdvertisementsLoading) {
-                            return Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.gold,
-                                strokeWidth: 2,
-                              ),
-                            );
-                          }
+                        if (state is CategoryAdvertisementsError) {
+                          return _buildErrorState(context, state.message);
+                        }
 
-                          if (state is CategoryAdvertisementsError) {
-                            return _buildErrorState(context, state.message);
-                          }
+                        if (state is CategoryAdvertisementsEmpty) {
+                          return _buildEmptyState(context);
+                        }
 
-                          if (state is CategoryAdvertisementsEmpty) {
-                            return _buildEmptyState(context);
-                          }
+                        if (state is CategoryAdvertisementsLoaded) {
+                          return _buildServicesList(state.photographers);
+                        }
 
-                          if (state is CategoryAdvertisementsLoaded) {
-                            return _buildServicesList(state.photographers);
-                          }
-
-                          return const SizedBox.shrink();
-                        },
-                      ),
-                ),
-              ],
-            ),
+                        return const SizedBox.shrink();
+                      },
+                    ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildPremiumHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 30.h),
+      padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 20.h),
+      decoration: BoxDecoration(
+        color: AppColors.dark,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(24.r),
+          bottomRight: Radius.circular(24.r),
+        ),
+      ),
       child: Column(
         children: [
-          // Top Row with back button
           Row(
             children: [
-              GestureDetector(
-                onTap: () => context.pop(),
-                child: Container(
-                  width: 44.w,
-                  height: 44.w,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(14.r),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.2),
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    color: Colors.white,
-                    size: 18.sp,
-                  ),
-                ),
-              ),
+              RtlBackButton(color: Colors.white, size: 20.sp),
               const Spacer(),
-              // Filter button
               Container(
                 width: 44.w,
                 height: 44.w,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.gold,
-                      AppColors.gold.withValues(alpha: 0.8),
-                    ],
+                  color: Colors.white.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.12),
                   ),
-                  borderRadius: BorderRadius.circular(14.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.gold.withValues(alpha: 0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
                 ),
                 child: Icon(
                   Icons.tune_rounded,
@@ -141,69 +111,43 @@ class CategoryAdvertisementsScreen extends StatelessWidget {
               ),
             ],
           ),
-
-          SizedBox(height: 30.h),
-
-          // Category Title with decorative elements
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              // Glow effect
-              Container(
-                width: 200.w,
-                height: 60.h,
-                decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    colors: [
-                      AppColors.gold.withValues(alpha: 0.2),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
+          SizedBox(height: 16.h),
+          Text(
+            categoryName,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 22.sp,
+              fontFamily: 'Cairo',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 6.h),
+          Text(
+            'اكتشف أفضل الخدمات المتاحة في هذه الفئة',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.75),
+              fontSize: 12.sp,
+              fontFamily: 'Cairo',
+            ),
+          ),
+          SizedBox(height: 14.h),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Text(
+              'خدمات مختارة بعناية',
+              style: TextStyle(
+                color: AppColors.gold,
+                fontSize: 12.sp,
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.w600,
               ),
-              Column(
-                children: [
-                  Text(
-                    categoryName,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28.sp,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                  SizedBox(height: 8.h),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 6.h,
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.gold.withValues(alpha: 0.2),
-                          AppColors.gold.withValues(alpha: 0.1),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(20.r),
-                      border: Border.all(
-                        color: AppColors.gold.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: Text(
-                      'اكتشف أفضل الخدمات المميزة',
-                      style: TextStyle(
-                        color: AppColors.gold,
-                        fontSize: 12.sp,
-                        fontFamily: 'Cairo',
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
         ],
       ),
@@ -211,86 +155,66 @@ class CategoryAdvertisementsScreen extends StatelessWidget {
   }
 
   Widget _buildServicesList(List<PhotographerEntity> photographers) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
-      ),
-      child: Column(
-        children: [
-          // Handle bar
-          Container(
-            margin: EdgeInsets.only(top: 12.h),
-            width: 40.w,
-            height: 4.h,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2.r),
-            ),
-          ),
-
-          // Results header
-          Padding(
-            padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 10.h),
-            child: Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(10.w),
-                  decoration: BoxDecoration(
-                    color: AppColors.gold.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Icon(
-                    Icons.camera_alt_rounded,
-                    color: AppColors.gold,
-                    size: 20.sp,
-                  ),
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 8.h),
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(10.w),
+                decoration: BoxDecoration(
+                  color: AppColors.gold.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
-                SizedBox(width: 12.w),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'الخدمات المتاحة',
-                      style: TextStyle(
-                        color: const Color(0xFF1A1A2E),
-                        fontSize: 16.sp,
-                        fontFamily: 'Cairo',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      '${photographers.length} خدمة متوفرة',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 12.sp,
-                        fontFamily: 'Cairo',
-                      ),
-                    ),
-                  ],
+                child: Icon(
+                  Icons.camera_alt_rounded,
+                  color: AppColors.gold,
+                  size: 20.sp,
                 ),
-              ],
-            ),
-          ),
-
-          // Services list
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-              itemCount: photographers.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.only(bottom: 16.h),
-                  child: _PremiumServiceCard(
-                    photographer: photographers[index],
-                    index: index,
+              ),
+              SizedBox(width: 12.w),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'الخدمات المتاحة',
+                    style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 16.sp,
+                      fontFamily: 'Cairo',
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                );
-              },
-            ),
+                  Text(
+                    '${photographers.length} خدمة متوفرة',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 12.sp,
+                      fontFamily: 'Cairo',
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+            itemCount: photographers.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: 16.h),
+                child: _PremiumServiceCard(
+                  photographer: photographers[index],
+                  index: index,
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -300,32 +224,32 @@ class CategoryAdvertisementsScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: EdgeInsets.all(24.w),
+            padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.1),
+              color: AppColors.grey100,
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.search_off_rounded,
-              size: 48.sp,
-              color: Colors.white.withValues(alpha: 0.5),
+              size: 44.sp,
+              color: AppColors.grey400,
             ),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 16.h),
           Text(
             'لا توجد خدمات متاحة',
             style: TextStyle(
-              color: Colors.white,
+              color: AppColors.textPrimary,
               fontSize: 18.sp,
               fontFamily: 'Cairo',
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 6.h),
           Text(
             'جرب البحث في فئة أخرى',
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.6),
+              color: AppColors.textSecondary,
               fontSize: 14.sp,
               fontFamily: 'Cairo',
             ),
@@ -342,20 +266,20 @@ class CategoryAdvertisementsScreen extends StatelessWidget {
         children: [
           Icon(
             Icons.error_outline_rounded,
-            size: 48.sp,
-            color: Colors.red[300],
+            size: 44.sp,
+            color: AppColors.error.withValues(alpha: 0.8),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 12.h),
           Text(
             message,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.8),
+              color: AppColors.textSecondary,
               fontSize: 14.sp,
               fontFamily: 'Cairo',
             ),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 16.h),
           GestureDetector(
             onTap: () {
               context.read<CategoryAdvertisementsCubit>().loadAdvertisements(
@@ -366,12 +290,7 @@ class CategoryAdvertisementsScreen extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.gold,
-                    AppColors.gold.withValues(alpha: 0.8),
-                  ],
-                ),
+                color: AppColors.gold,
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Text(
@@ -399,6 +318,7 @@ class _PremiumServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return GestureDetector(
       onTap: () {
         context.push(
@@ -412,12 +332,13 @@ class _PremiumServiceCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(24.r),
-          boxShadow: [
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(color: AppColors.grey200),
+          boxShadow: const [
             BoxShadow(
-              color: const Color(0xFF1A1A2E).withValues(alpha: 0.08),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
+              color: AppColors.shadowLight,
+              blurRadius: 16,
+              offset: Offset(0, 6),
             ),
           ],
         ),
@@ -428,10 +349,10 @@ class _PremiumServiceCard extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(24.r),
+                    top: Radius.circular(20.r),
                   ),
                   child: SizedBox(
-                    height: 180.h,
+                    height: 160.h,
                     width: double.infinity,
                     child: photographer.imageUrl.isNotEmpty
                         ? Image.network(
@@ -441,25 +362,6 @@ class _PremiumServiceCard extends StatelessWidget {
                                 _buildImagePlaceholder(),
                           )
                         : _buildImagePlaceholder(),
-                  ),
-                ),
-
-                // Gradient overlay
-                Positioned.fill(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(24.r),
-                      ),
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          Colors.black.withValues(alpha: 0.3),
-                        ],
-                      ),
-                    ),
                   ),
                 ),
 
@@ -475,19 +377,14 @@ class _PremiumServiceCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 8,
-                        ),
-                      ],
+                      border: Border.all(color: AppColors.grey200),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
                           Icons.star_rounded,
-                          color: const Color(0xFFFFB800),
+                          color: AppColors.gold,
                           size: 16.sp,
                         ),
                         SizedBox(width: 4.w),
@@ -496,7 +393,7 @@ class _PremiumServiceCard extends StatelessWidget {
                               ? photographer.rating.toStringAsFixed(1)
                               : 'جديد',
                           style: TextStyle(
-                            color: const Color(0xFF1A1A2E),
+                            color: AppColors.textPrimary,
                             fontSize: 12.sp,
                             fontFamily: 'Cairo',
                             fontWeight: FontWeight.bold,
@@ -517,20 +414,8 @@ class _PremiumServiceCard extends StatelessWidget {
                       vertical: 8.h,
                     ),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.gold,
-                          AppColors.gold.withValues(alpha: 0.9),
-                        ],
-                      ),
+                      color: AppColors.gold,
                       borderRadius: BorderRadius.circular(14.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.gold.withValues(alpha: 0.4),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
                     ),
                     child: Text(
                       '${photographer.price.toInt()} ر.س',
@@ -557,10 +442,10 @@ class _PremiumServiceCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: const Color(0xFF1A1A2E),
-                      fontSize: 18.sp,
+                      color: AppColors.textPrimary,
+                      fontSize: 17.sp,
                       fontFamily: 'Cairo',
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   SizedBox(height: 10.h),
@@ -569,12 +454,12 @@ class _PremiumServiceCard extends StatelessWidget {
                       Container(
                         padding: EdgeInsets.all(8.w),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF5F5F5),
+                          color: AppColors.grey100,
                           borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: Icon(
                           Icons.person_outline_rounded,
-                          color: Colors.grey[600],
+                          color: AppColors.grey600,
                           size: 18.sp,
                         ),
                       ),
@@ -585,7 +470,7 @@ class _PremiumServiceCard extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: Colors.grey[700],
+                            color: AppColors.textSecondary,
                             fontSize: 14.sp,
                             fontFamily: 'Cairo',
                           ),
@@ -595,13 +480,13 @@ class _PremiumServiceCard extends StatelessWidget {
                         width: 44.w,
                         height: 44.w,
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF1A1A2E), Color(0xFF16213E)],
-                          ),
+                          color: AppColors.dark,
                           borderRadius: BorderRadius.circular(14.r),
                         ),
                         child: Icon(
-                          Icons.arrow_forward_rounded,
+                          isRtl
+                              ? Icons.arrow_back_rounded
+                              : Icons.arrow_forward_rounded,
                           color: Colors.white,
                           size: 20.sp,
                         ),
@@ -619,11 +504,11 @@ class _PremiumServiceCard extends StatelessWidget {
 
   Widget _buildImagePlaceholder() {
     return Container(
-      color: const Color(0xFFF5F5F5),
+      color: AppColors.grey100,
       child: Center(
         child: Icon(
           Icons.camera_alt_outlined,
-          color: Colors.grey[400],
+          color: AppColors.grey400,
           size: 40.sp,
         ),
       ),

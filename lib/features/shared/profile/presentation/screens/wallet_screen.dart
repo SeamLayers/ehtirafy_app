@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/transaction_tile.dart';
+import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 
 class WalletScreen extends StatelessWidget {
   const WalletScreen({super.key});
@@ -24,10 +25,7 @@ class WalletScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => context.pop(),
-        ),
+        leading: RtlBackButton(color: Colors.white),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(24.r),

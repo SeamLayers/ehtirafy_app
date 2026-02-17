@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -23,6 +25,7 @@ class ProfileTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -77,7 +80,7 @@ class ProfileTile extends StatelessWidget {
               ),
             ),
             Icon(
-              Icons.arrow_forward_ios,
+              isRtl ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
               color: isDestructive
                   ? const Color(0xFFDC3545)
                   : const Color(0xFF2B2B2B),

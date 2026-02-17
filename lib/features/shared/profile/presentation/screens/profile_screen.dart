@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../../../../core/constants/app_spacing.dart';
@@ -11,6 +13,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return Scaffold(
       appBar: AppBar(title: Text(AppStrings.profileTitle.tr())),
       body: ListView(
@@ -23,14 +26,18 @@ class ProfileScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.history),
             title: Text(AppStrings.profileTransactions.tr()),
-            trailing: const Icon(Icons.chevron_right),
+            trailing: Icon(
+              isRtl ? Icons.chevron_left : Icons.chevron_right,
+            ),
             onTap: () {},
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.settings),
             title: Text(AppStrings.profileSettings.tr()),
-            trailing: const Icon(Icons.chevron_right),
+            trailing: Icon(
+              isRtl ? Icons.chevron_left : Icons.chevron_right,
+            ),
             onTap: () {},
           ),
           ListTile(

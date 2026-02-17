@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -44,15 +46,14 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.dark : AppColors.backgroundLight,
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(
-                context.locale.languageCode == 'ar'
-                ? Icons.arrow_forward
-                : Icons.arrow_back,
+            isRtl ? Icons.arrow_forward : Icons.arrow_back,
           ),
           onPressed: () => context.pop(),
         ),

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import '../cubit/freelancer_gigs_cubit.dart';
 import '../cubit/freelancer_gigs_state.dart';
 import '../../domain/entities/gig_entity.dart';
@@ -104,7 +105,6 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    final isRtl = context.locale.languageCode == 'ar';
     return Container(
       color: AppColors.dark,
       child: SafeArea(
@@ -120,14 +120,7 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
           ),
           child: Row(
             children: [
-              GestureDetector(
-                onTap: () => context.pop(),
-                child: Icon(
-                  isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
-                  color: Colors.white,
-                  size: 20.sp,
-                ),
-              ),
+              RtlBackButton(color: Colors.white, size: 20.sp),
               Expanded(
                 child: Center(
                   child: Text(

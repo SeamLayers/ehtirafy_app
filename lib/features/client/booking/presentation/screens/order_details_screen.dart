@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/di/service_locator.dart';
@@ -27,6 +29,7 @@ class OrderDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return BlocProvider(
       create: (context) =>
           sl<ContractDetailsCubit>()..getContractDetails(orderId),
@@ -45,8 +48,8 @@ class OrderDetailsScreen extends StatelessWidget {
             ),
           ),
           leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios,
+            icon: Icon(
+              isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
               color: AppColors.textPrimary,
             ),
             onPressed: () => context.pop(),

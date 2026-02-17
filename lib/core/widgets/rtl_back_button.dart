@@ -1,7 +1,9 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'app_colors.dart';
+import 'package:ehtirafy_app/core/theme/app_colors.dart';
 
 /// RTL-aware back button widget
 /// Automatically handles direction based on text direction
@@ -22,7 +24,7 @@ class RtlBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textDirection = Directionality.of(context);
-    final isRtl = textDirection == TextDirection.rtl;
+    final isRtl = textDirection == ui.TextDirection.rtl;
     
     return IconButton(
       icon: Container(
@@ -56,7 +58,7 @@ class BackButtonRtl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return IconButton(
       icon: Icon(
         isRtl ? Icons.arrow_forward : Icons.arrow_back,

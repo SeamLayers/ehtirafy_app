@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -91,6 +93,7 @@ class WorkDetailsScreen extends StatelessWidget {
 
   Widget _buildContent(BuildContext context, WorkDetailsLoaded state) {
     final work = state.workDetails;
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
 
     return CustomScrollView(
       slivers: [
@@ -108,9 +111,7 @@ class WorkDetailsScreen extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                Directionality.of(context) == TextDirection.rtl
-                    ? Icons.arrow_forward_ios
-                    : Icons.arrow_back_ios,
+                isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
                 color: Colors.white,
                 size: 18.sp,
               ),

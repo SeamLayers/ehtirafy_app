@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -91,8 +93,7 @@ class _RequestBookingScreenState extends State<RequestBookingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isRtl = context.locale.languageCode == 'ar';
-    
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return BlocProvider(
       create: (context) => sl<BookingCubit>(),
       child: Scaffold(

@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,6 +14,7 @@ class AllFreelancersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9F9),
       body: CustomScrollView(
@@ -30,7 +33,7 @@ class AllFreelancersScreen extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  Icons.arrow_back_ios_new,
+                  isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
                   color: Colors.white,
                   size: 18.sp,
                 ),

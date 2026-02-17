@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -64,6 +66,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return Container(
       color: AppColors.dark,
       child: SafeArea(
@@ -81,9 +84,7 @@ class _SearchScreenState extends State<SearchScreen> {
             children: [
               IconButton(
                 icon: Icon(
-                      context.locale.languageCode == 'ar'
-                      ? Icons.arrow_forward_ios
-                      : Icons.arrow_back_ios,
+                  isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
                   color: Colors.white,
                 ),
                 onPressed: () => Navigator.pop(context),
@@ -262,6 +263,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildResultCard(BuildContext context, SearchResultEntity result) {
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return GestureDetector(
       onTap: () => context.push('/freelancer/${result.id}'),
       child: Container(
@@ -333,7 +335,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios, color: AppColors.grey400, size: 16.w),
+            Icon(
+              isRtl ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
+              color: AppColors.grey400,
+              size: 16.w,
+            ),
           ],
         ),
       ),

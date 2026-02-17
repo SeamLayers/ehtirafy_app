@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -46,6 +48,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return BlocListener<ChatCubit, ChatState>(
       listener: (context, state) {
         if (state is MessagesLoaded) {
@@ -74,9 +77,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           elevation: 0,
           leading: IconButton(
             icon: Icon(
-                  context.locale.languageCode == 'ar'
-                  ? Icons.arrow_forward_ios
-                  : Icons.arrow_back_ios,
+              isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
               color: Colors.white,
             ),
             onPressed: () => Navigator.pop(context),

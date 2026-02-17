@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -98,6 +100,7 @@ class AdvertisementDetailsScreen extends StatelessWidget {
 
   Widget _buildContent(BuildContext context, AdvertisementDetailsLoaded state) {
     final ad = state.advertisementDetails;
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
 
     return Stack(
       children: [
@@ -117,9 +120,7 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    Directionality.of(context) == TextDirection.rtl
-                        ? Icons.arrow_forward_ios
-                        : Icons.arrow_back_ios,
+                    isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
                     color: Colors.white,
                     size: 18.sp,
                   ),
@@ -224,7 +225,7 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                     SizedBox(height: 32.h),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
-                      child: _buildPremiumPriceCard(ad.price),
+                      child: _buildPremiumPriceCard(context, ad.price),
                     ),
 
                     SizedBox(height: 24.h),
@@ -488,7 +489,8 @@ class AdvertisementDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPremiumPriceCard(double price) {
+  Widget _buildPremiumPriceCard(BuildContext context, double price) {
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
@@ -575,7 +577,7 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                   ),
                 ),
                 child: Icon(
-                  Icons.arrow_forward,
+                  isRtl ? Icons.arrow_back : Icons.arrow_forward,
                   color: Colors.white,
                   size: 24.sp,
                 ),

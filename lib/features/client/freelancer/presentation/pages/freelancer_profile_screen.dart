@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
@@ -206,7 +208,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
   }
 
   Widget _buildBackButton() {
-    final isRtl = context.locale.languageCode == 'ar';
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return GestureDetector(
       onTap: () => context.pop(),
       child: Container(

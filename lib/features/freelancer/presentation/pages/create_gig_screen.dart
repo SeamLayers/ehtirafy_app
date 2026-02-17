@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/category_entity.dart';
 import '../cubit/freelancer_gigs_cubit.dart';
 import '../cubit/freelancer_gigs_state.dart';
@@ -87,8 +88,6 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isRtl = context.locale.languageCode == 'ar';
-    
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
       appBar: AppBar(
@@ -119,10 +118,7 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 1,
-        leading: IconButton(
-          icon: Icon(isRtl ? Icons.arrow_forward : Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
+        leading: RtlBackButton(color: AppColors.textPrimary),
       ),
       body: BlocListener<FreelancerGigsCubit, FreelancerGigsState>(
         listener: (context, state) {
@@ -159,12 +155,12 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('تم إضافة الخدمة بنجاح')),
             );
-            context.go('/freelancer/gigs');
+            context.pop(true);
           } else if (state is FreelancerGigUpdated) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('تم تحديث الخدمة بنجاح')),
             );
-            context.go('/freelancer/gigs');
+            context.pop(true);
           } else if (state is FreelancerGigAddError) {
             ScaffoldMessenger.of(
               context,

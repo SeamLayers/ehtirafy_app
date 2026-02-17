@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +49,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return BlocProvider(
       create: (context) => sl<ProfileCubit>()..loadUserProfile(),
       child: BlocConsumer<ProfileCubit, ProfileState>(
@@ -82,7 +85,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               centerTitle: true,
               leading: IconButton(
                 icon: Icon(
-                  Icons.arrow_back_ios_new,
+                  isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
                   color: _darkText,
                   size: 20.sp,
                 ),

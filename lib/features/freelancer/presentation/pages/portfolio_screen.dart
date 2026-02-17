@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import '../cubit/freelancer_portfolio_cubit.dart';
 import '../cubit/freelancer_portfolio_state.dart';
 import '../../domain/entities/portfolio_item_entity.dart';
@@ -97,14 +98,7 @@ class PortfolioScreen extends StatelessWidget {
           ),
           child: Row(
             children: [
-              GestureDetector(
-                onTap: () => context.pop(),
-                child: Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.white,
-                  size: 20.sp,
-                ),
-              ),
+              RtlBackButton(color: Colors.white, size: 20.sp),
               Expanded(
                 child: Center(
                   child: Text(
