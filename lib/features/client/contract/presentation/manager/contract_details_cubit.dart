@@ -3,7 +3,6 @@ import 'package:ehtirafy_app/features/client/contract/domain/usecases/get_contra
 import 'package:ehtirafy_app/features/client/contract/domain/usecases/update_contract_status_usecase.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/manager/contract_details_state.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/usecases/confirm_payment_usecase.dart';
-import 'package:ehtirafy_app/features/shared/payment/services/payment_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ContractDetailsCubit extends Cubit<ContractDetailsState> {
@@ -23,13 +22,8 @@ class ContractDetailsCubit extends Cubit<ContractDetailsState> {
     emit(ContractDetailsLoading());
     final result = await getContractDetailsUseCase(id);
     result.fold(
-      (failure) =>
-          (failure) => emit(ContractDetailsError(failure.message)),
-      (contract) {
-        // Configure Payment SDK with session (optional, safe to call multiple times or in init)
-        PaymentService.configureSdk();
-        emit(ContractDetailsSuccess(contract));
-      },
+      (failure) => emit(ContractDetailsError(failure.message)),
+      (contract) => emit(ContractDetailsSuccess(contract)),
     );
   }
 
@@ -59,22 +53,9 @@ class ContractDetailsCubit extends Cubit<ContractDetailsState> {
   }
 
   Future<void> payContract(String id, double amount) async {
-    // Using PaymentService to determine flow
-    await PaymentService.startPayment(
-      amount: amount,
-      transactionId: id,
-      customerEmail: "user@example.com", // TODO: Get from profile/user session
-      customerPhone: "12345678", // TODO: Get from profile
-      onSuccess: (response) async {
-        // Handle Success
-        await confirmPayment(id);
-      },
-      onFailure: (response) {
-        // Handle Failure
-        // emit(ContractDetailsError(response?.message ?? "Payment Failed"));
-        // Or just show toast
-      },
-    );
+    // Manual transfer flow no longer starts SDK payment from cubit.
+    // Kept for backward compatibility in case old UI still calls this method.
+    await confirmPayment(id);
   }
 
   // kept for backward compatibility if needed, or other status updates

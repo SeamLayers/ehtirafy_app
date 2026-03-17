@@ -2,42 +2,63 @@ import 'package:equatable/equatable.dart';
 
 /// Enum for contract status mapping from API to UI
 enum ContractStatus {
-  pending,
-  accepted,
-  rejected,
+  pending,               // Freelancer hasn't accepted yet
+  pendingPayment,        // Freelancer accepted, waiting for customer payment
+  awaitingAdminReview,   // Payment proof submitted, awaiting admin verification
+  inProgress,            // Admin approved payment, contract is active
   completed,
   cancelled,
-  awaitingPayment;
+  rejected,
+  archived;
 
   /// Get Arabic display name for UI badges
   String get displayName {
     switch (this) {
       case ContractStatus.pending:
         return 'قيد الانتظار';
-      case ContractStatus.accepted:
-        return 'مقبول';
-      case ContractStatus.rejected:
-        return 'مرفوض';
+      case ContractStatus.pendingPayment:
+        return 'بانتظار الدفع';
+      case ContractStatus.awaitingAdminReview:
+        return 'بانتظار تحقق الإدارة';
+      case ContractStatus.inProgress:
+        return 'جاري التنفيذ';
       case ContractStatus.completed:
         return 'مكتمل';
       case ContractStatus.cancelled:
         return 'ملغي';
-      case ContractStatus.awaitingPayment:
-        return 'بانتظار الدفع';
+      case ContractStatus.rejected:
+        return 'مرفوض';
+      case ContractStatus.archived:
+        return 'مؤرشف';
     }
   }
 
   /// Parse from API string value
   static ContractStatus fromString(String? value) {
     switch (value?.toLowerCase()) {
-      case 'accepted':
-        return ContractStatus.accepted;
-      case 'rejected':
-        return ContractStatus.rejected;
+      case 'pending':
+        return ContractStatus.pending;
+      case 'pendingpayment':
+      case 'pending_payment':
+      case 'awaiting_payment':
+        return ContractStatus.pendingPayment;
+      case 'awaitingadminreview':
+      case 'awaiting_admin_review':
+      case 'underreview':
+      case 'under_review':
+        return ContractStatus.awaitingAdminReview;
+      case 'inprogress':
+      case 'in_progress':
+      case 'active':
+        return ContractStatus.inProgress;
       case 'completed':
         return ContractStatus.completed;
       case 'cancelled':
         return ContractStatus.cancelled;
+      case 'rejected':
+        return ContractStatus.rejected;
+      case 'archived':
+        return ContractStatus.archived;
       default:
         return ContractStatus.pending;
     }
@@ -122,51 +143,26 @@ class ContractEntity extends Equatable {
 
     // Check for "Approved" flow
     if (pubStatus == 'approved') {
-      // If customer status is 'initiated' or null, it means they haven't paid yet
-      // So it is Awaiting Payment (which we map to accepted/awaitingPayment in UI logic,
-      // but here we might need a specific status if the Enum supports it.
-      // The Enum currently has: pending, accepted, rejected, completed, cancelled.
-      // We often map 'Awaiting Payment' to a specific UI state.
-      // Let's see how ContractStatus is used.
-
-      // If the customer has paid (InProcess/Paid), it's fully Accepted/Active
+      // If customer status is 'inprocess' or 'paid', payment was successful
       if (custStatus == 'inprocess' ||
           custStatus == 'paid' ||
           custStatus == 'approved') {
-        return ContractStatus
-            .accepted; // This maps to "In Progress" in many UI checks
+        return ContractStatus.inProgress;
       }
 
       // If customer hasn't paid yet (Initiated)
-      // We might need to return 'accepted' but the UI needs to know it's awaiting payment.
-      // OR, we update the Enum. The user wants strict cases.
-      // Looking at `ContractDetailsScreen`:
-      // if (contract.status == ContractStatus.awaitingPayment)
-      // The Enum in `contract_details_entity.dart` has `awaitingPayment`.
-      // BUT `contract_entity.dart` Enum DOES NOT have `awaitingPayment`.
-      // I should align them or map carefully.
-
-      // For ContractEntity (List View), usually "Accepted" covers both, or "Pending".
-      // Let's check ContractEntity Enum again.
-      // Enum: pending, accepted, rejected, completed, cancelled.
-      // If I want to show "Awaiting Payment" in the list, I might need to add it to Enum
-      // OR use 'accepted' and let the UI distinct.
-      // However, the prompt implies strict flow.
-      // For the LIST view, 'Accepted' usually implies Active.
-      // If it's awaiting payment, it might be better to treat as 'Pending' or a new status.
-      // Let's add 'awaitingPayment' to ContractEntity's Enum to be safe and consistent.
-      return ContractStatus.awaitingPayment;
+      return ContractStatus.pendingPayment;
     }
 
     return ContractStatus.pending;
   }
 
   /// Check if chat is allowed for this contract
-  /// Rule: Chat is allowed only when contract is ACCEPTED (in progress)
-  /// Chat is NOT allowed when: pending, rejected, cancelled, or completed
+  /// Rule: Chat is allowed only when contract is IN_PROGRESS
+  /// Chat is NOT allowed when: pending, pendingPayment, awaitingAdminReview, rejected, cancelled, or completed
   bool get isChatAllowed {
     final status = displayStatus;
-    return status == ContractStatus.accepted;
+    return status == ContractStatus.inProgress;
   }
 
   @override

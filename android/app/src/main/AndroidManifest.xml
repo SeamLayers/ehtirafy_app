@@ -2,7 +2,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <application
-        android:label="ehtirafy_app"
+        android:label="Al-Batal for Photography and Events"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         

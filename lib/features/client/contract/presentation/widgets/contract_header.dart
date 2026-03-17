@@ -62,17 +62,21 @@ class ContractHeader extends StatelessWidget {
     Color color;
 
     switch (contract.status) {
+      case ContractStatus.pending:
+        color = const Color(0xFF17A2B8);
+        text = 'قيد انتظار موافقة المصور';
+        break;
+      case ContractStatus.pendingPayment:
+        color = AppColors.warning;
+        text = 'بانتظار الدفع';
+        break;
+      case ContractStatus.awaitingAdminReview:
+        color = const Color(0xFFFFC107);
+        text = 'بانتظار تحقق الإدارة';
+        break;
       case ContractStatus.inProgress:
         color = AppColors.success;
         text = AppStrings.contractStatusInProgress.tr();
-        break;
-      case ContractStatus.awaitingPayment:
-        color = AppColors.warning;
-        text = AppStrings.contractApprovedBadge.tr();
-        break;
-      case ContractStatus.underReview:
-        color = const Color(0xFF17A2B8);
-        text = AppStrings.contractStatusUnderReviewBadge.tr();
         break;
       case ContractStatus.archived:
       case ContractStatus.cancelled:

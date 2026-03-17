@@ -54,10 +54,10 @@ class _FreelancerOrderDetailsScreenState
         return FreelancerOrderStatus.cancelled;
       }
       if (_details!.status == ContractStatus.inProgress ||
-          _details!.status == ContractStatus.underReview) {
+          _details!.status == ContractStatus.awaitingAdminReview) {
         return FreelancerOrderStatus.inProgress;
       }
-      if (_details!.status == ContractStatus.awaitingPayment) {
+      if (_details!.status == ContractStatus.pendingPayment) {
         return FreelancerOrderStatus.inProgress;
       }
     }

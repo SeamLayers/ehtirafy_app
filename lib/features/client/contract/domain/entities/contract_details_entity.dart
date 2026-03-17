@@ -1,13 +1,14 @@
 import 'package:equatable/equatable.dart';
 
 enum ContractStatus {
-  inProgress,
-  awaitingPayment,
-  underReview,
-  archived,
+  pending,                // Freelancer hasn't accepted yet
+  pendingPayment,         // Freelancer accepted, waiting for customer payment
+  awaitingAdminReview,   // Payment proof submitted, awaiting admin verification
+  inProgress,            // Admin approved payment, contract is active
   completed,
   cancelled,
   rejected,
+  archived,
 }
 
 class ContractDetailsEntity extends Equatable {
@@ -65,11 +66,11 @@ class ContractDetailsEntity extends Equatable {
     this.daysAvailability = const [],
   });
 
-  /// Chat allowed only for active contracts (in progress, under review, completed)
-  /// Chat is NOT allowed for: awaiting payment (not started yet), cancelled, archived
+  /// Chat allowed only for active contracts (in progress, awaiting admin review, completed)
+  /// Chat is NOT allowed for: pending, pendingPayment, cancelled, rejected, archived
   bool get isChatAllowed {
     return status == ContractStatus.inProgress ||
-        status == ContractStatus.underReview ||
+        status == ContractStatus.awaitingAdminReview ||
         status == ContractStatus.completed;
   }
 

@@ -124,10 +124,10 @@ class ContractDetailsModel extends ContractDetailsEntity {
           custStatus == 'completed') {
         return ContractStatus.inProgress;
       }
-      return ContractStatus.awaitingPayment;
+      return ContractStatus.pendingPayment;
     }
 
-    return ContractStatus.underReview; // Default for initial / pending
+    return ContractStatus.pending; // Default for initial / pending
   }
 }
 

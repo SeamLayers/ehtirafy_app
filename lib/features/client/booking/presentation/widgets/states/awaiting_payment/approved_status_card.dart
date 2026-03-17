@@ -2,11 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/entities/contract_details_entity.dart';
-import 'package:ehtirafy_app/features/client/contract/presentation/manager/contract_details_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:ehtirafy_app/features/shared/payment/presentation/pages/mock_payment_form_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class ApprovedStatusCard extends StatelessWidget {
   final ContractDetailsEntity contract;
@@ -218,18 +216,7 @@ class ApprovedStatusCard extends StatelessWidget {
             height: 48.h,
             child: ElevatedButton(
               onPressed: () {
-                // Navigate to Mock Payment Form with existing Cubit
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (ctx) => BlocProvider.value(
-                      value: context.read<ContractDetailsCubit>(),
-                      child: MockPaymentFormScreen(
-                        contractId: contract.id,
-                        amount: contract.budget.toDouble(),
-                      ),
-                    ),
-                  ),
-                );
+                context.push('/payment/bank-details/${contract.id}');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.gold,

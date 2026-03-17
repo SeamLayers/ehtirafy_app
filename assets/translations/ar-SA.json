@@ -1,5 +1,5 @@
 {
-  "app_name": "احترافي",
+  "app_name": "البطل للتصوير والمناسبات",
   "welcome": "مرحباً بك",
   "login": "تسجيل الدخول",
   "signup": "إنشاء حساب",
@@ -517,5 +517,25 @@
   "contract_status_under_review_badge": "قيد المراجعة",
   "contract_photographer_name": "المصور: {}",
   "contract_contact_photographer": "مراسلة المصور",
-  "contract_finish_service": "تأكيد استلام الخدمة"
+  "contract_finish_service": "تأكيد استلام الخدمة",
+  "bank_details_title": "تفاصيل الحساب البنكي",
+  "bank_details_instruction": "يرجى تحويل المبلغ المطلوب إلى الحساب البنكي أدناه. تأكد من نسخ البيانات بشكل صحيح قبل التحويل.",
+  "payment_proof_title": "إثبات الدفع",
+  "payment_proof_instruction": "بعد تحويل المبلغ، يرجى رفع إثبات الدفع (صورة أو ملف PDF) وملء البيانات المطلوبة أدناه.",
+  "sender_name": "اسم المُرسل",
+  "enter_sender_name": "أدخل اسم المُرسل",
+  "transfer_date": "تاريخ التحويل",
+  "select_date": "اختر تاريخ التحويل",
+  "transfer_reference": "رقم المرجع (اختياري)",
+  "optional_transfer_ref": "أدخل رقم المرجع إن وجد",
+  "notes": "ملاحظات إضافية",
+  "additional_notes": "أضف أي ملاحظات إضافية",
+  "proof_of_payment": "إثبات الدفع",
+  "tap_to_upload": "اضغط لرفع الملف",
+  "accepted_formats": "الصيغ المقبولة: صور (JPG, PNG) أو PDF",
+  "file_selected": "تم اختيار الملف",
+  "submit_proof": "إرسال إثبات الدفع",
+  "proceed_to_payment_proof": "الانتقال إلى رفع إثبات الدفع",
+  "payment_awaiting_admin_review": "إثبات الدفع بانتظار التحقق من الإدارة. سيتم تفعيل العقد بعد التحقق.",
+  "retry": "إعادة محاولة"
 }

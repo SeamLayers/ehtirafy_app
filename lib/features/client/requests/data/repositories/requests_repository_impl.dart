@@ -67,8 +67,8 @@ class RequestsRepositoryImpl implements RequestsRepository {
       price: double.tryParse(contract.requestedAmount) ?? 0,
       date: contract.createdAt,
       isPaymentRequired:
-          contract.displayStatus == ContractStatus.awaitingPayment,
-      approvedDate: contract.contrPubStatus == 'accepted'
+          contract.displayStatus == ContractStatus.pendingPayment,
+      approvedDate: contract.displayStatus == ContractStatus.inProgress
           ? contract.updatedAt
           : null,
     );
@@ -76,22 +76,26 @@ class RequestsRepositoryImpl implements RequestsRepository {
 
   /// Map contract status to RequestStatus enum
   /// - pending → underReview (waiting for photographer)
-  /// - accepted/awaitingPayment → active (payment required or in progress)
-  /// - rejected/cancelled → cancelled
+  /// - pendingPayment → active (waiting for customer payment)
+  /// - awaitingAdminReview → active (payment submitted, awaiting admin verification)
+  /// - inProgress → active (contract is active)
   /// - completed → completed
+  /// - rejected/cancelled/archived → cancelled
   RequestStatus _mapContractStatusToRequestStatus(ContractEntity contract) {
     final status = contract.displayStatus;
     switch (status) {
       case ContractStatus.pending:
         return RequestStatus.underReview;
-      case ContractStatus.accepted:
-      case ContractStatus.awaitingPayment:
+      case ContractStatus.pendingPayment:
+      case ContractStatus.awaitingAdminReview:
+      case ContractStatus.inProgress:
         return RequestStatus.active;
-      case ContractStatus.rejected:
-      case ContractStatus.cancelled:
-        return RequestStatus.cancelled;
       case ContractStatus.completed:
         return RequestStatus.completed;
+      case ContractStatus.rejected:
+      case ContractStatus.cancelled:
+      case ContractStatus.archived:
+        return RequestStatus.cancelled;
     }
   }
 }

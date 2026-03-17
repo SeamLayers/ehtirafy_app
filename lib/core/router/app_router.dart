@@ -60,6 +60,10 @@ import 'package:ehtirafy_app/features/client/freelancer/presentation/cubits/adve
 import 'package:ehtirafy_app/features/client/freelancer/presentation/pages/advertisement_details_screen.dart';
 import 'package:ehtirafy_app/features/shared/reviews/presentation/cubits/reviews_cubit.dart';
 import 'package:ehtirafy_app/features/client/requests/presentation/pages/rate_service_screen.dart';
+import 'package:ehtirafy_app/features/client/payment/presentation/cubit/bank_details_cubit.dart';
+import 'package:ehtirafy_app/features/client/payment/presentation/cubit/payment_proof_cubit.dart';
+import 'package:ehtirafy_app/features/client/payment/presentation/pages/bank_details_screen.dart';
+import 'package:ehtirafy_app/features/client/payment/presentation/pages/payment_proof_screen.dart';
 
 /// GoRouter configuration for the app
 final appRouter = GoRouter(
@@ -509,6 +513,27 @@ final appRouter = GoRouter(
       builder: (context, state) {
         final id = state.pathParameters['id']!;
         return OrderDetailsScreen(orderId: id);
+      },
+    ),
+    // Payment routes
+    GoRoute(
+      path: '/payment/bank-details/:contractId',
+      builder: (context, state) {
+        final contractId = state.pathParameters['contractId']!;
+        return BlocProvider(
+          create: (context) => sl<BankDetailsCubit>(),
+          child: BankDetailsScreen(contractId: contractId),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/payment/proof/:contractId',
+      builder: (context, state) {
+        final contractId = state.pathParameters['contractId']!;
+        return BlocProvider(
+          create: (context) => sl<PaymentProofCubit>(),
+          child: PaymentProofScreen(contractId: contractId),
+        );
       },
     ),
     GoRoute(

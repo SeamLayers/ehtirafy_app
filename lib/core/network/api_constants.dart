@@ -78,4 +78,10 @@ class ApiConstants {
   /// Get user ratings by user/freelancer ID
   static String userRates(String userId) =>
       '/api/$version/front/user-rates/$userId';
+
+  // Payment Endpoints
+  static const String bankAccountDetails =
+      '$baseUrl/api/$version/front/payment/bank-details';
+  static const String submitPaymentProof =
+      '$baseUrl/api/$version/front/payment/submit-proof';
 }
