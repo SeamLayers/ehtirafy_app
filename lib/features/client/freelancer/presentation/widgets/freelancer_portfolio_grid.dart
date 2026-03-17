@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ehtirafy_app/features/client/freelancer/domain/entities/freelancer_entity.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ehtirafy_app/core/constants/demo_images.dart';
 
 class FreelancerPortfolioGrid extends StatelessWidget {
   final List<PortfolioItemEntity> portfolio;
@@ -20,46 +21,81 @@ class FreelancerPortfolioGrid extends StatelessWidget {
         mainAxisSpacing: 16.h,
         childAspectRatio: 1.0,
       ),
-      itemCount: portfolio.length,
+      itemCount: DemoImages.items.length,
       itemBuilder: (context, index) {
-        final item = portfolio[index];
+        final imageUrl = DemoImages.items[index];
+        final hasPortfolioItem = index < portfolio.length;
+        final item = hasPortfolioItem ? portfolio[index] : null;
         return GestureDetector(
           onTap: () {
             // Navigate to work details
-            context.push('/work/${item.id}');
+            if (hasPortfolioItem && item != null) {
+              context.push('/work/${item.id}');
+            }
           },
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.r),
-              image: DecorationImage(
-                image: NetworkImage(item.imageUrl),
-                fit: BoxFit.cover,
-              ),
             ),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withValues(alpha: 0.7),
-                  ],
-                  stops: const [0.6, 1.0],
-                ),
-              ),
-              alignment: Alignment.bottomRight,
-              padding: EdgeInsets.all(12.w),
-              child: Text(
-                item.title,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12.r),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        color: Colors.grey.shade200,
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          width: 22.w,
+                          height: 22.w,
+                          child: const CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      );
+                    },
+                    errorBuilder: (_, __, ___) => Container(
+                      color: Colors.grey.shade200,
+                      alignment: Alignment.center,
+                      child: Icon(
+                        Icons.broken_image_outlined,
+                        color: Colors.grey.shade400,
+                        size: 28.sp,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withValues(alpha: 0.6),
+                        ],
+                        stops: const [0.6, 1.0],
+                      ),
+                    ),
+                  ),
+                  PositionedDirectional(
+                    bottom: 10.h,
+                    start: 10.w,
+                    end: 10.w,
+                    child: Text(
+                      item?.title ?? 'عمل ${(index + 1)}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

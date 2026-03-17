@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
+import 'package:ehtirafy_app/core/constants/demo_images.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_entity.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/category_advertisements_cubit.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/category_advertisements_state.dart';
@@ -319,6 +320,7 @@ class _PremiumServiceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
+    final imageUrl = DemoImages.items[index % DemoImages.items.length];
     return GestureDetector(
       onTap: () {
         context.push(
@@ -354,14 +356,11 @@ class _PremiumServiceCard extends StatelessWidget {
                   child: SizedBox(
                     height: 160.h,
                     width: double.infinity,
-                    child: photographer.imageUrl.isNotEmpty
-                        ? Image.network(
-                            photographer.imageUrl,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) =>
-                                _buildImagePlaceholder(),
-                          )
-                        : _buildImagePlaceholder(),
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => _buildImagePlaceholder(),
+                    ),
                   ),
                 ),
 

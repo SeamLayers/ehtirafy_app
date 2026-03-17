@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/demo_images.dart';
 import '../cubits/work_details_cubit.dart';
 import '../cubits/work_details_state.dart';
 
@@ -94,6 +95,8 @@ class WorkDetailsScreen extends StatelessWidget {
   Widget _buildContent(BuildContext context, WorkDetailsLoaded state) {
     final work = state.workDetails;
     final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
+    final coverImage =
+        DemoImages.items[work.id.hashCode.abs() % DemoImages.items.length];
 
     return CustomScrollView(
       slivers: [
@@ -121,14 +124,12 @@ class WorkDetailsScreen extends StatelessWidget {
             background: Stack(
               fit: StackFit.expand,
               children: [
-                // Background Image or Gradient
-                work.images.isNotEmpty
-                    ? Image.network(
-                        work.images.first,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _buildPlaceholderBg(),
-                      )
-                    : _buildPlaceholderBg(),
+                // Background Image (Demo)
+                Image.network(
+                  coverImage,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => _buildPlaceholderBg(),
+                ),
                 // Gradient Overlay
                 Container(
                   decoration: BoxDecoration(

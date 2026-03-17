@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/demo_images.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_entity.dart';
 import '../cubits/all_freelancers_cubit.dart';
 import '../cubits/all_freelancers_state.dart';
@@ -234,6 +235,7 @@ class AllFreelancersScreen extends StatelessWidget {
                         padding: EdgeInsets.only(bottom: 16.h),
                         child: _FreelancerCard(
                           freelancer: state.freelancers[index],
+                          index: index,
                         ),
                       );
                     }, childCount: state.freelancers.length),
@@ -252,11 +254,13 @@ class AllFreelancersScreen extends StatelessWidget {
 
 class _FreelancerCard extends StatelessWidget {
   final PhotographerEntity freelancer;
+  final int index;
 
-  const _FreelancerCard({required this.freelancer});
+  const _FreelancerCard({required this.freelancer, required this.index});
 
   @override
   Widget build(BuildContext context) {
+    final imageUrl = DemoImages.items[index % DemoImages.items.length];
     return GestureDetector(
       onTap: () => context.push('/freelancer/${freelancer.id}'),
       child: Container(
@@ -345,21 +349,15 @@ class _FreelancerCard extends StatelessWidget {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(11.r),
-                        child: freelancer.imageUrl.isNotEmpty
-                            ? Image.network(
-                                freelancer.imageUrl,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => Icon(
-                                  Icons.person,
-                                  color: AppColors.textSecondary,
-                                  size: 32.sp,
-                                ),
-                              )
-                            : Icon(
-                                Icons.person,
-                                color: AppColors.textSecondary,
-                                size: 32.sp,
-                              ),
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Icon(
+                            Icons.person,
+                            color: AppColors.textSecondary,
+                            size: 32.sp,
+                          ),
+                        ),
                       ),
                     ),
                   ),

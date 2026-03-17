@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_entity.dart';
-import 'package:ehtirafy_app/core/widgets/user_avatar.dart';
+import 'package:ehtirafy_app/core/constants/demo_images.dart';
 
 class HomeFeaturedPhotographers extends StatelessWidget {
   final List<PhotographerEntity> photographers;
@@ -52,7 +52,10 @@ class HomeFeaturedPhotographers extends StatelessWidget {
           itemCount: photographers.length,
           separatorBuilder: (context, index) => SizedBox(height: 16.h),
           itemBuilder: (context, index) {
-            return _PhotographerCard(photographer: photographers[index]);
+            return _PhotographerCard(
+              photographer: photographers[index],
+              index: index,
+            );
           },
         ),
       ],
@@ -62,11 +65,13 @@ class HomeFeaturedPhotographers extends StatelessWidget {
 
 class _PhotographerCard extends StatelessWidget {
   final PhotographerEntity photographer;
+  final int index;
 
-  const _PhotographerCard({required this.photographer});
+  const _PhotographerCard({required this.photographer, required this.index});
 
   @override
   Widget build(BuildContext context) {
+    final imageUrl = DemoImages.items[index % DemoImages.items.length];
     return GestureDetector(
       onTap: () => context.push('/freelancer/${photographer.id}'),
       child: Container(
@@ -86,7 +91,26 @@ class _PhotographerCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            UserAvatar(name: photographer.name, size: 80),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12.r),
+              child: Image.network(
+                imageUrl,
+                width: 80.w,
+                height: 80.w,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
+                  width: 80.w,
+                  height: 80.w,
+                  color: AppColors.grey200,
+                  alignment: Alignment.center,
+                  child: Icon(
+                    Icons.person_outline,
+                    color: AppColors.grey500,
+                    size: 28.sp,
+                  ),
+                ),
+              ),
+            ),
             SizedBox(width: 16.w),
             Expanded(
               child: Column(

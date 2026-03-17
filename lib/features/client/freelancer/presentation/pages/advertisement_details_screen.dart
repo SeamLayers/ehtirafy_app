@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/demo_images.dart';
 import '../cubits/advertisement_details_cubit.dart';
 import '../cubits/advertisement_details_state.dart';
 
@@ -101,6 +102,8 @@ class AdvertisementDetailsScreen extends StatelessWidget {
   Widget _buildContent(BuildContext context, AdvertisementDetailsLoaded state) {
     final ad = state.advertisementDetails;
     final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
+    final coverImage =
+        DemoImages.items[ad.id.hashCode.abs() % DemoImages.items.length];
 
     return Stack(
       children: [
@@ -130,14 +133,13 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
-                    // Background Image
-                    if (ad.images.isNotEmpty)
-                      Image.network(
-                        ad.images.first,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                            Container(color: const Color(0xFF2B2B2B)),
-                      ),
+                    // Background Image (Demo)
+                    Image.network(
+                      coverImage,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          Container(color: const Color(0xFF2B2B2B)),
+                    ),
 
                     // Gradient Overlay
                     Container(
