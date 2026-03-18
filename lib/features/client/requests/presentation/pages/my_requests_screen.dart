@@ -14,7 +14,6 @@ import 'package:ehtirafy_app/features/shared/auth/domain/entities/user_role.dart
 import 'package:ehtirafy_app/features/shared/profile/domain/entities/user_role.dart';
 import '../../data/repositories/requests_repository_impl.dart';
 import '../../domain/usecases/get_my_requests_usecase.dart';
-import 'package:ehtirafy_app/features/client/contract/domain/usecases/update_contract_status_usecase.dart';
 import '../cubit/requests_cubit.dart';
 import '../cubit/requests_state.dart';
 import '../../../booking/presentation/widgets/request_card.dart';
@@ -152,14 +151,9 @@ class MyRequestsScreen extends StatelessWidget {
                                             onPayPressed:
                                                 request.isPaymentRequired
                                                 ? () {
-                                                    context
-                                                        .read<RequestsCubit>()
-                                                        .payContract(
-                                                          request.id.toString(),
-                                                          sl<
-                                                            UpdateContractStatusUseCase
-                                                          >(),
-                                                        );
+                                                    context.push(
+                                                      '/payment/bank-details/${request.id}',
+                                                    );
                                                   }
                                                 : null,
                                           );

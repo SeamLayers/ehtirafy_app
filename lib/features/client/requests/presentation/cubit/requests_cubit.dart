@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ehtirafy_app/features/client/contract/domain/usecases/update_contract_status_usecase.dart';
 import '../../domain/entities/request_entity.dart';
 import '../../domain/usecases/get_my_requests_usecase.dart';
 import 'requests_state.dart';
@@ -66,22 +65,4 @@ class RequestsCubit extends Cubit<RequestsState> {
     }
   }
 
-  /// Pay a contract by updating its status to 'Paid'
-  Future<void> payContract(
-    String contractId,
-    UpdateContractStatusUseCase updateContractStatusUseCase,
-  ) async {
-    final result = await updateContractStatusUseCase(
-      id: contractId,
-      status: 'Paid',
-      isPhotographer: false, // Customer action
-    );
-
-    result.fold((failure) => emit(RequestsError(failure.message)), (
-      success,
-    ) async {
-      // Refresh the list after successful payment
-      await getRequests();
-    });
-  }
 }
