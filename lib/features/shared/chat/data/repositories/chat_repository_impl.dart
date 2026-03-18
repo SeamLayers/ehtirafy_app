@@ -26,6 +26,21 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
+  Stream<Either<Failure, List<ConversationEntity>>> watchConversations({
+    String userType = 'customer',
+  }) async* {
+    try {
+      await for (final conversations in remoteDataSource.watchConversations(
+        userType: userType,
+      )) {
+        yield Right(conversations);
+      }
+    } catch (e) {
+      yield Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, List<MessageEntity>>> getMessages(
     String chatId, {
     String userType = 'customer',
@@ -38,6 +53,23 @@ class ChatRepositoryImpl implements ChatRepository {
       return Right(messages);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Stream<Either<Failure, List<MessageEntity>>> watchMessages(
+    String chatId, {
+    String userType = 'customer',
+  }) async* {
+    try {
+      await for (final messages in remoteDataSource.watchMessages(
+        chatId,
+        userType: userType,
+      )) {
+        yield Right(messages);
+      }
+    } catch (e) {
+      yield Left(ServerFailure(e.toString()));
     }
   }
 

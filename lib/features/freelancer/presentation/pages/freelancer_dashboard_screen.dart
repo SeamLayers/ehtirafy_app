@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import '../cubit/freelancer_dashboard_cubit.dart';
 import '../cubit/freelancer_dashboard_state.dart';
 import '../widgets/stat_card.dart';
@@ -341,13 +342,12 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
           fit: StackFit.expand,
           children: [
             // Image
-            Image.network(
-              item.image ?? '',
+            AppCachedNetworkImage(
+              imageUrl: item.image ?? '',
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                color: const Color(0xFFF5F5F5),
-                child: Icon(Icons.image, color: Colors.grey, size: 32.sp),
-              ),
+              memCacheWidth: 384,
+              memCacheHeight: 384,
+              errorWidget: Icon(Icons.image, color: Colors.grey, size: 32.sp),
             ),
             // Gradient overlay
             Positioned.fill(
@@ -508,27 +508,17 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
-                child: Image.network(
-                  gig.coverImage,
+                child: AppCachedNetworkImage(
+                  imageUrl: gig.coverImage,
                   width: double.infinity,
                   height: 80.h,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
-                    width: double.infinity,
-                    height: 80.h,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.primary.withValues(alpha: 0.1),
-                          AppColors.gold.withValues(alpha: 0.1),
-                        ],
-                      ),
-                    ),
-                    child: Icon(
-                      Icons.camera_alt,
-                      size: 32.sp,
-                      color: AppColors.primary,
-                    ),
+                  memCacheWidth: 440,
+                  memCacheHeight: 160,
+                  errorWidget: Icon(
+                    Icons.camera_alt,
+                    size: 32.sp,
+                    color: AppColors.primary,
                   ),
                 ),
               ),

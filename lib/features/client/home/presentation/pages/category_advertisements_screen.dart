@@ -7,12 +7,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/core/constants/demo_images.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_entity.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/category_advertisements_cubit.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/category_advertisements_state.dart';
 
-class CategoryAdvertisementsScreen extends StatelessWidget {
+class CategoryAdvertisementsScreen extends StatefulWidget {
   final String categoryId;
   final String categoryName;
 
@@ -23,12 +24,36 @@ class CategoryAdvertisementsScreen extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    context.read<CategoryAdvertisementsCubit>().loadAdvertisements(
-      categoryId: categoryId,
-      categoryName: categoryName,
-    );
+  State<CategoryAdvertisementsScreen> createState() =>
+      _CategoryAdvertisementsScreenState();
+}
 
+class _CategoryAdvertisementsScreenState extends State<CategoryAdvertisementsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<CategoryAdvertisementsCubit>().loadAdvertisements(
+        categoryId: widget.categoryId,
+        categoryName: widget.categoryName,
+      );
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant CategoryAdvertisementsScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.categoryId != widget.categoryId ||
+        oldWidget.categoryName != widget.categoryName) {
+      context.read<CategoryAdvertisementsCubit>().loadAdvertisements(
+        categoryId: widget.categoryId,
+        categoryName: widget.categoryName,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light.copyWith(
         statusBarColor: Colors.transparent,
@@ -114,7 +139,7 @@ class CategoryAdvertisementsScreen extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
           Text(
-            categoryName,
+            widget.categoryName,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,
@@ -284,8 +309,8 @@ class CategoryAdvertisementsScreen extends StatelessWidget {
           GestureDetector(
             onTap: () {
               context.read<CategoryAdvertisementsCubit>().loadAdvertisements(
-                categoryId: categoryId,
-                categoryName: categoryName,
+                categoryId: widget.categoryId,
+                categoryName: widget.categoryName,
               );
             },
             child: Container(
@@ -356,10 +381,12 @@ class _PremiumServiceCard extends StatelessWidget {
                   child: SizedBox(
                     height: 160.h,
                     width: double.infinity,
-                    child: Image.network(
-                      imageUrl,
+                    child: AppCachedNetworkImage(
+                      imageUrl: imageUrl,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => _buildImagePlaceholder(),
+                      memCacheWidth: 800,
+                      memCacheHeight: 420,
+                      errorWidget: _buildImagePlaceholder(),
                     ),
                   ),
                 ),

@@ -75,14 +75,14 @@ class ContractDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildContent(BuildContext context, ContractDetailsEntity contract) {
-    if (contract.status == ContractStatus.underReview) {
+    if (contract.status == ContractStatus.pending) {
       return SingleChildScrollView(
         padding: EdgeInsets.all(16.w),
         child: ContractUnderReviewCard(contract: contract),
       );
     }
 
-    if (contract.status == ContractStatus.awaitingPayment) {
+    if (contract.status == ContractStatus.pendingPayment) {
       return OrderDetailsAwaitingPaymentView(contract: contract);
     }
 

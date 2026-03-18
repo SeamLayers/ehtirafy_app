@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import '../cubit/freelancer_portfolio_cubit.dart';
 import '../cubit/freelancer_portfolio_state.dart';
@@ -191,12 +192,12 @@ class PortfolioScreen extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   color: const Color(0xFFF5F5F5),
-                  child: Image.network(
-                    item.image ?? 'https://picsum.photos/400/400', // Fallback
+                  child: AppCachedNetworkImage(
+                    imageUrl: item.image ?? 'https://picsum.photos/400/400',
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Center(
-                      child: Icon(Icons.image, color: Colors.grey, size: 32.sp),
-                    ),
+                    memCacheWidth: 512,
+                    memCacheHeight: 512,
+                    errorWidget: Icon(Icons.image, color: Colors.grey, size: 32.sp),
                   ),
                 ),
               ),

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/demo_images.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import '../cubits/work_details_cubit.dart';
 import '../cubits/work_details_state.dart';
 
@@ -125,10 +126,11 @@ class WorkDetailsScreen extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 // Background Image (Demo)
-                Image.network(
-                  coverImage,
+                AppCachedNetworkImage(
+                  imageUrl: coverImage,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => _buildPlaceholderBg(),
+                  memCacheWidth: 1200,
+                  memCacheHeight: 700,
                 ),
                 // Gradient Overlay
                 Container(
@@ -274,20 +276,17 @@ class WorkDetailsScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return ClipRRect(
                           borderRadius: BorderRadius.circular(12.r),
-                          child: Image.network(
-                            work.images[index],
+                          child: AppCachedNetworkImage(
+                            imageUrl: work.images[index],
                             width: 150.w,
                             height: 120.h,
                             fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Container(
-                              width: 150.w,
-                              height: 120.h,
-                              color: AppColors.grey200,
-                              child: Icon(
-                                Icons.image_outlined,
-                                color: AppColors.textSecondary,
-                                size: 32.sp,
-                              ),
+                            memCacheWidth: 400,
+                            memCacheHeight: 320,
+                            errorWidget: Icon(
+                              Icons.image_outlined,
+                              color: AppColors.textSecondary,
+                              size: 32.sp,
                             ),
                           ),
                         );

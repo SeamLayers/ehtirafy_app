@@ -1,69 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:ehtirafy_app/features/shared/contracts/domain/entities/contract_status.dart';
 
-/// Enum for contract status mapping from API to UI
-enum ContractStatus {
-  pending,               // Freelancer hasn't accepted yet
-  pendingPayment,        // Freelancer accepted, waiting for customer payment
-  awaitingAdminReview,   // Payment proof submitted, awaiting admin verification
-  inProgress,            // Admin approved payment, contract is active
-  completed,
-  cancelled,
-  rejected,
-  archived;
-
-  /// Get Arabic display name for UI badges
-  String get displayName {
-    switch (this) {
-      case ContractStatus.pending:
-        return 'قيد الانتظار';
-      case ContractStatus.pendingPayment:
-        return 'بانتظار الدفع';
-      case ContractStatus.awaitingAdminReview:
-        return 'بانتظار تحقق الإدارة';
-      case ContractStatus.inProgress:
-        return 'جاري التنفيذ';
-      case ContractStatus.completed:
-        return 'مكتمل';
-      case ContractStatus.cancelled:
-        return 'ملغي';
-      case ContractStatus.rejected:
-        return 'مرفوض';
-      case ContractStatus.archived:
-        return 'مؤرشف';
-    }
-  }
-
-  /// Parse from API string value
-  static ContractStatus fromString(String? value) {
-    switch (value?.toLowerCase()) {
-      case 'pending':
-        return ContractStatus.pending;
-      case 'pendingpayment':
-      case 'pending_payment':
-      case 'awaiting_payment':
-        return ContractStatus.pendingPayment;
-      case 'awaitingadminreview':
-      case 'awaiting_admin_review':
-      case 'underreview':
-      case 'under_review':
-        return ContractStatus.awaitingAdminReview;
-      case 'inprogress':
-      case 'in_progress':
-      case 'active':
-        return ContractStatus.inProgress;
-      case 'completed':
-        return ContractStatus.completed;
-      case 'cancelled':
-        return ContractStatus.cancelled;
-      case 'rejected':
-        return ContractStatus.rejected;
-      case 'archived':
-        return ContractStatus.archived;
-      default:
-        return ContractStatus.pending;
-    }
-  }
-}
+export 'package:ehtirafy_app/features/shared/contracts/domain/entities/contract_status.dart';
 
 class ContractEntity extends Equatable {
   final int id;

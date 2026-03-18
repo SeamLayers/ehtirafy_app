@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import '../../domain/entities/freelancer_order_entity.dart';
 
 class FreelancerOrderCard extends StatelessWidget {
@@ -116,13 +117,12 @@ class FreelancerOrderCard extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8.r),
-        child: Image.network(
-          order.clientImage,
+        child: AppCachedNetworkImage(
+          imageUrl: order.clientImage,
           fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => Container(
-            color: const Color(0xFFF5F5F5),
-            child: Icon(Icons.person, color: Colors.grey, size: 24.sp),
-          ),
+          memCacheWidth: 192,
+          memCacheHeight: 192,
+          errorWidget: Icon(Icons.person, color: Colors.grey, size: 24.sp),
         ),
       ),
     );

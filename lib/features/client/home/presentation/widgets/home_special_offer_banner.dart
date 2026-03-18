@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:go_router/go_router.dart';
 import '../../../../../../core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 
 class HomeSpecialOfferBanner extends StatelessWidget {
   const HomeSpecialOfferBanner({super.key});
@@ -22,11 +23,11 @@ class HomeSpecialOfferBanner extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             // Background image
-            Image.network(
-              'https://picsum.photos/seed/specialoffer/400/200',
+            AppCachedNetworkImage(
+              imageUrl: 'https://picsum.photos/seed/specialoffer/400/200',
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) =>
-                  Container(color: AppColors.primary.withValues(alpha: 0.3)),
+              memCacheWidth: 800,
+              memCacheHeight: 400,
             ),
             // Blur overlay for better text visibility
             BackdropFilter(

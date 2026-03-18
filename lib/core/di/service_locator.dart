@@ -116,6 +116,9 @@ import 'package:ehtirafy_app/features/shared/reviews/domain/repositories/reviews
 import 'package:ehtirafy_app/features/shared/reviews/domain/usecases/add_rate_usecase.dart';
 import 'package:ehtirafy_app/features/shared/reviews/domain/usecases/get_user_rates_usecase.dart';
 import 'package:ehtirafy_app/features/shared/reviews/presentation/cubits/reviews_cubit.dart';
+import 'package:ehtirafy_app/core/di/locators/shared_chat_locator.dart';
+import 'package:ehtirafy_app/core/di/locators/client_payment_locator.dart';
+import 'package:ehtirafy_app/core/di/locators/auth_locator.dart';
 
 final sl = GetIt.instance;
 
@@ -126,55 +129,9 @@ Future<void> setupLocator() async {
     sl.registerSingleton<SharedPreferences>(sharedPreferences);
   }
 
-  // Data layer
-  sl.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthRemoteDataSourceImpl(sl()),
-  );
-  sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(sl(), sl()),
-  );
-  sl.registerLazySingleton<RoleRepository>(() => RoleRepositoryImpl());
-
   // Network
   sl.registerLazySingleton<DioClient>(() => DioClient());
-
-  // Domain layer
-  sl.registerFactory<LoginUseCase>(() => LoginUseCase(sl<AuthRepository>()));
-  sl.registerLazySingleton<SignupUseCase>(
-    () => SignupUseCase(sl<AuthRepository>()),
-  );
-  sl.registerFactory<ForgotPasswordUseCase>(
-    () => ForgotPasswordUseCase(sl<AuthRepository>()),
-  );
-  sl.registerFactory<SendOtpUseCase>(
-    () => SendOtpUseCase(sl<AuthRepository>()),
-  );
-  sl.registerFactory<GetRoleUseCase>(() => GetRoleUseCase(sl()));
-  sl.registerFactory<SetRoleUseCase>(() => SetRoleUseCase(sl()));
-
-  // Presentation layer
-  sl.registerFactory<LoginCubit>(() => LoginCubit(sl<LoginUseCase>()));
-  sl.registerFactory<SignupCubit>(
-    () => SignupCubit(sl<SignupUseCase>(), sl<SendOtpUseCase>()),
-  );
-  sl.registerFactory<ForgotPasswordCubit>(
-    () => ForgotPasswordCubit(sl<ForgotPasswordUseCase>()),
-  );
-  sl.registerFactory<OtpCubit>(() => OtpCubit());
-  sl.registerLazySingleton<RoleCubit>(
-    () => RoleCubit(sl<GetRoleUseCase>(), sl<SetRoleUseCase>()),
-  );
-  sl.registerLazySingleton<UserLocalDataSource>(
-    () => UserLocalDataSourceImpl(sharedPreferences: sl()),
-  );
-
-  // Splash
-  sl.registerFactory<SplashCubit>(
-    () => SplashCubit(
-      userLocalDataSource: sl<UserLocalDataSource>(),
-      getRoleUseCase: sl<GetRoleUseCase>(),
-    ),
-  );
+  sl.registerAuthDependencies();
 
   // Features - Notifications
   sl.registerFactory(
@@ -280,23 +237,9 @@ Future<void> setupLocator() async {
   );
 
   // Features - Chat
-  sl.registerFactory(
-    () => ChatCubit(
-      getConversationsUseCase: sl(),
-      getMessagesUseCase: sl(),
-      sendMessageUseCase: sl(),
-    ),
-  );
-  sl.registerLazySingleton(() => GetConversationsUseCase(sl()));
-  sl.registerLazySingleton(() => GetMessagesUseCase(sl()));
-  sl.registerLazySingleton(() => SendMessageUseCase(sl()));
+  sl.registerSharedChatDependencies();
   sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
-
-  sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(sl()));
-  sl.registerLazySingleton<ChatRemoteDataSource>(
-    () => ChatRemoteDataSourceImpl(dioClient: sl()),
-  );
 
   // Features - Profile
   sl.registerFactory(
@@ -400,18 +343,5 @@ Future<void> setupLocator() async {
   );
 
   // Features - Payment (Bank Details & Payment Proof)
-  sl.registerFactory(
-    () => BankDetailsCubit(sl()),
-  );
-  sl.registerFactory(
-    () => PaymentProofCubit(sl()),
-  );
-  sl.registerLazySingleton(() => GetBankAccountDetailsUseCase(sl()));
-  sl.registerLazySingleton(() => SubmitPaymentProofUseCase(sl()));
-  sl.registerLazySingleton<PaymentRepository>(
-    () => PaymentRepositoryImpl(sl()),
-  );
-  sl.registerLazySingleton<PaymentRemoteDataSource>(
-    () => PaymentRemoteDataSourceImpl(sl()),
-  );
+  sl.registerClientPaymentDependencies();
 }

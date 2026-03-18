@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_entity.dart';
 import 'package:ehtirafy_app/core/constants/demo_images.dart';
 
@@ -93,21 +94,17 @@ class _PhotographerCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12.r),
-              child: Image.network(
-                imageUrl,
+              child: AppCachedNetworkImage(
+                imageUrl: imageUrl,
                 width: 80.w,
                 height: 80.w,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  width: 80.w,
-                  height: 80.w,
-                  color: AppColors.grey200,
-                  alignment: Alignment.center,
-                  child: Icon(
-                    Icons.person_outline,
-                    color: AppColors.grey500,
-                    size: 28.sp,
-                  ),
+                memCacheWidth: 320,
+                memCacheHeight: 320,
+                errorWidget: Icon(
+                  Icons.person_outline,
+                  color: AppColors.grey500,
+                  size: 28.sp,
                 ),
               ),
             ),

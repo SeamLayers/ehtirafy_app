@@ -10,9 +10,9 @@
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">false</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
-        <item name="android:windowSplashScreenBackground">#1C1D18</item>
+        <item name="android:windowSplashScreenBackground">#121212</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/android12splash</item>
-        <item name="android:windowSplashScreenIconBackgroundColor">#1C1D18</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">#121212</item>
     </style>
     <!-- Theme applied after splash screen is dismissed -->
     <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">

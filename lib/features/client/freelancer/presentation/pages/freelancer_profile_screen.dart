@@ -18,6 +18,7 @@ import 'package:ehtirafy_app/features/client/freelancer/presentation/widgets/rev
 import 'package:ehtirafy_app/features/client/freelancer/presentation/widgets/reviews_summary_widget.dart';
 import 'package:ehtirafy_app/features/client/freelancer/presentation/widgets/service_card.dart';
 import 'package:ehtirafy_app/features/client/freelancer/domain/entities/freelancer_entity.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/core/widgets/empty_state_widget.dart';
 import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
 
@@ -231,11 +232,11 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
       fit: StackFit.expand,
       children: [
         // Background Image
-        Image.network(
-          'https://picsum.photos/seed/profilebg/800/400',
+        AppCachedNetworkImage(
+          imageUrl: 'https://picsum.photos/seed/profilebg/800/400',
           fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) =>
-              Container(color: const Color(0xFF2B2B2B)),
+          memCacheWidth: 1200,
+          memCacheHeight: 600,
         ),
         // Gradient Overlay
         Container(
@@ -274,16 +275,15 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.r),
-                  child: Image.network(
-                    freelancer.imageUrl,
+                  child: AppCachedNetworkImage(
+                    imageUrl: freelancer.imageUrl,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      color: AppColors.grey200,
-                      child: Icon(
-                        Icons.person,
-                        color: AppColors.textSecondary,
-                        size: 32.sp,
-                      ),
+                    memCacheWidth: 256,
+                    memCacheHeight: 256,
+                    errorWidget: Icon(
+                      Icons.person,
+                      color: AppColors.textSecondary,
+                      size: 32.sp,
                     ),
                   ),
                 ),

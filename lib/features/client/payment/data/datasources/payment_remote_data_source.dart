@@ -22,17 +22,19 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
 
   PaymentRemoteDataSourceImpl(this._dioClient);
 
+  static const BankAccountModel _officialBankAccount = BankAccountModel(
+    accountName: 'مصرف الراجحي',
+    bankName: 'مصرف الراجحي',
+    accountNumber: '609000010006086201357',
+    iban: 'SA3380000609608016201357',
+    swiftCode: null,
+    branchCode: null,
+  );
+
   @override
   Future<BankAccountModel> getBankAccountDetails() async {
-    try {
-      final response = await _dioClient.get(ApiConstants.bankAccountDetails);
-      final data = response.data['data'] ?? response.data;
-      return BankAccountModel.fromJson(data);
-    } on DioException catch (e) {
-      throw ServerException(
-        e.response?.data['message'] ?? 'فشل في جلب تفاصيل الحساب البنكي',
-      );
-    }
+    // Client-approved official transfer details are intentionally hardcoded.
+    return _officialBankAccount;
   }
 
   @override

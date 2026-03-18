@@ -1,15 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:ehtirafy_app/features/shared/contracts/domain/entities/contract_status.dart';
 
-enum ContractStatus {
-  pending,                // Freelancer hasn't accepted yet
-  pendingPayment,         // Freelancer accepted, waiting for customer payment
-  awaitingAdminReview,   // Payment proof submitted, awaiting admin verification
-  inProgress,            // Admin approved payment, contract is active
-  completed,
-  cancelled,
-  rejected,
-  archived,
-}
+export 'package:ehtirafy_app/features/shared/contracts/domain/entities/contract_status.dart';
 
 class ContractDetailsEntity extends Equatable {
   final String id;

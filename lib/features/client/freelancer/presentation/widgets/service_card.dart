@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 
 class ServiceCard extends StatelessWidget {
   final String id;
@@ -47,17 +48,14 @@ class ServiceCard extends StatelessWidget {
             if (imageUrl != null && imageUrl!.isNotEmpty) ...[
               ClipRRect(
                 borderRadius: BorderRadius.circular(12.r),
-                child: Image.network(
-                  imageUrl!,
+                child: AppCachedNetworkImage(
+                  imageUrl: imageUrl!,
                   width: 80.w,
                   height: 80.w,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    width: 80.w,
-                    height: 80.w,
-                    color: Colors.grey[200],
-                    child: Icon(Icons.broken_image, color: Colors.grey[400]),
-                  ),
+                  memCacheWidth: 320,
+                  memCacheHeight: 320,
+                  errorWidget: Icon(Icons.broken_image, color: Colors.grey[400]),
                 ),
               ),
               SizedBox(width: 16.w),

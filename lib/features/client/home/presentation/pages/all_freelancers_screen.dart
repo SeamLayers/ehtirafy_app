@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/demo_images.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_entity.dart';
 import '../cubits/all_freelancers_cubit.dart';
 import '../cubits/all_freelancers_state.dart';
@@ -349,10 +350,12 @@ class _FreelancerCard extends StatelessWidget {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(11.r),
-                        child: Image.network(
-                          imageUrl,
+                        child: AppCachedNetworkImage(
+                          imageUrl: imageUrl,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Icon(
+                          memCacheWidth: 280,
+                          memCacheHeight: 280,
+                          errorWidget: Icon(
                             Icons.person,
                             color: AppColors.textSecondary,
                             size: 32.sp,

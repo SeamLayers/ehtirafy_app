@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/widgets/cards/request_card_base.dart';
 import 'package:ehtirafy_app/features/client/requests/domain/entities/request_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,57 +16,15 @@ class RequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        context.push('/contract/${request.id}');
-      },
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0x0D000000),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-              spreadRadius: 0,
-            ),
-          ],
-          border: Border.all(color: const Color(0xFFF2F2F2)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildPhotographerImage(),
-                SizedBox(width: 16.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildServiceName(context),
-                      SizedBox(height: 8.h),
-                      _buildPhotographerName(context),
-                      SizedBox(height: 8.h),
-                      _buildStatusAndPrice(context),
-                      SizedBox(height: 8.h),
-                      _buildTimeAgo(context),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16.h),
-            _buildActionButton(context),
-          ],
-        ),
-      ),
+    return RequestCardBase(
+      onTap: () => context.push('/contract/${request.id}'),
+      avatar: _buildPhotographerImage(),
+      title: _buildServiceName(context),
+      subtitle: _buildPhotographerName(context),
+      statusBadge: _buildStatusBadge(context),
+      price: _buildPrice(context),
+      timeAgo: _buildTimeAgo(context),
+      footer: _buildActionButton(context),
     );
   }
 
@@ -94,13 +53,6 @@ class RequestCard extends StatelessWidget {
         fontWeight: FontWeight.w400,
         height: 1.43,
       ),
-    );
-  }
-
-  Widget _buildStatusAndPrice(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [_buildStatusBadge(context), _buildPrice(context)],
     );
   }
 

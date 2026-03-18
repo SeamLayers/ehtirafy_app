@@ -10,7 +10,14 @@ abstract class ChatRemoteDataSource {
   Future<List<ConversationModel>> getConversations({
     String userType = 'customer',
   });
+  Stream<List<ConversationModel>> watchConversations({
+    String userType = 'customer',
+  });
   Future<List<MessageModel>> getMessages(
+    String contractId, {
+    String userType = 'customer',
+  });
+  Stream<List<MessageModel>> watchMessages(
     String contractId, {
     String userType = 'customer',
   });
@@ -104,6 +111,14 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   }
 
   @override
+  Stream<List<ConversationModel>> watchConversations({
+    String userType = 'customer',
+  }) {
+    // Firebase migration hook: swap this with realtime database stream.
+    return Stream.fromFuture(getConversations(userType: userType));
+  }
+
+  @override
   Future<List<MessageModel>> getMessages(
     String contractId, {
     String userType = 'customer',
@@ -176,6 +191,17 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       if (e is ServerException) rethrow;
       throw ServerException(e.toString());
     }
+  }
+
+  @override
+  Stream<List<MessageModel>> watchMessages(
+    String contractId, {
+    String userType = 'customer',
+  }) {
+    // Firebase migration hook: swap this with realtime database stream.
+    return Stream.fromFuture(
+      getMessages(contractId, userType: userType),
+    );
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../domain/entities/conversation_entity.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 
 class ConversationTile extends StatelessWidget {
   final ConversationEntity conversation;
@@ -128,10 +129,12 @@ class _AvatarImage extends StatelessWidget {
     if (url.isEmpty) {
       return _fallback();
     }
-    return Image.network(
-      url,
+    return AppCachedNetworkImage(
+      imageUrl: url,
       fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) => _fallback(),
+      memCacheWidth: 160,
+      memCacheHeight: 160,
+      errorWidget: _fallback(),
     );
   }
 

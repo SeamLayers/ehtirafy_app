@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
-import 'package:ehtirafy_app/core/errors/failures.dart';
+import 'package:ehtirafy_app/core/error/failures.dart';
 import 'package:ehtirafy_app/features/client/search/domain/usecases/search_usecase.dart';
 import 'package:ehtirafy_app/features/client/search/presentation/cubits/search_state.dart';
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import '../../domain/entities/gig_entity.dart';
 
 class GigCard extends StatelessWidget {
@@ -46,30 +47,17 @@ class GigCard extends StatelessWidget {
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(16.r),
                   ),
-                  child: Image.network(
-                    gig.coverImage,
+                  child: AppCachedNetworkImage(
+                    imageUrl: gig.coverImage,
                     width: double.infinity,
                     height: 120.h,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      width: double.infinity,
-                      height: 120.h,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.primary.withValues(alpha: 0.1),
-                            AppColors.gold.withValues(alpha: 0.1),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(16.r),
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.camera_alt,
-                        color: AppColors.primary,
-                        size: 40.sp,
-                      ),
+                    memCacheWidth: 640,
+                    memCacheHeight: 360,
+                    errorWidget: Icon(
+                      Icons.camera_alt,
+                      color: AppColors.primary,
+                      size: 40.sp,
                     ),
                   ),
                 ),

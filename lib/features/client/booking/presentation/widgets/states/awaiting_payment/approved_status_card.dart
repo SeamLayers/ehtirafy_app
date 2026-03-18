@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/entities/contract_details_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -111,17 +112,11 @@ class ApprovedStatusCard extends StatelessWidget {
                 child:
                     (contract.photographerImage.isNotEmpty &&
                         contract.photographerImage.startsWith('http'))
-                    ? Image.network(
-                        contract.photographerImage,
+                    ? AppCachedNetworkImage(
+                        imageUrl: contract.photographerImage,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
-                          color: const Color(0xFFECECEC),
-                          child: Icon(
-                            Icons.person_outline,
-                            color: AppColors.textSecondary,
-                            size: 28.r,
-                          ),
-                        ),
+                        memCacheWidth: 256,
+                        memCacheHeight: 256,
                       )
                     : Container(
                         color: const Color(0xFFECECEC),

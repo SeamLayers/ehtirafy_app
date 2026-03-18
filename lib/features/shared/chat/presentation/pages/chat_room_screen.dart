@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import '../../domain/entities/conversation_entity.dart';
 import '../../domain/entities/message_entity.dart';
 import '../cubit/chat_cubit.dart';
@@ -91,16 +92,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 clipBehavior: Clip.antiAlias,
-                child: Image.network(
-                  widget.conversation.otherUserImage,
+                child: AppCachedNetworkImage(
+                  imageUrl: widget.conversation.otherUserImage,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
-                    color: const Color(0xFF3A3A3A),
-                    child: Icon(
-                      Icons.person_outline,
-                      color: Colors.white70,
-                      size: 22.r,
-                    ),
+                  memCacheWidth: 160,
+                  memCacheHeight: 160,
+                  errorWidget: Icon(
+                    Icons.person_outline,
+                    color: Colors.white70,
+                    size: 22.r,
                   ),
                 ),
               ),

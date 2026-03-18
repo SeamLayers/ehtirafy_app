@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import '../cubit/freelancer_portfolio_cubit.dart';
 import '../cubit/freelancer_portfolio_state.dart';
@@ -298,10 +299,12 @@ class _AddPortfolioItemScreenState extends State<AddPortfolioItemScreen> {
             : (_existingImageUrl != null && _existingImageUrl!.isNotEmpty)
             ? ClipRRect(
                 borderRadius: BorderRadius.circular(12.r),
-                child: Image.network(
-                  _existingImageUrl!,
+                child: AppCachedNetworkImage(
+                  imageUrl: _existingImageUrl!,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Column(
+                  memCacheWidth: 1024,
+                  memCacheHeight: 1024,
+                  errorWidget: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.broken_image, size: 32.sp, color: Colors.grey),

@@ -7,7 +7,14 @@ abstract class ChatRepository {
   Future<Either<Failure, List<ConversationEntity>>> getConversations({
     String userType = 'customer',
   });
+  Stream<Either<Failure, List<ConversationEntity>>> watchConversations({
+    String userType = 'customer',
+  });
   Future<Either<Failure, List<MessageEntity>>> getMessages(
+    String chatId, {
+    String userType = 'customer',
+  });
+  Stream<Either<Failure, List<MessageEntity>>> watchMessages(
     String chatId, {
     String userType = 'customer',
   });
