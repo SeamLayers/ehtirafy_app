@@ -17,20 +17,20 @@ class ChatInputBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(top: BorderSide(color: const Color(0xFFE5E5E5))),
+        border: Border(top: BorderSide(color: Color(0xFFE5E5E5))),
       ),
       child: Row(
         children: [
           Container(
             width: 40.w,
             height: 40.h,
-            decoration: BoxDecoration(
-              color: const Color(0xFFE5E5E5),
+            decoration: const BoxDecoration(
+              color: Color(0xFFE5E5E5),
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.attach_file, color: Colors.grey),
+            child: const Icon(Icons.attach_file, color: Colors.grey),
           ),
           SizedBox(width: 8.w),
           Expanded(
@@ -61,8 +61,8 @@ class ChatInputBar extends StatelessWidget {
             child: Container(
               width: 40.w,
               height: 40.h,
-              decoration: BoxDecoration(
-                color: const Color(0xFFC8A44F),
+              decoration: const BoxDecoration(
+                color: Color(0xFFC8A44F),
                 shape: BoxShape.circle,
               ),
               child: Icon(Icons.send, color: Colors.white, size: 20.sp),

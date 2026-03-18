@@ -84,7 +84,7 @@ class FreelancerDashboardRepositoryImpl
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } catch (e) {
-      return Left(ServerFailure('فشل في جلب معرض الأعمال'));
+      return const Left(ServerFailure('فشل في جلب معرض الأعمال'));
     }
   }
 
@@ -99,7 +99,7 @@ class FreelancerDashboardRepositoryImpl
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } catch (e) {
-      return Left(ServerFailure('فشل في جلب الخدمات'));
+      return const Left(ServerFailure('فشل في جلب الخدمات'));
     }
   }
 

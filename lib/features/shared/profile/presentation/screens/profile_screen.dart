@@ -19,7 +19,7 @@ class ProfileScreen extends StatelessWidget {
       body: ListView(
         padding: EdgeInsets.all(AppSpacing.lg),
         children: [
-          CircleAvatar(radius: 48, backgroundColor: AppColors.gold, child: Text('م')), // Placeholder
+          const CircleAvatar(radius: 48, backgroundColor: AppColors.gold, child: Text('م')), // Placeholder
           SizedBox(height: AppSpacing.md),
           Text(isClient ? AppStrings.profileClientRole.tr() : AppStrings.profileFreelancerRole.tr(), style: theme.textTheme.titleMedium),
           SizedBox(height: AppSpacing.lg),

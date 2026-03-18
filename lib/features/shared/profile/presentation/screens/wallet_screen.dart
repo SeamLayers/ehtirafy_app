@@ -25,7 +25,7 @@ class WalletScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        leading: RtlBackButton(color: Colors.white),
+        leading: const RtlBackButton(color: Colors.white),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(24.r),
@@ -51,11 +51,11 @@ class WalletScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.r),
                 ),
-                shadows: [
+                shadows: const [
                   BoxShadow(
-                    color: const Color(0x33C8A44F),
+                    color: Color(0x33C8A44F),
                     blurRadius: 20,
-                    offset: const Offset(0, 10),
+                    offset: Offset(0, 10),
                     spreadRadius: 0,
                   ),
                 ],

@@ -498,10 +498,10 @@ class AdvertisementDetailsScreen extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [const Color(0xFFD4AF37), const Color(0xFFC5A028)],
+          colors: [Color(0xFFD4AF37), Color(0xFFC5A028)],
         ),
         borderRadius: BorderRadius.circular(24.r),
         boxShadow: [

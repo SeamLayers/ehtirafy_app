@@ -14,7 +14,7 @@ class ProfileHeader extends StatelessWidget {
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: const Color(0xFFE5E5E5)),
+          side: const BorderSide(width: 1, color: Color(0xFFE5E5E5)),
           borderRadius: BorderRadius.circular(14.r),
         ),
       ),
@@ -36,17 +36,17 @@ class ProfileHeader extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.r),
                 ),
-                shadows: [
+                shadows: const [
                   BoxShadow(
-                    color: const Color(0x19000000),
+                    color: Color(0x19000000),
                     blurRadius: 6,
-                    offset: const Offset(0, 4),
+                    offset: Offset(0, 4),
                     spreadRadius: -4,
                   ),
                   BoxShadow(
-                    color: const Color(0x19000000),
+                    color: Color(0x19000000),
                     blurRadius: 15,
-                    offset: const Offset(0, 10),
+                    offset: Offset(0, 10),
                     spreadRadius: -3,
                   ),
                 ],

@@ -261,7 +261,7 @@ class _AddPortfolioItemScreenState extends State<AddPortfolioItemScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide(color: AppColors.primary),
+              borderSide: const BorderSide(color: AppColors.primary),
             ),
           ),
         ),

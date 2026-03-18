@@ -1131,7 +1131,7 @@ class _FreelancerOrderDetailsScreenState
               decoration: ShapeDecoration(
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 2, color: AppColors.primary),
+                  side: const BorderSide(width: 2, color: AppColors.primary),
                   borderRadius: BorderRadius.circular(14.r),
                 ),
               ),
@@ -1185,7 +1185,7 @@ class _FreelancerOrderDetailsScreenState
                         },
                         child: Text(
                           AppStrings.cancel.tr(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontFamily: 'Cairo',
                             color: AppColors.grey500,
                             fontWeight: FontWeight.bold,
@@ -1202,7 +1202,7 @@ class _FreelancerOrderDetailsScreenState
                           );
                           Navigator.of(dialogContext).pop(); // Close dialog
                         },
-                        child: Text(
+                        child: const Text(
                           'تأكيد',
                           style: TextStyle(
                             fontFamily: 'Cairo',

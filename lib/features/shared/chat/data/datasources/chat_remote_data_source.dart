@@ -2,6 +2,7 @@ import 'package:ehtirafy_app/core/network/dio_client.dart';
 import 'package:ehtirafy_app/core/errors/exceptions.dart';
 import 'package:ehtirafy_app/features/client/contract/data/models/contract_model.dart';
 import 'package:ehtirafy_app/core/network/api_constants.dart';
+import 'package:dio/dio.dart';
 
 import '../models/conversation_model.dart';
 import '../models/message_model.dart';
@@ -45,6 +46,12 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       final response = await dioClient.get(
         '/api/v1/front/contracts-relative',
         queryParameters: {'user_type': userType},
+        options: Options(
+          extra: {
+            'disableCache': true,
+            'cache_ttl': Duration.zero,
+          },
+        ),
       );
 
       final data = response.data;

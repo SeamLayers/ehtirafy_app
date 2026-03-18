@@ -60,7 +60,7 @@ class WorkStagesList extends StatelessWidget {
               Container(
                 width: 12.w,
                 height: 12.w,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: AppColors.primary,
                   shape: BoxShape.circle,
                 ),

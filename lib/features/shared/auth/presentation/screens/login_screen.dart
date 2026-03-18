@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
@@ -50,7 +49,7 @@ class _LoginView extends StatelessWidget {
                   subtitle: AppStrings.authLoginSubtitle.tr(),
                 ),
                 SizedBox(height: 24.h),
-                _LoginForm(),
+                const _LoginForm(),
                 SizedBox(height: 24.h),
                 SizedBox(height: 24.h),
                 // _SocialDivider(),
@@ -211,87 +210,3 @@ class _LoginFormState extends State<_LoginForm> {
   }
 }
 
-class _SocialDivider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Row(
-      children: [
-        Expanded(
-          child: Divider(color: AppColors.grey300, thickness: 1.h),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.w),
-          child: Text(
-            AppStrings.authOr.tr(),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: AppColors.grey600,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Divider(color: AppColors.grey300, thickness: 1.h),
-        ),
-      ],
-    );
-  }
-}
-
-class _SocialButtons extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _OutlinedIconButton(
-          iconAsset: 'assets/icons/google.svg',
-          label: AppStrings.authLoginGoogle.tr(),
-          onPressed: () {},
-        ),
-        SizedBox(height: 12.h),
-        _OutlinedIconButton(
-          iconAsset: 'assets/icons/apple.svg',
-          label: AppStrings.authLoginApple.tr(),
-          onPressed: () {},
-        ),
-      ],
-    );
-  }
-}
-
-class _OutlinedIconButton extends StatelessWidget {
-  final String iconAsset;
-  final String label;
-  final VoidCallback onPressed;
-
-  const _OutlinedIconButton({
-    required this.iconAsset,
-    required this.label,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return SizedBox(
-      width: double.infinity,
-      height: 48.h,
-      child: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          side: BorderSide(color: AppColors.grey300, width: 2.w),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14.r),
-          ),
-        ),
-        onPressed: onPressed,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset(iconAsset, width: 16.w, height: 16.w),
-            SizedBox(width: 12.w),
-            Text(label, style: theme.textTheme.titleMedium),
-          ],
-        ),
-      ),
-    );
-  }
-}

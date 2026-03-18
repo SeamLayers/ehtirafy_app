@@ -195,7 +195,7 @@ class _SignupFormState extends State<_SignupForm> {
                           '+${_selectedCountry.dialCode}',
                           style: theme.textTheme.bodyMedium,
                         ),
-                        Icon(Icons.arrow_drop_down, color: AppColors.grey600),
+                        const Icon(Icons.arrow_drop_down, color: AppColors.grey600),
                       ],
                     ),
                   ),

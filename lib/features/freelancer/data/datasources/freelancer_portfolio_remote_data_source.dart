@@ -55,7 +55,7 @@ class FreelancerPortfolioRemoteDataSourceImpl
       if (responseData is Map<String, dynamic>) {
         return PortfolioItemModel.fromJson(responseData);
       }
-      throw ServerException('صيغة الاستجابة غير صالحة');
+      throw const ServerException('صيغة الاستجابة غير صالحة');
     } else {
       throw ServerException(data['message'] ?? 'خطأ غير معروف');
     }

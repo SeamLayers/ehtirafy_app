@@ -11,7 +11,7 @@ class AppTheme {
       brightness: Brightness.light,
 
       // Color scheme
-      colorScheme: ColorScheme.light(
+      colorScheme: const ColorScheme.light(
         primary: AppColors.gold,
         secondary: AppColors.dark,
         surface: AppColors.backgroundLight,
@@ -220,7 +220,7 @@ class AppTheme {
       brightness: Brightness.dark,
 
       // Color scheme
-      colorScheme: ColorScheme.dark(
+      colorScheme: const ColorScheme.dark(
         primary: AppColors.gold,
         secondary: AppColors.gold,
         surface: AppColors.backgroundDark,

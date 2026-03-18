@@ -54,12 +54,12 @@ class ContractRemoteDataSourceImpl implements ContractRemoteDataSource {
         'actual_amount': '150.0',
         'created_at': DateTime.now().toIso8601String(),
         'updated_at': DateTime.now().toIso8601String(),
-        'advertisement': {
+        'advertisement': const {
           'title': {'en': 'Test Service', 'ar': 'تجربة'},
           'category_id': 1,
         },
-        'publisher': {'id': 999, 'name': 'Test Photographer', 'image': ''},
-        'customer': {'id': 888, 'name': 'Test Customer', 'image': ''},
+        'publisher': const {'id': 999, 'name': 'Test Photographer', 'image': ''},
+        'customer': const {'id': 888, 'name': 'Test Customer', 'image': ''},
       });
     }
 
@@ -150,27 +150,27 @@ class ContractRemoteDataSourceImpl implements ContractRemoteDataSource {
         'actual_amount': '150.0',
         'created_at': DateTime.now().toIso8601String(),
         'updated_at': DateTime.now().toIso8601String(),
-        'advertisement': {
+        'advertisement': const {
           'title': {'en': 'Test Service', 'ar': 'تجربة'},
           'category_id': 1,
           'description': {'en': 'Test Desc', 'ar': 'وصف تجريبي'},
         },
-        'publisher': {
+        'publisher': const {
           'id': 999,
           'name': 'Test Photographer',
           'image': '',
           'phone': '123456',
           'email': 'p@test.com',
         },
-        'customer': {
+        'customer': const {
           'id': 888,
           'name': 'Test Customer',
           'image': '',
           'phone': '98765',
           'email': 'c@test.com',
         },
-        'contr_pub_notes': [],
-        'contr_cust_notes': [],
+        'contr_pub_notes': const [],
+        'contr_cust_notes': const [],
       });
     }
 

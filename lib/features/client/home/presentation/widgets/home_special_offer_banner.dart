@@ -23,7 +23,7 @@ class HomeSpecialOfferBanner extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             // Background image
-            AppCachedNetworkImage(
+            const AppCachedNetworkImage(
               imageUrl: 'https://picsum.photos/seed/specialoffer/400/200',
               fit: BoxFit.cover,
               memCacheWidth: 800,

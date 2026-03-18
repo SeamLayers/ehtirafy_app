@@ -42,11 +42,11 @@ class OrderDetailsPendingView extends StatelessWidget {
         color: Colors.white,
         border: Border.all(color: AppColors.error.withOpacity(0.5)),
         borderRadius: BorderRadius.circular(14.r),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: const Color(0x0A000000),
+            color: Color(0x0A000000),
             blurRadius: 4,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
             spreadRadius: 0,
           ),
         ],
@@ -78,11 +78,11 @@ class OrderDetailsPendingView extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(16.r),
         ),
-        shadows: [
+        shadows: const [
           BoxShadow(
-            color: const Color(0x0A000000),
+            color: Color(0x0A000000),
             blurRadius: 10,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
             spreadRadius: 0,
           ),
         ],
@@ -302,11 +302,11 @@ class OrderDetailsPendingView extends StatelessWidget {
           side: const BorderSide(width: 1, color: Color(0xFFF3F4F6)),
           borderRadius: BorderRadius.circular(16.r),
         ),
-        shadows: [
+        shadows: const [
           BoxShadow(
-            color: const Color(0x0A000000),
+            color: Color(0x0A000000),
             blurRadius: 10,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
             spreadRadius: 0,
           ),
         ],

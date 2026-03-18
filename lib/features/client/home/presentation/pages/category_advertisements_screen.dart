@@ -72,7 +72,7 @@ class _CategoryAdvertisementsScreenState extends State<CategoryAdvertisementsScr
                     >(
                       builder: (context, state) {
                         if (state is CategoryAdvertisementsLoading) {
-                          return Center(
+                          return const Center(
                             child: CircularProgressIndicator(
                               color: AppColors.gold,
                               strokeWidth: 2,
@@ -251,7 +251,7 @@ class _CategoryAdvertisementsScreenState extends State<CategoryAdvertisementsScr
         children: [
           Container(
             padding: EdgeInsets.all(20.w),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.grey100,
               shape: BoxShape.circle,
             ),

@@ -43,9 +43,9 @@ class ReviewCard extends StatelessWidget {
               Container(
                 width: 40.r,
                 height: 40.r,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [Color(0xFFC8A44F), Color(0xFFD4AF37)],

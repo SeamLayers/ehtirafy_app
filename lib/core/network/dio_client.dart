@@ -14,6 +14,24 @@ class DioClient {
   final Dio _dio;
   final Map<String, _CacheEntry> _getCache = {};
   static const Duration _defaultGetCacheDuration = Duration(seconds: 30);
+  static const Duration _homeCacheDuration = Duration(minutes: 5);
+  static const Duration _freelancerListCacheDuration = Duration(minutes: 2);
+  static const Duration _detailsCacheDuration = Duration(seconds: 10);
+
+  static final List<_EndpointTtlRule> _endpointTtlRules = [
+    _EndpointTtlRule(
+      matcher: RegExp(r'/(categories|app/statistics)(/|$)', caseSensitive: false),
+      ttl: _homeCacheDuration,
+    ),
+    _EndpointTtlRule(
+      matcher: RegExp(r'/front/(our-works|advertisements)(/|$)', caseSensitive: false),
+      ttl: _freelancerListCacheDuration,
+    ),
+    _EndpointTtlRule(
+      matcher: RegExp(r'/(contract-detail|contract|orders?)(/|$)', caseSensitive: false),
+      ttl: _detailsCacheDuration,
+    ),
+  ];
 
   DioClient()
     : _dio = Dio(
@@ -105,20 +123,25 @@ class DioClient {
     try {
       final extra = options?.extra ?? const <String, dynamic>{};
       final disableCache = extra['disableCache'] == true;
-      final cacheDuration = extra['cacheDuration'] is Duration
-          ? extra['cacheDuration'] as Duration
-          : _defaultGetCacheDuration;
+      final shouldBypassChatCache = _isChatOrMessageEndpoint(path);
+      final cacheDuration = _resolveCacheDuration(
+        path,
+        queryParameters,
+        options,
+      );
+      final shouldUseCache =
+          !disableCache && !shouldBypassChatCache && cacheDuration > Duration.zero;
 
       final token = (await SharedPreferences.getInstance()).getString(
         'cached_token',
       );
       final cacheKey = _buildCacheKey(path, queryParameters, token);
 
-      if (!disableCache) {
+      if (shouldUseCache) {
         final cached = _getCache[cacheKey];
         if (cached != null && !cached.isExpired) {
           return Response(
-            requestOptions: RequestOptions(path: path),
+            requestOptions: RequestOptions(path: path, queryParameters: queryParameters),
             data: cached.data,
             headers: cached.headers,
             statusCode: cached.statusCode,
@@ -135,7 +158,9 @@ class DioClient {
         onReceiveProgress: onReceiveProgress,
       );
 
-      if (!disableCache && response.statusCode != null && response.statusCode! < 400) {
+      if (shouldUseCache &&
+          response.statusCode != null &&
+          response.statusCode! < 400) {
         _getCache[cacheKey] = _CacheEntry(
           data: response.data,
           headers: response.headers,
@@ -148,6 +173,94 @@ class DioClient {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Duration _resolveCacheDuration(
+    String path,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  ) {
+    if (_isChatOrMessageEndpoint(path)) {
+      return Duration.zero;
+    }
+
+    final extra = options?.extra;
+    final ttlFromExtra =
+        extra?['cache_ttl'] ?? extra?['cacheDuration'] ?? extra?['ttl'];
+    if (ttlFromExtra is Duration) {
+      return ttlFromExtra;
+    }
+
+    for (final rule in _endpointTtlRules) {
+      if (rule.matcher.hasMatch(path)) {
+        if (rule.ttl == _freelancerListCacheDuration &&
+            !_isFreelancerListEndpoint(path)) {
+          continue;
+        }
+
+        if (rule.ttl == _detailsCacheDuration &&
+            !_isSpecificOrderOrContract(path, queryParameters)) {
+          continue;
+        }
+        return rule.ttl;
+      }
+    }
+
+    if (_isSpecificContractsRelativeRequest(path, queryParameters)) {
+      return _detailsCacheDuration;
+    }
+
+    return _defaultGetCacheDuration;
+  }
+
+  bool _isSpecificOrderOrContract(
+    String path,
+    Map<String, dynamic>? queryParameters,
+  ) {
+    final hasIdInQuery = queryParameters != null &&
+        queryParameters.containsKey('id') &&
+        '${queryParameters['id']}'.isNotEmpty;
+    final hasNumericIdInPath = RegExp(r'/\d+(/|$)').hasMatch(path);
+    final hasStringIdInPath = RegExp(
+      r'/[a-zA-Z0-9_-]{6,}(/|$)',
+    ).hasMatch(path);
+
+    return hasIdInQuery ||
+        hasNumericIdInPath ||
+        hasStringIdInPath ||
+        path.contains('contract-detail');
+  }
+
+  bool _isSpecificContractsRelativeRequest(
+    String path,
+    Map<String, dynamic>? queryParameters,
+  ) {
+    if (!path.toLowerCase().contains('contracts-relative')) {
+      return false;
+    }
+
+    return queryParameters != null &&
+        queryParameters.containsKey('id') &&
+        '${queryParameters['id']}'.isNotEmpty;
+  }
+
+  bool _isFreelancerListEndpoint(String path) {
+    final normalizedPath = path.toLowerCase();
+
+    final isPortfolioList = normalizedPath.endsWith('/front/our-works');
+    final isAdvertisementsList =
+        normalizedPath.endsWith('/front/advertisements');
+
+    return isPortfolioList || isAdvertisementsList;
+  }
+
+  bool _isChatOrMessageEndpoint(String path) {
+    final lowerPath = path.toLowerCase();
+    return lowerPath.contains('chat') ||
+        lowerPath.contains('message') ||
+        lowerPath.contains('messages') ||
+        lowerPath.contains('conversation') ||
+        lowerPath.contains('conversations');
   }
 
   Future<Response> post(
@@ -268,4 +381,11 @@ class _CacheEntry {
   });
 
   bool get isExpired => DateTime.now().isAfter(expiresAt);
+}
+
+class _EndpointTtlRule {
+  final RegExp matcher;
+  final Duration ttl;
+
+  const _EndpointTtlRule({required this.matcher, required this.ttl});
 }

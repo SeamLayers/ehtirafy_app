@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../../core/di/service_locator.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../cubit/bank_details_cubit.dart';
 import '../cubit/bank_details_state.dart';
-import '../cubit/payment_proof_cubit.dart';
 import '../widgets/bank_details_card.dart';
 
 class BankDetailsScreen extends StatefulWidget {

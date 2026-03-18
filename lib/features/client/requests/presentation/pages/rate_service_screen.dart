@@ -277,19 +277,19 @@ class _RateServiceScreenState extends State<RateServiceScreen> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide(
-                            color: const Color(0xFFEEEEEE),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFEEEEEE),
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide(
-                            color: const Color(0xFFEEEEEE),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFEEEEEE),
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide(color: AppColors.gold),
+                          borderSide: const BorderSide(color: AppColors.gold),
                         ),
                         contentPadding: EdgeInsets.all(16.w),
                       ),

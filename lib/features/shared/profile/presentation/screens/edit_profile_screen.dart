@@ -301,10 +301,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         boxShadow: readOnly
             ? []
             : [
-                BoxShadow(
-                  color: const Color(0x08000000),
+                const BoxShadow(
+                  color: Color(0x08000000),
                   blurRadius: 10,
-                  offset: const Offset(0, 4),
+                  offset: Offset(0, 4),
                   spreadRadius: 0,
                 ),
               ],
@@ -424,7 +424,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             onPressed: () => Navigator.pop(ctx),
             child: Text(
               AppStrings.cancel.tr(),
-              style: TextStyle(fontFamily: 'Cairo', color: Colors.grey),
+              style: const TextStyle(fontFamily: 'Cairo', color: Colors.grey),
             ),
           ),
           ElevatedButton(
@@ -439,7 +439,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             style: ElevatedButton.styleFrom(backgroundColor: _primaryGold),
             child: Text(
               AppStrings.confirm.tr(),
-              style: TextStyle(fontFamily: 'Cairo', color: Colors.white),
+              style: const TextStyle(fontFamily: 'Cairo', color: Colors.white),
             ),
           ),
         ],

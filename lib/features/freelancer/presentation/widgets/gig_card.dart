@@ -28,11 +28,11 @@ class GigCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16.r),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
-              color: const Color(0x1A000000),
+              color: Color(0x1A000000),
               blurRadius: 12,
-              offset: const Offset(0, 4),
+              offset: Offset(0, 4),
             ),
           ],
           border: Border.all(color: const Color(0xFFF2F2F2)),

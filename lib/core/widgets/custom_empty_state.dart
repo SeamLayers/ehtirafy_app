@@ -50,7 +50,7 @@ class CustomEmptyState extends StatelessWidget {
     final resolvedMessage = message == null
         ? null
         : (localizeText ? message!.tr() : message!);
-    final resolvedAction = actionText ?? (actionKey != null ? actionKey!.tr() : null);
+    final resolvedAction = actionText ?? (actionKey?.tr());
 
     return Center(
       child: Padding(

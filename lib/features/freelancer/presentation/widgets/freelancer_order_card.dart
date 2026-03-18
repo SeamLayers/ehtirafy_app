@@ -28,11 +28,11 @@ class FreelancerOrderCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: const Color(0x0D000000),
+            color: Color(0x0D000000),
             blurRadius: 10,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
         border: Border.all(color: const Color(0xFFF2F2F2)),
@@ -293,7 +293,7 @@ class FreelancerOrderCard extends StatelessWidget {
                 label: Text('محادثة', style: TextStyle(fontSize: 14.sp)),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.primary,
-                  side: BorderSide(color: AppColors.primary),
+                  side: const BorderSide(color: AppColors.primary),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.r),
                   ),

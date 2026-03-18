@@ -8,9 +8,6 @@ class RoleLoading extends RoleState {}
 class RoleLoaded extends RoleState { 
   final UserRole role;
   const RoleLoaded(this.role);
-  
-  @override
-  List<Object?> get props => [role];
 }
 class RoleSwitching extends RoleState { 
   final UserRole fromRole;

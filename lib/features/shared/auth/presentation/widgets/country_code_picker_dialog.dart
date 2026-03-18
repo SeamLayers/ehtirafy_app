@@ -124,7 +124,7 @@ class _CountryCodePickerDialogState extends State<CountryCodePickerDialog> {
                   title: Text(country.name),
                   trailing: Text(
                     '+${country.dialCode}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: AppColors.primary,
                     ),

@@ -37,7 +37,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
           ),
         ),
         centerTitle: true,
-        leading: RtlBackButton(color: Colors.white),
+        leading: const RtlBackButton(color: Colors.white),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(24.r),

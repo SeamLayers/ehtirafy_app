@@ -15,9 +15,9 @@ class TransactionHistoryScreen extends StatelessWidget {
       body: ListView.separated(
         padding: EdgeInsets.all(AppSpacing.lg),
         itemCount: 6,
-        separatorBuilder: (_, __) => Divider(color: AppColors.grey300),
+        separatorBuilder: (_, __) => const Divider(color: AppColors.grey300),
         itemBuilder: (context, index) => ListTile(
-          leading: CircleAvatar(backgroundColor: AppColors.gold, child: const Icon(Icons.payment, color: AppColors.dark)),
+          leading: const CircleAvatar(backgroundColor: AppColors.gold, child: Icon(Icons.payment, color: AppColors.dark)),
           title: Text('${AppStrings.transactionItemLabel.tr()} #$index'),
           subtitle: Text('500 ${AppStrings.bookingCurrency.tr()}'),
           trailing: Text(AppStrings.transactionStatusPaid.tr()),

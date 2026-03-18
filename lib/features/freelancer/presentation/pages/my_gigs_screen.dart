@@ -42,9 +42,9 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
               child: BlocBuilder<FreelancerGigsCubit, FreelancerGigsState>(
                 builder: (context, state) {
                   if (state is FreelancerGigsLoading) {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(
-                        valueColor: const AlwaysStoppedAnimation<Color>(
+                        valueColor: AlwaysStoppedAnimation<Color>(
                           AppColors.gold,
                         ),
                       ),
@@ -294,7 +294,7 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
                       decoration: ShapeDecoration(
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
-                          side: BorderSide(width: 1, color: AppColors.primary),
+                          side: const BorderSide(width: 1, color: AppColors.primary),
                           borderRadius: BorderRadius.circular(10.r),
                         ),
                       ),

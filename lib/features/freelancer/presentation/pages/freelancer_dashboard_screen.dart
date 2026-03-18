@@ -328,11 +328,11 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
       height: 140.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: const Color(0x1A000000),
+            color: Color(0x1A000000),
             blurRadius: 8,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -492,11 +492,11 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: const Color(0x1A000000),
+            color: Color(0x1A000000),
             blurRadius: 12,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -750,11 +750,11 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: const Color(0x0D000000),
+            color: Color(0x0D000000),
             blurRadius: 10,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
       ),

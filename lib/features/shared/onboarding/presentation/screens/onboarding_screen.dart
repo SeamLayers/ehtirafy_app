@@ -19,9 +19,9 @@ class OnboardingScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-            child: Column(
+            child: const Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: const [
+              children: [
                 OnboardingHeader(),
                 SizedBox(height: 24),
                 OnboardingFeatureGrid(),

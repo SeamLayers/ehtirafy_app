@@ -304,28 +304,6 @@ class WorkDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPlaceholderBg() {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.gold.withValues(alpha: 0.3),
-            const Color(0xFF2B2B2B),
-          ],
-        ),
-      ),
-      child: Center(
-        child: Icon(
-          Icons.image_outlined,
-          size: 64.sp,
-          color: Colors.white.withValues(alpha: 0.5),
-        ),
-      ),
-    );
-  }
-
   Widget _buildInfoItem(IconData icon, String label, String value) {
     return Expanded(
       child: Row(

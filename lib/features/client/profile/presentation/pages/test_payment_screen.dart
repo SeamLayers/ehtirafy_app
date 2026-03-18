@@ -35,8 +35,8 @@ class TestPaymentScreen extends StatelessWidget {
       customerImage: "",
       customerPhone: "987654321",
       customerEmail: "customer@test.com",
-      notes: [],
-      daysAvailability: [],
+      notes: const [],
+      daysAvailability: const [],
     );
 
     return BlocProvider(

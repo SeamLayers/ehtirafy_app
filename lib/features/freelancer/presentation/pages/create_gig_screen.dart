@@ -119,7 +119,7 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 1,
-        leading: RtlBackButton(color: AppColors.textPrimary),
+        leading: const RtlBackButton(color: AppColors.textPrimary),
       ),
       body: BlocListener<FreelancerGigsCubit, FreelancerGigsState>(
         listener: (context, state) {
@@ -616,7 +616,7 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12.r),
-        borderSide: BorderSide(color: AppColors.primary),
+        borderSide: const BorderSide(color: AppColors.primary),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12.r),

@@ -29,7 +29,7 @@ class StateAwareBuilder<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(AppColors.gold),
         ),
@@ -39,7 +39,7 @@ class StateAwareBuilder<T> extends StatelessWidget {
     if (hasError) {
       return ErrorStateWidget(
         message: errorMessage ?? 'حدث خطأ غير متوقع. يرجى المحاولة لاحقاً',
-        onRetry: onRetry,
+        onRetry: onRetry ?? () {},
       );
     }
 

@@ -82,7 +82,7 @@ class _RoleSelectionView extends StatelessWidget {
                                       Colors.transparent,
                                     ],
                                   )
-                                : LinearGradient(
+                                : const LinearGradient(
                                     colors: [Colors.white, AppColors.grey100],
                                   ),
                             borderColor: AppColors.grey300,
@@ -104,7 +104,7 @@ class _RoleSelectionView extends StatelessWidget {
                                       Colors.transparent,
                                     ],
                                   )
-                                : LinearGradient(
+                                : const LinearGradient(
                                     colors: [Colors.white, AppColors.grey100],
                                   ),
                             borderColor: AppColors.grey300,

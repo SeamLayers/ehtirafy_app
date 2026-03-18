@@ -232,7 +232,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
       fit: StackFit.expand,
       children: [
         // Background Image
-        AppCachedNetworkImage(
+        const AppCachedNetworkImage(
           imageUrl: 'https://picsum.photos/seed/profilebg/800/400',
           fit: BoxFit.cover,
           memCacheWidth: 1200,
@@ -433,7 +433,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
             ],
           ),
           SizedBox(height: 16.h),
-          Divider(color: const Color(0xFFF0F0F0), height: 1),
+          const Divider(color: Color(0xFFF0F0F0), height: 1),
           SizedBox(height: 16.h),
           Row(
             children: [
@@ -656,7 +656,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
           return Center(
             child: Text(
               state.message,
-              style: TextStyle(color: AppColors.error),
+              style: const TextStyle(color: AppColors.error),
             ),
           );
         } else if (state is ReviewsLoaded) {
@@ -728,7 +728,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                     onPressed: () =>
                         _showAddReviewDialog(context, freelancer.id),
                     style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: AppColors.primary),
+                      side: const BorderSide(color: AppColors.primary),
                       padding: EdgeInsets.symmetric(vertical: 12.h),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.r),
@@ -805,7 +805,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                   onPressed: () => Navigator.pop(context),
                   child: Text(
                     AppStrings.cancel.tr(),
-                    style: TextStyle(color: AppColors.textSecondary),
+                    style: const TextStyle(color: AppColors.textSecondary),
                   ),
                 ),
                 BlocConsumer<ReviewsCubit, ReviewsState>(
@@ -847,7 +847,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                       },
                       child: Text(
                         AppStrings.confirm.tr(),
-                        style: TextStyle(color: AppColors.primary),
+                        style: const TextStyle(color: AppColors.primary),
                       ),
                     );
                   },

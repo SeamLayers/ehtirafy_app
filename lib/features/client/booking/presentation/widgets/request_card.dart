@@ -224,7 +224,7 @@ class RequestCard extends StatelessWidget {
           color: buttonColor,
           shape: RoundedRectangleBorder(
             side: isOutlined
-                ? BorderSide(width: 1, color: AppColors.primary)
+                ? const BorderSide(width: 1, color: AppColors.primary)
                 : BorderSide.none,
             borderRadius: BorderRadius.circular(10.r),
           ),

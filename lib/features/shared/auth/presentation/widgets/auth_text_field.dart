@@ -60,15 +60,15 @@ class AuthTextField extends StatelessWidget {
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.r),
-              borderSide: BorderSide(color: Colors.transparent),
+              borderSide: const BorderSide(color: Colors.transparent),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.r),
-              borderSide: BorderSide(color: Colors.transparent),
+              borderSide: const BorderSide(color: Colors.transparent),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.r),
-              borderSide: BorderSide(color: AppColors.gold),
+              borderSide: const BorderSide(color: AppColors.gold),
             ),
             contentPadding: EdgeInsets.symmetric(
               horizontal: 12.w,
