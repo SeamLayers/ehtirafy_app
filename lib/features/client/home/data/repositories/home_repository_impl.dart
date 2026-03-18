@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
 import 'package:ehtirafy_app/features/client/home/data/datasources/home_remote_data_source.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_entity.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/category_entity.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
 import 'package:ehtirafy_app/features/shared/reviews/domain/usecases/add_rate_usecase.dart';
 import 'package:ehtirafy_app/features/shared/reviews/domain/usecases/get_user_rates_usecase.dart';
 import 'package:ehtirafy_app/features/shared/reviews/presentation/cubits/reviews_state.dart';

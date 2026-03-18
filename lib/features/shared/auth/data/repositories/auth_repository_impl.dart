@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
-import 'package:ehtirafy_app/core/error/exceptions.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
+import 'package:ehtirafy_app/core/errors/exceptions.dart';
 import 'package:ehtirafy_app/core/network/api_error_handler.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/entities/login_result.dart';

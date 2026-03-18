@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../entities/user_role.dart';
-import '../../../../../core/error/failures.dart';
+import '../../../../../core/errors/failures.dart';
 
 /// Abstract repository for managing user role
 abstract class UserRoleRepository {

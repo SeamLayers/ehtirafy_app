@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
 import '../entities/bank_account_entity.dart';
 import '../entities/payment_proof_entity.dart';
 

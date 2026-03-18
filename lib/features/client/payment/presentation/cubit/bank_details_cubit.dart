@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ehtirafy_app/core/domain/usecase.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
 import '../../domain/usecases/get_bank_account_details_usecase.dart';
 import 'bank_details_state.dart';
 

@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
 import 'package:ehtirafy_app/features/client/freelancer/data/datasources/freelancer_remote_data_source.dart';
 import 'package:ehtirafy_app/features/client/freelancer/domain/entities/freelancer_entity.dart';
 import 'package:ehtirafy_app/features/client/freelancer/domain/entities/work_details_entity.dart';

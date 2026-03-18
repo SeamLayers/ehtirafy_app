@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import '../../domain/entities/user_role.dart';
 import '../../domain/repositories/user_role_repository.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
 import '../datasources/user_role_local_data_source.dart';
 
 /// Implementation of UserRoleRepository

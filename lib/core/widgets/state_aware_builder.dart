@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import 'error_state_widget.dart';
-import 'empty_state_widget.dart';
+import 'custom_empty_state.dart';
 
 /// Generic state builder for handling multiple states
 class StateAwareBuilder<T> extends StatelessWidget {

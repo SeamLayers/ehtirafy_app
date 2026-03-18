@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
-import 'package:ehtirafy_app/core/error/exceptions.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
+import 'package:ehtirafy_app/core/errors/exceptions.dart';
 import 'package:ehtirafy_app/features/shared/auth/data/datasources/user_local_data_source.dart';
 import 'package:ehtirafy_app/features/freelancer/data/datasources/freelancer_gigs_remote_data_source.dart';
 import 'package:ehtirafy_app/features/freelancer/data/datasources/freelancer_portfolio_remote_data_source.dart';

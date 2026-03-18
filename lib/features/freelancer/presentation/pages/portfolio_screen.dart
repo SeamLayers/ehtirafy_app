@@ -11,7 +11,7 @@ import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import '../cubit/freelancer_portfolio_cubit.dart';
 import '../cubit/freelancer_portfolio_state.dart';
 import '../../domain/entities/portfolio_item_entity.dart';
-import 'package:ehtirafy_app/core/widgets/empty_state_widget.dart';
+import 'package:ehtirafy_app/core/widgets/custom_empty_state.dart';
 import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
 
 class PortfolioScreen extends StatelessWidget {

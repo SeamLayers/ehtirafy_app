@@ -11,7 +11,7 @@ import '../cubit/freelancer_orders_state.dart';
 import '../widgets/freelancer_order_card.dart';
 import '../widgets/orders_filter_tab.dart';
 import 'package:ehtirafy_app/core/widgets/outlined_refresh_button.dart';
-import 'package:ehtirafy_app/core/widgets/empty_state_widget.dart';
+import 'package:ehtirafy_app/core/widgets/custom_empty_state.dart';
 import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
 
 class FreelancerOrdersScreen extends StatefulWidget {

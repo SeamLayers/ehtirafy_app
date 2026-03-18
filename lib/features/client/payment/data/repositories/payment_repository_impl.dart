@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:ehtirafy_app/core/error/exceptions.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
+import 'package:ehtirafy_app/core/errors/exceptions.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
 import '../../domain/entities/bank_account_entity.dart';
 import '../../domain/repositories/payment_repository.dart';
 import '../datasources/payment_remote_data_source.dart';

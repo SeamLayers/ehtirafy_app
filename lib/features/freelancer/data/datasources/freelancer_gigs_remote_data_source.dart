@@ -5,7 +5,7 @@ import 'package:ehtirafy_app/core/network/dio_client.dart';
 import 'package:ehtirafy_app/features/freelancer/data/models/gig_model.dart';
 import 'package:ehtirafy_app/features/freelancer/domain/entities/gig_entity.dart';
 import 'package:ehtirafy_app/core/network/base_response.dart';
-import 'package:ehtirafy_app/core/error/exceptions.dart';
+import 'package:ehtirafy_app/core/errors/exceptions.dart';
 import 'package:ehtirafy_app/features/client/home/data/models/category_model.dart';
 
 abstract class FreelancerGigsRemoteDataSource {

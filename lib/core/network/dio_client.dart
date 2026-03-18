@@ -1,3 +1,5 @@
+import 'dart:collection';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,6 +12,8 @@ import 'api_constants.dart';
 @lazySingleton
 class DioClient {
   final Dio _dio;
+  final Map<String, _CacheEntry> _getCache = {};
+  static const Duration _defaultGetCacheDuration = Duration(seconds: 30);
 
   DioClient()
     : _dio = Dio(
@@ -99,6 +103,30 @@ class DioClient {
     ProgressCallback? onReceiveProgress,
   }) async {
     try {
+      final extra = options?.extra ?? const <String, dynamic>{};
+      final disableCache = extra['disableCache'] == true;
+      final cacheDuration = extra['cacheDuration'] is Duration
+          ? extra['cacheDuration'] as Duration
+          : _defaultGetCacheDuration;
+
+      final token = (await SharedPreferences.getInstance()).getString(
+        'cached_token',
+      );
+      final cacheKey = _buildCacheKey(path, queryParameters, token);
+
+      if (!disableCache) {
+        final cached = _getCache[cacheKey];
+        if (cached != null && !cached.isExpired) {
+          return Response(
+            requestOptions: RequestOptions(path: path),
+            data: cached.data,
+            headers: cached.headers,
+            statusCode: cached.statusCode,
+            statusMessage: 'OK (cached)',
+          );
+        }
+      }
+
       final response = await _dio.get(
         path,
         queryParameters: queryParameters,
@@ -106,6 +134,16 @@ class DioClient {
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
       );
+
+      if (!disableCache && response.statusCode != null && response.statusCode! < 400) {
+        _getCache[cacheKey] = _CacheEntry(
+          data: response.data,
+          headers: response.headers,
+          statusCode: response.statusCode ?? 200,
+          expiresAt: DateTime.now().add(cacheDuration),
+        );
+      }
+
       return response;
     } catch (e) {
       rethrow;
@@ -131,6 +169,7 @@ class DioClient {
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
       );
+      _invalidateGetCache();
       return response;
     } catch (e) {
       rethrow;
@@ -156,6 +195,7 @@ class DioClient {
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
       );
+      _invalidateGetCache();
       return response;
     } catch (e) {
       rethrow;
@@ -177,9 +217,55 @@ class DioClient {
         options: options,
         cancelToken: cancelToken,
       );
+      _invalidateGetCache();
       return response;
     } catch (e) {
       rethrow;
     }
   }
+
+  String _buildCacheKey(
+    String path,
+    Map<String, dynamic>? queryParameters,
+    String? token,
+  ) {
+    final normalizedQuery = _normalizeForCache(queryParameters ?? {});
+    return '$path|$token|${jsonEncode(normalizedQuery)}';
+  }
+
+  dynamic _normalizeForCache(dynamic value) {
+    if (value is Map) {
+      final sorted = SplayTreeMap<String, dynamic>();
+      value.forEach((key, dynamic mapValue) {
+        sorted[key.toString()] = _normalizeForCache(mapValue);
+      });
+      return sorted;
+    }
+
+    if (value is List) {
+      return value.map(_normalizeForCache).toList();
+    }
+
+    return value;
+  }
+
+  void _invalidateGetCache() {
+    _getCache.clear();
+  }
+}
+
+class _CacheEntry {
+  final dynamic data;
+  final Headers headers;
+  final int statusCode;
+  final DateTime expiresAt;
+
+  const _CacheEntry({
+    required this.data,
+    required this.headers,
+    required this.statusCode,
+    required this.expiresAt,
+  });
+
+  bool get isExpired => DateTime.now().isAfter(expiresAt);
 }

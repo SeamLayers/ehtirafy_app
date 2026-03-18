@@ -10,7 +10,7 @@ import 'package:go_router/go_router.dart';
 import '../cubit/chat_cubit.dart';
 import '../cubit/chat_state.dart';
 import '../widgets/conversation_tile.dart';
-import 'package:ehtirafy_app/core/widgets/empty_state_widget.dart';
+import 'package:ehtirafy_app/core/widgets/custom_empty_state.dart';
 import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
 import 'package:ehtirafy_app/core/widgets/outlined_refresh_button.dart';
 

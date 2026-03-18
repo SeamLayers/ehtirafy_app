@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/category_entity.dart';
 import '../entities/gig_entity.dart';
 

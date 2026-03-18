@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
-import 'package:ehtirafy_app/core/error/exceptions.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
+import 'package:ehtirafy_app/core/errors/exceptions.dart';
 
 class ApiErrorHandler {
   static Failure handle(dynamic error) {

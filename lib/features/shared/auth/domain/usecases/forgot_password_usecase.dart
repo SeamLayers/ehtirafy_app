@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:ehtirafy_app/core/domain/usecase.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
 import '../repositories/auth_repository.dart';
 
 class ForgotPasswordUseCase implements UseCase<String, ForgotPasswordParams> {

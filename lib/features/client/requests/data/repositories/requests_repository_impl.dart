@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:dartz/dartz.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
-import 'package:ehtirafy_app/core/error/exceptions.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
+import 'package:ehtirafy_app/core/errors/exceptions.dart';
 import 'package:ehtirafy_app/features/client/contract/data/datasources/contract_remote_data_source.dart';
-import 'package:ehtirafy_app/features/client/contract/domain/entities/contract_entity.dart';
 import 'package:ehtirafy_app/features/shared/profile/domain/entities/user_role.dart';
+import 'package:ehtirafy_app/features/shared/orders/data/models/shared_order_model.dart';
+import 'package:ehtirafy_app/features/shared/orders/domain/entities/shared_order_entity.dart';
 import '../../domain/entities/request_entity.dart';
 import '../../domain/repositories/requests_repository.dart';
 import '../models/request_model.dart';
@@ -41,10 +42,12 @@ class RequestsRepositoryImpl implements RequestsRepository {
         'user_type': userType,
       });
 
-      // Map contracts to request entities
-      final requests = contracts
-          .map((contract) => _mapContractToRequest(contract))
-          .toList();
+      final requests = contracts.map((contract) {
+        final sharedOrder = SharedOrderModel.fromContract(
+          contract,
+        ).toEntityForClient();
+        return _mapSharedOrderToRequest(sharedOrder);
+      }).toList();
 
       return Right(requests);
     } on ServerException catch (e) {
@@ -54,47 +57,38 @@ class RequestsRepositoryImpl implements RequestsRepository {
     }
   }
 
-  /// Map ContractEntity to RequestEntity for UI display
-  RequestEntity _mapContractToRequest(ContractEntity contract) {
+  RequestEntity _mapSharedOrderToRequest(SharedOrderEntity sharedOrder) {
     return RequestModel(
-      id: contract.id.toString(),
-      serviceName: contract.serviceTitle ?? 'خدمة تصوير',
-      photographerName: contract.photographerName ?? 'مصور',
-      photographerId: contract.photographerId,
-      advertisementId: contract.advertisementId,
-      photographerImage: contract.photographerImage ?? '',
-      status: _mapContractStatusToRequestStatus(contract),
-      price: double.tryParse(contract.requestedAmount) ?? 0,
-      date: contract.createdAt,
-      isPaymentRequired:
-          contract.displayStatus == ContractStatus.pendingPayment,
-      approvedDate: contract.displayStatus == ContractStatus.inProgress
-          ? contract.updatedAt
-          : null,
+      id: sharedOrder.id,
+      serviceName: sharedOrder.serviceTitle.isEmpty
+          ? 'خدمة تصوير'
+          : sharedOrder.serviceTitle,
+      photographerName: sharedOrder.counterpartyName.isEmpty
+          ? 'مصور'
+          : sharedOrder.counterpartyName,
+      photographerId: sharedOrder.counterpartyId,
+      advertisementId: sharedOrder.advertisementId,
+      photographerImage: sharedOrder.counterpartyImage,
+      status: _mapSharedStatusToRequestStatus(sharedOrder.status),
+      price: sharedOrder.price,
+      date: sharedOrder.createdAt,
+      isPaymentRequired: sharedOrder.isPaymentRequired,
+      approvedDate: sharedOrder.approvedDate,
     );
   }
 
-  /// Map contract status to RequestStatus enum
-  /// - pending → underReview (waiting for photographer)
-  /// - pendingPayment → active (waiting for customer payment)
-  /// - awaitingAdminReview → active (payment submitted, awaiting admin verification)
-  /// - inProgress → active (contract is active)
-  /// - completed → completed
-  /// - rejected/cancelled/archived → cancelled
-  RequestStatus _mapContractStatusToRequestStatus(ContractEntity contract) {
-    final status = contract.displayStatus;
+  RequestStatus _mapSharedStatusToRequestStatus(SharedOrderStatus status) {
     switch (status) {
-      case ContractStatus.pending:
+      case SharedOrderStatus.pending:
         return RequestStatus.underReview;
-      case ContractStatus.pendingPayment:
-      case ContractStatus.awaitingAdminReview:
-      case ContractStatus.inProgress:
+      case SharedOrderStatus.pendingPayment:
+      case SharedOrderStatus.awaitingAdminReview:
+      case SharedOrderStatus.inProgress:
         return RequestStatus.active;
-      case ContractStatus.completed:
+      case SharedOrderStatus.completed:
         return RequestStatus.completed;
-      case ContractStatus.rejected:
-      case ContractStatus.cancelled:
-      case ContractStatus.archived:
+      case SharedOrderStatus.cancelled:
+      case SharedOrderStatus.archived:
         return RequestStatus.cancelled;
     }
   }

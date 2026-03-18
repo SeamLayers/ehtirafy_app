@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:ehtirafy_app/core/domain/usecase.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
 import '../repositories/payment_repository.dart';
 
 class SubmitPaymentProofUseCase implements UseCase<void, SubmitPaymentProofParams> {

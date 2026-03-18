@@ -3,7 +3,7 @@ import 'package:ehtirafy_app/core/network/dio_client.dart';
 import 'package:ehtirafy_app/features/client/home/data/models/photographer_model.dart';
 import 'package:ehtirafy_app/features/client/home/data/models/category_model.dart';
 import 'package:ehtirafy_app/features/client/home/data/models/app_statistics_model.dart';
-import 'package:ehtirafy_app/core/error/exceptions.dart';
+import 'package:ehtirafy_app/core/errors/exceptions.dart';
 
 abstract class HomeRemoteDataSource {
   Future<List<PhotographerModel>> getFeaturedPhotographers();

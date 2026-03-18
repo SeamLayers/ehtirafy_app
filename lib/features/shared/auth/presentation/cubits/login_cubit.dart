@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
 import '../../domain/usecases/login_usecase.dart';
 import 'login_state.dart';
 

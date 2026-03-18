@@ -1,5 +1,5 @@
 import 'package:ehtirafy_app/core/network/dio_client.dart';
-import 'package:ehtirafy_app/core/error/exceptions.dart';
+import 'package:ehtirafy_app/core/errors/exceptions.dart';
 import 'package:ehtirafy_app/features/client/contract/data/models/contract_model.dart';
 import 'package:ehtirafy_app/core/network/api_constants.dart';
 

@@ -1,6 +1,6 @@
 import 'package:ehtirafy_app/core/network/api_constants.dart';
 import 'package:ehtirafy_app/core/network/dio_client.dart';
-import '../../../../core/error/exceptions.dart';
+import '../../../../core/errors/exceptions.dart';
 import '../models/freelancer_statistics_model.dart';
 import '../models/freelancer_last_contract_model.dart';
 

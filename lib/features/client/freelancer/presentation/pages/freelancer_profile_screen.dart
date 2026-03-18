@@ -19,7 +19,7 @@ import 'package:ehtirafy_app/features/client/freelancer/presentation/widgets/rev
 import 'package:ehtirafy_app/features/client/freelancer/presentation/widgets/service_card.dart';
 import 'package:ehtirafy_app/features/client/freelancer/domain/entities/freelancer_entity.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
-import 'package:ehtirafy_app/core/widgets/empty_state_widget.dart';
+import 'package:ehtirafy_app/core/widgets/custom_empty_state.dart';
 import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
 
 class FreelancerProfileScreen extends StatefulWidget {

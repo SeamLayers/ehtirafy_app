@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
 import 'package:ehtirafy_app/features/client/notifications/domain/entities/notification_entity.dart';
 import 'package:ehtirafy_app/features/client/notifications/domain/usecases/get_notifications_usecase.dart';
 import 'package:ehtirafy_app/features/client/notifications/presentation/cubits/notifications_state.dart';

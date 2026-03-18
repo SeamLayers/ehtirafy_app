@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ehtirafy_app/core/error/failures.dart';
+import 'package:ehtirafy_app/core/errors/failures.dart';
 import '../../domain/usecases/submit_payment_proof_usecase.dart';
 import 'payment_proof_state.dart';
 

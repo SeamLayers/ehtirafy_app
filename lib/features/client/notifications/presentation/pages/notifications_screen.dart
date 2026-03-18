@@ -8,7 +8,7 @@ import 'package:ehtirafy_app/core/di/service_locator.dart';
 import 'package:ehtirafy_app/features/client/notifications/presentation/cubits/notifications_cubit.dart';
 import 'package:ehtirafy_app/features/client/notifications/presentation/cubits/notifications_state.dart';
 import 'package:ehtirafy_app/features/client/notifications/domain/entities/notification_entity.dart';
-import 'package:ehtirafy_app/core/widgets/empty_state_widget.dart';
+import 'package:ehtirafy_app/core/widgets/custom_empty_state.dart';
 import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
 import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 
