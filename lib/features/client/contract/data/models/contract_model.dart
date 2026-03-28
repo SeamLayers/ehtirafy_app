@@ -163,6 +163,22 @@ class ContractModel extends ContractEntity {
   }
 
   /// Create request body for status update
+  ///
+  /// API constraints (verified via live testing):
+  /// - `note_type` accepts: 'customer' or 'freelancer'
+  /// - 'customer' → updates contr_cust_status, notes go to contr_cust_notes
+  /// - 'freelancer' → updates contr_pub_status, notes go to contr_pub_notes
+  /// - `contr_pub_status` accepts: 'Approved', 'Completed', 'Rejected'
+  /// - `contr_cust_status` accepts: 'Paid', 'Completed', 'InProcess'
+  /// - `contract_status` auto-transitions: initiated→InProcess (on Paid), →Completed (both Completed)
+  ///
+  /// Freelancer actions (note_type=freelancer):
+  ///   - Accept → contr_pub_status=Approved
+  ///   - Complete/Deliver → contr_pub_status=Completed
+  ///   - Reject → contr_pub_status=Rejected
+  /// Customer actions (note_type=customer):
+  ///   - Mark paid → contr_cust_status=Paid
+  ///   - Confirm completion → contr_cust_status=Completed
   static Map<String, dynamic> createStatusUpdateBody({
     required bool isPhotographer,
     required String status,
@@ -170,14 +186,16 @@ class ContractModel extends ContractEntity {
   }) {
     final body = <String, dynamic>{
       '_method': 'put',
-      'note_type': isPhotographer ? 'freelancer' : 'customer',
     };
 
     if (isPhotographer) {
-      body['contr_pub_status'] =
-          status; // Approved, Rejected, Completed, InProcess
+      // Freelancer actions: use contr_pub_status with note_type=freelancer
+      body['note_type'] = 'freelancer';
+      body['contr_pub_status'] = status;
     } else {
-      body['contr_cust_status'] = status; // Completed, Paid, InProcess
+      // Customer actions: use contr_cust_status with note_type=customer
+      body['note_type'] = 'customer';
+      body['contr_cust_status'] = status;
     }
 
     if (noteText != null && noteText.isNotEmpty) {

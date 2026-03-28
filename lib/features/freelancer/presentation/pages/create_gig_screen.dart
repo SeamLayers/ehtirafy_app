@@ -156,7 +156,7 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('تم إضافة الخدمة بنجاح')),
             );
-            context.pop(true);
+            context.go('/freelancer/dashboard');
           } else if (state is FreelancerGigUpdated) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('تم تحديث الخدمة بنجاح')),

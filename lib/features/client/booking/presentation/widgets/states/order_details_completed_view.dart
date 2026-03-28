@@ -6,6 +6,7 @@ import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contr
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contract_status_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class OrderDetailsCompletedView extends StatelessWidget {
   final ContractDetailsEntity contract;
@@ -25,8 +26,85 @@ class OrderDetailsCompletedView extends StatelessWidget {
           SizedBox(height: 16.h),
           _buildCompletionMessage(),
           SizedBox(height: 16.h),
-          // TODO: Add Rating/Review Review Widget here if available
+          // Rate Service Button
+          _buildRateButton(context),
+          SizedBox(height: 16.h),
+          // Chat with photographer
+          _buildChatButton(context),
         ],
+      ),
+    );
+  }
+
+  Widget _buildRateButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 52.h,
+      child: ElevatedButton.icon(
+        onPressed: () {
+          context.push(
+            '/rate-service',
+            extra: {
+              'freelancerId': contract.publisherId,
+              'freelancerName': contract.photographerName,
+              'serviceName': contract.serviceTitle,
+              'advertisementId': contract.advertisementId,
+            },
+          );
+        },
+        icon: Icon(Icons.star_rounded, size: 24.sp),
+        label: Text(
+          'تقييم الخدمة',
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Cairo',
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.gold,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14.r),
+          ),
+          elevation: 0,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 48.h,
+      child: OutlinedButton.icon(
+        onPressed: () {
+          context.push(
+            '/chat/conversation',
+            extra: {
+              'id': contract.id.toString(),
+              'name': contract.photographerName,
+              'image': contract.photographerImage,
+              'userType': 'customer',
+            },
+          );
+        },
+        icon: Icon(Icons.chat_bubble_outline, size: 20.sp),
+        label: Text(
+          'محادثة المصور',
+          style: TextStyle(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Cairo',
+          ),
+        ),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.gold,
+          side: const BorderSide(color: AppColors.gold),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14.r),
+          ),
+        ),
       ),
     );
   }

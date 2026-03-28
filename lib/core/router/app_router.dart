@@ -520,9 +520,10 @@ final appRouter = GoRouter(
       path: '/payment/bank-details/:contractId',
       builder: (context, state) {
         final contractId = state.pathParameters['contractId']!;
+        final advId = state.uri.queryParameters['advId'] ?? contractId;
         return BlocProvider(
           create: (context) => sl<BankDetailsCubit>(),
-          child: BankDetailsScreen(contractId: contractId),
+          child: BankDetailsScreen(contractId: contractId, advertisementId: advId),
         );
       },
     ),
@@ -530,9 +531,10 @@ final appRouter = GoRouter(
       path: '/payment/proof/:contractId',
       builder: (context, state) {
         final contractId = state.pathParameters['contractId']!;
+        final advId = state.uri.queryParameters['advId'] ?? contractId;
         return BlocProvider(
           create: (context) => sl<PaymentProofCubit>(),
-          child: PaymentProofScreen(contractId: contractId),
+          child: PaymentProofScreen(contractId: contractId, advertisementId: advId),
         );
       },
     ),

@@ -62,6 +62,7 @@ class ContractHeader extends StatelessWidget {
     Color color;
 
     switch (contract.status) {
+      case ContractStatus.initiated:
       case ContractStatus.pending:
         color = const Color(0xFF17A2B8);
         text = 'قيد انتظار موافقة المصور';

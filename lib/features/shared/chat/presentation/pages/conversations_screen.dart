@@ -157,14 +157,26 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
   }
 
   Widget _buildEmptyState() {
+    final isFreelancer = widget.userType == 'freelancer';
+
     return Center(
       child: EmptyStateWidget(
-        message: AppStrings.chatNoMessages.tr(),
-        subMessage: AppStrings.chatStartConversation.tr(),
-        icon: Icons.chat_bubble_outline,
-        retryText: AppStrings.chatFindPhotographer.tr(),
+        message: isFreelancer
+            ? AppStrings.chatFreelancerNoMessages.tr()
+            : AppStrings.chatNoMessages.tr(),
+        subMessage: isFreelancer
+            ? AppStrings.chatFreelancerStartConversation.tr()
+            : AppStrings.chatStartConversation.tr(),
+        icon: isFreelancer ? Icons.work_outline : Icons.chat_bubble_outline,
+        retryText: isFreelancer
+            ? AppStrings.chatFreelancerExploreGigs.tr()
+            : AppStrings.chatFindPhotographer.tr(),
         onRetry: () {
-          context.push('/home');
+          if (isFreelancer) {
+            context.push('/freelancer/gigs');
+          } else {
+            context.push('/home');
+          }
         },
       ),
     );

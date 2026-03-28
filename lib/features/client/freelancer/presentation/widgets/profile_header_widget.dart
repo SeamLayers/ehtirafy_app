@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 
 import 'package:ehtirafy_app/features/client/freelancer/domain/entities/freelancer_entity.dart';
 
@@ -79,9 +80,13 @@ class ProfileHeaderWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              child: CircleAvatar(
-                radius: 40.r,
-                backgroundImage: NetworkImage(freelancer.imageUrl),
+              child: ClipOval(
+                child: AppCachedNetworkImage(
+                  imageUrl: freelancer.imageUrl,
+                  width: 80.r,
+                  height: 80.r,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),

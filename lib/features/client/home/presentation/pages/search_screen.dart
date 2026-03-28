@@ -281,7 +281,7 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         child: Row(
           children: [
-            UserAvatar(name: result.title, size: 60, fontSize: 20.sp),
+            UserAvatar(name: result.title, imageUrl: result.imageUrl, size: 60, fontSize: 20.sp),
             SizedBox(width: 16.w),
             Expanded(
               child: Column(

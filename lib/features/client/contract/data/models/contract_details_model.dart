@@ -29,6 +29,7 @@ class ContractDetailsModel extends ContractDetailsEntity {
     super.customerEmail,
     super.notes,
     super.daysAvailability,
+    super.advertisementId,
   });
 
   factory ContractDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -46,7 +47,8 @@ class ContractDetailsModel extends ContractDetailsEntity {
       date: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime.now(),
       budget:
           double.tryParse(json['requested_amount']?.toString() ?? '0') ?? 0.0,
-      isPaymentDeposited: false,
+      isPaymentDeposited: (json['contr_cust_status']?.toString().toLowerCase() == 'paid') ||
+          (json['contract_status']?.toString().toLowerCase() == 'inprocess'),
       photographerName: json['publisher']?['name'] ?? '',
       photographerImage: json['publisher']?['image'] ?? '',
       approvedAt: json['approval_at'] != null
@@ -65,6 +67,7 @@ class ContractDetailsModel extends ContractDetailsEntity {
       customerEmail: json['customer']?['email'] ?? '',
       notes: _parseNotes(json),
       daysAvailability: _parseDaysAvailability(json),
+      advertisementId: json['advertisement_id']?.toString() ?? '',
     );
   }
 
@@ -104,30 +107,57 @@ class ContractDetailsModel extends ContractDetailsEntity {
   }
 
   /// Helper to derive status from raw API fields
+  ///
+  /// API reality (verified via live testing):
+  /// - contract_status: 'initiated' → 'InProcess' (auto on Paid) → 'Completed' (auto when both complete)
+  /// - contr_pub_status: 'pending' → 'Approved' (freelancer accepts) → 'Completed' (freelancer delivers)
+  /// - contr_cust_status: 'initiated' → 'Paid' (customer pays) → 'Completed' (customer confirms)
+  /// - note_type: 'freelancer' updates contr_pub_status, 'customer' updates contr_cust_status
   static ContractStatus deriveStatus(Map<String, dynamic> json) {
     final contractStatus = json['contract_status']?.toString().toLowerCase();
     final pubStatus = json['contr_pub_status']?.toString().toLowerCase();
     final custStatus = json['contr_cust_status']?.toString().toLowerCase();
 
-    if (pubStatus == 'rejected') return ContractStatus.cancelled; // or rejected
-    if (custStatus == 'cancelled') return ContractStatus.cancelled;
-    if (contractStatus == 'closed' ||
-        pubStatus == 'completed' ||
-        custStatus == 'completed') {
+    // Completed contract (both parties completed)
+    if (contractStatus == 'completed' || contractStatus == 'closed') {
       return ContractStatus.completed;
     }
 
-    if (pubStatus == 'approved') {
-      if (custStatus == 'inprocess' ||
-          custStatus == 'paid' ||
-          custStatus == 'approved' ||
-          custStatus == 'completed') {
-        return ContractStatus.inProgress;
+    // Rejected by freelancer
+    if (pubStatus == 'rejected') {
+      return ContractStatus.rejected;
+    }
+
+    // Cancelled by customer
+    if (custStatus == 'cancelled') {
+      return ContractStatus.cancelled;
+    }
+
+    // In progress (auto-set when customer pays)
+    if (contractStatus == 'inprocess') {
+      // Freelancer delivered, waiting for customer confirmation
+      if (pubStatus == 'completed' && custStatus != 'completed') {
+        return ContractStatus.awaitingAdminReview; // Reuse as "awaiting confirmation"
       }
+      // Fully active
+      return ContractStatus.inProgress;
+    }
+
+    // Freelancer accepted (contract_status=Approved from backend)
+    if (contractStatus == 'approved') {
       return ContractStatus.pendingPayment;
     }
 
-    return ContractStatus.pending; // Default for initial / pending
+    // Initiated - waiting for freelancer to accept
+    if (contractStatus == 'initiated') {
+      // Freelancer accepted, waiting for customer payment
+      if (pubStatus == 'approved') {
+        return ContractStatus.pendingPayment;
+      }
+      return ContractStatus.initiated;
+    }
+
+    return ContractStatus.pending; // Default fallback
   }
 }
 

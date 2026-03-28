@@ -43,6 +43,7 @@ class SharedOrderEntity extends Equatable {
 
   static SharedOrderStatus fromContractStatus(ContractStatus status) {
     switch (status) {
+      case ContractStatus.initiated:
       case ContractStatus.pending:
         return SharedOrderStatus.pending;
       case ContractStatus.pendingPayment:

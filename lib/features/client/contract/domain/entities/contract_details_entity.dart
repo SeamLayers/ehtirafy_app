@@ -29,6 +29,7 @@ class ContractDetailsEntity extends Equatable {
   final String customerEmail;
   final List<ContractNoteEntity> notes;
   final List<String> daysAvailability;
+  final String advertisementId;
 
   const ContractDetailsEntity({
     required this.id,
@@ -56,12 +57,16 @@ class ContractDetailsEntity extends Equatable {
     this.customerEmail = '',
     this.notes = const [],
     this.daysAvailability = const [],
+    this.advertisementId = '',
   });
 
-  /// Chat allowed only for active contracts (in progress, awaiting admin review, completed)
-  /// Chat is NOT allowed for: pending, pendingPayment, cancelled, rejected, archived
+  /// Chat allowed for active contracts
+  /// Chat is NOT allowed for: cancelled, rejected, archived
   bool get isChatAllowed {
-    return status == ContractStatus.inProgress ||
+    return status == ContractStatus.initiated ||
+        status == ContractStatus.pending ||
+        status == ContractStatus.pendingPayment ||
+        status == ContractStatus.inProgress ||
         status == ContractStatus.awaitingAdminReview ||
         status == ContractStatus.completed;
   }
@@ -92,6 +97,7 @@ class ContractDetailsEntity extends Equatable {
     String? customerEmail,
     List<ContractNoteEntity>? notes,
     List<String>? daysAvailability,
+    String? advertisementId,
   }) {
     return ContractDetailsEntity(
       id: id ?? this.id,
@@ -119,6 +125,7 @@ class ContractDetailsEntity extends Equatable {
       customerEmail: customerEmail ?? this.customerEmail,
       notes: notes ?? this.notes,
       daysAvailability: daysAvailability ?? this.daysAvailability,
+      advertisementId: advertisementId ?? this.advertisementId,
     );
   }
 
@@ -149,6 +156,7 @@ class ContractDetailsEntity extends Equatable {
     customerEmail,
     notes,
     daysAvailability,
+    advertisementId,
   ];
 }
 

@@ -159,6 +159,12 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           : contract.photographerId;
       final messages = contract.chatMessages!;
 
+      // Determine the "other" name to match against creator field
+      // API returns creator like "Ahmed (Photographer)" or "Al-Aqeel (Customer)"
+      final myName = userType == 'freelancer'
+          ? (contract.photographerName ?? '')
+          : (contract.clientName ?? '');
+
       // Map chat messages to MessageModel
       return messages
           .asMap()
@@ -167,10 +173,22 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
             final index = entry.key;
             final msg = entry.value;
 
+            // Identify sender using user_type field (customer/freelancer)
+            // and fallback to creator name matching
             final msgUserType = msg['user_type'] ?? '';
+            final creator = msg['creator'] ?? '';
 
-            // Logic: if msgUserType matches my userType, it is from me.
-            final isFromMe = msgUserType == userType;
+            // Primary: match by user_type field
+            // Freelancer messages have user_type='freelancer', customer have user_type='customer'
+            bool isFromMe;
+            if (msgUserType == 'freelancer' || msgUserType == 'publisher') {
+              isFromMe = userType == 'freelancer';
+            } else if (msgUserType == 'customer') {
+              isFromMe = userType == 'customer';
+            } else {
+              // Fallback: match by creator name
+              isFromMe = myName.isNotEmpty && creator.contains(myName);
+            }
 
             DateTime timestamp;
             try {
@@ -223,24 +241,48 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
 
       // For now, we'll use the contract update endpoint
       // Using ApiConstants for consistency and correctness
+      // API note_type: 'customer' for customers, 'freelancer' for photographers
+      // customer notes go to contr_cust_notes, freelancer notes go to contr_pub_notes
+      final noteType = userType == 'freelancer' ? 'freelancer' : 'customer';
+
+      // Find cached contract to get current status (backend requires status field)
+      String? currentStatus;
+      try {
+        final contract = _cachedContracts.firstWhere(
+          (c) => c.id.toString() == message.receiverId,
+        );
+        currentStatus = userType == 'freelancer'
+            ? contract.contrPubStatus
+            : contract.contrCustStatus;
+      } catch (_) {}
+
+      final data = <String, dynamic>{
+        '_method': 'PUT',
+        'note_type': noteType,
+        'note_text': message.content,
+      };
+
+      // Include current status to prevent backend null constraint error
+      if (userType == 'freelancer') {
+        data['contr_pub_status'] = currentStatus ?? 'Approved';
+      } else {
+        data['contr_cust_status'] = currentStatus ?? 'initiated';
+      }
+
       final response = await dioClient.post(
         ApiConstants.updateContract(message.receiverId),
-        data: {
-          '_method': 'PUT',
-          'note_type': userType, // Dynamic note type
-          'note_text': message.content,
-        },
+        data: data,
       );
 
-      final data = response.data;
-      if (data['status'] != 200) {
-        throw ServerException(data['message'] ?? 'فشل في إرسال الرسالة');
+      final responseData = response.data;
+      if (responseData['success'] != true && responseData['status'] != 200) {
+        throw ServerException(responseData['message'] ?? 'فشل في إرسال الرسالة');
       }
 
       // Update cache with the returned contract data
-      if (data['data'] != null) {
+      if (responseData['data'] != null) {
         try {
-          final updatedContract = ContractModel.fromJson(data['data']);
+          final updatedContract = ContractModel.fromJson(responseData['data']);
           final index = _cachedContracts.indexWhere(
             (c) => c.id == updatedContract.id,
           );

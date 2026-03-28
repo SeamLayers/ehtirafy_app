@@ -1,4 +1,5 @@
 enum ContractStatus {
+  initiated,
   pending,
   pendingPayment,
   awaitingAdminReview,
@@ -12,6 +13,8 @@ enum ContractStatus {
 extension ContractStatusPresentation on ContractStatus {
   String get displayName {
     switch (this) {
+      case ContractStatus.initiated:
+        return 'تم الإنشاء';
       case ContractStatus.pending:
         return 'قيد الانتظار';
       case ContractStatus.pendingPayment:
@@ -35,8 +38,11 @@ extension ContractStatusPresentation on ContractStatus {
 class ContractStatusMapper {
   static ContractStatus fromString(String? value) {
     switch (value?.toLowerCase()) {
+      case 'initiated':
+        return ContractStatus.initiated;
       case 'pending':
         return ContractStatus.pending;
+      case 'approved':
       case 'pendingpayment':
       case 'pending_payment':
       case 'awaiting_payment':

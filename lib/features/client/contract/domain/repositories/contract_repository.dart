@@ -21,8 +21,8 @@ abstract class ContractRepository {
   /// Update contract status
   ///
   /// [isPhotographer] determines which status field to update:
-  /// - true → contr_pub_status (accepted, rejected, completed)
-  /// - false → contr_cust_status (cancelled, completed)
+  /// - true → contract_status (InProcess=accept, Completed=done)
+  /// - false → contr_cust_status (Paid, InProcess) with note_type=customer
   ///
   /// [noteText] sends optional message with status update
   Future<Either<Failure, ContractEntity>> updateContractStatus(

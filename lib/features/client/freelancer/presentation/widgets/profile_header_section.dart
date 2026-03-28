@@ -31,12 +31,6 @@ class ProfileHeaderSection extends StatelessWidget {
                 bottomLeft: Radius.circular(24.r),
                 bottomRight: Radius.circular(24.r),
               ),
-              image: const DecorationImage(
-                image: NetworkImage(
-                  'https://placehold.co/800x400/2B2B2B/FFFFFF/png?text=Wood+Texture',
-                ),
-                fit: BoxFit.cover,
-              ),
             ),
             child: Container(
               decoration: BoxDecoration(

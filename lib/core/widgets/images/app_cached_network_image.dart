@@ -23,8 +23,42 @@ class AppCachedNetworkImage extends StatelessWidget {
     this.errorWidget,
   });
 
+  /// App logo placeholder used when no API image is available
+  static Widget _buildLogoPlaceholder({double? width, double? height}) {
+    return Container(
+      width: width,
+      height: height,
+      color: Colors.grey.shade100,
+      alignment: Alignment.center,
+      padding: const EdgeInsets.all(12),
+      child: Image.asset(
+        'assets/images/logo_without_bg.png',
+        fit: BoxFit.contain,
+        opacity: const AlwaysStoppedAnimation(0.5),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // If imageUrl is empty or invalid, show app logo placeholder directly
+    if (imageUrl.isEmpty || !imageUrl.startsWith('http')) {
+      final placeholder = errorWidget != null
+          ? Container(
+              width: width,
+              height: height,
+              color: Colors.grey.shade100,
+              alignment: Alignment.center,
+              child: errorWidget,
+            )
+          : _buildLogoPlaceholder(width: width, height: height);
+
+      if (borderRadius != null) {
+        return ClipRRect(borderRadius: borderRadius!, child: placeholder);
+      }
+      return placeholder;
+    }
+
     final image = CachedNetworkImage(
       imageUrl: imageUrl,
       width: width,
@@ -41,16 +75,14 @@ class AppCachedNetworkImage extends StatelessWidget {
           child: CircularProgressIndicator(strokeWidth: 2),
         ),
       ),
-      errorWidget: (context, url, error) => Container(
-        color: Colors.grey.shade200,
-        alignment: Alignment.center,
-        child:
-            errorWidget ??
-            Icon(
-              Icons.broken_image_outlined,
-              color: Colors.grey.shade400,
-            ),
-      ),
+      errorWidget: (context, url, error) =>
+          errorWidget != null
+              ? Container(
+                  color: Colors.grey.shade100,
+                  alignment: Alignment.center,
+                  child: errorWidget,
+                )
+              : _buildLogoPlaceholder(width: width, height: height),
     );
 
     if (borderRadius == null) {

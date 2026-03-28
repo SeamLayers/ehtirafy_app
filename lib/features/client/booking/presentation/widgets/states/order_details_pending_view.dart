@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/entities/contract_details_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -157,17 +158,13 @@ class OrderDetailsPendingView extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                width: 56.w,
-                height: 56.h,
-                decoration: ShapeDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(contract.photographerImage),
-                    fit: BoxFit.cover,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                  ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(14.r),
+                child: AppCachedNetworkImage(
+                  imageUrl: contract.photographerImage,
+                  width: 56.w,
+                  height: 56.h,
+                  fit: BoxFit.cover,
                 ),
               ),
             ],

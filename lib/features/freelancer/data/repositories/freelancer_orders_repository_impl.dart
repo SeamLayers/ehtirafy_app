@@ -45,8 +45,9 @@ class FreelancerOrdersRepositoryImpl implements FreelancerOrdersRepository {
   ) async {
     try {
       final contract = await remoteDataSource.updateContract(orderId, {
+        'note_type': 'freelancer',
         'contr_pub_status': 'Approved',
-        'note_type': 'freelancer', // Required by API for freelancer actions
+        'note_text': 'تم قبول الطلب',
         '_method': 'put',
       });
 
@@ -66,8 +67,9 @@ class FreelancerOrdersRepositoryImpl implements FreelancerOrdersRepository {
   Future<Either<Failure, void>> rejectOrder(String orderId) async {
     try {
       await remoteDataSource.updateContract(orderId, {
+        'note_type': 'freelancer',
         'contr_pub_status': 'Rejected',
-        'note_type': 'freelancer', // Required by API for freelancer actions
+        'note_text': 'تم رفض الطلب',
         '_method': 'PUT',
       });
       return const Right(null);
@@ -82,8 +84,9 @@ class FreelancerOrdersRepositoryImpl implements FreelancerOrdersRepository {
   Future<Either<Failure, void>> completeOrder(String orderId) async {
     try {
       await remoteDataSource.updateContract(orderId, {
-        'contr_pub_status': 'Completed',
         'note_type': 'freelancer',
+        'contr_pub_status': 'Completed',
+        'note_text': 'تم تسليم العمل بنجاح',
         '_method': 'PUT',
       });
       return const Right(null);

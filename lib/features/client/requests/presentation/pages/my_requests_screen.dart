@@ -152,7 +152,7 @@ class MyRequestsScreen extends StatelessWidget {
                                                 request.isPaymentRequired
                                                 ? () {
                                                     context.push(
-                                                      '/payment/bank-details/${request.id}',
+                                                      '/payment/bank-details/${request.id}?advId=${request.advertisementId}',
                                                     );
                                                   }
                                                 : null,

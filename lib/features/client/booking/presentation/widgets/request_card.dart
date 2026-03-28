@@ -29,7 +29,7 @@ class RequestCard extends StatelessWidget {
   }
 
   Widget _buildPhotographerImage() {
-    return UserAvatar(name: request.photographerName, size: 56);
+    return UserAvatar(name: request.photographerName, imageUrl: request.photographerImage, size: 56);
   }
 
   Widget _buildServiceName(BuildContext context) {

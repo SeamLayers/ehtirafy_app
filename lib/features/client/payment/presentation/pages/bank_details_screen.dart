@@ -10,10 +10,12 @@ import '../widgets/bank_details_card.dart';
 
 class BankDetailsScreen extends StatefulWidget {
   final String contractId;
+  final String advertisementId;
 
   const BankDetailsScreen({
     super.key,
     required this.contractId,
+    required this.advertisementId,
   });
 
   @override
@@ -123,7 +125,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
                       onPressed: () {
                         // Navigate to payment proof screen
                         context.push(
-                          '/payment/proof/${ widget.contractId}',
+                          '/payment/proof/${widget.contractId}?advId=${widget.advertisementId}',
                         );
                       },
                       child: Text(

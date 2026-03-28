@@ -80,8 +80,9 @@ class RequestsRepositoryImpl implements RequestsRepository {
   RequestStatus _mapSharedStatusToRequestStatus(SharedOrderStatus status) {
     switch (status) {
       case SharedOrderStatus.pending:
-        return RequestStatus.underReview;
+        return RequestStatus.underReview; // Waiting for freelancer to accept
       case SharedOrderStatus.pendingPayment:
+        return RequestStatus.active; // Freelancer accepted, needs payment
       case SharedOrderStatus.awaitingAdminReview:
       case SharedOrderStatus.inProgress:
         return RequestStatus.active;

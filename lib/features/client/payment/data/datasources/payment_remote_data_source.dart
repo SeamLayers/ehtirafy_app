@@ -48,18 +48,15 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
   }) async {
     try {
       final formData = FormData.fromMap({
-        'contract_id': contractId,
-        'sender_name': senderName,
-        'transfer_date': transferDate.toIso8601String(),
-        'transfer_reference': transferReference ?? '',
-        'notes': notes ?? '',
+        'adv_id': contractId,
+        'note': notes ?? 'Payment from $senderName on ${transferDate.toIso8601String()}',
       });
 
-      // Add proof file if it exists
+      // Add proof file (receipt image)
       if (proofFilePath.isNotEmpty) {
         formData.files.add(
           MapEntry(
-            'proof_file',
+            'images',
             await MultipartFile.fromFile(
               proofFilePath,
               filename: 'payment_proof_${DateTime.now().millisecondsSinceEpoch}',
@@ -68,10 +65,17 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
         );
       }
 
-      await _dioClient.post(
+      final response = await _dioClient.post(
         ApiConstants.submitPaymentProof,
         data: formData,
       );
+
+      final data = response.data;
+      if (data['success'] != true && data['status'] != 200) {
+        throw ServerException(
+          data['message'] ?? 'فشل في إرسال إثبات الدفع',
+        );
+      }
     } on DioException catch (e) {
       throw ServerException(
         e.response?.data['message'] ?? 'فشل في إرسال إثبات الدفع',

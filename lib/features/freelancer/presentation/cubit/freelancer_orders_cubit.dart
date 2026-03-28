@@ -150,7 +150,9 @@ class FreelancerOrdersCubit extends Cubit<FreelancerOrdersState> {
       result.fold((failure) => emit(FreelancerOrdersError(failure.message)), (
         _,
       ) {
-        // Update the order status to completed in the list
+        // Freelancer marking as delivered means contr_pub_status=Completed
+        // but contract is NOT yet fully completed (waiting for customer confirmation)
+        // So the order stays "inProgress" until customer confirms
         final updatedOrders = currentState.allOrders.map((order) {
           if (order.id == orderId) {
             return FreelancerOrderEntity(
@@ -158,7 +160,7 @@ class FreelancerOrdersCubit extends Cubit<FreelancerOrdersState> {
               serviceTitle: order.serviceTitle,
               clientName: order.clientName,
               clientImage: order.clientImage,
-              status: FreelancerOrderStatus.completed,
+              status: FreelancerOrderStatus.inProgress,
               price: order.price,
               location: order.location,
               eventDate: order.eventDate,

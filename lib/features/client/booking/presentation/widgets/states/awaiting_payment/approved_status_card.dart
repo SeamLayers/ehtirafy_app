@@ -211,7 +211,7 @@ class ApprovedStatusCard extends StatelessWidget {
             height: 48.h,
             child: ElevatedButton(
               onPressed: () {
-                context.push('/payment/bank-details/${contract.id}');
+                context.push('/payment/bank-details/${contract.id}?advId=${contract.advertisementId}');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.gold,

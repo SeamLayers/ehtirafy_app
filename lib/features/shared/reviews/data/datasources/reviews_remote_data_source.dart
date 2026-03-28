@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:ehtirafy_app/core/network/dio_client.dart';
 import 'package:ehtirafy_app/core/errors/exceptions.dart';
 import 'package:ehtirafy_app/features/shared/reviews/data/models/review_model.dart';
@@ -26,20 +27,29 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
     required String comment,
   }) async {
     try {
+      final formData = FormData.fromMap({
+        'advertisement_id': advertisementId,
+        'rate': rating.toInt(),
+        'description': comment,
+      });
+
       final response = await dioClient.post(
         '/api/v1/front/add-rate',
-        data: {
-          'rateable_id': ratedUserId,
-          'rateable_type': 'user',
-          'advertisement_id': advertisementId,
-          'rate': rating,
-          'comment': comment,
-        },
+        data: formData,
       );
 
-      if (response.statusCode != 200 && response.statusCode != 201) {
-        throw ServerException(response.data['message'] ?? 'خطأ غير معروف');
+      final data = response.data;
+      if (data is Map<String, dynamic> && data['success'] != true) {
+        throw ServerException(data['message'] ?? 'خطأ غير معروف');
       }
+    } on ServerException {
+      rethrow;
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      if (data is Map<String, dynamic> && data['message'] != null) {
+        throw ServerException(data['message']);
+      }
+      throw ServerException(e.message ?? 'خطأ في الاتصال');
     } catch (e) {
       throw ServerException(e.toString());
     }
@@ -65,6 +75,14 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
       } else {
         throw ServerException(response.data['message'] ?? 'خطأ غير معروف');
       }
+    } on ServerException {
+      rethrow;
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      if (data is Map<String, dynamic> && data['message'] != null) {
+        throw ServerException(data['message']);
+      }
+      throw ServerException(e.message ?? 'خطأ في الاتصال');
     } catch (e) {
       throw ServerException(e.toString());
     }

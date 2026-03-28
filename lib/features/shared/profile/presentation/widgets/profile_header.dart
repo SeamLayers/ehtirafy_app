@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../domain/entities/user_profile_entity.dart';
@@ -9,6 +10,10 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasAvatar = user.avatarUrl != null &&
+        user.avatarUrl!.isNotEmpty &&
+        user.avatarUrl!.startsWith('http');
+
     return Container(
       width: double.infinity,
       decoration: ShapeDecoration(
@@ -23,16 +28,19 @@ class ProfileHeader extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Avatar - Using initials instead of photo
+            // Avatar - Use API image when available, fallback to initials
             Container(
               width: 80.w,
               height: 80.w,
               decoration: ShapeDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFFC8A44F), Color(0xFFD4AF37)],
-                ),
+                gradient: hasAvatar
+                    ? null
+                    : const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFFC8A44F), Color(0xFFD4AF37)],
+                      ),
+                color: hasAvatar ? Colors.grey.shade100 : null,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.r),
                 ),
@@ -51,15 +59,35 @@ class ProfileHeader extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Center(
-                child: Text(
-                  _getInitials(user.name),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 28.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.r),
+                child: hasAvatar
+                    ? CachedNetworkImage(
+                        imageUrl: user.avatarUrl!,
+                        fit: BoxFit.cover,
+                        width: 80.w,
+                        height: 80.w,
+                        errorWidget: (context, url, error) => Center(
+                          child: Text(
+                            _getInitials(user.name),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 28.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Center(
+                        child: Text(
+                          _getInitials(user.name),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 28.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
               ),
             ),
             SizedBox(width: 16.w),

@@ -184,6 +184,9 @@
       "noMessages": "لا توجد رسائل",
       "startConversation": "ابدأ محادثة مع أحد المصورين",
       "findPhotographer": "إيجاد مصور",
+      "freelancerNoMessages": "لا توجد محادثات بعد",
+      "freelancerStartConversation": "اعمل بجد وأضف أعمالك المميزة لتحصل على عقود وعملاء جدد",
+      "freelancerExploreGigs": "إدارة خدماتي",
       "ago": "منذ",
       "minute": "دقيقة",
       "hour": "ساعة"
@@ -537,5 +540,8 @@
   "submit_proof": "إرسال إثبات الدفع",
   "proceed_to_payment_proof": "الانتقال إلى رفع إثبات الدفع",
   "payment_awaiting_admin_review": "إثبات الدفع بانتظار التحقق من الإدارة. سيتم تفعيل العقد بعد التحقق.",
+  "payment_proof_submitted_title": "تم إرسال إثبات الدفع بنجاح",
+  "payment_proof_submitted_message": "تم استلام إثبات الدفع الخاص بك. سيتم مراجعته من قبل الإدارة وتفعيل العقد بعد التحقق.",
+  "back_to_contract": "العودة للعقد",
   "retry": "إعادة محاولة"
 }

@@ -11,10 +11,12 @@ import '../cubit/payment_proof_state.dart';
 
 class PaymentProofScreen extends StatefulWidget {
   final String contractId;
+  final String advertisementId;
 
   const PaymentProofScreen({
     super.key,
     required this.contractId,
+    required this.advertisementId,
   });
 
   @override
@@ -112,7 +114,7 @@ class _PaymentProofScreenState extends State<PaymentProofScreen> {
     final transferDate = DateFormat('yyyy-MM-dd').parse(_transferDateController.text);
 
     context.read<PaymentProofCubit>().submitPaymentProof(
-          contractId: widget.contractId,
+          contractId: widget.advertisementId,
           senderName: _senderNameController.text.trim(),
           transferDate: transferDate,
           proofFilePath: _selectedFilePath,
@@ -137,10 +139,6 @@ class _PaymentProofScreenState extends State<PaymentProofScreen> {
                 backgroundColor: Colors.green,
               ),
             );
-            // Navigate back or to success screen
-            Future.delayed(const Duration(seconds: 2), () {
-              context.pop();
-            });
           } else if (state is PaymentProofError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -151,6 +149,76 @@ class _PaymentProofScreenState extends State<PaymentProofScreen> {
           }
         },
         builder: (context, state) {
+          // Show success view after payment proof submitted
+          if (state is PaymentProofSubmitted) {
+            return Center(
+              child: Padding(
+                padding: EdgeInsets.all(32.w),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 60.h),
+                    Container(
+                      width: 100.w,
+                      height: 100.w,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.green.shade50,
+                      ),
+                      child: Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
+                        size: 64.sp,
+                      ),
+                    ),
+                    SizedBox(height: 24.h),
+                    Text(
+                      'payment_proof_submitted_title'.tr(),
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF2B2B2B),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 12.h),
+                    Text(
+                      'payment_proof_submitted_message'.tr(),
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: Colors.grey.shade600,
+                        height: 1.5,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 32.h),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48.h,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                          ),
+                        ),
+                        onPressed: () => context.pop(),
+                        child: Text(
+                          'back_to_contract'.tr(),
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
           return SingleChildScrollView(
             padding: EdgeInsets.all(16.w),
             child: Column(
@@ -325,40 +393,35 @@ class _PaymentProofScreenState extends State<PaymentProofScreen> {
               color: Colors.green.shade50,
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.check_circle,
-                      color: Colors.green,
-                      size: 24.sp,
-                    ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'file_selected'.tr(),
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                          Text(
-                            _selectedFileName,
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 24.sp,
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'file_selected'.tr(),
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.grey.shade600,
+                        ),
                       ),
-                    ),
-                  ],
+                      Text(
+                        _selectedFileName,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
                 if (state is! PaymentProofLoading)
                   GestureDetector(

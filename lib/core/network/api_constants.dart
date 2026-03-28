@@ -83,5 +83,11 @@ class ApiConstants {
   static const String bankAccountDetails =
       '$baseUrl/api/$version/front/payment/bank-details';
   static const String submitPaymentProof =
-      '$baseUrl/api/$version/front/payment/submit-proof';
+      '$baseUrl/api/$version/front/create-transaction';
+
+  // Dashboard Payment Review
+  static const String reviewPayTransactions =
+      '$baseUrl/api/$version/dashboard/review-pay-transactions';
+  static const String updateTransaction =
+      '$baseUrl/api/$version/dashboard/update-transaction';
 }

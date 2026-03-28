@@ -167,6 +167,9 @@ class AppStrings {
   static const chatNoMessages = 'chat.list.noMessages';
   static const chatStartConversation = 'chat.list.startConversation';
   static const chatFindPhotographer = 'chat.list.findPhotographer';
+  static const chatFreelancerNoMessages = 'chat.list.freelancerNoMessages';
+  static const chatFreelancerStartConversation = 'chat.list.freelancerStartConversation';
+  static const chatFreelancerExploreGigs = 'chat.list.freelancerExploreGigs';
   static const chatAgo = 'chat.list.ago';
   static const chatMinute = 'chat.list.minute';
   static const chatHour = 'chat.list.hour';

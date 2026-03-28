@@ -762,7 +762,7 @@ class ContractThreeStatusCard extends StatelessWidget {
     String displayText = statusValue ?? 'N/A';
     final val = statusValue?.toLowerCase() ?? '';
 
-    if (val == 'initial' || val == 'pending') {
+    if (val == 'initial' || val == 'pending' || val == 'initiated') {
       statusColor = Colors.orange;
       displayText = AppStrings.contractValInitial.tr();
     } else if (val == 'inprocess' ||

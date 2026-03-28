@@ -35,45 +35,15 @@ class ContractRemoteDataSourceImpl implements ContractRemoteDataSource {
 
   @override
   Future<ContractModel> confirmPayment(String id) async {
-    // FAKE DATA FIX for Test Payment Flow
-    if (id.contains('FAKE')) {
-      await Future.delayed(
-        const Duration(seconds: 1),
-      ); // Simulate network delay
-      return ContractModel.fromJson({
-        'id': 123,
-        'status': '200',
-        'success': true,
-        'contract_status': 'in_progress', // or whatever status follows payment
-        'contr_pub_status': 'Approved',
-        'contr_cust_status': 'paid', // Mark as paid
-        'advertisement_id': '456',
-        'publisher_id': '999',
-        'customer_id': '888',
-        'requested_amount': '150.0',
-        'actual_amount': '150.0',
-        'created_at': DateTime.now().toIso8601String(),
-        'updated_at': DateTime.now().toIso8601String(),
-        'advertisement': const {
-          'title': {'en': 'Test Service', 'ar': 'تجربة'},
-          'category_id': 1,
-        },
-        'publisher': const {'id': 999, 'name': 'Test Photographer', 'image': ''},
-        'customer': const {'id': 888, 'name': 'Test Customer', 'image': ''},
-      });
-    }
-
-    final response = await _dioClient.post(ApiConstants.confirmPayment(id));
-
-    final data = response.data;
-    if (data['status'] == 200 || data['success'] == true) {
-      if (data['data'] != null) {
-        return ContractModel.fromJson(data['data']);
-      }
-      return ContractModel.fromJson(data['data'] ?? {});
-    } else {
-      throw ServerException(data['message'] ?? 'فشل في تأكيد الدفع');
-    }
+    // The confirm-payment endpoint doesn't exist on this API.
+    // Instead, we update contr_cust_status to 'Paid' via the contract update endpoint.
+    // This is the actual API pattern verified via testing.
+    return updateContract(id, {
+      '_method': 'PUT',
+      'note_type': 'customer',
+      'contr_cust_status': 'Paid',
+      'note_text': 'تم تأكيد الدفع',
+    });
   }
 
   @override
@@ -133,47 +103,6 @@ class ContractRemoteDataSourceImpl implements ContractRemoteDataSource {
 
   @override
   Future<ContractDetailsModel> getContractDetails(String id) async {
-    // FAKE DATA FIX for Test Payment Flow
-    if (id.contains('FAKE')) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      return ContractDetailsModel.fromJson({
-        'id': 123,
-        'status': '200',
-        'success': true,
-        'contract_status': 'in_progress', // Updated status
-        'contr_pub_status': 'Approved',
-        'contr_cust_status': 'paid', // Updated status
-        'advertisement_id': '456',
-        'publisher_id': '999',
-        'customer_id': '888',
-        'requested_amount': '150.0',
-        'actual_amount': '150.0',
-        'created_at': DateTime.now().toIso8601String(),
-        'updated_at': DateTime.now().toIso8601String(),
-        'advertisement': const {
-          'title': {'en': 'Test Service', 'ar': 'تجربة'},
-          'category_id': 1,
-          'description': {'en': 'Test Desc', 'ar': 'وصف تجريبي'},
-        },
-        'publisher': const {
-          'id': 999,
-          'name': 'Test Photographer',
-          'image': '',
-          'phone': '123456',
-          'email': 'p@test.com',
-        },
-        'customer': const {
-          'id': 888,
-          'name': 'Test Customer',
-          'image': '',
-          'phone': '98765',
-          'email': 'c@test.com',
-        },
-        'contr_pub_notes': const [],
-        'contr_cust_notes': const [],
-      });
-    }
-
     final response = await _dioClient.get(ApiConstants.contractDetail(id));
 
     final data = response.data;

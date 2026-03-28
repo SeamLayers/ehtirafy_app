@@ -55,52 +55,64 @@ class ContractEntity extends Equatable {
   });
 
   /// Get the combined status for display
-  /// Priority: rejected > cancelled > completed > accepted > pending
-  /// Get the combined status for display
-  /// Flow:
-  /// 1. Rejected -> Rejected
-  /// 2. Cancelled -> Cancelled
-  /// 3. Completed -> Completed
-  /// 4. Freelancer Approved + Customer Initiated -> Awaiting Payment (Freelancer approved but client needs to pay)
-  /// 5. Freelancer Approved + Customer Paid/InProcess -> In Progress (Active)
-  /// 6. Freelancer Approved -> Accepted (Fallback)
-  /// 7. Default -> Pending
+  ///
+  /// API reality (verified via live testing):
+  /// - contract_status: 'initiated' → 'InProcess' (auto on Paid) → 'Completed' (auto when both complete)
+  /// - contr_pub_status: 'pending' → 'Approved' (freelancer accepts) → 'Completed' (freelancer delivers)
+  /// - contr_cust_status: 'initiated' → 'Paid' (customer pays) → 'Completed' (customer confirms)
   ContractStatus get displayStatus {
+    final status = contractStatus?.toLowerCase();
     final pubStatus = contrPubStatus?.toLowerCase();
     final custStatus = contrCustStatus?.toLowerCase();
 
-    if (pubStatus == 'rejected') return ContractStatus.rejected;
-    if (custStatus == 'cancelled') return ContractStatus.cancelled;
-
-    // Check for completed
-    if (pubStatus == 'completed' ||
-        custStatus == 'completed' ||
-        contractStatus?.toLowerCase() == 'closed') {
+    // Completed (both parties confirmed)
+    if (status == 'completed' || status == 'closed') {
       return ContractStatus.completed;
     }
 
-    // Check for "Approved" flow
-    if (pubStatus == 'approved') {
-      // If customer status is 'inprocess' or 'paid', payment was successful
-      if (custStatus == 'inprocess' ||
-          custStatus == 'paid' ||
-          custStatus == 'approved') {
-        return ContractStatus.inProgress;
-      }
+    // Rejected by freelancer
+    if (pubStatus == 'rejected') return ContractStatus.rejected;
 
-      // If customer hasn't paid yet (Initiated)
+    // Cancelled by customer
+    if (custStatus == 'cancelled') return ContractStatus.cancelled;
+
+    // In process (auto-set when customer pays)
+    if (status == 'inprocess') {
+      // Freelancer delivered, waiting for customer confirmation
+      if (pubStatus == 'completed' && custStatus != 'completed') {
+        return ContractStatus.awaitingAdminReview;
+      }
+      return ContractStatus.inProgress;
+    }
+
+    // Freelancer accepted (contract_status=Approved from backend)
+    if (status == 'approved') {
       return ContractStatus.pendingPayment;
+    }
+
+    // Initiated state
+    if (status == 'initiated') {
+      // Freelancer accepted, waiting for customer payment
+      if (pubStatus == 'approved') {
+        return ContractStatus.pendingPayment;
+      }
+      return ContractStatus.initiated;
     }
 
     return ContractStatus.pending;
   }
 
   /// Check if chat is allowed for this contract
-  /// Rule: Chat is allowed only when contract is IN_PROGRESS
-  /// Chat is NOT allowed when: pending, pendingPayment, awaitingAdminReview, rejected, cancelled, or completed
+  /// Chat is allowed when contract is active (initiated, pending, in progress, or completed)
+  /// Chat is NOT allowed for: cancelled, rejected, archived
   bool get isChatAllowed {
     final status = displayStatus;
-    return status == ContractStatus.inProgress;
+    return status == ContractStatus.initiated ||
+        status == ContractStatus.pending ||
+        status == ContractStatus.pendingPayment ||
+        status == ContractStatus.inProgress ||
+        status == ContractStatus.awaitingAdminReview ||
+        status == ContractStatus.completed;
   }
 
   @override
