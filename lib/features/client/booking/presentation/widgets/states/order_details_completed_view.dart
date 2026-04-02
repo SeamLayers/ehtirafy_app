@@ -114,7 +114,7 @@ class OrderDetailsCompletedView extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: AppColors.success.withOpacity(0.1),
+        color: AppColors.success.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: AppColors.success),
       ),

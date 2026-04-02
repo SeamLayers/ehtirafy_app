@@ -52,12 +52,12 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   }
 
   String _mapFailureToMessage(Failure failure) {
-    switch (failure.runtimeType) {
-      case ServerFailure:
+    switch (failure) {
+      case ServerFailure _:
         return failure.message;
-      case CacheFailure:
+      case CacheFailure _:
         return AppStrings.failureCache;
-      case NetworkFailure:
+      case NetworkFailure _:
         return AppStrings.failureNetwork;
       default:
         return AppStrings.failureUnexpected;

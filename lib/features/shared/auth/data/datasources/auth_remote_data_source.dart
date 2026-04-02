@@ -6,6 +6,7 @@ import 'package:ehtirafy_app/core/network/api_constants.dart';
 import 'package:ehtirafy_app/core/network/base_response.dart';
 import 'package:ehtirafy_app/core/errors/exceptions.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 abstract class AuthRemoteDataSource {
   Future<LoginModel> login({
@@ -162,7 +163,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         data: FormData.fromMap({'phone': phone, 'country_code': countryCode}),
       );
 
-      print('Sent OTP Response Data: ${response.data}');
+      debugPrint('Sent OTP Response Data: ${response.data}');
 
       // Handle response with "success": true
       if (response.data is Map<String, dynamic>) {
@@ -187,7 +188,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
       if (baseResponse.status == 200) {
         final otp = baseResponse.data ?? baseResponse.message;
-        print('Parsed OTP: $otp');
+        debugPrint('Parsed OTP: $otp');
         return otp;
       } else {
         throw ServerException(baseResponse.message);

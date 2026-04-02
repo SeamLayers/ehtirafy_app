@@ -170,6 +170,7 @@ class _RequestBookingScreenState extends State<RequestBookingScreen> {
                           ),
                           selectableDayPredicate: _isDayAvailable,
                         );
+                        if (!context.mounted) return;
                         if (date != null) {
                           _dateController.text = DateFormat(
                             'yyyy-MM-dd',
@@ -196,6 +197,7 @@ class _RequestBookingScreenState extends State<RequestBookingScreen> {
                           context: context,
                           initialTime: TimeOfDay.now(),
                         );
+                        if (!context.mounted) return;
                         if (time != null) {
                           _timeController.text = time.format(context);
                         }

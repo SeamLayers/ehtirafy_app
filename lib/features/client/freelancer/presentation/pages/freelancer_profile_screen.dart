@@ -860,6 +860,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
     ).then((_) {
       // Refresh freelancer profile after dialog closes if success?
       // Better to listen to ReviewsCubit in the main screen
+      if (!context.mounted) return;
       context.read<FreelancerCubit>().getFreelancerProfile(freelancerId);
     });
   }

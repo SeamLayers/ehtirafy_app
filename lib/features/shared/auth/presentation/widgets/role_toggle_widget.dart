@@ -43,7 +43,7 @@ class RoleToggleWidget extends StatelessWidget {
                   boxShadow: !isFreelancer
                       ? [
                           BoxShadow(
-                            color: AppColors.gold.withOpacity(0.3),
+                            color: AppColors.gold.withValues(alpha: 0.3),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -94,7 +94,7 @@ class RoleToggleWidget extends StatelessWidget {
                   boxShadow: isFreelancer
                       ? [
                           BoxShadow(
-                            color: AppColors.gold.withOpacity(0.3),
+                            color: AppColors.gold.withValues(alpha: 0.3),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),

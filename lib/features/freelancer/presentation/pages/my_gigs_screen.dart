@@ -89,6 +89,7 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () async {
             final result = await context.push('/freelancer/gigs/create');
+            if (!context.mounted) return;
             if (result == true) {
               context.read<FreelancerGigsCubit>().loadGigs();
             }
@@ -285,6 +286,7 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
                         '/freelancer/gigs/create',
                         extra: gig,
                       );
+                      if (!context.mounted) return;
                       if (result == true) {
                         context.read<FreelancerGigsCubit>().loadGigs();
                       }
@@ -361,6 +363,7 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
         retryText: AppStrings.freelancerGigsAddFirstGig.tr(),
         onRetry: () async {
           final result = await context.push('/freelancer/gigs/create');
+          if (!context.mounted) return;
           if (result == true) {
             context.read<FreelancerGigsCubit>().loadGigs();
           }

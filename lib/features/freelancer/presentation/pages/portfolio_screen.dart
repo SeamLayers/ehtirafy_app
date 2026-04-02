@@ -72,6 +72,7 @@ class PortfolioScreen extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             final result = await context.push('/freelancer/portfolio/add');
+            if (!context.mounted) return;
             if (result == true) {
               context.read<FreelancerPortfolioCubit>().loadPortfolio();
             }
@@ -130,6 +131,7 @@ class PortfolioScreen extends StatelessWidget {
         retryText: AppStrings.freelancerPortfolioAddWork.tr(),
         onRetry: () async {
           final result = await context.push('/freelancer/portfolio/add');
+          if (!context.mounted) return;
           if (result == true) {
             context.read<FreelancerPortfolioCubit>().loadPortfolio();
           }
@@ -167,6 +169,7 @@ class PortfolioScreen extends StatelessWidget {
           '/freelancer/portfolio/add',
           extra: item,
         );
+        if (!context.mounted) return;
         if (result == true) {
           context.read<FreelancerPortfolioCubit>().loadPortfolio();
         }

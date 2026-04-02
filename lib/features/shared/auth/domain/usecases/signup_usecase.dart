@@ -16,6 +16,7 @@ class SignupUseCase implements UseCase<User, SignupParams> {
       fullName: params.fullName,
       email: params.email,
       phone: params.phone,
+      identityNumber: params.identityNumber,
       password: params.password,
       passwordConfirmation: params.passwordConfirmation,
       sex: params.sex,
@@ -31,6 +32,7 @@ class SignupParams extends Equatable {
   final String fullName;
   final String email;
   final String phone;
+  final String identityNumber;
   final String password;
   final String passwordConfirmation;
   final String sex;
@@ -43,6 +45,7 @@ class SignupParams extends Equatable {
     required this.fullName,
     required this.email,
     required this.phone,
+    required this.identityNumber,
     required this.password,
     required this.passwordConfirmation,
     required this.sex,
@@ -57,6 +60,7 @@ class SignupParams extends Equatable {
     fullName,
     email,
     phone,
+    identityNumber,
     password,
     passwordConfirmation,
     sex,

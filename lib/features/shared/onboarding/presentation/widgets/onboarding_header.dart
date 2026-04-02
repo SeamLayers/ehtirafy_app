@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
@@ -12,21 +11,26 @@ class OnboardingHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final isArabic = context.locale.languageCode == 'ar';
+    final brandName = isArabic ? 'البطل' : 'Al-Batal';
+    final brandTagline = isArabic
+        ? 'تصوير مناسباتك، بلمسة إبداع.'
+        : 'Your Event Photography, Perfected.';
 
     return Container(
       padding: EdgeInsets.symmetric(vertical: 20.h),
       child: Column(
         children: [
           Container(
-            width: 96.w,
-            height: 96.w,
+            width: 170.w,
+            height: 170.w,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: const Alignment(0.5, 0),
-                end: const Alignment(0.5, 1),
-                colors: [AppColors.gold, AppColors.gold.withValues(alpha: 0.8)],
+              color: Colors.white,
+              border: Border.all(
+                color: AppColors.gold.withValues(alpha: 0.5),
+                width: 2,
               ),
-              borderRadius: BorderRadius.circular(24.r),
+              borderRadius: BorderRadius.circular(28.r),
               boxShadow: const [
                 BoxShadow(
                   color: Color(0x19000000),
@@ -43,17 +47,32 @@ class OnboardingHeader extends StatelessWidget {
               ],
             ),
             alignment: Alignment.center,
-            child: SvgPicture.asset(
-              'assets/icons/camera_icon.svg',
-              width: 64.w,
-              height: 64.w,
-              colorFilter: const ColorFilter.mode(
-                AppColors.textLight,
-                BlendMode.srcIn,
-              ),
+            child: Image.asset(
+              'assets/images/logocanon.png',
+              width: 138.w,
+              height: 138.w,
+              fit: BoxFit.contain,
             ),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 18.h),
+          Text(
+            brandName,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              color: isDark ? AppColors.textLight : AppColors.textPrimary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          SizedBox(height: 6.h),
+          Text(
+            brandTagline,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: isDark ? AppColors.grey300 : AppColors.textSecondary,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: 18.h),
           Text(
             AppStrings.onboardingWelcome.tr(),
             textAlign: TextAlign.center,

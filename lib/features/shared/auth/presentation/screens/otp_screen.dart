@@ -44,7 +44,7 @@ class _OtpView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               AuthHeader(
-                iconAsset: 'assets/icons/verify.svg',
+                iconAsset: 'assets/images/logocanon.png',
                 title: 'auth.otpTitle'.tr(),
                 subtitle: 'auth.otpSubtitle'.tr(),
               ),
@@ -279,6 +279,7 @@ class _OtpActions extends StatelessWidget {
                       // Extract received OTP
                       final expectedOtp = signupData?['otp'] as String?;
                       await cubit.verify(expectedOtp: expectedOtp);
+                      if (!context.mounted) return;
 
                       final s = cubit.state;
                       if (s is OtpVerified) {

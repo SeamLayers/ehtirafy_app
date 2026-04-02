@@ -104,7 +104,7 @@ class WorkStagesList extends StatelessWidget {
                 Text(
                   note.note ?? 'Status Updated',
                   style: TextStyle(
-                    color: AppColors.textPrimary.withOpacity(0.8),
+                    color: AppColors.textPrimary.withValues(alpha: 0.8),
                     fontSize: 13.sp,
                   ),
                 ),

@@ -1,60 +1,69 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../../core/di/service_locator.dart';
-import '../cubit/settings_cubit.dart';
-import '../cubit/settings_state.dart';
 
 class ContactUsScreen extends StatelessWidget {
   const ContactUsScreen({super.key});
 
+  static const String _arabicContent =
+      'إذا كان لديك أي استفسار أو رغبتك في تقديم شكوى:\n'
+      '1. الضغط على رابط "اتصل بنا".\n'
+      '2. إرسال رسالة عبر البريد: photography@al-batal.com\n'
+      '3. الاتصال المباشر: +966 55 123 4567\n'
+      '4. متابعة حساباتنا:\n'
+      '• فيسبوك facebook.com/albatal\n'
+      '• تويتر @al_batal\n'
+      '• إنستجرام instagram.com/albatal\n'
+      '• سناب شات @albatal';
+
+  static const String _englishContent =
+      'If you have any inquiry or wish to submit a complaint:\n'
+      '1. Click the "Contact Us" link.\n'
+      '2. Send an email to: photography@al-batal.com\n'
+      '3. Direct call: +966 55 123 4567\n'
+      '4. Follow our social accounts:\n'
+      '• Facebook: facebook.com/albatal\n'
+      '• X (Twitter): @al_batal\n'
+      '• Instagram: instagram.com/albatal\n'
+      '• Snapchat: @albatal';
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<SettingsCubit>()..getContactUs(),
-      child: Scaffold(
-        appBar: AppBar(title: Text('settings.help_support'.tr())),
-        body: BlocBuilder<SettingsCubit, SettingsState>(
-          builder: (context, state) {
-            if (state is SettingsLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is SettingsError) {
-              return Center(child: Text(state.message));
-            } else if (state is ContactUsLoaded) {
-              return Padding(
-                padding: EdgeInsets.all(16.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (state.data.email != null)
-                      ListTile(
-                        leading: const Icon(Icons.email),
-                        title: Text(state.data.email!),
-                      ),
-                    if (state.data.phone != null)
-                      ListTile(
-                        leading: const Icon(Icons.phone),
-                        title: Text(state.data.phone!),
-                      ),
-                    if (state.data.whatsapp != null)
-                      ListTile(
-                        leading: const Icon(
-                          Icons.perm_phone_msg,
-                        ), // Whatsapp icon equivalent
-                        title: Text(state.data.whatsapp!),
-                      ),
-                    if (state.data.address != null)
-                      ListTile(
-                        leading: const Icon(Icons.location_on),
-                        title: Text(state.data.address!),
-                      ),
-                  ],
-                ),
-              );
-            }
-            return const SizedBox.shrink();
-          },
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('اتصل بنا / Contact Us'),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'العربية',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              _arabicContent,
+              style: theme.textTheme.bodyMedium?.copyWith(height: 1.8),
+            ),
+            SizedBox(height: 24.h),
+            Text(
+              'English',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              _englishContent,
+              textDirection: TextDirection.ltr,
+              style: theme.textTheme.bodyMedium?.copyWith(height: 1.8),
+            ),
+          ],
         ),
       ),
     );

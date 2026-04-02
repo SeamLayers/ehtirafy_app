@@ -79,7 +79,7 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   AuthHeader(
-                    iconAsset: 'assets/icons/camera_icon.svg', // Reusing icon
+                    iconAsset: 'assets/images/logocanon.png',
                     title: AppStrings.authResetPasswordTitle.tr(),
                     subtitle: AppStrings.authResetPasswordSubtitle.tr(),
                   ),

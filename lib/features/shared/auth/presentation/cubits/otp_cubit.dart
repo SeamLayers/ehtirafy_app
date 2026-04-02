@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 
 abstract class OtpState {
   const OtpState();
@@ -60,7 +61,7 @@ class OtpCubit extends Cubit<OtpState> {
     emit(OtpVerifying());
     await Future.delayed(const Duration(milliseconds: 300));
 
-    print('Verifying OTP. Entered: $code, Expected: $expectedOtp');
+    debugPrint('Verifying OTP. Entered: $code, Expected: $expectedOtp');
 
     // Check against expected OTP if provided, otherwise default (or API in future)
     if (expectedOtp != null) {
@@ -74,7 +75,7 @@ class OtpCubit extends Cubit<OtpState> {
       // However, if expectedOtp is null, we stay stuck in verifying or need to emit error?
       // Added fallback error just in case expectedOtp is missing to avoid stuck state.
     } else {
-      print('Error: verify called but expectedOtp is null');
+      debugPrint('Error: verify called but expectedOtp is null');
       emit(const OtpError('failures.validation'));
     }
   }

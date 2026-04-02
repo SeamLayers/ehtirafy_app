@@ -6,12 +6,16 @@ class AppLogo extends StatelessWidget {
   /// Width of the logo (responsive using screenutil)
   final double width;
 
+  /// Optional fixed height for compact placements like AppBars
+  final double? height;
+
   /// Optional BoxFit for the image
   final BoxFit fit;
 
   const AppLogo({
     super.key,
     this.width = 145,
+    this.height,
     this.fit = BoxFit.contain,
   });
 
@@ -19,10 +23,11 @@ class AppLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width.w,
+      height: height?.h,
       child: AspectRatio(
-        aspectRatio: 1,
+        aspectRatio: height != null ? width / height! : 1,
         child: Image.asset(
-          'assets/images/logo_without_bg.png',
+          'assets/images/logocanon.png',
           fit: fit,
         ),
       ),

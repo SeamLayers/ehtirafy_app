@@ -93,9 +93,9 @@ class _AddPortfolioItemScreenState extends State<AddPortfolioItemScreen> {
                           width: double.infinity,
                           padding: EdgeInsets.all(12.w),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF17A2B8).withOpacity(0.1),
+                            color: const Color(0xFF17A2B8).withValues(alpha: 0.1),
                             border: Border.all(
-                              color: const Color(0xFF17A2B8).withOpacity(0.3),
+                              color: const Color(0xFF17A2B8).withValues(alpha: 0.3),
                               width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(12.r),
@@ -203,7 +203,7 @@ class _AddPortfolioItemScreenState extends State<AddPortfolioItemScreen> {
                       Text(
                         'اعرض أفضل أعمالك',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.white.withValues(alpha: 0.8),
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w400,
                         ),
@@ -391,9 +391,9 @@ class _AddPortfolioItemScreenState extends State<AddPortfolioItemScreen> {
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
+        color: AppColors.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
@@ -442,7 +442,7 @@ class _AddPortfolioItemScreenState extends State<AddPortfolioItemScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
               ),
-              disabledBackgroundColor: AppColors.primary.withOpacity(0.5),
+              disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.5),
             ),
             child: isLoading
                 ? SizedBox(

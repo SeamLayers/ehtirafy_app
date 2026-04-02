@@ -164,7 +164,7 @@ class _NotificationItem extends StatelessWidget {
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
           color: notification.isUnread
-              ? AppColors.gold.withOpacity(0.1)
+              ? AppColors.gold.withValues(alpha: 0.1)
               : Colors.white,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(

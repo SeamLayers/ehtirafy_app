@@ -96,8 +96,8 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
             begin: const Alignment(-1.0, -1.0),
             end: const Alignment(1.0, 1.0),
             colors: [
-              const Color(0xFFC8A44F).withOpacity(0.15),
-              const Color(0xFFC8A44F).withOpacity(0.05),
+              const Color(0xFFC8A44F).withValues(alpha: 0.15),
+              const Color(0xFFC8A44F).withValues(alpha: 0.05),
               Colors.transparent,
             ],
           ),
@@ -126,13 +126,13 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          const Color(0xFFC8A44F).withOpacity(0.3),
-                          const Color(0xFFC8A44F).withOpacity(0.1),
+                          const Color(0xFFC8A44F).withValues(alpha: 0.3),
+                          const Color(0xFFC8A44F).withValues(alpha: 0.1),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(14.r),
                       border: Border.all(
-                        color: const Color(0xFFC8A44F).withOpacity(0.3),
+                        color: const Color(0xFFC8A44F).withValues(alpha: 0.3),
                         width: 1,
                       ),
                     ),
@@ -218,8 +218,8 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
                     end: Alignment.centerRight,
                     colors: _isSwitching
                         ? [
-                            const Color(0xFFC8A44F).withOpacity(0.6),
-                            const Color(0xFFD4B85A).withOpacity(0.6)
+                            const Color(0xFFC8A44F).withValues(alpha: 0.6),
+                            const Color(0xFFD4B85A).withValues(alpha: 0.6)
                           ]
                         : [const Color(0xFFC8A44F), const Color(0xFFD4B85A)],
                   ),
@@ -228,7 +228,7 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
                       ? []
                       : [
                           BoxShadow(
-                            color: const Color(0xFFC8A44F).withOpacity(0.3),
+                            color: const Color(0xFFC8A44F).withValues(alpha: 0.3),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),
@@ -291,7 +291,7 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
                     (isClient
                             ? const Color(0xFF17A2B8)
                             : const Color(0xFFC8A44F))
-                        .withOpacity(0.5),
+                        .withValues(alpha: 0.5),
                 blurRadius: 4,
                 spreadRadius: 1,
               ),

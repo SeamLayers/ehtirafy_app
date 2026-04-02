@@ -53,7 +53,7 @@ class AuthSelector<T> extends StatelessWidget {
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
-                                color: AppColors.gold.withOpacity(0.3),
+                                color: AppColors.gold.withValues(alpha: 0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),

@@ -19,24 +19,22 @@ class AuthHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final isSvg = iconAsset.toLowerCase().endsWith('.svg');
 
     return Container(
       padding: EdgeInsets.symmetric(vertical: 20.h),
       child: Column(
         children: [
           Container(
-            width: 80.w,
-            height: 80.w,
+            width: 92.w,
+            height: 92.w,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: const Alignment(0.5, 0),
-                end: const Alignment(0.5, 1),
-                colors: [
-                  AppColors.gold,
-                  AppColors.gold.withValues(alpha: 0.8),
-                ],
+              color: Colors.white,
+              border: Border.all(
+                color: AppColors.gold.withValues(alpha: 0.45),
+                width: 1.4,
               ),
-              borderRadius: BorderRadius.circular(16.r),
+              borderRadius: BorderRadius.circular(18.r),
               boxShadow: const [
                 BoxShadow(
                   color: Color(0x19000000),
@@ -53,12 +51,22 @@ class AuthHeader extends StatelessWidget {
               ],
             ),
             alignment: Alignment.center,
-            child: SvgPicture.asset(
-              iconAsset,
-              width: 40.w,
-              height: 40.w,
-              colorFilter: const ColorFilter.mode(Color(0xFFFFFFFF), BlendMode.srcIn),
-            ),
+            child: isSvg
+                ? SvgPicture.asset(
+                    iconAsset,
+                    width: 44.w,
+                    height: 44.w,
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.gold,
+                      BlendMode.srcIn,
+                    ),
+                  )
+                : Image.asset(
+                    iconAsset,
+                    width: 70.w,
+                    height: 70.w,
+                    fit: BoxFit.contain,
+                  ),
           ),
           SizedBox(height: 20.h),
           Text(

@@ -198,7 +198,7 @@ class ContractInfoCard extends StatelessWidget {
             padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
               color: contract.isChatAllowed
-                  ? AppColors.primary.withOpacity(0.1)
+                  ? AppColors.primary.withValues(alpha: 0.1)
                   : AppColors.grey200,
               shape: BoxShape.circle,
             ),

@@ -41,7 +41,7 @@ class OrderDetailsPendingView extends StatelessWidget {
       height: 48.h,
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: AppColors.error.withOpacity(0.5)),
+        border: Border.all(color: AppColors.error.withValues(alpha: 0.5)),
         borderRadius: BorderRadius.circular(14.r),
         boxShadow: const [
           BoxShadow(

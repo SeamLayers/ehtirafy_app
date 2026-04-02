@@ -201,13 +201,13 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
       decoration: BoxDecoration(
         color: state.isOnline
-            ? const Color(0xFF28A745).withOpacity(0.1)
-            : const Color(0xFF888888).withOpacity(0.1),
+            ? const Color(0xFF28A745).withValues(alpha: 0.1)
+            : const Color(0xFF888888).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
           color: state.isOnline
-              ? const Color(0xFF28A745).withOpacity(0.3)
-              : const Color(0xFF888888).withOpacity(0.3),
+              ? const Color(0xFF28A745).withValues(alpha: 0.3)
+              : const Color(0xFF888888).withValues(alpha: 0.3),
         ),
       ),
       child: InkWell(
@@ -298,6 +298,7 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
           AppStrings.freelancerDashboardManagePortfolio.tr(),
           () async {
             await context.push('/freelancer/portfolio');
+            if (!context.mounted) return;
             // Always reload when returning from portfolio list
             context.read<FreelancerDashboardCubit>().loadDashboard();
           },
@@ -398,13 +399,14 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
     return InkWell(
       onTap: () async {
         final result = await context.push('/freelancer/portfolio/add');
+        if (!context.mounted) return;
         if (result == true) {
           context.read<FreelancerDashboardCubit>().loadDashboard();
         }
       },
       child: CustomPaint(
         painter: _DashedBorderPainter(
-          color: AppColors.primary.withOpacity(0.5),
+          color: AppColors.primary.withValues(alpha: 0.5),
           strokeWidth: 1.5,
           gap: 5.0,
         ),
@@ -456,12 +458,14 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
           AppStrings.freelancerDashboardAddService.tr(),
           () async {
             final result = await context.push('/freelancer/gigs/create');
+            if (!context.mounted) return;
             if (result == true) {
               context.read<FreelancerDashboardCubit>().loadDashboard();
             }
           },
           onTitleTap: () async {
             await context.push('/freelancer/gigs');
+            if (!context.mounted) return;
             // Always reload when returning from list, as changes might have happened there
             context.read<FreelancerDashboardCubit>().loadDashboard();
           },
@@ -634,13 +638,14 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
     return InkWell(
       onTap: () async {
         final result = await context.push('/freelancer/gigs/create');
+        if (!context.mounted) return;
         if (result == true) {
           context.read<FreelancerDashboardCubit>().loadDashboard();
         }
       },
       child: CustomPaint(
         painter: _DashedBorderPainter(
-          color: AppColors.primary.withOpacity(0.5),
+          color: AppColors.primary.withValues(alpha: 0.5),
           strokeWidth: 1.5,
           gap: 5.0,
         ),

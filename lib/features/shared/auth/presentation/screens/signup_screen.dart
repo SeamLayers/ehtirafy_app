@@ -44,7 +44,7 @@ class _SignupView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 AuthHeader(
-                  iconAsset: 'assets/icons/camera_icon.svg',
+                  iconAsset: 'assets/images/logocanon.png',
                   title: AppStrings.authSignupTitle.tr(),
                   subtitle: AppStrings.authSignupSubtitle.tr(),
                 ),
@@ -70,6 +70,7 @@ class _SignupFormState extends State<_SignupForm> {
   late final TextEditingController _fullNameController;
   late final TextEditingController _emailController;
   late final TextEditingController _phoneController;
+  late final TextEditingController _identityNumberController;
   late final TextEditingController _passwordController;
   late final TextEditingController _confirmPasswordController;
 
@@ -89,6 +90,7 @@ class _SignupFormState extends State<_SignupForm> {
     _fullNameController = TextEditingController();
     _emailController = TextEditingController();
     _phoneController = TextEditingController();
+    _identityNumberController = TextEditingController();
     _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
   }
@@ -98,6 +100,7 @@ class _SignupFormState extends State<_SignupForm> {
     _fullNameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
+    _identityNumberController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
@@ -123,6 +126,7 @@ class _SignupFormState extends State<_SignupForm> {
                 'fullName': _fullNameController.text,
                 'email': _emailController.text,
                 'phone': _phoneController.text,
+                'identityNumber': _identityNumberController.text.trim(),
                 'password': _passwordController.text,
                 'passwordConfirmation': _confirmPasswordController.text,
                 'sex': _selectedSex,
@@ -210,6 +214,14 @@ class _SignupFormState extends State<_SignupForm> {
             ),
             SizedBox(height: 16.h),
             AuthTextField(
+              label: 'رقم الإقامة / الهوية الوطنية',
+              hint: 'أدخل رقم الإقامة أو الهوية الوطنية',
+              controller: _identityNumberController,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.next,
+            ),
+            SizedBox(height: 16.h),
+            AuthTextField(
               label: AppStrings.authPasswordLabel.tr(),
               hint: AppStrings.authPasswordHint.tr(),
               controller: _passwordController,
@@ -273,14 +285,26 @@ class _SignupFormState extends State<_SignupForm> {
               text: AppStrings.authSignupButton.tr(),
               // Use builder to access the form state validation if needed, but controllers are here
               onPressed: () {
+                final identityNumber = _identityNumberController.text.trim();
+
                 // Basic validation
                 if (_fullNameController.text.isEmpty ||
                     _emailController.text.isEmpty ||
                     _phoneController.text.isEmpty ||
+                    identityNumber.isEmpty ||
                     _passwordController.text.isEmpty ||
                     _confirmPasswordController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(AppStrings.validationRequired.tr())),
+                  );
+                  return;
+                }
+
+                if (int.tryParse(identityNumber) == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('يرجى إدخال رقم هوية/إقامة صحيح'),
+                    ),
                   );
                   return;
                 }

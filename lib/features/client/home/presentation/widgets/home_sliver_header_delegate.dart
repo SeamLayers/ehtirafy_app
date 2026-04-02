@@ -47,7 +47,7 @@ class HomeSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.1),
+                            color: Colors.white.withValues(alpha: 0.1),
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
@@ -92,7 +92,7 @@ class HomeSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                               ),
                               const SizedBox(width: 8),
                               const Text(
-                                'احترافي',
+                                'بطل',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,
@@ -146,7 +146,7 @@ class HomeSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                         'ابحث عن خدمات أو مصورين...',
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                          color: const Color(0xFF717182).withOpacity(0.8),
+                          color: const Color(0xFF717182).withValues(alpha: 0.8),
                           fontSize: 14,
                           fontFamily: 'Cairo',
                           fontWeight: FontWeight.w400,

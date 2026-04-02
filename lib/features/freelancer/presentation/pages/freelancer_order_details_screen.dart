@@ -533,7 +533,7 @@ class _FreelancerOrderDetailsScreenState
               ),
             ),
             child: Text(
-              'السلام عليكم، نحتاج تغطية كاملة لحفل الزفاف من الساعة 6 مساءً حتى 12 منتصف الليل. الحفل سيكون في قاعة الأفراح الكبرى ونتوقع حضور 300 ضيف. نرغب في الحصول على صور احترافية للحفل بالكامل بالإضافة إلى فيديو تريلر. شكراً لكم.',
+              'السلام عليكم، نحتاج تغطية كاملة لحفل الزفاف من الساعة 6 مساءً حتى 12 منتصف الليل. الحفل سيكون في قاعة الأفراح الكبرى ونتوقع حضور 300 ضيف. نرغب في الحصول على صور عالية الجودة للحفل بالكامل بالإضافة إلى فيديو تريلر. شكراً لكم.',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: const Color(0xFF2B2B2B),
                 fontSize: 16.sp,
@@ -918,7 +918,7 @@ class _FreelancerOrderDetailsScreenState
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  'تم إيداع المبلغ لدى احترافي',
+                  'تم إيداع المبلغ لدى بطل',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: const Color(0xFF28A745),
                     fontSize: 16.sp,

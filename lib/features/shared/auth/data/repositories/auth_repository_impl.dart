@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:ehtirafy_app/core/errors/failures.dart';
 import 'package:ehtirafy_app/core/errors/exceptions.dart';
 import 'package:ehtirafy_app/core/network/api_error_handler.dart';
+import 'package:flutter/foundation.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/entities/login_result.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -43,6 +44,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String fullName,
     required String email,
     required String phone,
+    required String identityNumber,
     required String password,
     required String passwordConfirmation,
     required String sex,
@@ -60,6 +62,7 @@ class AuthRepositoryImpl implements AuthRepository {
         sex: sex,
         materialStatus: materialStatus,
         phone: phone,
+        identity_number: identityNumber,
         userType: userType,
         countryCode: countryCode,
         deviceToken: deviceToken,
@@ -70,10 +73,10 @@ class AuthRepositoryImpl implements AuthRepository {
       // Save token if available (for auto-login)
       // Save token if available (for auto-login)
       if (result.token != null && result.token!.isNotEmpty) {
-        print('Signup successful. Saving token: ${result.token}');
+        debugPrint('Signup successful. Saving token: ${result.token}');
         await localDataSource.saveToken(result.token!);
       } else {
-        print('Signup successful but NO TOKEN found in response.');
+        debugPrint('Signup successful but NO TOKEN found in response.');
       }
 
       return Right(result);

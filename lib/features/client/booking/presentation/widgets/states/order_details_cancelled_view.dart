@@ -34,7 +34,7 @@ class OrderDetailsCancelledView extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: AppColors.error.withOpacity(0.1),
+        color: AppColors.error.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: AppColors.error),
       ),

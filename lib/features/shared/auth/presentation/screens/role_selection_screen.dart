@@ -168,6 +168,9 @@ class _RoleSelectionView extends StatelessWidget {
                                     fullName: data['fullName'],
                                     email: data['email'],
                                     phone: data['phone'],
+                                    identityNumber:
+                                        (data['identityNumber'] ?? '')
+                                            .toString(),
                                     password: data['password'],
                                     passwordConfirmation:
                                         data['passwordConfirmation'],

@@ -65,7 +65,7 @@ class WalletScreen extends StatelessWidget {
                   Text(
                     'wallet.total_balance'.tr(),
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                       fontSize: 14.sp,
                       fontFamily: 'Cairo',
                       fontWeight: FontWeight.w400,
@@ -92,7 +92,7 @@ class WalletScreen extends StatelessWidget {
                         vertical: 12.h,
                       ),
                       decoration: ShapeDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.r),
                         ),

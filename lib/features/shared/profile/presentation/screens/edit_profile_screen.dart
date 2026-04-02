@@ -339,7 +339,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   border: InputBorder.none,
                   hintText: hint,
                   hintStyle: TextStyle(
-                    color: _lightText.withOpacity(0.7),
+                    color: _lightText.withValues(alpha: 0.7),
                     fontSize: 14.sp,
                     fontFamily: 'Cairo',
                     fontWeight: FontWeight.w400,

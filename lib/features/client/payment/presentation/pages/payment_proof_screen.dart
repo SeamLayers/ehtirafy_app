@@ -67,6 +67,7 @@ class _PaymentProofScreenState extends State<PaymentProofScreen> {
   Future<void> _selectFile() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (!mounted) return;
 
     if (pickedFile != null) {
       setState(() {

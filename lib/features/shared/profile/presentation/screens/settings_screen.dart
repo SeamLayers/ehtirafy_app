@@ -8,7 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../manager/profile_cubit.dart';
 import '../manager/profile_state.dart';
 import '../../../settings/presentation/pages/contact_us_screen.dart';
+import '../../../settings/presentation/pages/platform_fees_screen.dart';
 import '../../../settings/presentation/pages/privacy_policy_screen.dart';
+import '../../../settings/presentation/pages/safety_center_screen.dart';
 import '../../../settings/presentation/pages/terms_conditions_screen.dart';
 import '../widgets/profile_tile.dart';
 
@@ -94,7 +96,7 @@ class SettingsScreen extends StatelessWidget {
               ),
               SizedBox(height: 12.h),
               ProfileTile(
-                title: 'settings.help_support'.tr(),
+                title: 'اتصل بنا / Contact Us',
                 icon: Icons.help_outline,
                 onTap: () {
                   Navigator.push(
@@ -105,7 +107,7 @@ class SettingsScreen extends StatelessWidget {
               ),
               SizedBox(height: 12.h),
               ProfileTile(
-                title: 'settings.privacy_policy'.tr(),
+                title: 'الخصوصية وبيان سرية المعلومات / Privacy Policy',
                 icon: Icons.privacy_tip_outlined,
                 onTap: () {
                   Navigator.push(
@@ -118,7 +120,7 @@ class SettingsScreen extends StatelessWidget {
               ),
               SizedBox(height: 12.h),
               ProfileTile(
-                title: 'settings.terms_conditions'.tr(),
+                title: 'اتفاقية الاستخدام / Terms of Use',
                 icon: Icons.description_outlined,
                 onTap: () {
                   Navigator.push(
@@ -129,14 +131,28 @@ class SettingsScreen extends StatelessWidget {
                   );
                 },
               ),
+              SizedBox(height: 12.h),
               ProfileTile(
-                title: 'settings.terms_conditions'.tr(),
-                icon: Icons.description_outlined,
+                title: 'مركز الأمان / Safety Center',
+                icon: Icons.shield_outlined,
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const TermsConditionsScreen(),
+                      builder: (_) => const SafetyCenterScreen(),
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: 12.h),
+              ProfileTile(
+                title: 'رسوم المنصة / Platform Fees',
+                icon: Icons.account_balance_outlined,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const PlatformFeesScreen(),
                     ),
                   );
                 },

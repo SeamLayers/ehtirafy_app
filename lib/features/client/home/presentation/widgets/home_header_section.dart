@@ -95,7 +95,7 @@ class HomeHeaderSection extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           const Text(
-                            'احترافي',
+                            'بطل',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,

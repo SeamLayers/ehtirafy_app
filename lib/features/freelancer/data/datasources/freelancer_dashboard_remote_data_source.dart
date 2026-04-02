@@ -1,5 +1,6 @@
 import 'package:ehtirafy_app/core/network/api_constants.dart';
 import 'package:ehtirafy_app/core/network/dio_client.dart';
+import 'package:flutter/foundation.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../models/freelancer_statistics_model.dart';
 import '../models/freelancer_last_contract_model.dart';
@@ -21,7 +22,7 @@ class FreelancerDashboardRemoteDataSourceImpl
       final response = await dioClient.get(
         ApiConstants.freelancerStatistics(freelancerId.toString()),
       );
-      print('DEBUG: Statistics Response Data: ${response.data}'); // Debug log
+      debugPrint('DEBUG: Statistics Response Data: ${response.data}');
       if (response.data['status'] == 'success') {
         return FreelancerStatisticsModel.fromJson(response.data['data']);
       } else {
@@ -42,9 +43,9 @@ class FreelancerDashboardRemoteDataSourceImpl
       final response = await dioClient.get(
         ApiConstants.freelancerLastContracts(freelancerId.toString()),
       );
-      print(
+      debugPrint(
         'DEBUG: Last Contracts Response Data: ${response.data}',
-      ); // Debug log
+      );
       if (response.data['status'] == 'success') {
         final List<dynamic> data = response.data['data'];
         return data
