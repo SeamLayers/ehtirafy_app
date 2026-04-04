@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/category_entity.dart';
 
 class HomeCategoriesSection extends StatelessWidget {
@@ -40,19 +41,58 @@ class HomeCategoriesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.w),
-          child: Text(
-            'الفئات',
-            style: TextStyle(
-              color: const Color(0xFF2B2B2B),
-              fontSize: 16.sp,
-              fontFamily: 'Cairo',
-              fontWeight: FontWeight.w400,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'الفئات',
+                    style: TextStyle(
+                      color: const Color(0xFF2B2B2B),
+                      fontSize: 18.sp,
+                      fontFamily: 'Cairo',
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    'اختر نوع الخدمة المناسبة لمناسبتك',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: const Color(0xFF8D8D8D),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                decoration: BoxDecoration(
+                  color: AppColors.gold.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(999.r),
+                  border: Border.all(
+                    color: AppColors.gold.withValues(alpha: 0.25),
+                  ),
+                ),
+                child: Text(
+                  '${categories.length} فئة',
+                  style: TextStyle(
+                    color: AppColors.gold,
+                    fontSize: 11.sp,
+                    fontFamily: 'Cairo',
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         SizedBox(height: 16.h),
@@ -60,7 +100,7 @@ class HomeCategoriesSection extends StatelessWidget {
           _buildEmptyState()
         else
           SizedBox(
-            height: 140.h,
+            height: 164.h,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -83,31 +123,34 @@ class HomeCategoriesSection extends StatelessWidget {
 
   Widget _buildEmptyState() {
     return Container(
-      height: 140.h,
+      height: 154.h,
       width: double.infinity,
       margin: EdgeInsets.symmetric(horizontal: 24.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: const Color(0xFFE5E5E5), width: 2),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [AppColors.gold.withValues(alpha: 0.09), Colors.white],
+        ),
+        borderRadius: BorderRadius.circular(18.r),
+        border: Border.all(
+          color: AppColors.gold.withValues(alpha: 0.20),
+          width: 1.5,
+        ),
       ),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.category_outlined,
-              size: 32.sp,
-              color: const Color(0xFF888888),
-            ),
+            Icon(Icons.category_rounded, size: 34.sp, color: AppColors.gold),
             SizedBox(height: 8.h),
             Text(
               'لا توجد فئات متاحة',
               style: TextStyle(
-                color: const Color(0xFF888888),
+                color: const Color(0xFF6F6F6F),
                 fontSize: 14.sp,
                 fontFamily: 'Cairo',
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],
@@ -132,6 +175,14 @@ class _CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final gradients = [
+      [const Color(0xFFC8A44F), const Color(0xFFB08A34)],
+      [const Color(0xFF2E6B92), const Color(0xFF194867)],
+      [const Color(0xFF0F8B8D), const Color(0xFF0A6E70)],
+      [const Color(0xFF7A5EA8), const Color(0xFF5C4484)],
+    ];
+    final palette = gradients[categoryId % gradients.length];
+
     return GestureDetector(
       onTap: () {
         context.push(
@@ -140,59 +191,102 @@ class _CategoryCard extends StatelessWidget {
         );
       },
       child: Container(
-        width: 130.w,
-        padding: EdgeInsets.all(2.w), // Padding for border
+        width: 146.w,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.r),
-          gradient: const LinearGradient(
+          borderRadius: BorderRadius.circular(20.r),
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFFC8A44F), Color(0x33C8A44F)],
+            colors: [palette[0], palette[1]],
           ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFFC8A44F).withValues(alpha: 0.15),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+              color: palette[0].withValues(alpha: 0.22),
+              blurRadius: 18,
+              offset: const Offset(0, 10),
             ),
           ],
         ),
         child: Container(
+          margin: EdgeInsets.all(1.3.w),
+          padding: EdgeInsets.all(12.w),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(14.r),
+            borderRadius: BorderRadius.circular(19.r),
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                emoji,
-                style: TextStyle(
-                  fontSize: 32.sp,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black.withValues(alpha: 0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
+              Row(
+                children: [
+                  Container(
+                    width: 44.w,
+                    height: 44.w,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          palette[0].withValues(alpha: 0.2),
+                          palette[1].withValues(alpha: 0.12),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(13.r),
                     ),
-                  ],
-                ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      emoji,
+                      style: TextStyle(
+                        fontSize: 24.sp,
+                        shadows: [
+                          Shadow(
+                            color: palette[1].withValues(alpha: 0.14),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  Icon(
+                    Icons.north_west_rounded,
+                    color: palette[0],
+                    size: 18.sp,
+                  ),
+                ],
               ),
-              SizedBox(height: 12.h),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                padding: EdgeInsets.symmetric(horizontal: 2.w),
                 child: Text(
                   title,
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.start,
                   style: TextStyle(
                     color: const Color(0xFF2B2B2B),
                     fontSize: 14.sp,
                     fontFamily: 'Cairo',
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
+                    height: 1.35,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: palette[0].withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(999.r),
+                ),
+                child: Text(
+                  'استعرض',
+                  style: TextStyle(
+                    color: palette[0],
+                    fontSize: 10.sp,
+                    fontFamily: 'Cairo',
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ],

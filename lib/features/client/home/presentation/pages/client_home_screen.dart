@@ -26,7 +26,7 @@ class ClientHomeContent extends StatelessWidget {
           statusBarColor: Colors.transparent,
         ),
         child: Scaffold(
-          backgroundColor: const Color(0xFFF9F9F9),
+          backgroundColor: const Color(0xFFF5F6F8),
           body: BlocBuilder<HomeCubit, HomeState>(
             builder: (context, state) {
               if (state is HomeLoading) {
@@ -34,35 +34,67 @@ class ClientHomeContent extends StatelessWidget {
               } else if (state is HomeError) {
                 return Center(child: Text(state.message.tr()));
               } else if (state is HomeLoaded) {
-                return CustomScrollView(
-                  slivers: [
-                    SliverPersistentHeader(
-                      delegate: HomeSliverHeaderDelegate(
-                        topPadding: topPadding,
-                        userName: state.userName,
+                return Stack(
+                  children: [
+                    Positioned(
+                      top: -120.h,
+                      left: -40.w,
+                      child: Container(
+                        width: 220.w,
+                        height: 220.w,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: const Color(
+                            0xFFC8A44F,
+                          ).withValues(alpha: 0.09),
+                        ),
                       ),
-                      pinned: true,
                     ),
-                    SliverToBoxAdapter(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 24.h),
-                          HomeStatsSection(statistics: state.appStatistics),
-                          SizedBox(height: 24.h),
-                          HomeCategoriesSection(
-                            categories: state.categories,
-                            locale: context.locale.languageCode,
-                          ),
-                          SizedBox(height: 24.h),
-                          const HomeSpecialOfferBanner(),
-                          SizedBox(height: 24.h),
-                          HomeFeaturedPhotographers(
-                            photographers: state.featuredPhotographers,
-                          ),
-                          SizedBox(height: 24.h),
-                        ],
+                    Positioned(
+                      top: 260.h,
+                      right: -70.w,
+                      child: Container(
+                        width: 200.w,
+                        height: 200.w,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: const Color(
+                            0xFF2E6B92,
+                          ).withValues(alpha: 0.07),
+                        ),
                       ),
+                    ),
+                    CustomScrollView(
+                      slivers: [
+                        SliverPersistentHeader(
+                          delegate: HomeSliverHeaderDelegate(
+                            topPadding: topPadding,
+                            userName: state.userName,
+                          ),
+                          pinned: true,
+                        ),
+                        SliverToBoxAdapter(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 24.h),
+                              HomeStatsSection(statistics: state.appStatistics),
+                              SizedBox(height: 24.h),
+                              HomeCategoriesSection(
+                                categories: state.categories,
+                                locale: context.locale.languageCode,
+                              ),
+                              SizedBox(height: 24.h),
+                              const HomeSpecialOfferBanner(),
+                              SizedBox(height: 24.h),
+                              HomeFeaturedPhotographers(
+                                photographers: state.featuredPhotographers,
+                              ),
+                              SizedBox(height: 28.h),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 );
