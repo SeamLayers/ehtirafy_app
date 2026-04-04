@@ -1,67 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../widgets/settings_ui_components.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});
 
-  static const String _arabicContent =
-      'نقدر مخاوفكم واهتمامكم بشأن خصوصية بياناتكم على شبكة الإنترنت.\n\n'
-      '• التصفح: لم يتم تصميم المنصة لتجميع بياناتك الشخصية عند التصفح العادي.\n'
-      '• عنوان بروتوكول الإنترنت (IP): قد يتم تسجيله لأغراض الحماية والتحسين والتحليل الفني.\n'
-      '• الروابط بالمواقع الأخرى: قد تحتوي المنصة على روابط خارجية ولسنا مسؤولين عن سياسات الخصوصية في تلك المواقع.\n'
-      '• إفشاء المعلومات: لا يتم الإفصاح عن بياناتك إلا وفق الأنظمة المعمول بها أو بموافقتك.\n'
-      '• البيانات لتنفيذ المعاملات: قد نستخدم البيانات اللازمة لإتمام الطلبات والتواصل المرتبط بالخدمة.\n'
-      '• إفشاء المعلومات لطرف ثالث: لا يتم مشاركة بياناتك مع طرف ثالث إلا عند الضرورة التشغيلية والقانونية.';
+  static const List<String> _arabicPrinciples = [
+    'التصفح: لم يتم تصميم المنصة لتجميع بياناتك الشخصية عند التصفح العادي.',
+    'عنوان بروتوكول الإنترنت (IP): قد يتم تسجيله لأغراض الحماية والتحسين والتحليل الفني.',
+    'الروابط بالمواقع الأخرى: قد تحتوي المنصة على روابط خارجية ولسنا مسؤولين عن سياسات الخصوصية في تلك المواقع.',
+    'إفشاء المعلومات: لا يتم الإفصاح عن بياناتك إلا وفق الأنظمة المعمول بها أو بموافقتك.',
+    'البيانات لتنفيذ المعاملات: قد نستخدم البيانات اللازمة لإتمام الطلبات والتواصل المرتبط بالخدمة.',
+    'إفشاء المعلومات لطرف ثالث: لا يتم مشاركة بياناتك مع طرف ثالث إلا عند الضرورة التشغيلية والقانونية.',
+  ];
 
-  static const String _englishContent =
-      'We value your concerns regarding the privacy of your data online.\n\n'
-      '• Browsing: The platform is not designed to collect your personal data during normal browsing.\n'
-      '• Internet Protocol (IP): Your IP address may be logged for security, optimization, and technical analytics purposes.\n'
-      '• Links to Other Websites: The platform may contain external links, and we are not responsible for their privacy policies.\n'
-      '• Disclosure of Information: Your data is not disclosed except as required by applicable laws or with your consent.\n'
-      '• Data for Transaction Execution: We may use required information to complete transactions and provide related service communication.\n'
-      '• Third-Party Disclosure: Data is shared with third parties only when operationally or legally necessary.';
+  static const List<String> _englishPrinciples = [
+    'Browsing: The platform is not designed to collect your personal data during normal browsing.',
+    'Internet Protocol (IP): Your IP address may be logged for security, optimization, and technical analytics purposes.',
+    'Links to Other Websites: The platform may contain external links, and we are not responsible for their privacy policies.',
+    'Disclosure of Information: Your data is not disclosed except as required by applicable laws or with your consent.',
+    'Data for Transaction Execution: We may use required information to complete transactions and provide related service communication.',
+    'Third-Party Disclosure: Data is shared with third parties only when operationally or legally necessary.',
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('الخصوصية وبيان سرية المعلومات / Privacy Policy'),
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'العربية',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+    return SettingsPageScaffold(
+      appBarTitle: 'الخصوصية وبيان سرية المعلومات / Privacy Policy',
+      heroIcon: Icons.shield_moon_outlined,
+      heroTitle: 'خصوصيتك أولوية في منصة بطل',
+      heroSubtitle:
+          'نلتزم بمعايير واضحة لحماية البيانات، مع شفافية كاملة حول كيفية استخدام المعلومات.',
+      children: [
+        Wrap(
+          spacing: 8.w,
+          runSpacing: 8.h,
+          children: const [
+            SettingsMetaChip(
+              icon: Icons.lock_outline_rounded,
+              label: 'سياسات حماية واضحة',
             ),
-            SizedBox(height: 8.h),
-            Text(
-              _arabicContent,
-              style: theme.textTheme.bodyMedium?.copyWith(height: 1.7),
-            ),
-            SizedBox(height: 24.h),
-            Text(
-              'English',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              _englishContent,
-              textDirection: TextDirection.ltr,
-              style: theme.textTheme.bodyMedium?.copyWith(height: 1.7),
+            SettingsMetaChip(icon: Icons.policy_outlined, label: 'إفصاح منضبط'),
+            SettingsMetaChip(
+              icon: Icons.security_outlined,
+              label: 'استخدام آمن للبيانات',
             ),
           ],
         ),
-      ),
+        SizedBox(height: 16.h),
+        const SettingsLocaleSection(
+          localeTitle: 'العربية',
+          icon: Icons.translate_rounded,
+          intro:
+              'نقدر مخاوفكم واهتمامكم بشأن خصوصية بياناتكم على شبكة الإنترنت.',
+          bullets: _arabicPrinciples,
+        ),
+        SizedBox(height: 16.h),
+        const SettingsLocaleSection(
+          localeTitle: 'English',
+          icon: Icons.language_rounded,
+          intro:
+              'We value your concerns regarding the privacy of your data online.',
+          bullets: _englishPrinciples,
+          isEnglish: true,
+        ),
+      ],
     );
   }
 }
