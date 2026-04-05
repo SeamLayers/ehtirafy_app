@@ -168,7 +168,8 @@ class AppStrings {
   static const chatStartConversation = 'chat.list.startConversation';
   static const chatFindPhotographer = 'chat.list.findPhotographer';
   static const chatFreelancerNoMessages = 'chat.list.freelancerNoMessages';
-  static const chatFreelancerStartConversation = 'chat.list.freelancerStartConversation';
+  static const chatFreelancerStartConversation =
+      'chat.list.freelancerStartConversation';
   static const chatFreelancerExploreGigs = 'chat.list.freelancerExploreGigs';
   static const chatAgo = 'chat.list.ago';
   static const chatMinute = 'chat.list.minute';
@@ -227,6 +228,18 @@ class AppStrings {
   static const freelancerProfileBookNow = 'freelancerProfile.bookNow';
   static const freelancerProfileRequestService =
       'freelancerProfile.requestService';
+
+  // App Share
+  static const appShareTitle = 'appShare.title';
+  static const appShareSubtitle = 'appShare.subtitle';
+  static const appShareWhatsapp = 'appShare.whatsapp';
+  static const appShareMoreOptions = 'appShare.moreOptions';
+  static const appShareCopyLink = 'appShare.copyLink';
+  static const appShareCopied = 'appShare.copied';
+  static const appShareWhatsappUnavailable = 'appShare.whatsappUnavailable';
+  static const appShareMessage = 'appShare.message';
+  static const appShareSubject = 'appShare.subject';
+  static const appShareLinkLabel = 'appShare.linkLabel';
 
   // My Requests
   static const myRequestsTitle = 'myRequests.title';

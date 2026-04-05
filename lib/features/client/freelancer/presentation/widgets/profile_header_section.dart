@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/widgets/share/app_share_bottom_sheet.dart';
 import 'package:ehtirafy_app/features/client/freelancer/domain/entities/freelancer_entity.dart';
 import 'package:ehtirafy_app/features/client/freelancer/presentation/widgets/profile_info_card.dart';
 
@@ -72,7 +73,7 @@ class ProfileHeaderSection extends StatelessWidget {
                       ),
                       IconButton(
                         icon: const Icon(Icons.share, color: Colors.white),
-                        onPressed: () {},
+                        onPressed: () => AppShareBottomSheet.show(context),
                       ),
                     ],
                   ),

@@ -21,6 +21,7 @@ import 'package:ehtirafy_app/features/client/freelancer/domain/entities/freelanc
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/core/widgets/custom_empty_state.dart';
 import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
+import 'package:ehtirafy_app/core/widgets/share/app_share_bottom_sheet.dart';
 
 class FreelancerProfileScreen extends StatefulWidget {
   final String freelancerId;
@@ -152,7 +153,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
               actions: [
                 IconButton(
                   icon: const Icon(Icons.share_outlined, color: Colors.white),
-                  onPressed: () {},
+                  onPressed: () => AppShareBottomSheet.show(context),
                 ),
               ],
               flexibleSpace: FlexibleSpaceBar(

@@ -409,6 +409,18 @@
     "requestService": "طلب الخدمة",
     "reviewsCount": "({count} تقييم)"
   },
+  "appShare": {
+    "title": "شارك تطبيق بطل",
+    "subtitle": "أرسل رابط التطبيق بسرعة عبر واتساب أو أي منصة تواصل تفضلها",
+    "whatsapp": "واتساب",
+    "moreOptions": "منصات أخرى",
+    "copyLink": "نسخ الرابط",
+    "copied": "تم نسخ رابط التطبيق",
+    "whatsappUnavailable": "تعذر فتح واتساب على هذا الجهاز",
+    "message": "جرّب تطبيق بطل للتصوير وحجز أفضل المصورين بسهولة:\n{link}",
+    "subject": "جرّب تطبيق بطل",
+    "linkLabel": "رابط التطبيق"
+  },
   "myRequests": {
     "title": "طلباتي",
     "tabs": {
