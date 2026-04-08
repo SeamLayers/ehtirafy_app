@@ -14,12 +14,8 @@ class ContractEntity extends Equatable {
   final String requestedAmount;
   final String actualAmount;
 
-  // Status fields
-  final String?
-  contractStatus; // Overall contract status (Initial, InProcess, Closed)
-  final String?
-  contrPubStatus; // Photographer's status (accepted/rejected/completed)
-  final String? contrCustStatus; // Client's status (cancelled/completed)
+  // Single backend status field
+  final String? contractStatus;
 
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -42,8 +38,6 @@ class ContractEntity extends Equatable {
     required this.requestedAmount,
     required this.actualAmount,
     this.contractStatus,
-    this.contrPubStatus,
-    this.contrCustStatus,
     required this.createdAt,
     required this.updatedAt,
     this.serviceTitle,
@@ -56,47 +50,41 @@ class ContractEntity extends Equatable {
 
   /// Get the combined status for display
   ///
-  /// API reality (verified via live testing):
-  /// - contract_status: 'initiated' → 'InProcess' (auto on Paid) → 'Completed' (auto when both complete)
-  /// - contr_pub_status: 'pending' → 'Approved' (freelancer accepts) → 'Completed' (freelancer delivers)
-  /// - contr_cust_status: 'initiated' → 'Paid' (customer pays) → 'Completed' (customer confirms)
+  /// Current backend flow:
+  /// - initiated -> opened (auto) -> inProgress (after freelancer approval) -> completed
   ContractStatus get displayStatus {
     final status = contractStatus?.toLowerCase();
-    final pubStatus = contrPubStatus?.toLowerCase();
-    final custStatus = contrCustStatus?.toLowerCase();
 
-    // Completed (both parties confirmed)
     if (status == 'completed' || status == 'closed') {
       return ContractStatus.completed;
     }
 
-    // Rejected by freelancer
-    if (pubStatus == 'rejected') return ContractStatus.rejected;
+    if (status == 'rejected') {
+      return ContractStatus.rejected;
+    }
 
-    // Cancelled by customer
-    if (custStatus == 'cancelled') return ContractStatus.cancelled;
+    if (status == 'cancelled') {
+      return ContractStatus.cancelled;
+    }
 
-    // In process (auto-set when customer pays)
-    if (status == 'inprocess') {
-      // Freelancer delivered, waiting for customer confirmation
-      if (pubStatus == 'completed' && custStatus != 'completed') {
-        return ContractStatus.awaitingAdminReview;
-      }
+    if (status == 'archived') {
+      return ContractStatus.archived;
+    }
+
+    if (status == 'inprocess' ||
+        status == 'inprogress' ||
+        status == 'in_progress' ||
+        status == 'active' ||
+        status == 'approved') {
       return ContractStatus.inProgress;
     }
 
-    // Freelancer accepted (contract_status=Approved from backend)
-    if (status == 'approved') {
-      return ContractStatus.pendingPayment;
+    if (status == 'initiate' || status == 'initiated') {
+      return ContractStatus.initiated;
     }
 
-    // Initiated state
-    if (status == 'initiated') {
-      // Freelancer accepted, waiting for customer payment
-      if (pubStatus == 'approved') {
-        return ContractStatus.pendingPayment;
-      }
-      return ContractStatus.initiated;
+    if (status == 'opened' || status == 'open' || status == 'pending') {
+      return ContractStatus.pending;
     }
 
     return ContractStatus.pending;
@@ -124,8 +112,6 @@ class ContractEntity extends Equatable {
     requestedAmount,
     actualAmount,
     contractStatus,
-    contrPubStatus,
-    contrCustStatus,
     createdAt,
     updatedAt,
     serviceTitle,

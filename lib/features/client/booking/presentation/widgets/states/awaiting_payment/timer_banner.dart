@@ -1,11 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/features/client/contract/presentation/widgets/backend_contract_status_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TimerBanner extends StatelessWidget {
   const TimerBanner({super.key});
+
+  String _fontFamily(BuildContext context) {
+    return localizedContractStatusFontFamily(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +33,7 @@ class TimerBanner extends StatelessWidget {
               color: const Color(0xFFDC3545),
               fontSize: 16.sp,
               fontWeight: FontWeight.w400,
-              fontFamily: 'Cairo',
+              fontFamily: _fontFamily(context),
               height: 1.5,
             ),
           ),
@@ -36,7 +41,7 @@ class TimerBanner extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _timerValue('44'),
+              _timerValue(context, '44'),
               SizedBox(width: 8.w),
               Text(
                 AppStrings.minute.tr(),
@@ -44,12 +49,12 @@ class TimerBanner extends StatelessWidget {
                   color: AppColors.textSecondary,
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w400,
-                  fontFamily: 'Cairo',
+                  fontFamily: _fontFamily(context),
                   height: 1.5,
                 ),
               ),
               SizedBox(width: 16.w),
-              _timerValue('23'),
+              _timerValue(context, '23'),
               SizedBox(width: 8.w),
               Text(
                 AppStrings.hour.tr(),
@@ -57,7 +62,7 @@ class TimerBanner extends StatelessWidget {
                   color: AppColors.textSecondary,
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w400,
-                  fontFamily: 'Cairo',
+                  fontFamily: _fontFamily(context),
                   height: 1.5,
                 ),
               ),
@@ -70,7 +75,7 @@ class TimerBanner extends StatelessWidget {
               color: AppColors.textSecondary,
               fontSize: 14.sp,
               fontWeight: FontWeight.w400,
-              fontFamily: 'Cairo',
+              fontFamily: _fontFamily(context),
               height: 1.63,
             ),
           ),
@@ -79,14 +84,14 @@ class TimerBanner extends StatelessWidget {
     );
   }
 
-  Widget _timerValue(String value) {
+  Widget _timerValue(BuildContext context, String value) {
     return Text(
       value,
       style: TextStyle(
         color: const Color(0xFFDC3545),
         fontSize: 30.sp,
         fontWeight: FontWeight.w700,
-        fontFamily: 'Cairo',
+        fontFamily: _fontFamily(context),
         height: 1.2,
       ),
     );

@@ -1,5 +1,4 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/entities/contract_details_entity.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contract_header.dart';
@@ -14,6 +13,9 @@ class OrderDetailsCancelledView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isArabic =
+        context.locale.languageCode.toLowerCase().startsWith('ar');
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(16.w),
       child: Column(
@@ -23,13 +25,15 @@ class OrderDetailsCancelledView extends StatelessWidget {
           SizedBox(height: 16.h),
           ContractThreeStatusCard(contract: contract),
           SizedBox(height: 16.h),
-          _buildCancelledMessage(),
+          _buildCancelledMessage(isArabic: isArabic),
         ],
       ),
     );
   }
 
-  Widget _buildCancelledMessage() {
+  Widget _buildCancelledMessage({required bool isArabic}) {
+    final isRejected = contract.status == ContractStatus.rejected;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
@@ -43,9 +47,7 @@ class OrderDetailsCancelledView extends StatelessWidget {
           Icon(Icons.cancel_outlined, color: AppColors.error, size: 48.sp),
           SizedBox(height: 12.h),
           Text(
-            contract.status == ContractStatus.rejected
-                ? AppStrings.contractValRejected.tr()
-                : AppStrings.contractValCancelled.tr(),
+            isRejected ? 'Rejected' : 'Cancelled',
             style: TextStyle(
               color: AppColors.error,
               fontSize: 18.sp,
@@ -54,9 +56,13 @@ class OrderDetailsCancelledView extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           Text(
-            contract.status == ContractStatus.rejected
-                ? 'تم رفض هذا العقد من قبل المصور'
-                : 'تم إلغاء هذا العقد',
+            isRejected
+                ? (isArabic
+                      ? 'تم رفض العقد من طرف المصور.'
+                      : 'The contract was rejected by the freelancer.')
+                : (isArabic
+                      ? 'تم إلغاء العقد.'
+                      : 'The contract was cancelled.'),
             style: TextStyle(color: AppColors.grey500, fontSize: 14.sp),
             textAlign: TextAlign.center,
           ),

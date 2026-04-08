@@ -20,6 +20,9 @@ class ContractInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localeCode =
+        context.locale.languageCode.toLowerCase().startsWith('ar') ? 'ar' : 'en';
+
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -53,7 +56,7 @@ class ContractInfoCard extends StatelessWidget {
           SizedBox(height: 16.h),
           _buildInfoRow(
             AppStrings.contractDateLabel.tr(),
-            DateFormat('d MMMM yyyy', 'ar').format(contract.date),
+            DateFormat('d MMMM yyyy', localeCode).format(contract.date),
             icon: Icons.calendar_today_outlined,
           ),
           if (contract.daysAvailability.isNotEmpty) ...[

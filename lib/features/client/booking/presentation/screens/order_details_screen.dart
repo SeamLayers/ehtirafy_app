@@ -11,7 +11,6 @@ import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contr
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contract_info_card.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contract_status_widgets.dart';
 import 'package:ehtirafy_app/features/client/booking/presentation/widgets/states/order_details_pending_view.dart';
-import 'package:ehtirafy_app/features/client/booking/presentation/widgets/states/order_details_awaiting_payment_view.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/payment_status_card.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/work_stages_list.dart';
 import 'package:flutter/material.dart';
@@ -89,80 +88,15 @@ class OrderDetailsScreen extends StatelessWidget {
     }
 
     // State 1: Pending Approval from Freelancer
-    if (contract.status == ContractStatus.pending) {
+    if (contract.status == ContractStatus.initiated ||
+        contract.status == ContractStatus.pending) {
       return OrderDetailsPendingView(contract: contract);
     }
 
-    // State 2: Awaiting Customer Payment
-    if (contract.status == ContractStatus.pendingPayment) {
-      return SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
-        child: OrderDetailsAwaitingPaymentView(contract: contract),
-      );
-    }
-
-    // State 2b: Awaiting Admin Review of Payment Proof
-    if (contract.status == ContractStatus.awaitingAdminReview) {
-      return SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ContractHeader(contract: contract),
-            SizedBox(height: 16.h),
-            Container(
-              padding: EdgeInsets.all(12.w),
-              decoration: BoxDecoration(
-                color: Colors.orange.shade50,
-                borderRadius: BorderRadius.circular(8.r),
-                border: Border.all(color: Colors.orange.shade200),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.hourglass_bottom,
-                    color: Colors.orange.shade700,
-                    size: 24.sp,
-                  ),
-                  SizedBox(width: 12.w),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'بانتظار التحقق من الإدارة',
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orange.shade900,
-                          ),
-                        ),
-                        SizedBox(height: 4.h),
-                        Text(
-                          'تم استقبال إثبات الدفع. سيتم تفعيل العقد بعد التحقق من الفريق الإداري.',
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: Colors.orange.shade800,
-                            height: 1.4,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 16.h),
-            ContractInfoCard(contract: contract, isFreelancer: isFreelancer),
-            SizedBox(height: 32.h),
-          ],
-        ),
-      );
-    }
-
-    // State 3: In Progress
-    if (contract.status == ContractStatus.inProgress) {
+    // Active states in current backend flow.
+    if (contract.status == ContractStatus.inProgress ||
+        contract.status == ContractStatus.pendingPayment ||
+        contract.status == ContractStatus.awaitingAdminReview) {
       return SingleChildScrollView(
         padding: EdgeInsets.all(16.w),
         child: Column(

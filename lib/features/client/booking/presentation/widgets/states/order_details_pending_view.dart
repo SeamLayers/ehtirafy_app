@@ -3,6 +3,7 @@ import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/entities/contract_details_entity.dart';
+import 'package:ehtirafy_app/features/client/contract/presentation/widgets/backend_contract_status_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -10,6 +11,10 @@ class OrderDetailsPendingView extends StatelessWidget {
   final ContractDetailsEntity contract;
 
   const OrderDetailsPendingView({super.key, required this.contract});
+
+  String _fontFamily(BuildContext context) {
+    return localizedContractStatusFontFamily(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +64,7 @@ class OrderDetailsPendingView extends StatelessWidget {
             color: AppColors.error,
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
-            fontFamily: 'Cairo',
+            fontFamily: _fontFamily(context),
           ),
         ),
       ),
@@ -67,6 +72,10 @@ class OrderDetailsPendingView extends StatelessWidget {
   }
 
   Widget _buildStatusCard(BuildContext context) {
+    final isArabic =
+        context.locale.languageCode.toLowerCase().startsWith('ar');
+    final localeCode = isArabic ? 'ar' : 'en';
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
@@ -96,12 +105,12 @@ class OrderDetailsPendingView extends StatelessWidget {
             children: [
               Flexible(
                 child: Text(
-                  AppStrings.pendingViewStatusText.tr(),
+                  isArabic ? 'الحالة الحالية' : 'Current Status',
                   style: TextStyle(
                     color: const Color(0xFF888888),
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
-                    fontFamily: 'Cairo',
+                    fontFamily: _fontFamily(context),
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -116,12 +125,12 @@ class OrderDetailsPendingView extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  AppStrings.pendingViewBadgeText.tr(),
+                  'Initiate',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w500,
-                    fontFamily: 'Cairo',
+                    fontFamily: _fontFamily(context),
                   ),
                 ),
               ),
@@ -142,7 +151,7 @@ class OrderDetailsPendingView extends StatelessWidget {
                         color: const Color(0xFF2B2B2B),
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w400,
-                        fontFamily: 'Cairo',
+                        fontFamily: _fontFamily(context),
                       ),
                     ),
                     SizedBox(height: 4.h),
@@ -152,7 +161,7 @@ class OrderDetailsPendingView extends StatelessWidget {
                         color: const Color(0xFF888888),
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w400,
-                        fontFamily: 'Cairo',
+                        fontFamily: _fontFamily(context),
                       ),
                     ),
                   ],
@@ -186,7 +195,7 @@ class OrderDetailsPendingView extends StatelessWidget {
                   AppStrings.contractDateAndTime.tr(),
                   DateFormat(
                     'dd MMMM yyyy - hh:mm a',
-                    'ar',
+                    localeCode,
                   ).format(contract.date),
                 ),
                 SizedBox(height: 8.h),
@@ -218,7 +227,7 @@ class OrderDetailsPendingView extends StatelessWidget {
                             color: const Color(0xFF888888),
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w400,
-                            fontFamily: 'Cairo',
+                            fontFamily: _fontFamily(context),
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -233,7 +242,7 @@ class OrderDetailsPendingView extends StatelessWidget {
                               color: const Color(0xFFC8A44F), // Gold
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w400,
-                              fontFamily: 'Cairo',
+                              fontFamily: _fontFamily(context),
                             ),
                           ),
                           SizedBox(width: 4.w),
@@ -243,7 +252,7 @@ class OrderDetailsPendingView extends StatelessWidget {
                               color: const Color(0xFF888888),
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w400,
-                              fontFamily: 'Cairo',
+                              fontFamily: _fontFamily(context),
                             ),
                           ),
                         ],
@@ -269,7 +278,7 @@ class OrderDetailsPendingView extends StatelessWidget {
             color: const Color(0xFF888888),
             fontSize: 14.sp,
             fontWeight: FontWeight.w400,
-            fontFamily: 'Cairo',
+            fontFamily: _fontFamily(context),
           ),
         ),
         SizedBox(width: 8.w),
@@ -281,7 +290,7 @@ class OrderDetailsPendingView extends StatelessWidget {
               color: const Color(0xFF2B2B2B),
               fontSize: 14.sp,
               fontWeight: FontWeight.w400,
-              fontFamily: 'Cairo',
+              fontFamily: _fontFamily(context),
             ),
             overflow: TextOverflow.ellipsis,
           ),
@@ -291,6 +300,24 @@ class OrderDetailsPendingView extends StatelessWidget {
   }
 
   Widget _buildTimeline(BuildContext context) {
+    final isArabic =
+      context.locale.languageCode.toLowerCase().startsWith('ar');
+
+    final steps = [
+      isArabic
+        ? 'Initiate: تم إنشاء العقد وبانتظار موافقة المصور.'
+        : 'Initiate: Contract created and waiting for freelancer approval.',
+      isArabic
+        ? 'Approved: عند قبول المصور ينتقل العقد للحالة التالية.'
+        : 'Approved: Once freelancer accepts, the contract moves forward.',
+      isArabic
+        ? 'InProgress: تبدأ مرحلة التنفيذ والمتابعة.'
+        : 'InProgress: Service execution starts and progress is tracked.',
+      isArabic
+        ? 'Closed: بعد التأكيد النهائي يتم إغلاق العقد.'
+        : 'Closed: After final confirmation, the contract is closed.',
+    ];
+
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: ShapeDecoration(
@@ -312,31 +339,39 @@ class OrderDetailsPendingView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppStrings.pendingViewTimelineTitle.tr(),
+            isArabic
+                ? 'تسلسل الحالة (Backend Flow)'
+                : 'Status Sequence (Backend Flow)',
             style: TextStyle(
               color: const Color(0xFF2B2B2B),
               fontSize: 16.sp,
               fontWeight: FontWeight.w400,
-              fontFamily: 'Cairo',
+              fontFamily: _fontFamily(context),
             ),
           ),
           SizedBox(height: 12.h),
           _buildTimelineStep(
             context,
             '1',
-            AppStrings.pendingViewTimelineStep1.tr(),
+            steps[0],
           ),
           SizedBox(height: 12.h),
           _buildTimelineStep(
             context,
             '2',
-            AppStrings.pendingViewTimelineStep2.tr(),
+            steps[1],
           ),
           SizedBox(height: 12.h),
           _buildTimelineStep(
             context,
             '3',
-            AppStrings.pendingViewTimelineStep3.tr(),
+            steps[2],
+          ),
+          SizedBox(height: 12.h),
+          _buildTimelineStep(
+            context,
+            '4',
+            steps[3],
           ),
         ],
       ),
@@ -360,7 +395,7 @@ class OrderDetailsPendingView extends StatelessWidget {
                 color: Colors.white,
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w400,
-                fontFamily: 'Cairo',
+                fontFamily: _fontFamily(context),
               ),
             ),
           ),
@@ -373,7 +408,7 @@ class OrderDetailsPendingView extends StatelessWidget {
               color: const Color(0xFF888888),
               fontSize: 14.sp,
               fontWeight: FontWeight.w400,
-              fontFamily: 'Cairo',
+              fontFamily: _fontFamily(context),
             ),
           ),
         ),

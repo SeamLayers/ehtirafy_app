@@ -17,8 +17,6 @@ class ContractDetailsEntity extends Equatable {
   final String photographerImage;
   final DateTime? approvedAt;
   final String? contractStatus;
-  final String? contrPubStatus;
-  final String? contrCustStatus;
   final String publisherId;
   final String publisherPhone;
   final String publisherEmail;
@@ -45,8 +43,6 @@ class ContractDetailsEntity extends Equatable {
     required this.photographerImage,
     this.approvedAt,
     this.contractStatus,
-    this.contrPubStatus,
-    this.contrCustStatus,
     this.publisherId = '',
     this.publisherPhone = '',
     this.publisherEmail = '',
@@ -85,8 +81,6 @@ class ContractDetailsEntity extends Equatable {
     String? photographerImage,
     DateTime? approvedAt,
     String? contractStatus,
-    String? contrPubStatus,
-    String? contrCustStatus,
     String? publisherId,
     String? publisherPhone,
     String? publisherEmail,
@@ -113,8 +107,6 @@ class ContractDetailsEntity extends Equatable {
       photographerImage: photographerImage ?? this.photographerImage,
       approvedAt: approvedAt ?? this.approvedAt,
       contractStatus: contractStatus ?? this.contractStatus,
-      contrPubStatus: contrPubStatus ?? this.contrPubStatus,
-      contrCustStatus: contrCustStatus ?? this.contrCustStatus,
       publisherId: publisherId ?? this.publisherId,
       publisherPhone: publisherPhone ?? this.publisherPhone,
       publisherEmail: publisherEmail ?? this.publisherEmail,
@@ -144,8 +136,6 @@ class ContractDetailsEntity extends Equatable {
     photographerImage,
     approvedAt,
     contractStatus,
-    contrPubStatus,
-    contrCustStatus,
     publisherId,
     publisherPhone,
     publisherEmail,

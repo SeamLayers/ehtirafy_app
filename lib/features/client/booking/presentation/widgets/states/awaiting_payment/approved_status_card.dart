@@ -3,6 +3,7 @@ import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/entities/contract_details_entity.dart';
+import 'package:ehtirafy_app/features/client/contract/presentation/widgets/backend_contract_status_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -12,8 +13,16 @@ class ApprovedStatusCard extends StatelessWidget {
 
   const ApprovedStatusCard({super.key, required this.contract});
 
+  String _fontFamily(BuildContext context) {
+    return localizedContractStatusFontFamily(context);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isArabic =
+        context.locale.languageCode.toLowerCase().startsWith('ar');
+    final localeCode = isArabic ? 'ar' : 'en';
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
@@ -33,12 +42,12 @@ class ApprovedStatusCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  AppStrings.contractPhotographerApprovedTitle.tr(),
+                  isArabic ? 'الحالة الحالية' : 'Current Status',
                   style: TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
-                    fontFamily: 'Cairo',
+                    fontFamily: _fontFamily(context),
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -54,12 +63,12 @@ class ApprovedStatusCard extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  AppStrings.contractApprovedBadge.tr(),
+                  'Approved',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w500,
-                    fontFamily: 'Cairo',
+                    fontFamily: _fontFamily(context),
                   ),
                 ),
               ),
@@ -80,7 +89,7 @@ class ApprovedStatusCard extends StatelessWidget {
                         color: AppColors.textPrimary,
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w400,
-                        fontFamily: 'Cairo',
+                        fontFamily: _fontFamily(context),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -92,7 +101,7 @@ class ApprovedStatusCard extends StatelessWidget {
                         color: AppColors.textSecondary,
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w400,
-                        fontFamily: 'Cairo',
+                        fontFamily: _fontFamily(context),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -146,7 +155,7 @@ class ApprovedStatusCard extends StatelessWidget {
                   AppStrings.contractDateLabel.tr(),
                   DateFormat(
                     'dd MMMM yyyy - HH:mm a',
-                    'ar',
+                    localeCode,
                   ).format(contract.date),
                 ),
                 SizedBox(height: 8.h),
@@ -169,7 +178,7 @@ class ApprovedStatusCard extends StatelessWidget {
                           color: AppColors.textSecondary,
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
-                          fontFamily: 'Cairo',
+                          fontFamily: _fontFamily(context),
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -184,7 +193,7 @@ class ApprovedStatusCard extends StatelessWidget {
                             color: AppColors.gold,
                             fontSize: 18.sp,
                             fontWeight: FontWeight.w400,
-                            fontFamily: 'Cairo',
+                            fontFamily: _fontFamily(context),
                           ),
                         ),
                         SizedBox(width: 4.w),
@@ -194,7 +203,7 @@ class ApprovedStatusCard extends StatelessWidget {
                             color: AppColors.textSecondary,
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w400,
-                            fontFamily: 'Cairo',
+                            fontFamily: _fontFamily(context),
                           ),
                         ),
                       ],
@@ -226,7 +235,7 @@ class ApprovedStatusCard extends StatelessWidget {
                   color: Colors.white,
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
-                  fontFamily: 'Cairo',
+                  fontFamily: _fontFamily(context),
                 ),
               ),
             ),
@@ -248,7 +257,7 @@ class ApprovedStatusCard extends StatelessWidget {
                 color: AppColors.textSecondary,
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w400,
-                fontFamily: 'Cairo',
+                fontFamily: _fontFamily(context),
                 height: 1.63,
               ),
             ),
@@ -269,7 +278,7 @@ class ApprovedStatusCard extends StatelessWidget {
               color: AppColors.textSecondary,
               fontSize: 14.sp,
               fontWeight: FontWeight.w400,
-              fontFamily: 'Cairo',
+              fontFamily: _fontFamily(context),
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -284,7 +293,7 @@ class ApprovedStatusCard extends StatelessWidget {
               color: AppColors.textPrimary,
               fontSize: 14.sp,
               fontWeight: FontWeight.w400,
-              fontFamily: 'Cairo',
+              fontFamily: _fontFamily(context),
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

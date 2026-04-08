@@ -20,9 +20,8 @@ abstract class ContractRepository {
 
   /// Update contract status
   ///
-  /// [isPhotographer] determines which status field to update:
-  /// - true → contract_status (InProcess=accept, Completed=done)
-  /// - false → contr_cust_status (Paid, InProcess) with note_type=customer
+  /// Backend now uses only `contract_status` for all role actions.
+  /// [isPhotographer] is used only to label optional notes with note_type.
   ///
   /// [noteText] sends optional message with status update
   Future<Either<Failure, ContractEntity>> updateContractStatus(

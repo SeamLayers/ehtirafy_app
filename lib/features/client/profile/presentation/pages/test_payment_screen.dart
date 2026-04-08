@@ -13,7 +13,7 @@ class TestPaymentScreen extends StatelessWidget {
     // Create a dummy contract for testing
     final dummyContract = ContractDetailsEntity(
       id: "FAKE_TEST_ID_123",
-      status: ContractStatus.pendingPayment,
+      status: ContractStatus.pending,
       serviceTitle: "Test Photography Service",
       serviceCategory: "Photography",
       description: "This is a mock contract for testing the payment flow.",
@@ -24,9 +24,7 @@ class TestPaymentScreen extends StatelessWidget {
       photographerName: "Test Photographer",
       photographerImage: "", // Empty or placeholder URL
       approvedAt: null,
-      contractStatus: "awaiting_payment",
-      contrPubStatus: "Approved",
-      contrCustStatus: "pending",
+      contractStatus: "opened",
       publisherId: "999",
       publisherPhone: "123456789",
       publisherEmail: "provider@test.com",

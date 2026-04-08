@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/entities/contract_details_entity.dart';
+import 'package:ehtirafy_app/features/client/contract/presentation/widgets/backend_contract_status_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -48,7 +48,7 @@ class ContractHeader extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 4.h),
-                _buildStatusBadge(),
+                _buildStatusBadge(context),
               ],
             ),
           ),
@@ -57,53 +57,52 @@ class ContractHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge() {
-    String text;
-    Color color;
-
-    switch (contract.status) {
-      case ContractStatus.initiated:
-      case ContractStatus.pending:
-        color = const Color(0xFF17A2B8);
-        text = 'قيد انتظار موافقة المصور';
-        break;
-      case ContractStatus.pendingPayment:
-        color = AppColors.warning;
-        text = 'بانتظار الدفع';
-        break;
-      case ContractStatus.awaitingAdminReview:
-        color = const Color(0xFFFFC107);
-        text = 'بانتظار تحقق الإدارة';
-        break;
-      case ContractStatus.inProgress:
-        color = AppColors.success;
-        text = AppStrings.contractStatusInProgress.tr();
-        break;
-      case ContractStatus.archived:
-      case ContractStatus.cancelled:
-      case ContractStatus.rejected:
-        color = AppColors.error;
-        text = AppStrings.contractStatusCancelledArchived.tr();
-        break;
-      case ContractStatus.completed:
-        color = AppColors.primary;
-        text = AppStrings.myRequestsStatusCompleted.tr();
-        break;
-    }
+  Widget _buildStatusBadge(BuildContext context) {
+    final isArabic =
+        context.locale.languageCode.toLowerCase().startsWith('ar');
+    final canonical = canonicalBackendContractStatus(
+      contract.contractStatus ?? contract.status.name,
+    );
+    final ui = backendContractStatusUi(canonical);
+    final subtitle = backendStatusSubtitle(canonical, isArabic: isArabic);
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
       decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(8.r),
+        color: ui.softColor,
+        border: Border.all(color: ui.color.withValues(alpha: 0.4)),
+        borderRadius: BorderRadius.circular(12.r),
       ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 12.sp,
-          fontWeight: FontWeight.w500,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(ui.icon, color: ui.color, size: 14.sp),
+          SizedBox(width: 6.w),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                canonical,
+                style: TextStyle(
+                  color: ui.color,
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              SizedBox(height: 2.h),
+              Text(
+                subtitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

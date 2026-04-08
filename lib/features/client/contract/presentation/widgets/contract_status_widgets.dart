@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/entities/contract_details_entity.dart';
+import 'package:ehtirafy_app/features/client/contract/presentation/widgets/backend_contract_status_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -12,6 +13,9 @@ class ContractUnderReviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isArabic =
+        context.locale.languageCode.toLowerCase().startsWith('ar');
+
     return Column(
       children: [
         Container(
@@ -27,25 +31,28 @@ class ContractUnderReviewCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildStatusHeader(),
+              _buildStatusHeader(context),
               SizedBox(height: 16.h),
               _buildServiceInfo(),
               SizedBox(height: 16.h),
-              _buildDetailsCard(),
+              _buildDetailsCard(context),
             ],
           ),
         ),
         SizedBox(height: 16.h),
-        _buildNextStepsCard(),
+        _buildNextStepsCard(isArabic: isArabic),
       ],
     );
   }
 
-  Widget _buildStatusHeader() {
+  Widget _buildStatusHeader(BuildContext context) {
+    final isArabic =
+        context.locale.languageCode.toLowerCase().startsWith('ar');
+
     return Row(
       children: [
         Text(
-          AppStrings.contractStatusUnderReview.tr(),
+          isArabic ? 'الحالة الحالية' : 'Current Status',
           style: TextStyle(
             color: AppColors.grey500,
             fontSize: 14.sp,
@@ -60,7 +67,7 @@ class ContractUnderReviewCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.r),
           ),
           child: Text(
-            AppStrings.contractStatusUnderReviewBadge.tr(),
+            'Initiate',
             style: TextStyle(
               color: AppColors.textLight,
               fontSize: 12.sp,
@@ -121,7 +128,10 @@ class ContractUnderReviewCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailsCard() {
+  Widget _buildDetailsCard(BuildContext context) {
+    final localeCode =
+        context.locale.languageCode.toLowerCase().startsWith('ar') ? 'ar' : 'en';
+
     return Container(
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
@@ -132,7 +142,9 @@ class ContractUnderReviewCard extends StatelessWidget {
         children: [
           _buildDetailRow(
             AppStrings.contractDateLabel.tr(),
-            DateFormat('dd MMMM yyyy - HH:mm a', 'ar').format(contract.date),
+            DateFormat('dd MMMM yyyy - HH:mm a', localeCode).format(
+              contract.date,
+            ),
           ),
           SizedBox(height: 8.h),
           _buildDetailRow(
@@ -191,7 +203,22 @@ class ContractUnderReviewCard extends StatelessWidget {
     );
   }
 
-  Widget _buildNextStepsCard() {
+  Widget _buildNextStepsCard({required bool isArabic}) {
+    final steps = [
+      isArabic
+          ? 'Initiate: تم إنشاء العقد وبانتظار موافقة المصور.'
+          : 'Initiate: The contract was created and is awaiting freelancer approval.',
+      isArabic
+          ? 'Approved: بعد الموافقة ينتقل العقد إلى InProgress.'
+          : 'Approved: After approval, the contract moves to InProgress.',
+      isArabic
+          ? 'InProgress: أثناء تنفيذ الخدمة حتى تأكيد الإغلاق.'
+          : 'InProgress: Service is being delivered until closure confirmation.',
+      isArabic
+          ? 'Closed: الحالة النهائية بعد إكمال الخدمة.'
+          : 'Closed: Final state after service completion.',
+    ];
+
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -203,7 +230,9 @@ class ContractUnderReviewCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppStrings.contractWhatHappensNext.tr(),
+            isArabic
+                ? 'تسلسل الحالة (Backend Flow)'
+                : 'Status Sequence (Backend Flow)',
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 16.sp,
@@ -211,11 +240,13 @@ class ContractUnderReviewCard extends StatelessWidget {
             ),
           ),
           SizedBox(height: 12.h),
-          _buildStepItem('1', AppStrings.contractStep1Payment.tr()),
+          _buildStepItem('1', steps[0]),
           SizedBox(height: 12.h),
-          _buildStepItem('2', AppStrings.contractStep2Prepare.tr()),
+          _buildStepItem('2', steps[1]),
           SizedBox(height: 12.h),
-          _buildStepItem('3', AppStrings.contractStep3Contact.tr()),
+          _buildStepItem('3', steps[2]),
+          SizedBox(height: 12.h),
+          _buildStepItem('4', steps[3]),
         ],
       ),
     );
@@ -266,7 +297,7 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
       children: [
         _buildTimerCard(),
         SizedBox(height: 16.h),
-        _buildApprovedContent(),
+        _buildApprovedContent(context),
       ],
     );
   }
@@ -369,7 +400,7 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
     );
   }
 
-  Widget _buildApprovedContent() {
+  Widget _buildApprovedContent(BuildContext context) {
     return Column(
       children: [
         Container(
@@ -384,11 +415,11 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildApprovedHeader(),
+              _buildApprovedHeader(context),
               SizedBox(height: 16.h),
               _buildServiceInfo(),
               SizedBox(height: 16.h),
-              _buildDetailsCard(),
+              _buildDetailsCard(context),
               SizedBox(height: 16.h),
               _buildPayButton(),
               SizedBox(height: 16.h),
@@ -402,11 +433,14 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
     );
   }
 
-  Widget _buildApprovedHeader() {
+  Widget _buildApprovedHeader(BuildContext context) {
+    final isArabic =
+        context.locale.languageCode.toLowerCase().startsWith('ar');
+
     return Row(
       children: [
         Text(
-          AppStrings.contractPhotographerApprovedTitle.tr(),
+          isArabic ? 'الحالة الحالية' : 'Current Status',
           style: TextStyle(
             color: AppColors.grey500,
             fontSize: 14.sp,
@@ -421,7 +455,7 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.r),
           ),
           child: Text(
-            AppStrings.contractApprovedBadge.tr(),
+            'Approved',
             style: TextStyle(
               color: AppColors.textLight,
               fontSize: 12.sp,
@@ -482,7 +516,10 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailsCard() {
+  Widget _buildDetailsCard(BuildContext context) {
+    final localeCode =
+        context.locale.languageCode.toLowerCase().startsWith('ar') ? 'ar' : 'en';
+
     return Container(
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
@@ -494,7 +531,9 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
         children: [
           _buildDetailRow(
             AppStrings.contractDateLabel.tr(),
-            DateFormat('dd MMMM yyyy - HH:mm a', 'ar').format(contract.date),
+            DateFormat('dd MMMM yyyy - HH:mm a', localeCode).format(
+              contract.date,
+            ),
           ),
           SizedBox(height: 8.h),
           _buildDetailRow(
@@ -738,92 +777,82 @@ class ContractThreeStatusCard extends StatelessWidget {
       child: Column(
         children: [
           _buildStatusRow(
+            context,
             AppStrings.contractStatusGeneralLabel.tr(),
-            contract.contractStatus,
-          ),
-          Divider(height: 16.h, thickness: 1, color: AppColors.grey200),
-          _buildStatusRow(
-            AppStrings.contractStatusFreelancerLabel.tr(),
-            contract.contrPubStatus,
-          ),
-          Divider(height: 16.h, thickness: 1, color: AppColors.grey200),
-          _buildStatusRow(
-            AppStrings.contractStatusCustomerLabel.tr(),
-            contract.contrCustStatus,
+            contract.contractStatus ?? contract.status.name,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildStatusRow(String label, String? statusValue) {
-    // Determine color and display text based on status value (case-insensitive checks)
-    Color statusColor = AppColors.grey500;
-    String displayText = statusValue ?? 'N/A';
-    final val = statusValue?.toLowerCase() ?? '';
-
-    if (val == 'initial' || val == 'pending' || val == 'initiated') {
-      statusColor = Colors.orange;
-      displayText = AppStrings.contractValInitial.tr();
-    } else if (val == 'inprocess' ||
-        val == 'inprogress' ||
-        val == 'approved' ||
-        val == 'active') {
-      statusColor = AppColors.primary;
-      // If specific "Approved" check
-      if (val == 'approved') {
-        displayText = AppStrings.contractValApproved.tr();
-      } else {
-        displayText = AppStrings.contractValInProcess.tr();
-      }
-    } else if (val == 'completed' || val == 'closed' || val == 'paid') {
-      statusColor = AppColors.success;
-      if (val == 'closed') {
-        displayText = AppStrings.contractValClosed.tr();
-      } else if (val == 'paid') {
-        displayText = AppStrings.contractValPaid.tr();
-      } else {
-        displayText = AppStrings.contractValCompleted.tr();
-      }
-    } else if (val == 'rejected' || val == 'cancelled') {
-      statusColor = AppColors.error;
-      if (val == 'rejected') {
-        displayText = AppStrings.contractValRejected.tr();
-      } else {
-        displayText = AppStrings.contractValCancelled.tr();
-      }
-    }
-
-    // Fallback if localization key not found or simple display desired
-    if (displayText.startsWith('contract.value.') && statusValue != null) {
-      displayText = statusValue;
-    }
+  Widget _buildStatusRow(
+    BuildContext context,
+    String label,
+    String? statusValue,
+  ) {
+    final isArabic =
+        context.locale.languageCode.toLowerCase().startsWith('ar');
+    final canonical = canonicalBackendContractStatus(statusValue);
+    final ui = backendContractStatusUi(canonical);
+    final subtitle = backendStatusSubtitle(canonical, isArabic: isArabic);
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w500,
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
+        SizedBox(width: 12.w),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+          constraints: BoxConstraints(maxWidth: 210.w),
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
           decoration: BoxDecoration(
-            color: statusColor.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(6.r),
-            border: Border.all(color: statusColor.withValues(alpha: 0.3)),
+            color: ui.softColor,
+            borderRadius: BorderRadius.circular(10.r),
+            border: Border.all(color: ui.color.withValues(alpha: 0.35)),
           ),
-          child: Text(
-            displayText,
-            style: TextStyle(
-              color: statusColor,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w600,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(ui.icon, size: 14.sp, color: ui.color),
+              SizedBox(width: 6.w),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      canonical,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: ui.color,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ],

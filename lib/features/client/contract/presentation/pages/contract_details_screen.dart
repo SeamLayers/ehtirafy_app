@@ -11,7 +11,6 @@ import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contr
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contract_info_card.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contract_status_widgets.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/payment_status_card.dart';
-import 'package:ehtirafy_app/features/client/booking/presentation/widgets/states/order_details_awaiting_payment_view.dart';
 import 'package:ehtirafy_app/features/client/booking/presentation/widgets/states/order_details_completed_view.dart';
 import 'package:ehtirafy_app/features/client/booking/presentation/widgets/states/order_details_cancelled_view.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/work_stages_list.dart';
@@ -75,16 +74,17 @@ class ContractDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildContent(BuildContext context, ContractDetailsEntity contract) {
+    final isActiveContract =
+        contract.status == ContractStatus.inProgress ||
+        contract.status == ContractStatus.pendingPayment ||
+        contract.status == ContractStatus.awaitingAdminReview;
+
     if (contract.status == ContractStatus.initiated ||
         contract.status == ContractStatus.pending) {
       return SingleChildScrollView(
         padding: EdgeInsets.all(16.w),
         child: ContractUnderReviewCard(contract: contract),
       );
-    }
-
-    if (contract.status == ContractStatus.pendingPayment) {
-      return OrderDetailsAwaitingPaymentView(contract: contract);
     }
 
     if (contract.status == ContractStatus.completed) {
@@ -107,7 +107,7 @@ class ContractDetailsScreen extends StatelessWidget {
           SizedBox(height: 16.h),
           ContractInfoCard(contract: contract),
           SizedBox(height: 16.h),
-          if (contract.status == ContractStatus.inProgress) ...[
+          if (isActiveContract) ...[
             PaymentStatusCard(contract: contract),
             SizedBox(height: 16.h),
             WorkStagesList(contract: contract),

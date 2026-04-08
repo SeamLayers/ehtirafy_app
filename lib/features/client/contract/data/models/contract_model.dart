@@ -23,8 +23,6 @@ class ContractModel extends ContractEntity {
     required super.requestedAmount,
     required super.actualAmount,
     super.contractStatus,
-    super.contrPubStatus,
-    super.contrCustStatus,
     required super.createdAt,
     required super.updatedAt,
     super.serviceTitle,
@@ -107,8 +105,6 @@ class ContractModel extends ContractEntity {
       requestedAmount: json['requested_amount']?.toString() ?? '0',
       actualAmount: json['actual_amount']?.toString() ?? '0',
       contractStatus: json['contract_status'],
-      contrPubStatus: json['contr_pub_status'],
-      contrCustStatus: json['contr_cust_status'],
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : DateTime.now(),
@@ -139,8 +135,6 @@ class ContractModel extends ContractEntity {
       'requested_amount': requestedAmount,
       'actual_amount': actualAmount,
       'contract_status': contractStatus,
-      'contr_pub_status': contrPubStatus,
-      'contr_cust_status': contrCustStatus,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };
@@ -159,49 +153,66 @@ class ContractModel extends ContractEntity {
       'customer_id': clientId, // API expects customer_id
       'requested_amount': amount,
       'actual_amount': amount,
+      'contract_status': 'initiated',
     };
   }
 
   /// Create request body for status update
   ///
-  /// API constraints (verified via live testing):
-  /// - `note_type` accepts: 'customer' or 'freelancer'
-  /// - 'customer' → updates contr_cust_status, notes go to contr_cust_notes
-  /// - 'freelancer' → updates contr_pub_status, notes go to contr_pub_notes
-  /// - `contr_pub_status` accepts: 'Approved', 'Completed', 'Rejected'
-  /// - `contr_cust_status` accepts: 'Paid', 'Completed', 'InProcess'
-  /// - `contract_status` auto-transitions: initiated→InProcess (on Paid), →Completed (both Completed)
-  ///
-  /// Freelancer actions (note_type=freelancer):
-  ///   - Accept → contr_pub_status=Approved
-  ///   - Complete/Deliver → contr_pub_status=Completed
-  ///   - Reject → contr_pub_status=Rejected
-  /// Customer actions (note_type=customer):
-  ///   - Mark paid → contr_cust_status=Paid
-  ///   - Confirm completion → contr_cust_status=Completed
+  /// Backend uses `contract_status` with strict status casing and requires
+  /// `user_type` for actor context on updates.
   static Map<String, dynamic> createStatusUpdateBody({
     required bool isPhotographer,
     required String status,
     String? noteText,
   }) {
+    final userType = isPhotographer ? 'freelancer' : 'customer';
+
     final body = <String, dynamic>{
       '_method': 'put',
+      'contract_status': _normalizeContractStatus(
+        status,
+        isPhotographer: isPhotographer,
+      ),
+      'user_type': userType,
+      // Keep note_type for backwards compatibility on older backend payload parsers.
+      'note_type': userType,
     };
-
-    if (isPhotographer) {
-      // Freelancer actions: use contr_pub_status with note_type=freelancer
-      body['note_type'] = 'freelancer';
-      body['contr_pub_status'] = status;
-    } else {
-      // Customer actions: use contr_cust_status with note_type=customer
-      body['note_type'] = 'customer';
-      body['contr_cust_status'] = status;
-    }
 
     if (noteText != null && noteText.isNotEmpty) {
       body['note_text'] = noteText;
     }
 
     return body;
+  }
+
+  static String _normalizeContractStatus(
+    String rawStatus, {
+    required bool isPhotographer,
+  }) {
+    final normalized = rawStatus.trim().toLowerCase();
+
+    switch (normalized) {
+      case 'initiate':
+      case 'initiated':
+        return 'Initiate';
+      case 'approved':
+        return 'Approved';
+      case 'inprogress':
+      case 'in_process':
+      case 'inprocess':
+        // Backend transition from Initiate is Approved when the freelancer acts.
+        return isPhotographer ? 'Approved' : 'InProgress';
+      case 'completed':
+      case 'closed':
+        return 'Completed';
+      case 'rejected':
+        return 'Rejected';
+      case 'cancelled':
+      case 'canceled':
+        return 'Cancelled';
+      default:
+        return rawStatus;
+    }
   }
 }

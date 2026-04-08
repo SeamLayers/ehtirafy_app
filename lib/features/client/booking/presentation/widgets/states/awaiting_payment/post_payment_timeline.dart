@@ -1,11 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/features/client/contract/presentation/widgets/backend_contract_status_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PostPaymentTimeline extends StatelessWidget {
   const PostPaymentTimeline({super.key});
+
+  String _fontFamily(BuildContext context) {
+    return localizedContractStatusFontFamily(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +32,7 @@ class PostPaymentTimeline extends StatelessWidget {
               color: AppColors.textPrimary,
               fontSize: 16.sp,
               fontWeight: FontWeight.w400,
-              fontFamily: 'Cairo',
+              fontFamily: _fontFamily(context),
             ),
           ),
           SizedBox(height: 12.h),
@@ -70,7 +75,7 @@ class PostPaymentTimeline extends StatelessWidget {
                 color: Colors.white,
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w400,
-                fontFamily: 'Cairo',
+                fontFamily: _fontFamily(context),
               ),
             ),
           ),
@@ -83,7 +88,7 @@ class PostPaymentTimeline extends StatelessWidget {
               color: AppColors.textSecondary,
               fontSize: 14.sp,
               fontWeight: FontWeight.w400,
-              fontFamily: 'Cairo',
+              fontFamily: _fontFamily(context),
             ),
           ),
         ),

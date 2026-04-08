@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/entities/contract_details_entity.dart';
+import 'package:ehtirafy_app/features/client/contract/presentation/widgets/backend_contract_status_ui.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contract_header.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contract_status_widgets.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +13,15 @@ class OrderDetailsCompletedView extends StatelessWidget {
 
   const OrderDetailsCompletedView({super.key, required this.contract});
 
+  String _fontFamily(BuildContext context) {
+    return localizedContractStatusFontFamily(context);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isArabic =
+        context.locale.languageCode.toLowerCase().startsWith('ar');
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(16.w),
       child: Column(
@@ -24,19 +31,19 @@ class OrderDetailsCompletedView extends StatelessWidget {
           SizedBox(height: 16.h),
           ContractThreeStatusCard(contract: contract),
           SizedBox(height: 16.h),
-          _buildCompletionMessage(),
+          _buildCompletionMessage(context),
           SizedBox(height: 16.h),
           // Rate Service Button
-          _buildRateButton(context),
+          _buildRateButton(context, isArabic: isArabic),
           SizedBox(height: 16.h),
           // Chat with photographer
-          _buildChatButton(context),
+          _buildChatButton(context, isArabic: isArabic),
         ],
       ),
     );
   }
 
-  Widget _buildRateButton(BuildContext context) {
+  Widget _buildRateButton(BuildContext context, {required bool isArabic}) {
     return SizedBox(
       width: double.infinity,
       height: 52.h,
@@ -54,11 +61,11 @@ class OrderDetailsCompletedView extends StatelessWidget {
         },
         icon: Icon(Icons.star_rounded, size: 24.sp),
         label: Text(
-          'تقييم الخدمة',
+          isArabic ? 'تقييم الخدمة' : 'Rate Service',
           style: TextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.bold,
-            fontFamily: 'Cairo',
+            fontFamily: _fontFamily(context),
           ),
         ),
         style: ElevatedButton.styleFrom(
@@ -73,7 +80,7 @@ class OrderDetailsCompletedView extends StatelessWidget {
     );
   }
 
-  Widget _buildChatButton(BuildContext context) {
+  Widget _buildChatButton(BuildContext context, {required bool isArabic}) {
     return SizedBox(
       width: double.infinity,
       height: 48.h,
@@ -91,11 +98,11 @@ class OrderDetailsCompletedView extends StatelessWidget {
         },
         icon: Icon(Icons.chat_bubble_outline, size: 20.sp),
         label: Text(
-          'محادثة المصور',
+          isArabic ? 'محادثة المصور' : 'Chat With Photographer',
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
-            fontFamily: 'Cairo',
+            fontFamily: _fontFamily(context),
           ),
         ),
         style: OutlinedButton.styleFrom(
@@ -109,7 +116,10 @@ class OrderDetailsCompletedView extends StatelessWidget {
     );
   }
 
-  Widget _buildCompletionMessage() {
+  Widget _buildCompletionMessage(BuildContext context) {
+    final isArabic =
+        context.locale.languageCode.toLowerCase().startsWith('ar');
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
@@ -127,7 +137,7 @@ class OrderDetailsCompletedView extends StatelessWidget {
           ),
           SizedBox(height: 12.h),
           Text(
-            AppStrings.contractValCompleted.tr(),
+            'Closed',
             style: TextStyle(
               color: AppColors.success,
               fontSize: 18.sp,
@@ -136,7 +146,9 @@ class OrderDetailsCompletedView extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           Text(
-            'تم اكتمال هذا العقد بنجاح', // Could localize this if needed
+            isArabic
+                ? 'تم إغلاق العقد بعد اكتمال الخدمة بنجاح.'
+                : 'The contract is now closed after successful completion.',
             style: TextStyle(color: AppColors.grey500, fontSize: 14.sp),
             textAlign: TextAlign.center,
           ),

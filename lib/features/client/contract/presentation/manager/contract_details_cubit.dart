@@ -65,10 +65,13 @@ class ContractDetailsCubit extends Cubit<ContractDetailsState> {
   }) async {
     emit(ContractDetailsLoading());
 
-    // Call update status to 'Completed'
+    // In the new backend flow, freelancer actions keep contract in progress,
+    // and final completion is confirmed by customer.
+    final targetStatus = isPhotographer ? 'InProgress' : 'Completed';
+
     final result = await updateContractStatusUseCase(
       id: id,
-      status: 'Completed',
+      status: targetStatus,
       isPhotographer: isPhotographer,
     );
 

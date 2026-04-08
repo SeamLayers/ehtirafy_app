@@ -35,14 +35,14 @@ class ContractRemoteDataSourceImpl implements ContractRemoteDataSource {
 
   @override
   Future<ContractModel> confirmPayment(String id) async {
-    // The confirm-payment endpoint doesn't exist on this API.
-    // Instead, we update contr_cust_status to 'Paid' via the contract update endpoint.
-    // This is the actual API pattern verified via testing.
+    // Legacy method kept for backward compatibility with old UI actions.
+    // Backend now uses only contract_status.
     return updateContract(id, {
       '_method': 'PUT',
+      'user_type': 'customer',
       'note_type': 'customer',
-      'contr_cust_status': 'Paid',
-      'note_text': 'تم تأكيد الدفع',
+      'contract_status': 'InProgress',
+      'note_text': 'تم تحديث حالة العقد',
     });
   }
 

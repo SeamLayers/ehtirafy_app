@@ -245,29 +245,22 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       // customer notes go to contr_cust_notes, freelancer notes go to contr_pub_notes
       final noteType = userType == 'freelancer' ? 'freelancer' : 'customer';
 
-      // Find cached contract to get current status (backend requires status field)
+      // Find cached contract to keep the current contract_status unchanged
       String? currentStatus;
       try {
         final contract = _cachedContracts.firstWhere(
           (c) => c.id.toString() == message.receiverId,
         );
-        currentStatus = userType == 'freelancer'
-            ? contract.contrPubStatus
-            : contract.contrCustStatus;
+        currentStatus = contract.contractStatus;
       } catch (_) {}
 
       final data = <String, dynamic>{
         '_method': 'PUT',
+        'user_type': noteType,
         'note_type': noteType,
         'note_text': message.content,
+        'contract_status': currentStatus ?? 'Initiate',
       };
-
-      // Include current status to prevent backend null constraint error
-      if (userType == 'freelancer') {
-        data['contr_pub_status'] = currentStatus ?? 'Approved';
-      } else {
-        data['contr_cust_status'] = currentStatus ?? 'initiated';
-      }
 
       final response = await dioClient.post(
         ApiConstants.updateContract(message.receiverId),
