@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/widgets/financial_pledge_section.dart';
 import '../cubit/freelancer_orders_cubit.dart';
 import '../cubit/freelancer_orders_state.dart';
 import '../widgets/freelancer_order_card.dart';
@@ -26,6 +27,20 @@ class _FreelancerOrdersScreenState extends State<FreelancerOrdersScreen> {
   void initState() {
     super.initState();
     context.read<FreelancerOrdersCubit>().loadOrders();
+  }
+
+  Future<void> _acceptOrderWithPledge(String orderId) async {
+    final accepted = await showFinancialPledgeAgreementDialog(
+      context,
+      role: FinancialPledgeRole.advertiser,
+      agreementAr: 'أقر وأوافق على هذا التعهد المالي قبل قبول العقد.',
+      agreementEn:
+          'I confirm and agree to this financial pledge before accepting the contract.',
+    );
+
+    if (!mounted || !accepted) return;
+
+    context.read<FreelancerOrdersCubit>().acceptOrder(orderId);
   }
 
   @override
@@ -113,11 +128,10 @@ class _FreelancerOrdersScreenState extends State<FreelancerOrdersScreen> {
                                         child: FreelancerOrderCard(
                                           order: order,
                                           onAccept: state.selectedTabIndex == 0
-                                              ? () => context
-                                                    .read<
-                                                      FreelancerOrdersCubit
-                                                    >()
-                                                    .acceptOrder(order.id)
+                                              ? () =>
+                                                    _acceptOrderWithPledge(
+                                                      order.id,
+                                                    )
                                               : null,
                                           onReject: state.selectedTabIndex == 0
                                               ? () => context

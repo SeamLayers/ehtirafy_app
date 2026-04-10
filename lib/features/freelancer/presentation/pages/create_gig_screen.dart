@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/widgets/financial_pledge_section.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/category_entity.dart';
@@ -30,24 +31,6 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
   final _priceController = TextEditingController();
   CategoryEntity? _selectedCategory;
   bool _hasAcceptedPledge = false;
-
-  static const String _pledgeArabicText =
-      'أتعهد أنا المعلن بما يلي:\n'
-      '• دفع رسوم منصة بطل والتي تبلغ 5% من قيمة كل إعلان عند نشر الإعلان على المنصة.\n'
-      '• دفع الرسوم خلال 7 أيام من تمام العملية أو استلام المبلغ كاملاً.\n\n'
-      'الوفاء بالعهد: قال الله تعالى: "وَأَوْفُوا بِالْعَهْدِ إِنَّ الْعَهْدَ كَانَ مَسْؤُولًا" (الأنعام: 152)\n'
-      'الأمانة وعدم الغش: قال الله تعالى: "إِنَّ اللَّهَ يَأْمُرُكُمْ أَنْ تُؤَدُّوا الْأَمَانَاتِ إِلَى أَهْلِهَا" (النساء: 58)\n'
-      'عدم التعدي على الحقوق المالية للآخرين: قال الله تعالى: "وَلَا تَبْخَسُوا النَّاسَ أَشْيَاءَهُمْ" (المعارج: 85)\n'
-      'الالتزام بالحق: قال الله تعالى: "يَا أَيُّهَا الَّذِينَ آمَنُوا كُونُوا قَوَّامِينَ بِالْقِسْطِ شُهَدَاءَ لِلَّهِ" (النساء: 135)\n\n'
-      'جميع الحقوق محفوظة © بطل للتصوير والمناسبات';
-
-  static const String _pledgeEnglishText =
-      'Advertiser Commitment\n'
-      'I, the advertiser, hereby commit to:\n'
-      '• Pay Batal Platform fees (5% of the value) upon publishing the ad.\n'
-      '• Settle fees within 7 days of transaction completion.\n'
-      '(Included Quranic verses emphasizing honesty, trust, and fulfilling covenants).\n\n'
-      'All rights reserved © Batal Photography & Events';
 
   // Days availability - Arabic day names
   final List<String> _dayOptions = [
@@ -464,98 +447,15 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
   }
 
   Widget _buildPledgeSection() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: AppColors.gold.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: AppColors.gold.withValues(alpha: 0.35)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.gavel_rounded, color: AppColors.primary, size: 20.sp),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: Text(
-                  'التعهد المالي / Advertiser Commitment',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 12.h),
-          ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            childrenPadding: EdgeInsets.zero,
-            collapsedIconColor: AppColors.primary,
-            iconColor: AppColors.primary,
-            title: Text(
-              'عرض نص التعهد الكامل / View full pledge',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.textPrimary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            shape: const Border(),
-            collapsedShape: const Border(),
-            children: [
-              Text(
-                _pledgeArabicText,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  height: 1.6,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              SizedBox(height: 12.h),
-              Divider(color: AppColors.gold.withValues(alpha: 0.45)),
-              SizedBox(height: 12.h),
-              Text(
-                _pledgeEnglishText,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  height: 1.6,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Checkbox(
-                value: _hasAcceptedPledge,
-                activeColor: AppColors.primary,
-                onChanged: (value) {
-                  setState(() => _hasAcceptedPledge = value ?? false);
-                },
-              ),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() => _hasAcceptedPledge = !_hasAcceptedPledge);
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 12.h),
-                    child: Text(
-                      'أقر وأوافق على هذا التعهد المالي قبل نشر الإعلان. / I confirm and agree to this financial pledge before publishing the ad.',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+    return FinancialPledgeSection(
+      role: FinancialPledgeRole.advertiser,
+      accepted: _hasAcceptedPledge,
+      agreementAr: 'أقر وأوافق على هذا التعهد المالي قبل نشر الإعلان.',
+      agreementEn:
+          'I confirm and agree to this financial pledge before publishing the ad.',
+      onAcceptedChanged: (value) {
+        setState(() => _hasAcceptedPledge = value);
+      },
     );
   }
 

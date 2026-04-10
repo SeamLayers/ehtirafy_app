@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/di/service_locator.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/widgets/financial_pledge_section.dart';
 import '../cubit/booking_cubit.dart';
 
 /// Screen for creating a booking request (initial contract)
@@ -45,6 +46,7 @@ class _RequestBookingScreenState extends State<RequestBookingScreen> {
   final _dateController = TextEditingController();
   final _timeController = TextEditingController();
   final _notesController = TextEditingController();
+  bool _hasAcceptedPledge = false;
 
   bool _isDayAvailable(DateTime day) {
     if (widget.availableDays.isEmpty) return true;
@@ -218,11 +220,23 @@ class _RequestBookingScreenState extends State<RequestBookingScreen> {
                       ),
                     ),
                     SizedBox(height: 32.h),
+                    FinancialPledgeSection(
+                      role: FinancialPledgeRole.client,
+                      accepted: _hasAcceptedPledge,
+                      agreementAr:
+                          'أقر وأوافق على هذا التعهد المالي قبل إنشاء العقد.',
+                      agreementEn:
+                          'I confirm and agree to this financial pledge before creating the contract.',
+                      onAcceptedChanged: (value) {
+                        setState(() => _hasAcceptedPledge = value);
+                      },
+                    ),
+                    SizedBox(height: 24.h),
                     SizedBox(
                       width: double.infinity,
                       height: 50.h,
                       child: ElevatedButton(
-                        onPressed: state is BookingLoading
+                        onPressed: state is BookingLoading || !_hasAcceptedPledge
                             ? null
                             : () {
                                 if (_formKey.currentState!.validate()) {
