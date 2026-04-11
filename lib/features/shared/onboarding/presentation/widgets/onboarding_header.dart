@@ -63,24 +63,6 @@ class OnboardingHeader extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
           ),
-          SizedBox(height: 6.h),
-          Text(
-            brandTagline,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: isDark ? AppColors.grey300 : AppColors.textSecondary,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          SizedBox(height: 18.h),
-          Text(
-            AppStrings.onboardingWelcome.tr(),
-            textAlign: TextAlign.center,
-            style: theme.textTheme.titleLarge?.copyWith(
-              color: isDark ? AppColors.textLight : AppColors.textPrimary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
           SizedBox(height: 8.h),
           SizedBox(
             width: 0.75.sw,

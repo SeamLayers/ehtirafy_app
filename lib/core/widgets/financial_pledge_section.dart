@@ -144,14 +144,14 @@ class FinancialPledgeSection extends StatelessWidget {
       case FinancialPledgeRole.advertiser:
         return 'Advertiser Commitment\n'
             'I, the advertiser, hereby commit to:\n'
-            '• Pay Batal Platform fees (5% of the value) upon publishing the ad.\n'
+            '• Pay Batal Platform fees (1% of the value) upon publishing the ad.\n'
             '• Settle fees within 7 days of transaction completion.\n'
             '(Included Quranic verses emphasizing honesty, trust, and fulfilling covenants).\n\n'
             'All rights reserved © Batal Photography & Events';
       case FinancialPledgeRole.client:
         return 'Client Commitment\n'
             'I, the client, hereby commit to:\n'
-            '• Pay Batal Platform fees (5% of the value) upon initiating the contract.\n'
+            '• Pay Batal Platform fees (1% of the value) upon initiating the contract.\n'
             '• Settle fees within 7 days of transaction completion.\n'
             '(Included Quranic verses emphasizing honesty, trust, and fulfilling covenants).\n\n'
             'All rights reserved © Batal Photography & Events';
@@ -160,7 +160,7 @@ class FinancialPledgeSection extends StatelessWidget {
 
   String _arabicText() {
     return 'أتعهد أنا ${_arabicRoleLabel()} بما يلي:\n'
-        '• دفع رسوم منصة بطل والتي تبلغ 5% من قيمة كل إعلان عند نشر الإعلان على المنصة.\n'
+        '• دفع رسوم منصة بطل والتي تبلغ 1% من قيمة كل إعلان عند نشر الإعلان على المنصة.\n'
         '• دفع الرسوم خلال 7 أيام من تمام العملية أو استلام المبلغ كاملاً.\n\n'
         'الوفاء بالعهد: قال الله تعالى: "وَأَوْفُوا بِالْعَهْدِ إِنَّ الْعَهْدَ كَانَ مَسْؤُولًا" (الأنعام: 152)\n'
         'الأمانة وعدم الغش: قال الله تعالى: "إِنَّ اللَّهَ يَأْمُرُكُمْ أَنْ تُؤَدُّوا الْأَمَانَاتِ إِلَى أَهْلِهَا" (النساء: 58)\n'

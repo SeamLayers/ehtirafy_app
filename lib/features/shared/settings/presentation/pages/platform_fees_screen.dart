@@ -7,12 +7,12 @@ class PlatformFeesScreen extends StatelessWidget {
   const PlatformFeesScreen({super.key});
 
   static const List<String> _arabicFeeNotes = [
-    'تقوم منصة بطل بتحصيل رسوم قدرها 5% من قيمة كل إعلان يتم عرضه.',
+    'تقوم منصة بطل بتحصيل رسوم قدرها 1% من قيمة كل إعلان يتم عرضه.',
     'يتم تطبيق الرسوم بشكل واضح وموحد على الإعلانات المنشورة.',
   ];
 
   static const List<String> _englishFeeNotes = [
-    'Batal Platform collects a fee of 5% from the value of each published advertisement.',
+    'Batal Platform collects a fee of 1% from the value of each published advertisement.',
     'The fee policy is applied clearly and consistently across published ads.',
   ];
 
@@ -33,7 +33,7 @@ class PlatformFeesScreen extends StatelessWidget {
           children: const [
             SettingsMetaChip(
               icon: Icons.percent_rounded,
-              label: 'رسوم ثابتة 5%',
+              label: 'رسوم ثابتة 1%',
             ),
             SettingsMetaChip(
               icon: Icons.visibility_outlined,
@@ -93,7 +93,7 @@ class PlatformFeesScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      '5%',
+                      '1%',
                       style: theme.textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.w900,
                         color: AppColors.gold,
