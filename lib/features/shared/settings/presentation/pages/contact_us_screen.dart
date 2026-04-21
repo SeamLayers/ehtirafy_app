@@ -6,9 +6,9 @@ class ContactUsScreen extends StatelessWidget {
   const ContactUsScreen({super.key});
 
   static const List<String> _arabicSupportSteps = [
-    'الضغط على رابط "اتصل بنا" داخل التطبيق.',
-    'إرسال رسالة عبر البريد: photography@al-batal.com',
-    'الاتصال المباشر على الرقم: +966 55 123 4567',
+    'الضغط على رابط "اتصل بنا" الموجود في المنصة.',
+    'إرسال رسالة عبر البريد الإلكتروني sultanalahrbi26@gmail.com',
+    'الاتصال المباشر عبر الهاتف : +966 559114000',
   ];
 
   static const List<String> _englishSupportSteps = [
@@ -20,11 +20,11 @@ class ContactUsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SettingsPageScaffold(
-      appBarTitle: 'اتصل بنا / Contact Us',
+      appBarTitle: 'تواصل معنا – منصة بطل',
       heroIcon: Icons.support_agent_outlined,
       heroTitle: 'فريق دعم جاهز لمساعدتك',
       heroSubtitle:
-          'لاستفساراتك أو الشكاوى، اختر القناة الأنسب وسنحرص على متابعة طلبك باهتمام ووضوح.',
+          'إذا كان لديك أي استفسار أو رغبتك في تقديم شكوى أو بلاغ، يمكنك التواصل معنا عبر الطرق التالية:',
       children: [
         Wrap(
           spacing: 8.w,
@@ -43,7 +43,7 @@ class ContactUsScreen extends StatelessWidget {
           localeTitle: 'العربية',
           icon: Icons.translate_rounded,
           intro:
-              'إذا كان لديك أي استفسار أو رغبتك في تقديم شكوى، يمكنك التواصل معنا عبر الخطوات التالية:',
+              'إذا كان لديك أي استفسار أو رغبتك في تقديم شكوى أو بلاغ، يمكنك التواصل معنا عبر الطرق التالية:',
           bullets: _arabicSupportSteps,
           numbered: true,
         ),
@@ -61,13 +61,13 @@ class ContactUsScreen extends StatelessWidget {
         const SettingsInfoTile(
           icon: Icons.email_outlined,
           title: 'البريد الإلكتروني / Email',
-          value: 'photography@al-batal.com',
+          value: 'sultanalahrbi26@gmail.com',
         ),
         SizedBox(height: 10.h),
         const SettingsInfoTile(
           icon: Icons.call_outlined,
           title: 'الهاتف المباشر / Direct Call',
-          value: '+966 55 123 4567',
+          value: '+966 559114000',
         ),
         SizedBox(height: 10.h),
         const SettingsInfoTile(
@@ -97,3 +97,4 @@ class ContactUsScreen extends StatelessWidget {
     );
   }
 }
+
