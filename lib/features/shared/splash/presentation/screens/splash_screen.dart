@@ -48,7 +48,7 @@ class _SplashView extends StatelessWidget {
               children: [
                 // Logo
                 Image.asset(
-                  'assets/images/logocanon.png',
+                  'assets/images/new_logo.png',
                   width: 180.w,
                   fit: BoxFit.contain,
                 ),

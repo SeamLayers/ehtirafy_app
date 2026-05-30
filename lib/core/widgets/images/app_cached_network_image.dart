@@ -32,7 +32,7 @@ class AppCachedNetworkImage extends StatelessWidget {
       alignment: Alignment.center,
       padding: const EdgeInsets.all(12),
       child: Image.asset(
-        'assets/images/logocanon.png',
+        'assets/images/new_logo.png',
         fit: BoxFit.contain,
         opacity: const AlwaysStoppedAnimation(0.5),
       ),

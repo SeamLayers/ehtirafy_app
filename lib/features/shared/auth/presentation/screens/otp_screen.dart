@@ -44,7 +44,7 @@ class _OtpView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               AuthHeader(
-                iconAsset: 'assets/images/logocanon.png',
+                iconAsset: 'assets/images/new_logo.png',
                 title: 'auth.otpTitle'.tr(),
                 subtitle: 'auth.otpSubtitle'.tr(),
               ),

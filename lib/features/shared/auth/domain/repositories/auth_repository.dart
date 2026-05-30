@@ -14,11 +14,8 @@ abstract class AuthRepository {
     required String fullName,
     required String email,
     required String phone,
-    required String identityNumber,
     required String password,
     required String passwordConfirmation,
-    required String sex,
-    required String materialStatus,
     required String userType,
     required String countryCode,
     required String deviceToken,
@@ -36,4 +33,6 @@ abstract class AuthRepository {
   Future<Either<Failure, String>> sendOtp(String phone, String countryCode);
 
   Future<Either<Failure, void>> logout();
+
+  Future<Either<Failure, void>> deleteAccount(String userId);
 }

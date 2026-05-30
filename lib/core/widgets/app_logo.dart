@@ -27,7 +27,7 @@ class AppLogo extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: height != null ? width / height! : 1,
         child: Image.asset(
-          'assets/images/logocanon.png',
+          'assets/images/new_logo.png',
           fit: fit,
         ),
       ),

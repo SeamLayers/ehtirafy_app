@@ -69,7 +69,7 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
               children: [
                 // TODO: Update icon to something more password/lock related if available
                 AuthHeader(
-                  iconAsset: 'assets/images/logocanon.png',
+                  iconAsset: 'assets/images/new_logo.png',
                   title: AppStrings.authForgotPassword.tr(),
                   subtitle: AppStrings.authForgotPasswordSubtitle.tr(),
                 ),

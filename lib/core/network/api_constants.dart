@@ -10,6 +10,7 @@ class ApiConstants {
   static const String resetPassword = '/api/$version/auth/reset-password';
   static const String sendOtp = '/api/$version/auth/send-otp';
   static const String verifyOtp = '/api/$version/auth/verify-otp';
+  static String deleteAccount(String id) => '/api/$version/auth/delete-account/$id';
 
   // Notifications Endpoint
   static const String notifications = '/api/$version/notifications';

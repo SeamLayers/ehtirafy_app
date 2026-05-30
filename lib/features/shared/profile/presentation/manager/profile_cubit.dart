@@ -4,6 +4,7 @@ import '../../domain/usecases/get_user_profile_usecase.dart';
 import '../../domain/usecases/switch_user_role_usecase.dart';
 import '../../domain/usecases/update_profile_usecase.dart';
 import '../../../auth/domain/usecases/logout_usecase.dart';
+import '../../../auth/domain/usecases/delete_account_usecase.dart';
 import 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
@@ -11,12 +12,14 @@ class ProfileCubit extends Cubit<ProfileState> {
   final SwitchUserRoleUseCase switchUserRoleUseCase;
   final UpdateProfileUseCase updateProfileUseCase;
   final LogoutUseCase logoutUseCase;
+  final DeleteAccountUseCase deleteAccountUseCase;
 
   ProfileCubit({
     required this.getUserProfileUseCase,
     required this.switchUserRoleUseCase,
     required this.updateProfileUseCase,
     required this.logoutUseCase,
+    required this.deleteAccountUseCase,
   }) : super(ProfileInitial());
 
   Future<void> loadUserProfile() async {
@@ -44,6 +47,15 @@ class ProfileCubit extends Cubit<ProfileState> {
     result.fold(
       (failure) => emit(ProfileError(failure.message)),
       (_) => emit(ProfileLoggedOut()),
+    );
+  }
+
+  Future<void> deleteAccount(String userId) async {
+    emit(ProfileLoading());
+    final result = await deleteAccountUseCase(userId);
+    result.fold(
+      (failure) => emit(ProfileError(failure.message)),
+      (_) => emit(ProfileLoggedOut()), // We can emit ProfileLoggedOut so it navigates to login screen
     );
   }
 

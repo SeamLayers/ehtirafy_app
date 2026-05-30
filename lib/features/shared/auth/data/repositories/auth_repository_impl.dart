@@ -44,11 +44,8 @@ class AuthRepositoryImpl implements AuthRepository {
     required String fullName,
     required String email,
     required String phone,
-    required String identityNumber,
     required String password,
     required String passwordConfirmation,
-    required String sex,
-    required String materialStatus,
     required String userType,
     required String countryCode,
     required String deviceToken,
@@ -59,10 +56,7 @@ class AuthRepositoryImpl implements AuthRepository {
         email: email,
         password: password,
         passwordConfirmation: passwordConfirmation,
-        sex: sex,
-        materialStatus: materialStatus,
         phone: phone,
-        identity_number: identityNumber,
         userType: userType,
         countryCode: countryCode,
         deviceToken: deviceToken,
@@ -141,6 +135,17 @@ class AuthRepositoryImpl implements AuthRepository {
       return const Right(null);
     } catch (e) {
       return Left(CacheFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteAccount(String userId) async {
+    try {
+      await remoteDataSource.deleteAccount(userId);
+      await localDataSource.clearUserData();
+      return const Right(null);
+    } catch (e) {
+      return Left(ApiErrorHandler.handle(e));
     }
   }
 }

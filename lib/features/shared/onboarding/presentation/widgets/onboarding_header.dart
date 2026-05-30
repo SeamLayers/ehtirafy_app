@@ -12,7 +12,9 @@ class OnboardingHeader extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final isArabic = context.locale.languageCode == 'ar';
-    final brandName = isArabic ? 'البطل' : 'Al-Batal';
+    final brandName = isArabic
+        ? 'بطل التصوير للتصوير والمناسبات'
+        : 'Batal Al-Tasweer for Photography and Events';
     final brandTagline = isArabic
         ? 'تصوير مناسباتك، بلمسة إبداع.'
         : 'Your Event Photography, Perfected.';
@@ -48,7 +50,7 @@ class OnboardingHeader extends StatelessWidget {
             ),
             alignment: Alignment.center,
             child: Image.asset(
-              'assets/images/logocanon.png',
+              'assets/images/new_logo.png',
               width: 138.w,
               height: 138.w,
               fit: BoxFit.contain,

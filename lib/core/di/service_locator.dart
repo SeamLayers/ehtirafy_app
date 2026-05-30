@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ehtirafy_app/core/network/dio_client.dart';
 import 'package:ehtirafy_app/features/shared/auth/domain/usecases/logout_usecase.dart';
+import 'package:ehtirafy_app/features/shared/auth/domain/usecases/delete_account_usecase.dart';
 import 'package:ehtirafy_app/features/shared/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:ehtirafy_app/features/shared/auth/presentation/cubits/reset_password_cubit.dart';
 import 'package:ehtirafy_app/features/client/notifications/data/datasources/notifications_remote_data_source.dart';
@@ -209,6 +210,7 @@ Future<void> setupLocator() async {
   sl.registerSharedChatDependencies();
   sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteAccountUseCase(sl()));
 
   // Features - Profile
   sl.registerFactory(
@@ -217,6 +219,7 @@ Future<void> setupLocator() async {
       switchUserRoleUseCase: sl(),
       updateProfileUseCase: sl(),
       logoutUseCase: sl(),
+      deleteAccountUseCase: sl(),
     ),
   );
   sl.registerLazySingleton(() => GetUserProfileUseCase(sl()));

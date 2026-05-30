@@ -24,6 +24,7 @@ abstract class AuthRemoteDataSource {
   });
   Future<String> sendOtp({required String phone, required String countryCode});
   Future<void> logout();
+  Future<void> deleteAccount(String userId);
   Future<String> verifyOtp({
     required String phone,
     required String countryCode,
@@ -202,6 +203,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<void> logout() async {
     try {
       final response = await _dioClient.post(ApiConstants.logout);
+
+      final baseResponse = BaseResponse<void>.fromJson(response.data, (_) {});
+
+      if (baseResponse.status != 200) {
+        throw ServerException(baseResponse.message);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteAccount(String userId) async {
+    try {
+      final response = await _dioClient.delete(ApiConstants.deleteAccount(userId));
 
       final baseResponse = BaseResponse<void>.fromJson(response.data, (_) {});
 

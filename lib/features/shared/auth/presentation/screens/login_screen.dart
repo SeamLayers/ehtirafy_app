@@ -44,7 +44,7 @@ class _LoginView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 AuthHeader(
-                  iconAsset: 'assets/images/logocanon.png',
+                  iconAsset: 'assets/images/new_logo.png',
                   title: AppStrings.authWelcomeBack.tr(),
                   subtitle: AppStrings.authLoginSubtitle.tr(),
                 ),

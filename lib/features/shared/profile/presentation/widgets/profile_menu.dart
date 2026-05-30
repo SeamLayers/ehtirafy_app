@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_strings.dart';
 import '../manager/profile_cubit.dart';
+import '../manager/profile_state.dart';
 import '../../domain/entities/user_profile_entity.dart';
 import 'profile_tile.dart';
 
@@ -85,6 +86,39 @@ class ProfileMenu extends StatelessWidget {
                       profileCubit.logout();
                     },
                     child: Text(AppStrings.confirm.tr()),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        SizedBox(height: 8.h),
+        ProfileTile(
+          title: 'حذف الحساب', // Or add a translation key
+          icon: Icons.delete_forever,
+          isDestructive: true,
+          onTap: () {
+            final profileCubit = context.read<ProfileCubit>();
+            
+            showDialog(
+              context: context,
+              builder: (dialogContext) => AlertDialog(
+                title: Text('حذف الحساب'),
+                content: Text('هل أنت متأكد من رغبتك في حذف الحساب نهائياً؟ لا يمكن التراجع عن هذا الإجراء.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    child: Text(AppStrings.cancel.tr()),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(dialogContext);
+                      final state = profileCubit.state;
+                      if (state is ProfileLoaded) {
+                         profileCubit.deleteAccount(state.userProfile.id.toString());
+                      }
+                    },
+                    child: Text('تأكيد الحذف', style: TextStyle(color: Colors.red)),
                   ),
                 ],
               ),
