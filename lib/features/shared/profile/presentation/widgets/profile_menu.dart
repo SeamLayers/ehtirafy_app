@@ -47,14 +47,6 @@ class ProfileMenu extends StatelessWidget {
         ),
         SizedBox(height: 8.h),
         ProfileTile(
-          title: 'profile.menu.payment_methods'.tr(),
-          icon: Icons.credit_card_outlined,
-          onTap: () {
-            context.push('/profile/wallet');
-          },
-        ),
-        SizedBox(height: 8.h),
-        ProfileTile(
           title: 'profile.menu.settings'.tr(),
           icon: Icons.settings_outlined,
           onTap: () {

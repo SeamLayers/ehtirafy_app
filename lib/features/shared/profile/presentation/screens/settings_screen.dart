@@ -88,14 +88,6 @@ class SettingsScreen extends StatelessWidget {
               ),
               SizedBox(height: 12.h),
               ProfileTile(
-                title: 'Debug FCM Token',
-                icon: Icons.bug_report,
-                onTap: () {
-                  context.push('/debug/token');
-                },
-              ),
-              SizedBox(height: 12.h),
-              ProfileTile(
                 title: 'اتصل بنا / Contact Us',
                 icon: Icons.help_outline,
                 onTap: () {
