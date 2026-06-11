@@ -26,22 +26,32 @@ class RtlBackButton extends StatelessWidget {
     final textDirection = Directionality.of(context);
     final isRtl = textDirection == ui.TextDirection.rtl;
     
+    final Color iconColor = color ?? AppColors.textPrimary;
+    final double iconSize = size ?? 24.sp;
+
     return IconButton(
+      splashRadius: 24.r,
       icon: Container(
-        padding: showBorder ? EdgeInsets.all(4.w) : null,
+        padding: EdgeInsets.all(showBorder ? 6.w : 4.w),
         decoration: showBorder
             ? BoxDecoration(
+                color: iconColor.withValues(alpha: 0.06),
                 border: Border.all(
-                  color: color ?? AppColors.textPrimary,
+                  color: iconColor.withValues(alpha: 0.45),
                   width: 1.5,
                 ),
                 shape: BoxShape.circle,
               )
-            : null,
+            : BoxDecoration(
+                color: AppColors.gold.withValues(alpha: 0.10),
+                shape: BoxShape.circle,
+              ),
         child: Icon(
-          isRtl ? Icons.arrow_forward : Icons.arrow_back,
-          color: color ?? AppColors.textPrimary,
-          size: size ?? 24.sp,
+          isRtl
+              ? Icons.arrow_forward_ios_rounded
+              : Icons.arrow_back_ios_new_rounded,
+          color: iconColor,
+          size: iconSize * 0.8,
         ),
       ),
       onPressed: onPressed ?? () => context.pop(),
@@ -60,9 +70,20 @@ class BackButtonRtl extends StatelessWidget {
   Widget build(BuildContext context) {
     final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return IconButton(
-      icon: Icon(
-        isRtl ? Icons.arrow_forward : Icons.arrow_back,
-        color: AppColors.textPrimary,
+      splashRadius: 24.r,
+      icon: Container(
+        padding: EdgeInsets.all(4.w),
+        decoration: BoxDecoration(
+          color: AppColors.gold.withValues(alpha: 0.10),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          isRtl
+              ? Icons.arrow_forward_ios_rounded
+              : Icons.arrow_back_ios_new_rounded,
+          color: AppColors.textPrimary,
+          size: 18.sp,
+        ),
       ),
       onPressed: onPressed ?? () => context.pop(),
     );

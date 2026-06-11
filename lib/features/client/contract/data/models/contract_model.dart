@@ -93,6 +93,18 @@ class ContractModel extends ContractEntity {
       }
     });
 
+    // Type-guard nested objects before indexing so a non-Map value
+    // (List/String/null) can't crash the parse with a NoSuchMethodError.
+    final advertisement = json['advertisement'] is Map
+        ? json['advertisement'] as Map
+        : const {};
+    final publisher = json['publisher'] is Map
+        ? json['publisher'] as Map
+        : const {};
+    final customer = json['customer'] is Map
+        ? json['customer'] as Map
+        : const {};
+
     return ContractModel(
       id: json['id'] is int
           ? json['id']
@@ -104,21 +116,21 @@ class ContractModel extends ContractEntity {
       clientId: json['customer_id']?.toString() ?? '',
       requestedAmount: json['requested_amount']?.toString() ?? '0',
       actualAmount: json['actual_amount']?.toString() ?? '0',
-      contractStatus: json['contract_status'],
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
-          : DateTime.now(),
-      updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'])
-          : DateTime.now(),
+      contractStatus: json['contract_status']?.toString(),
+      createdAt:
+          DateTime.tryParse(json['created_at']?.toString() ?? '') ??
+          DateTime.now(),
+      updatedAt:
+          DateTime.tryParse(json['updated_at']?.toString() ?? '') ??
+          DateTime.now(),
       // Service/Advertisement details - title can be String or Map with localized values
-      serviceTitle: _parseLocalizedField(json['advertisement']?['title']),
+      serviceTitle: _parseLocalizedField(advertisement['title']),
       // Photographer (freelancer) details
-      photographerName: json['publisher']?['name'] ?? '',
-      photographerImage: json['publisher']?['image'] ?? '',
+      photographerName: _parseLocalizedField(publisher['name']),
+      photographerImage: publisher['image']?.toString() ?? '',
       // Client (customer) details
-      clientName: json['customer']?['name'] ?? '',
-      clientImage: json['customer']?['image'] ?? '',
+      clientName: _parseLocalizedField(customer['name']),
+      clientImage: customer['image']?.toString() ?? '',
       // Chat messages from notes
       chatMessages: parsedMessages.isNotEmpty ? parsedMessages : null,
     );

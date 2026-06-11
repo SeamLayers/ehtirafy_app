@@ -1,6 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../../core/constants/app_spacing.dart';
+import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/widgets/user_avatar.dart';
 import '../../domain/entities/user_profile_entity.dart';
 
 class ProfileHeader extends StatelessWidget {
@@ -10,137 +14,161 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasAvatar = user.avatarUrl != null &&
-        user.avatarUrl!.isNotEmpty &&
-        user.avatarUrl!.startsWith('http');
+    final isFreelancer = user.currentRole == UserRole.freelancer;
 
     return Container(
       width: double.infinity,
-      decoration: ShapeDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFFE5E5E5)),
-          borderRadius: BorderRadius.circular(14.r),
-        ),
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: AppColors.grey200, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gold.withValues(alpha: 0.06),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+            spreadRadius: -4,
+          ),
+          const BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Avatar - Use API image when available, fallback to initials
-            Container(
-              width: 80.w,
-              height: 80.w,
-              decoration: ShapeDecoration(
-                gradient: hasAvatar
-                    ? null
-                    : const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Color(0xFFC8A44F), Color(0xFFD4AF37)],
-                      ),
-                color: hasAvatar ? Colors.grey.shade100 : null,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                shadows: const [
-                  BoxShadow(
-                    color: Color(0x19000000),
-                    blurRadius: 6,
-                    offset: Offset(0, 4),
-                    spreadRadius: -4,
-                  ),
-                  BoxShadow(
-                    color: Color(0x19000000),
-                    blurRadius: 15,
-                    offset: Offset(0, 10),
-                    spreadRadius: -3,
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.r),
-                child: hasAvatar
-                    ? CachedNetworkImage(
-                        imageUrl: user.avatarUrl!,
-                        fit: BoxFit.cover,
-                        width: 80.w,
-                        height: 80.w,
-                        errorWidget: (context, url, error) => Center(
-                          child: Text(
-                            _getInitials(user.name),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      )
-                    : Center(
-                        child: Text(
-                          _getInitials(user.name),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 28.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-              ),
+            // Avatar - reuses the shared UserAvatar (handles network image,
+            // initials fallback, loading & error states gracefully).
+            UserAvatar(
+              name: user.name,
+              imageUrl: user.avatarUrl,
+              size: 80,
+              fontSize: 28.sp,
             ),
-            SizedBox(width: 16.w),
+            SizedBox(width: AppSpacing.md),
             // Info
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(height: 8.h),
                   Text(
                     user.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: const Color(0xFF0A0A0A),
-                      fontSize: 16.sp,
+                      color: AppColors.textPrimary,
+                      fontSize: 17.sp,
                       fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w400,
-                      height: 1.50,
+                      fontWeight: FontWeight.w700,
+                      height: 1.40,
                     ),
                   ),
+                  SizedBox(height: AppSpacing.xs),
                   Text(
                     user.email,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: const Color(0xFF888888),
-                      fontSize: 14.sp,
+                      color: AppColors.textSecondary,
+                      fontSize: 13.sp,
                       fontFamily: 'Cairo',
                       fontWeight: FontWeight.w400,
-                      height: 1.50,
+                      height: 1.40,
                     ),
                   ),
-                  if (user.currentRole == UserRole.freelancer) ...[
-                    SizedBox(height: 8.h),
-                    Row(
-                      children: [
-                        Text(
-                          '★ ${user.rating}',
-                          style: TextStyle(
-                            color: const Color(0xFFC8A44F),
-                            fontSize: 14.sp,
-                            fontFamily: 'Cairo',
-                            fontWeight: FontWeight.w400,
-                          ),
+                  if (isFreelancer) ...[
+                    SizedBox(height: AppSpacing.sm),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 6.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.gold.withValues(alpha: 0.10),
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(
+                          color: AppColors.gold.withValues(alpha: 0.22),
+                          width: 1,
                         ),
-                        SizedBox(width: 8.w),
-                        Text(
-                          '(${user.reviewCount} تقييم)',
-                          style: TextStyle(
-                            color: const Color(0xFF888888),
-                            fontSize: 14.sp,
-                            fontFamily: 'Cairo',
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
+                      ),
+                      child: Builder(
+                        builder: (context) {
+                          final rating = user.rating;
+                          final reviewCount = user.reviewCount;
+                          final hasRating =
+                              (rating != null && rating > 0) ||
+                              (reviewCount != null && reviewCount > 0);
+
+                          if (!hasRating) {
+                            return Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.star_outline_rounded,
+                                  color: AppColors.textSecondary,
+                                  size: 16.sp,
+                                ),
+                                SizedBox(width: 4.w),
+                                Flexible(
+                                  child: Text(
+                                    'profile_header.no_rating_yet'.tr(),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 12.sp,
+                                      fontFamily: 'Cairo',
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.star_rounded,
+                                color: AppColors.gold,
+                                size: 16.sp,
+                              ),
+                              SizedBox(width: 4.w),
+                              Text(
+                                '★ ${(rating ?? 0).toStringAsFixed(1)}',
+                                style: TextStyle(
+                                  color: AppColors.gold,
+                                  fontSize: 13.sp,
+                                  fontFamily: 'Cairo',
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              SizedBox(width: AppSpacing.sm),
+                              Flexible(
+                                child: Text(
+                                  'profile_header.review_count'.tr(
+                                    namedArgs: {'count': '${reviewCount ?? 0}'},
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: AppColors.textSecondary,
+                                    fontSize: 12.sp,
+                                    fontFamily: 'Cairo',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ],
@@ -150,14 +178,5 @@ class ProfileHeader extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _getInitials(String name) {
-    if (name.isEmpty) return '?';
-    final parts = name.trim().split(' ');
-    if (parts.length >= 2) {
-      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
-    }
-    return parts[0][0].toUpperCase();
   }
 }

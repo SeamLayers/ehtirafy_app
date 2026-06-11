@@ -18,10 +18,15 @@ class SearchResultModel extends SearchResultEntity {
       title: json['name']?.toString() ?? json['title']?.toString() ?? '',
       type: 'freelancer',
       imageUrl: json['avatar']?.toString() ?? json['image']?.toString(),
-      rating: (json['rating'] as num?)?.toDouble(),
+      rating: json['rating'] is num
+          ? (json['rating'] as num).toDouble()
+          : double.tryParse(json['rating']?.toString() ?? ''),
       category: json['category']?.toString() ?? json['title']?.toString(),
-      reviewsCount:
-          json['reviews_count'] as int? ?? json['reviewsCount'] as int?,
+      reviewsCount: (json['reviews_count'] ?? json['reviewsCount']) is num
+          ? (json['reviews_count'] ?? json['reviewsCount']).toInt()
+          : int.tryParse(
+              (json['reviews_count'] ?? json['reviewsCount'])?.toString() ?? '',
+            ),
     );
   }
 

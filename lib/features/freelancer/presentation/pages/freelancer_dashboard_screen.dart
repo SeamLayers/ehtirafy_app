@@ -6,7 +6,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
+import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
 import '../cubit/freelancer_dashboard_cubit.dart';
 import '../cubit/freelancer_dashboard_state.dart';
 import '../widgets/stat_card.dart';
@@ -36,7 +38,7 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
         statusBarColor: Colors.transparent,
       ),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF9F9F9),
+        backgroundColor: AppColors.backgroundLight,
         body: Column(
           children: [
             _buildDarkHeader(context),
@@ -48,29 +50,26 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
                   >(
                     builder: (context, state) {
                       if (state is FreelancerDashboardLoading) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.primary,
+                          ),
+                        );
                       }
 
                       if (state is FreelancerDashboardError) {
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(state.message),
-                              SizedBox(height: 16.h),
-                              ElevatedButton(
-                                onPressed: () => context
-                                    .read<FreelancerDashboardCubit>()
-                                    .loadDashboard(),
-                                child: const Text('إعادة المحاولة'),
-                              ),
-                            ],
-                          ),
+                        return ErrorStateWidget(
+                          message: state.message,
+                          retryText: 'إعادة المحاولة',
+                          onRetry: () => context
+                              .read<FreelancerDashboardCubit>()
+                              .loadDashboard(),
                         );
                       }
 
                       if (state is FreelancerDashboardLoaded) {
                         return RefreshIndicator(
+                          color: AppColors.primary,
                           onRefresh: () => context
                               .read<FreelancerDashboardCubit>()
                               .loadDashboard(),
@@ -80,23 +79,23 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SizedBox(height: 16.h),
+                                SizedBox(height: AppSpacing.md),
                                 _buildHeader(context, state),
-                                SizedBox(height: 24.h),
+                                SizedBox(height: AppSpacing.lg),
                                 _buildStatsSection(context, state),
-                                SizedBox(height: 24.h),
+                                SizedBox(height: AppSpacing.lg),
                                 _buildPortfolioSection(
                                   context,
                                   state.portfolioItems,
                                 ),
-                                SizedBox(height: 24.h),
+                                SizedBox(height: AppSpacing.lg),
                                 _buildGigsSection(context, state.gigs),
-                                SizedBox(height: 24.h),
+                                SizedBox(height: AppSpacing.lg),
                                 _buildRecentOrdersSection(
                                   context,
                                   state.lastContracts,
                                 ),
-                                SizedBox(height: 32.h),
+                                SizedBox(height: AppSpacing.xl),
                               ],
                             ),
                           ),
@@ -115,26 +114,69 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
 
   Widget _buildDarkHeader(BuildContext context) {
     return Container(
-      color: AppColors.dark,
-      child: SafeArea(
-        bottom: false,
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.dark.withValues(alpha: 0.18),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(24),
+          bottomRight: Radius.circular(24),
+        ),
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 16.h),
           decoration: const BoxDecoration(
-            color: AppColors.dark,
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF24251F), AppColors.dark],
+            ),
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(24),
               bottomRight: Radius.circular(24),
             ),
           ),
-          child: Center(
-            child: Text(
-              AppStrings.navDashboard.tr(),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.white,
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w400,
-                height: 1.50,
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.h),
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 22.w,
+                      height: 2.5.h,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(2.r),
+                      ),
+                    ),
+                    SizedBox(width: AppSpacing.sm),
+                    Text(
+                      AppStrings.navDashboard.tr(),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: AppColors.textLight,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        height: 1.50,
+                      ),
+                    ),
+                    SizedBox(width: AppSpacing.sm),
+                    Container(
+                      width: 22.w,
+                      height: 2.5.h,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(2.r),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -146,47 +188,70 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
   Widget _buildHeader(BuildContext context, FreelancerDashboardLoaded state) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '${AppStrings.freelancerDashboardWelcome.tr()}،',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: const Color(0xFF888888),
-                fontSize: 14.sp,
-              ),
-            ),
-            SizedBox(height: 4.h),
-            Row(
-              children: [
-                Text(
-                  state.userName,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: const Color(0xFF2B2B2B),
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${AppStrings.freelancerDashboardWelcome.tr()}،',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textSecondary,
+                  fontSize: 14.sp,
                 ),
-                SizedBox(width: 8.w),
-                Row(
-                  children: [
-                    Icon(Icons.star, color: AppColors.primary, size: 16.sp),
-                    SizedBox(width: 2.w),
-                    Text(
-                      '${state.stats.averageRating}',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: const Color(0xFF2B2B2B),
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500,
+              ),
+              SizedBox(height: AppSpacing.xs),
+              Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      state.userName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: AppColors.textPrimary,
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                  ),
+                  SizedBox(width: AppSpacing.sm),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8.w,
+                      vertical: 3.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.star_rounded,
+                          color: AppColors.primary,
+                          size: 16.sp,
+                        ),
+                        SizedBox(width: 2.w),
+                        Text(
+                          '${state.stats.averageRating}',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: AppColors.textPrimary,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
+        SizedBox(width: AppSpacing.sm),
         // Online toggle
         _buildOnlineToggle(context, state),
       ],
@@ -197,52 +262,58 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
     BuildContext context,
     FreelancerDashboardLoaded state,
   ) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-      decoration: BoxDecoration(
-        color: state.isOnline
-            ? const Color(0xFF28A745).withValues(alpha: 0.1)
-            : const Color(0xFF888888).withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(
-          color: state.isOnline
-              ? const Color(0xFF28A745).withValues(alpha: 0.3)
-              : const Color(0xFF888888).withValues(alpha: 0.3),
-        ),
-      ),
+    final Color statusColor = state.isOnline
+        ? AppColors.success
+        : AppColors.grey500;
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(20.r),
       child: InkWell(
+        borderRadius: BorderRadius.circular(20.r),
         onTap: () {
           context.read<FreelancerDashboardCubit>().toggleOnlineStatus(
             !state.isOnline,
           );
         },
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 8.w,
-              height: 8.h,
-              decoration: BoxDecoration(
-                color: state.isOnline
-                    ? const Color(0xFF28A745)
-                    : const Color(0xFF888888),
-                shape: BoxShape.circle,
-              ),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+          decoration: BoxDecoration(
+            color: statusColor.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(20.r),
+            border: Border.all(
+              color: statusColor.withValues(alpha: 0.3),
             ),
-            SizedBox(width: 6.w),
-            Text(
-              state.isOnline
-                  ? AppStrings.freelancerDashboardOnline.tr()
-                  : AppStrings.freelancerDashboardOffline.tr(),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: state.isOnline
-                    ? const Color(0xFF28A745)
-                    : const Color(0xFF888888),
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w500,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 8.w,
+                height: 8.h,
+                decoration: BoxDecoration(
+                  color: statusColor,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: statusColor.withValues(alpha: 0.5),
+                      blurRadius: 4,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+              SizedBox(width: 6.w),
+              Text(
+                state.isOnline
+                    ? AppStrings.freelancerDashboardOnline.tr()
+                    : AppStrings.freelancerDashboardOffline.tr(),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: statusColor,
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -269,7 +340,7 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
             title: AppStrings.freelancerDashboardActiveOrders.tr(),
             value: '${state.stats.activeGigs}',
             icon: Icons.assignment_outlined,
-            iconColor: const Color(0xFF28A745),
+            iconColor: AppColors.success,
           ),
         ),
         SizedBox(width: 12.w),
@@ -278,7 +349,7 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
             title: AppStrings.freelancerDashboardProfileViews.tr(),
             value: '${0}', // Profile views not in API
             icon: Icons.visibility_outlined,
-            iconColor: const Color(0xFF17A2B8),
+            iconColor: AppColors.info,
           ),
         ),
       ],
@@ -311,6 +382,7 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
             height: 150.h,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(vertical: 4.h),
               itemCount: items.length,
               separatorBuilder: (_, __) => SizedBox(width: 12.w),
               itemBuilder: (context, index) {
@@ -328,17 +400,17 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
       width: 140.w,
       height: 140.h,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(18.r),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x1A000000),
-            blurRadius: 8,
+            color: AppColors.shadowLight,
+            blurRadius: 10,
             offset: Offset(0, 4),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(18.r),
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -348,7 +420,14 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
               fit: BoxFit.cover,
               memCacheWidth: 384,
               memCacheHeight: 384,
-              errorWidget: Icon(Icons.image, color: Colors.grey, size: 32.sp),
+              errorWidget: Container(
+                color: AppColors.grey100,
+                child: Icon(
+                  Icons.image_outlined,
+                  color: AppColors.grey400,
+                  size: 32.sp,
+                ),
+              ),
             ),
             // Gradient overlay
             Positioned.fill(
@@ -375,9 +454,10 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
               child: Text(
                 item.title,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.textLight,
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
+                  fontFamily: 'Cairo',
                   shadows: [
                     Shadow(
                       color: Colors.black.withValues(alpha: 0.5),
@@ -397,6 +477,7 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
 
   Widget _buildEmptyPortfolioCard(BuildContext context) {
     return InkWell(
+      borderRadius: BorderRadius.circular(18.r),
       onTap: () async {
         final result = await context.push('/freelancer/portfolio/add');
         if (!context.mounted) return;
@@ -415,29 +496,36 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
           padding: EdgeInsets.all(24.w),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(18.r),
           ),
           child: Column(
             children: [
-              Icon(
-                Icons.add_photo_alternate_outlined,
-                size: 48.sp,
-                color: AppColors.primary,
+              Container(
+                padding: EdgeInsets.all(14.w),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.add_photo_alternate_outlined,
+                  size: 32.sp,
+                  color: AppColors.primary,
+                ),
               ),
               SizedBox(height: 12.h),
               Text(
                 AppStrings.freelancerDashboardEmptyPortfolio.tr(),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: const Color(0xFF2B2B2B),
+                  color: AppColors.textPrimary,
                   fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: AppSpacing.xs),
               Text(
                 AppStrings.freelancerDashboardAddFirstWork.tr(),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: const Color(0xFF888888),
+                  color: AppColors.textSecondary,
                   fontSize: 12.sp,
                 ),
               ),
@@ -478,6 +566,7 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
             height: 180.h,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(vertical: 4.h),
               itemCount: gigs.length,
               separatorBuilder: (_, __) => SizedBox(width: 12.w),
               itemBuilder: (context, index) {
@@ -491,16 +580,18 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
   }
 
   Widget _buildGigPreviewCard(BuildContext context, GigEntity gig) {
+    final bool isActive = gig.status == GigStatus.active;
     return Container(
       width: 220.w,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(18.r),
+        border: Border.all(color: AppColors.grey200),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x1A000000),
-            blurRadius: 12,
-            offset: Offset(0, 4),
+            color: AppColors.shadowLight,
+            blurRadius: 14,
+            offset: Offset(0, 6),
           ),
         ],
       ),
@@ -511,7 +602,7 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
           Stack(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(18.r)),
                 child: AppCachedNetworkImage(
                   imageUrl: gig.coverImage,
                   width: double.infinity,
@@ -519,10 +610,13 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
                   fit: BoxFit.cover,
                   memCacheWidth: 440,
                   memCacheHeight: 160,
-                  errorWidget: Icon(
-                    Icons.camera_alt,
-                    size: 32.sp,
-                    color: AppColors.primary,
+                  errorWidget: Container(
+                    color: AppColors.grey100,
+                    child: Icon(
+                      Icons.camera_alt,
+                      size: 32.sp,
+                      color: AppColors.primary,
+                    ),
                   ),
                 ),
               ),
@@ -531,7 +625,7 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(16.r),
+                      top: Radius.circular(18.r),
                     ),
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
@@ -551,17 +645,16 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                   decoration: BoxDecoration(
-                    color: gig.status == GigStatus.active
-                        ? const Color(0xFF28A745)
-                        : const Color(0xFF6C757D),
+                    color: isActive ? AppColors.success : AppColors.grey600,
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Text(
-                    gig.status == GigStatus.active ? 'نشط' : 'معلق',
+                    isActive ? 'نشط' : 'معلق',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: AppColors.textLight,
                       fontSize: 10.sp,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Cairo',
                     ),
                   ),
                 ),
@@ -578,14 +671,14 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
                 Text(
                   gig.title,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: const Color(0xFF2B2B2B),
+                    color: AppColors.textPrimary,
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 4.h),
+                SizedBox(height: AppSpacing.xs),
                 // Category badge
                 if (gig.categoryName.isNotEmpty)
                   Container(
@@ -595,14 +688,15 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(4.r),
+                      borderRadius: BorderRadius.circular(6.r),
                     ),
                     child: Text(
                       gig.categoryName,
                       style: TextStyle(
                         color: AppColors.primary,
                         fontSize: 10.sp,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Cairo',
                       ),
                     ),
                   ),
@@ -615,7 +709,7 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
                       size: 14.sp,
                       color: AppColors.gold,
                     ),
-                    SizedBox(width: 4.w),
+                    SizedBox(width: AppSpacing.xs),
                     Text(
                       '${gig.price.toInt()} ريال',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -636,6 +730,7 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
 
   Widget _buildEmptyGigsCard(BuildContext context) {
     return InkWell(
+      borderRadius: BorderRadius.circular(18.r),
       onTap: () async {
         final result = await context.push('/freelancer/gigs/create');
         if (!context.mounted) return;
@@ -654,22 +749,29 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
           padding: EdgeInsets.all(24.w),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(18.r),
           ),
           child: Column(
             children: [
-              Icon(
-                Icons.add_business_outlined,
-                size: 48.sp,
-                color: AppColors.primary,
+              Container(
+                padding: EdgeInsets.all(14.w),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.add_business_outlined,
+                  size: 32.sp,
+                  color: AppColors.primary,
+                ),
               ),
               SizedBox(height: 12.h),
               Text(
                 AppStrings.freelancerDashboardEmptyServices.tr(),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: const Color(0xFF2B2B2B),
+                  color: AppColors.textPrimary,
                   fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -714,30 +816,37 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
       padding: EdgeInsets.all(24.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: const Color(0xFFEEEEEE)),
+        borderRadius: BorderRadius.circular(18.r),
+        border: Border.all(color: AppColors.grey200),
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.inbox_outlined,
-            size: 48.sp,
-            color: const Color(0xFFCCCCCC),
+          Container(
+            padding: EdgeInsets.all(14.w),
+            decoration: const BoxDecoration(
+              color: AppColors.grey100,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.inbox_outlined,
+              size: 32.sp,
+              color: AppColors.grey400,
+            ),
           ),
           SizedBox(height: 12.h),
           Text(
             'لا توجد طلبات حتى الآن',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: const Color(0xFF888888),
+              color: AppColors.textSecondary,
               fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: AppSpacing.xs),
           Text(
             'ستظهر الطلبات الجديدة هنا',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: const Color(0xFFAAAAAA),
+              color: AppColors.grey500,
               fontSize: 12.sp,
             ),
           ),
@@ -754,11 +863,12 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: AppColors.grey200),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x0D000000),
-            blurRadius: 10,
+            color: AppColors.shadowLight,
+            blurRadius: 12,
             offset: Offset(0, 4),
           ),
         ],
@@ -767,23 +877,31 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
         children: [
           // Client initials avatar instead of photo
           Container(
-            width: 40.w,
-            height: 40.h,
+            width: 44.w,
+            height: 44.h,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.r),
+              borderRadius: BorderRadius.circular(12.r),
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [Color(0xFFC8A44F), Color(0xFFD4AF37)],
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withValues(alpha: 0.25),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
             ),
             child: Center(
               child: Text(
                 _getClientInitials(order.clientName),
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.textLight,
                   fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Cairo',
                 ),
               ),
             ),
@@ -798,28 +916,38 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: const Color(0xFF2B2B2B),
+                    color: AppColors.textPrimary,
                     fontSize: 13.sp,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: 4.h),
+                SizedBox(height: AppSpacing.xs),
                 Text(
                   order.clientName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: const Color(0xFF888888),
+                    color: AppColors.textSecondary,
                     fontSize: 11.sp,
                   ),
                 ),
               ],
             ),
           ),
-          Text(
-            '${order.amount.toInt()} ر.س',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppColors.primary,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w600,
+          SizedBox(width: AppSpacing.sm),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            child: Text(
+              '${order.amount.toInt()} ر.س',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.primary,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ],
@@ -837,25 +965,51 @@ class _FreelancerDashboardScreenState extends State<FreelancerDashboardScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        InkWell(
-          onTap: onTitleTap,
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: const Color(0xFF2B2B2B),
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w600,
+        Flexible(
+          child: InkWell(
+            onTap: onTitleTap,
+            borderRadius: BorderRadius.circular(8.r),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 4.w,
+                  height: 18.h,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(4.r),
+                  ),
+                ),
+                SizedBox(width: AppSpacing.sm),
+                Flexible(
+                  child: Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: AppColors.textPrimary,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
         TextButton(
           onPressed: onAction,
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+            minimumSize: Size.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
           child: Text(
             actionText,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: AppColors.primary,
               fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),
@@ -895,7 +1049,7 @@ class _DashedBorderPainter extends CustomPainter {
     path.addRRect(
       RRect.fromRectAndRadius(
         Rect.fromLTWH(0, 0, size.width, size.height),
-        Radius.circular(16.r),
+        Radius.circular(18.r),
       ),
     );
 

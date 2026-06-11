@@ -1,10 +1,11 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/widgets/primary_button.dart';
+import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import 'package:ehtirafy_app/features/shared/reviews/presentation/cubits/reviews_cubit.dart';
 import 'package:ehtirafy_app/features/shared/reviews/presentation/cubits/reviews_state.dart';
 
@@ -61,24 +62,25 @@ class _RateServiceScreenState extends State<RateServiceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F9F9),
+      backgroundColor: AppColors.backgroundLight,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
-            color: const Color(0xFF2B2B2B),
-            size: 20.sp,
+        scrolledUnderElevation: 0,
+        shape: Border(
+          bottom: BorderSide(
+            color: AppColors.grey200.withValues(alpha: 0.7),
+            width: 1,
           ),
-          onPressed: () => context.pop(),
         ),
+        leadingWidth: 56.w,
+        leading: const RtlBackButton(),
         title: Text(
           'تقييم الخدمة',
-          style: TextStyle(
-            color: const Color(0xFF2B2B2B),
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: AppColors.textPrimary,
             fontSize: 18.sp,
             fontWeight: FontWeight.bold,
             fontFamily: 'Cairo',
@@ -116,81 +118,127 @@ class _RateServiceScreenState extends State<RateServiceScreen> {
           }
         },
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(20.w),
+          padding: EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            AppSpacing.lg,
+            AppSpacing.lg,
+            AppSpacing.xl,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 20.h),
-
               // Freelancer info card
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.all(20.w),
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.xl,
+                ),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16.r),
+                  borderRadius: BorderRadius.circular(20.r),
+                  gradient: LinearGradient(
+                    begin: AlignmentDirectional.topStart,
+                    end: AlignmentDirectional.bottomEnd,
+                    colors: [
+                      Colors.white,
+                      AppColors.gold.withValues(alpha: 0.06),
+                    ],
+                  ),
+                  border: Border.all(
+                    color: AppColors.gold.withValues(alpha: 0.18),
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
+                      color: AppColors.gold.withValues(alpha: 0.10),
+                      blurRadius: 18.r,
+                      offset: Offset(0, 8.h),
+                      spreadRadius: -4.r,
                     ),
                   ],
                 ),
                 child: Column(
                   children: [
                     Container(
-                      width: 80.w,
-                      height: 80.w,
+                      width: 84.w,
+                      height: 84.w,
                       decoration: BoxDecoration(
-                        color: AppColors.gold.withValues(alpha: 0.1),
+                        gradient: LinearGradient(
+                          begin: AlignmentDirectional.topStart,
+                          end: AlignmentDirectional.bottomEnd,
+                          colors: [
+                            AppColors.gold.withValues(alpha: 0.18),
+                            AppColors.gold.withValues(alpha: 0.08),
+                          ],
+                        ),
                         shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppColors.gold.withValues(alpha: 0.30),
+                          width: 1.5,
+                        ),
                       ),
                       child: Icon(
                         Icons.person,
                         color: AppColors.gold,
-                        size: 40.sp,
+                        size: 42.sp,
                       ),
                     ),
-                    SizedBox(height: 16.h),
+                    SizedBox(height: AppSpacing.md),
                     Text(
                       widget.freelancerName,
-                      style: TextStyle(
-                        color: const Color(0xFF2B2B2B),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        color: AppColors.textPrimary,
                         fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Cairo',
                       ),
                     ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      widget.serviceName,
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 14.sp,
-                        fontFamily: 'Cairo',
+                    SizedBox(height: AppSpacing.xs),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.xs,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.gold.withValues(alpha: 0.10),
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                      child: Text(
+                        widget.serviceName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: AppColors.gold,
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Cairo',
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
 
-              SizedBox(height: 32.h),
+              SizedBox(height: AppSpacing.xl),
 
               // Rating prompt
               Text(
                 'كيف كانت تجربتك؟',
-                style: TextStyle(
-                  color: const Color(0xFF2B2B2B),
+                textAlign: TextAlign.center,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  color: AppColors.textPrimary,
                   fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Cairo',
                 ),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: AppSpacing.sm),
               Text(
                 'يساعد تقييمك الآخرين في اختيار المصور المناسب',
-                style: TextStyle(
+                style: theme.textTheme.bodyMedium?.copyWith(
                   color: AppColors.textSecondary,
                   fontSize: 14.sp,
                   fontFamily: 'Cairo',
@@ -198,73 +246,116 @@ class _RateServiceScreenState extends State<RateServiceScreen> {
                 textAlign: TextAlign.center,
               ),
 
-              SizedBox(height: 24.h),
+              SizedBox(height: AppSpacing.lg),
 
               // Star rating
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(5, (index) {
+                  final bool isSelected = index < _rating;
                   return GestureDetector(
                     onTap: () {
                       setState(() => _rating = (index + 1).toDouble());
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 6.w),
-                      child: Icon(
-                        index < _rating
-                            ? Icons.star_rounded
-                            : Icons.star_outline_rounded,
-                        color: AppColors.gold,
-                        size: 44.sp,
+                      child: AnimatedScale(
+                        scale: isSelected ? 1.0 : 0.92,
+                        duration: const Duration(milliseconds: 180),
+                        curve: Curves.easeOut,
+                        child: Icon(
+                          isSelected
+                              ? Icons.star_rounded
+                              : Icons.star_outline_rounded,
+                          color: isSelected
+                              ? AppColors.gold
+                              : AppColors.grey300,
+                          size: 46.sp,
+                        ),
                       ),
                     ),
                   );
                 }),
               ),
 
-              SizedBox(height: 8.h),
+              SizedBox(height: AppSpacing.md),
 
               // Rating text
-              Text(
-                _getRatingText(),
-                style: TextStyle(
-                  color: AppColors.gold,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Cairo',
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                transitionBuilder: (child, animation) => FadeTransition(
+                  opacity: animation,
+                  child: child,
                 ),
+                child: _rating == 0
+                    ? SizedBox(height: 32.h, key: const ValueKey('empty'))
+                    : Container(
+                        key: ValueKey(_rating),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                          vertical: AppSpacing.xs,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.gold.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(20.r),
+                        ),
+                        child: Text(
+                          _getRatingText(),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: AppColors.gold,
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: 'Cairo',
+                          ),
+                        ),
+                      ),
               ),
 
-              SizedBox(height: 32.h),
+              SizedBox(height: AppSpacing.xl),
 
               // Comment field
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.all(16.w),
+                padding: EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16.r),
+                  borderRadius: BorderRadius.circular(20.r),
+                  border: Border.all(color: AppColors.grey200),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
+                      color: AppColors.shadowLight,
+                      blurRadius: 12.r,
+                      offset: Offset(0, 4.h),
                     ),
                   ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'اكتب تعليقك (اختياري)',
-                      style: TextStyle(
-                        color: const Color(0xFF2B2B2B),
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Cairo',
-                      ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.edit_note_rounded,
+                          color: AppColors.gold,
+                          size: 20.sp,
+                        ),
+                        SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: Text(
+                            'اكتب تعليقك (اختياري)',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: AppColors.textPrimary,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'Cairo',
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 12.h),
+                    SizedBox(height: AppSpacing.sm + AppSpacing.xs),
                     TextField(
                       controller: _commentController,
                       maxLines: 4,
@@ -275,74 +366,49 @@ class _RateServiceScreenState extends State<RateServiceScreen> {
                           fontSize: 14.sp,
                           fontFamily: 'Cairo',
                         ),
+                        filled: true,
+                        fillColor: AppColors.grey50,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
                           borderSide: const BorderSide(
-                            color: Color(0xFFEEEEEE),
+                            color: AppColors.grey200,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
                           borderSide: const BorderSide(
-                            color: Color(0xFFEEEEEE),
+                            color: AppColors.grey200,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
-                          borderSide: const BorderSide(color: AppColors.gold),
+                          borderSide: const BorderSide(
+                            color: AppColors.gold,
+                            width: 1.5,
+                          ),
                         ),
-                        contentPadding: EdgeInsets.all(16.w),
+                        contentPadding: EdgeInsets.all(AppSpacing.md),
                       ),
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontFamily: 'Cairo',
-                        color: const Color(0xFF2B2B2B),
+                        color: AppColors.textPrimary,
                       ),
                     ),
                   ],
                 ),
               ),
 
-              SizedBox(height: 40.h),
+              SizedBox(height: AppSpacing.xl),
 
               // Submit button
-              SizedBox(
-                width: double.infinity,
-                height: 52.h,
-                child: ElevatedButton(
-                  onPressed: _isSubmitting ? null : _submitRating,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.gold,
-                    disabledBackgroundColor: AppColors.gold.withValues(
-                      alpha: 0.5,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: _isSubmitting
-                      ? SizedBox(
-                          width: 24.w,
-                          height: 24.w,
-                          child: const CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : Text(
-                          'إرسال التقييم',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Cairo',
-                          ),
-                        ),
-                ),
+              PrimaryButton(
+                text: 'إرسال التقييم',
+                isLoading: _isSubmitting,
+                onPressed: _submitRating,
               ),
 
-              SizedBox(height: 20.h),
+              SizedBox(height: AppSpacing.md),
             ],
           ),
         ),

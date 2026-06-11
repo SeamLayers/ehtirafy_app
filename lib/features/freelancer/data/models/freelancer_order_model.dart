@@ -15,15 +15,19 @@ class FreelancerOrderModel extends FreelancerOrderEntity {
 
   factory FreelancerOrderModel.fromJson(Map<String, dynamic> json) {
     return FreelancerOrderModel(
-      id: json['id'] as String,
-      serviceTitle: json['serviceTitle'] as String,
-      clientName: json['clientName'] as String,
-      clientImage: json['clientImage'] as String,
-      status: _parseStatus(json['status'] as String),
-      price: (json['price'] as num).toDouble(),
-      location: json['location'] as String,
-      eventDate: DateTime.parse(json['eventDate'] as String),
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      id: json['id']?.toString() ?? '',
+      serviceTitle: json['serviceTitle'] as String? ?? '',
+      clientName: json['clientName'] as String? ?? '',
+      clientImage: json['clientImage'] as String? ?? '',
+      status: _parseStatus(json['status'] as String?),
+      price: (json['price'] is num)
+          ? (json['price'] as num).toDouble()
+          : double.tryParse(json['price']?.toString() ?? '') ?? 0.0,
+      location: json['location'] as String? ?? '',
+      eventDate: DateTime.tryParse(json['eventDate']?.toString() ?? '') ??
+          DateTime.now(),
+      createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
+          DateTime.now(),
     );
   }
 
@@ -65,7 +69,7 @@ class FreelancerOrderModel extends FreelancerOrderEntity {
     );
   }
 
-  static FreelancerOrderStatus _parseStatus(String status) {
+  static FreelancerOrderStatus _parseStatus(String? status) {
     switch (status) {
       case 'pending':
         return FreelancerOrderStatus.pending;

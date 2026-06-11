@@ -1,3 +1,4 @@
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/settings_ui_components.dart';
@@ -20,15 +21,15 @@ class ContactUsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SettingsPageScaffold(
-      appBarTitle: 'تواصل معنا – منصة بطل',
+      appBarTitle: 'تواصل معنا – منصة عدسة المناسبات',
       heroIcon: Icons.support_agent_outlined,
       heroTitle: 'فريق دعم جاهز لمساعدتك',
       heroSubtitle:
           'إذا كان لديك أي استفسار أو رغبتك في تقديم شكوى أو بلاغ، يمكنك التواصل معنا عبر الطرق التالية:',
       children: [
         Wrap(
-          spacing: 8.w,
-          runSpacing: 8.h,
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
           children: const [
             SettingsMetaChip(icon: Icons.mail_outline, label: 'دعم عبر البريد'),
             SettingsMetaChip(icon: Icons.phone_outlined, label: 'تواصل مباشر'),
@@ -38,7 +39,7 @@ class ContactUsScreen extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: AppSpacing.md),
         const SettingsLocaleSection(
           localeTitle: 'العربية',
           icon: Icons.translate_rounded,
@@ -47,7 +48,7 @@ class ContactUsScreen extends StatelessWidget {
           bullets: _arabicSupportSteps,
           numbered: true,
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: AppSpacing.md),
         const SettingsLocaleSection(
           localeTitle: 'English',
           icon: Icons.language_rounded,
@@ -57,7 +58,7 @@ class ContactUsScreen extends StatelessWidget {
           isEnglish: true,
           numbered: true,
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: AppSpacing.md),
         const SettingsInfoTile(
           icon: Icons.email_outlined,
           title: 'البريد الإلكتروني / Email',

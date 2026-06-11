@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../../../../../core/constants/app_spacing.dart';
+import '../../../../../core/theme/app_colors.dart';
 import '../../domain/entities/bank_account_entity.dart';
 
 class BankDetailsCard extends StatelessWidget {
@@ -20,47 +22,64 @@ class BankDetailsCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
+  Widget _buildDetailRow(
+    String label,
+    String value, {
+    bool showDivider = true,
+  }) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 12.h),
+      padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
             style: TextStyle(
+              fontFamily: 'Cairo',
               fontSize: 12.sp,
-              color: Colors.grey.shade600,
-              fontWeight: FontWeight.w500,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: AppSpacing.xs),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: Text(
                   value,
                   style: TextStyle(
+                    fontFamily: 'Cairo',
                     fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: AppColors.textPrimary,
                   ),
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: AppSpacing.sm),
               GestureDetector(
                 onTap: () => _copyToClipboard(value, label),
-                child: Icon(
-                  Icons.content_copy,
-                  size: 18.sp,
-                  color: Colors.grey.shade600,
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  padding: EdgeInsets.all(8.r),
+                  decoration: BoxDecoration(
+                    color: AppColors.gold.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Icon(
+                    Icons.content_copy_rounded,
+                    size: 16.sp,
+                    color: AppColors.gold,
+                  ),
                 ),
               ),
             ],
           ),
-          Divider(height: 1.h, color: Colors.grey.shade300),
+          if (showDivider) ...[
+            SizedBox(height: AppSpacing.sm),
+            Divider(height: 1.h, thickness: 1, color: AppColors.grey200),
+          ],
         ],
       ),
     );
@@ -68,82 +87,131 @@ class BankDetailsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
-      child: Container(
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.r),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Colors.white, Colors.blue.shade50],
+    final bool showAccountNumber = bankAccount.accountNumber != null;
+    final bool showSwiftCode = bankAccount.swiftCode != null;
+    final bool showBranchCode = bankAccount.branchCode != null;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: AppColors.grey200),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gold.withValues(alpha: 0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
-        ),
+          const BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header
             Row(
               children: [
-                Icon(
-                  Icons.account_balance,
-                  size: 28.sp,
-                  color: Colors.blue.shade700,
+                Container(
+                  padding: EdgeInsets.all(10.r),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.gold.withValues(alpha: 0.18),
+                        AppColors.gold.withValues(alpha: 0.08),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(14.r),
+                  ),
+                  child: Icon(
+                    Icons.account_balance_rounded,
+                    size: 24.sp,
+                    color: AppColors.gold,
+                  ),
                 ),
-                SizedBox(width: 12.w),
+                SizedBox(width: AppSpacing.sm + 4.w),
                 Expanded(
                   child: Text(
                     'تفاصيل الحساب البنكي',
                     style: TextStyle(
+                      fontFamily: 'Cairo',
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
-                      color: Colors.blue.shade900,
+                      color: AppColors.dark,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 12.h),
-            Divider(height: 1.h, color: Colors.grey.shade300),
+            SizedBox(height: AppSpacing.md),
+            Divider(height: 1.h, thickness: 1, color: AppColors.grey200),
 
             // Bank Details
             _buildDetailRow('اسم البنك', bankAccount.bankName),
             _buildDetailRow('اسم المالك', bankAccount.accountName),
-            _buildDetailRow('رقم الحساب IBAN', bankAccount.iban),
-            if (bankAccount.accountNumber != null)
-              _buildDetailRow('رقم الحساب (اختياري)', bankAccount.accountNumber!),
-            if (bankAccount.swiftCode != null)
-              _buildDetailRow('رمز SWIFT (اختياري)', bankAccount.swiftCode!),
-            if (bankAccount.branchCode != null)
-              _buildDetailRow('رمز الفرع (اختياري)', bankAccount.branchCode!),
+            _buildDetailRow(
+              'رقم الحساب IBAN',
+              bankAccount.iban,
+              showDivider:
+                  showAccountNumber || showSwiftCode || showBranchCode,
+            ),
+            if (showAccountNumber)
+              _buildDetailRow(
+                'رقم الحساب (اختياري)',
+                bankAccount.accountNumber!,
+                showDivider: showSwiftCode || showBranchCode,
+              ),
+            if (showSwiftCode)
+              _buildDetailRow(
+                'رمز SWIFT (اختياري)',
+                bankAccount.swiftCode!,
+                showDivider: showBranchCode,
+              ),
+            if (showBranchCode)
+              _buildDetailRow(
+                'رمز الفرع (اختياري)',
+                bankAccount.branchCode!,
+                showDivider: false,
+              ),
 
             // Warning Section
-            SizedBox(height: 8.h),
+            SizedBox(height: AppSpacing.md),
             Container(
-              padding: EdgeInsets.all(12.w),
+              padding: EdgeInsets.all(AppSpacing.sm + 4.w),
               decoration: BoxDecoration(
-                color: Colors.orange.shade50,
-                borderRadius: BorderRadius.circular(8.r),
-                border: Border.all(color: Colors.orange.shade200),
+                color: AppColors.warning.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(14.r),
+                border: Border.all(
+                  color: AppColors.warning.withValues(alpha: 0.30),
+                ),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
-                    Icons.info_outline,
-                    color: Colors.orange.shade700,
+                    Icons.info_outline_rounded,
+                    color: AppColors.warning,
                     size: 20.sp,
                   ),
-                  SizedBox(width: 8.w),
+                  SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       'تأكد من نسخ البيانات بشكل صحيح قبل تحويل المبلغ',
                       style: TextStyle(
+                        fontFamily: 'Cairo',
                         fontSize: 12.sp,
-                        color: Colors.orange.shade900,
-                        height: 1.4,
+                        color: AppColors.textPrimary,
+                        height: 1.5,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),

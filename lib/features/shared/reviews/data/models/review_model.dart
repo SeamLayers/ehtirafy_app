@@ -35,11 +35,11 @@ class ReviewModel extends ReviewEntity {
 
     return ReviewModel(
       id: json['id']?.toString() ?? '',
-      userName: json['user_name'] ?? json['client_name'] ?? 'عميل',
-      userImage: json['user_image'] ?? json['client_avatar'],
+      userName: (json['user_name'] ?? json['client_name'])?.toString() ?? 'عميل',
+      userImage: (json['user_image'] ?? json['client_avatar'])?.toString(),
       rating: rating,
       date: formattedDate,
-      comment: json['comment'] ?? json['description'] ?? '',
+      comment: (json['comment'] ?? json['description'])?.toString() ?? '',
     );
   }
 

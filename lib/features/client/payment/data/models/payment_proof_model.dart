@@ -12,15 +12,18 @@ class PaymentProofModel extends PaymentProofEntity {
 
   factory PaymentProofModel.fromJson(Map<String, dynamic> json) {
     return PaymentProofModel(
-      contractId: json['contract_id'] ?? json['contractId'] ?? '',
-      senderName: json['sender_name'] ?? json['senderName'] ?? '',
-      transferDate: json['transfer_date'] != null
-          ? DateTime.parse(json['transfer_date'])
-          : DateTime.now(),
-      proofFilePath: json['proof_file_path'] ?? json['proofFilePath'] ?? '',
+      contractId:
+          (json['contract_id'] ?? json['contractId'])?.toString() ?? '',
+      senderName:
+          (json['sender_name'] ?? json['senderName'])?.toString() ?? '',
+      transferDate:
+          DateTime.tryParse(json['transfer_date']?.toString() ?? '') ??
+              DateTime.now(),
+      proofFilePath:
+          (json['proof_file_path'] ?? json['proofFilePath'])?.toString() ?? '',
       transferReference:
-          json['transfer_reference'] ?? json['transferReference'],
-      notes: json['notes'],
+          (json['transfer_reference'] ?? json['transferReference'])?.toString(),
+      notes: json['notes']?.toString(),
     );
   }
 

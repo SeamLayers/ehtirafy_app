@@ -5,10 +5,12 @@ class ContactInfoModel extends ContactInfo {
 
   factory ContactInfoModel.fromJson(Map<String, dynamic> json) {
     return ContactInfoModel(
-      email: json['email'],
-      phone: json['phone'],
-      whatsapp: json['whatsapp'],
-      address: json['address'],
+      email: json['email']?.toString(),
+      phone: json['phone']?.toString(),
+      whatsapp: json['whatsapp']?.toString(),
+      address: json['address'] is String?
+          ? json['address'] as String?
+          : json['address']?.toString(),
     );
   }
 }

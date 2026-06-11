@@ -1,5 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../core/theme/app_colors.dart';
+import '../../../../../../core/constants/app_spacing.dart';
 
 class HomeHeaderSection extends StatelessWidget {
   const HomeHeaderSection({super.key});
@@ -8,13 +11,32 @@ class HomeHeaderSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.only(top: 48, left: 24, right: 24, bottom: 24),
-      decoration: const BoxDecoration(
-        color: Color(0xFF2B2B2B),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(24),
-          bottomRight: Radius.circular(24),
+      padding: EdgeInsets.only(
+        top: 48.h,
+        left: AppSpacing.lg,
+        right: AppSpacing.lg,
+        bottom: AppSpacing.lg,
+      ),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            AppColors.dark,
+            AppColors.textPrimary,
+          ],
         ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(28.r),
+          bottomRight: Radius.circular(28.r),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.dark.withValues(alpha: 0.25),
+            blurRadius: 16.r,
+            offset: Offset(0, 6.h),
+          ),
+        ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -23,40 +45,50 @@ class HomeHeaderSection extends StatelessWidget {
           // Top Row: Logo/Greeting and Notification
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Notification Icon
               Stack(
                 clipBehavior: Clip.none,
                 children: [
                   Container(
-                    width: 40,
-                    height: 40,
+                    width: 44.w,
+                    height: 44.w,
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.12),
+                        width: 1,
+                      ),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.notifications_outlined,
                       color: Colors.white,
-                      size: 24,
+                      size: 22.sp,
                     ),
                   ),
-                  Positioned(
-                    top: -2,
-                    right: -2,
+                  PositionedDirectional(
+                    top: -2.h,
+                    end: -2.w,
                     child: Container(
-                      width: 18,
-                      height: 18,
-                      decoration: const BoxDecoration(
+                      width: 18.w,
+                      height: 18.w,
+                      decoration: BoxDecoration(
                         color: AppColors.error,
                         shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppColors.dark,
+                          width: 1.5,
+                        ),
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Text(
                           '3',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 10,
+                            fontSize: 10.sp,
+                            fontFamily: 'Cairo',
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -66,60 +98,64 @@ class HomeHeaderSection extends StatelessWidget {
                 ],
               ),
               // Greeting and Logo
-              Row(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                            'بطل',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontFamily: 'Cairo',
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Text(
-                        'مساء الخير، أحمد',
-                        style: TextStyle(
-                          color: Color(0xB2FFFFFF),
-                          fontSize: 14,
-                          fontFamily: 'Cairo',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
+                  Text(
+                    'home_header.hero_label'.tr(),
+                    style: TextStyle(
+                      color: AppColors.gold,
+                      fontSize: 19.sp,
+                      fontFamily: 'Cairo',
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    'home_header.greeting_evening'.tr(),
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.7),
+                      fontSize: 13.sp,
+                      fontFamily: 'Cairo',
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ],
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: AppSpacing.md),
           // Search Bar
           Container(
             width: double.infinity,
-            height: 48,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            height: 50.h,
+            padding: EdgeInsetsDirectional.symmetric(horizontal: AppSpacing.md),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(14.r),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.shadowLight,
+                  blurRadius: 12.r,
+                  offset: Offset(0, 4.h),
+                ),
+              ],
             ),
             child: Row(
               children: [
-                const Icon(Icons.search, color: Color(0xFF717182), size: 24),
-                const SizedBox(width: 12),
+                Icon(Icons.search, color: AppColors.gold, size: 22.sp),
+                SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
-                    'ابحث عن خدمات أو مصورين...',
+                    'home_header.search_placeholder'.tr(),
                     textAlign: TextAlign.right,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: const Color(0xFF717182).withValues(alpha: 0.8),
-                      fontSize: 14,
+                      color: AppColors.textSecondary,
+                      fontSize: 14.sp,
                       fontFamily: 'Cairo',
                       fontWeight: FontWeight.w400,
                     ),

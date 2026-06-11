@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/widgets/cards/request_card_base.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
@@ -35,27 +36,34 @@ class RequestCard extends StatelessWidget {
     return Container(
       width: 56.w,
       height: 56.h,
-      padding: EdgeInsets.all(8.w),
+      padding: EdgeInsets.all(4.w),
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xAAEFEFEF)),
-          borderRadius: BorderRadius.circular(8.r),
+          side: BorderSide(width: 1, color: AppColors.grey200),
+          borderRadius: BorderRadius.circular(12.r),
         ),
+        shadows: [
+          BoxShadow(
+            color: AppColors.gold.withValues(alpha: 0.06),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
-      child: Container(
+      child: DecoratedBox(
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(10.r),
           ),
-          color: const Color(0xFFF6F6F6),
+          color: AppColors.grey100,
         ),
         child: AppCachedNetworkImage(
           imageUrl: request.photographerImage,
           fit: BoxFit.cover,
           memCacheWidth: 256,
           memCacheHeight: 256,
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(10.r),
         ),
       ),
     );
@@ -64,11 +72,13 @@ class RequestCard extends StatelessWidget {
   Widget _buildServiceName(BuildContext context) {
     return Text(
       request.serviceName,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-        color: const Color(0xFF2B2B2B),
+        color: AppColors.textPrimary,
         fontSize: 16.sp,
-        fontWeight: FontWeight.w400,
-        height: 1.50,
+        fontWeight: FontWeight.w700,
+        height: 1.40,
       ),
     );
   }
@@ -76,8 +86,10 @@ class RequestCard extends StatelessWidget {
   Widget _buildPhotographerName(BuildContext context) {
     return Text(
       '${AppStrings.myRequestsPhotographerLabel.tr()}: ${request.photographerName}',
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        color: const Color(0xFF888888),
+        color: AppColors.textSecondary,
         fontSize: 14.sp,
         fontWeight: FontWeight.w400,
         height: 1.43,
@@ -86,73 +98,111 @@ class RequestCard extends StatelessWidget {
   }
 
   Widget _buildStatusBadge(BuildContext context) {
-    Color backgroundColor;
+    Color statusColor;
     String text;
 
     switch (request.status) {
       case RequestStatus.active:
-        backgroundColor = const Color(0xFF28A745);
+        statusColor = AppColors.success;
         text = request.isPaymentRequired
             ? AppStrings.myRequestsStatusApproved.tr()
             : AppStrings.myRequestsStatusActive.tr();
         break;
       case RequestStatus.underReview:
-        backgroundColor = const Color(0xFF17A2B8);
+        statusColor = AppColors.info;
         text = AppStrings.myRequestsStatusUnderReview.tr();
         break;
       case RequestStatus.completed:
-        backgroundColor = const Color(0xFF28A745);
+        statusColor = AppColors.success;
         text = AppStrings.myRequestsStatusCompleted.tr();
         break;
       case RequestStatus.cancelled:
-        backgroundColor = const Color(0xFFDC3545);
+        statusColor = AppColors.error;
         text = AppStrings.myRequestsStatusCancelled.tr();
         break;
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
       decoration: ShapeDecoration(
-        color: backgroundColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-      ),
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: Colors.white,
-          fontSize: 12.sp,
-          fontWeight: FontWeight.w500,
-          height: 1.33,
+        color: statusColor.withValues(alpha: 0.12),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            width: 1,
+            color: statusColor.withValues(alpha: 0.22),
+          ),
+          borderRadius: BorderRadius.circular(20.r),
         ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 7.r,
+            height: 7.r,
+            decoration: BoxDecoration(
+              color: statusColor,
+              shape: BoxShape.circle,
+            ),
+          ),
+          SizedBox(width: 6.w),
+          Flexible(
+            child: Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: statusColor,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w700,
+                height: 1.20,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildPrice(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.baseline,
-      textBaseline: TextBaseline.alphabetic,
-      children: [
-        Text(
-          NumberFormat('#,###').format(request.price),
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: AppColors.primary,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w400,
-            height: 1.50,
-          ),
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+      decoration: ShapeDecoration(
+        color: AppColors.gold.withValues(alpha: 0.10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
         ),
-        SizedBox(width: 4.w),
-        Text(
-          AppStrings.myRequestsCurrency.tr(),
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: const Color(0xFF888888),
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
-            height: 1.43,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
+        children: [
+          Flexible(
+            child: Text(
+              NumberFormat('#,###').format(request.price),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: AppColors.primary,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w800,
+                height: 1.20,
+              ),
+            ),
           ),
-        ),
-      ],
+          SizedBox(width: 4.w),
+          Text(
+            AppStrings.myRequestsCurrency.tr(),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppColors.primary.withValues(alpha: 0.75),
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w600,
+              height: 1.20,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -170,14 +220,29 @@ class RequestCard extends StatelessWidget {
 
     return Align(
       alignment: AlignmentDirectional.centerEnd,
-      child: Text(
-        timeAgo,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: const Color(0xFF888888),
-          fontSize: 12.sp,
-          fontWeight: FontWeight.w400,
-          height: 1.33,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.access_time_rounded,
+            size: 13.r,
+            color: AppColors.textSecondary,
+          ),
+          SizedBox(width: 4.w),
+          Flexible(
+            child: Text(
+              timeAgo,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.textSecondary,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+                height: 1.33,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -186,70 +251,119 @@ class RequestCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 8.h),
-        if (request.approvedDate != null)
-          Text(
-            '${AppStrings.myRequestsApprovedSince.tr()} 30 دقيقة', // Mocked time
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: const Color(0xFF888888),
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w400,
-              height: 1.33,
-            ),
+        if (request.approvedDate != null) ...[
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.verified_outlined,
+                size: 14.r,
+                color: AppColors.success,
+              ),
+              SizedBox(width: 6.w),
+              Flexible(
+                child: Text(
+                  '${AppStrings.myRequestsApprovedSince.tr()} 30 دقيقة', // Mocked time
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.textSecondary,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w500,
+                    height: 1.33,
+                  ),
+                ),
+              ),
+            ],
           ),
-        SizedBox(height: 8.h),
+          SizedBox(height: AppSpacing.sm),
+        ],
         Container(
           width: double.infinity,
           padding: EdgeInsets.all(13.w),
           decoration: ShapeDecoration(
-            color: const Color(0x19C8A44F),
+            color: AppColors.gold.withValues(alpha: 0.10),
             shape: RoundedRectangleBorder(
-              side: const BorderSide(width: 1, color: Color(0x33C8A34E)),
-              borderRadius: BorderRadius.circular(10.r),
+              side: BorderSide(
+                width: 1,
+                color: AppColors.gold.withValues(alpha: 0.22),
+              ),
+              borderRadius: BorderRadius.circular(12.r),
             ),
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Icon(
+                Icons.info_outline_rounded,
+                size: 18.r,
+                color: AppColors.gold,
+              ),
+              SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
                   AppStrings.myRequestsPaymentMessage.tr(),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: const Color(0xFF2B2B2B),
+                    color: AppColors.textPrimary,
                     fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                    height: 1.63,
+                    fontWeight: FontWeight.w500,
+                    height: 1.55,
                   ),
                 ),
               ),
             ],
           ),
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: AppSpacing.md),
         GestureDetector(
           onTap: onPayPressed,
           child: Container(
             width: double.infinity,
-            height: 44.h,
+            height: 48.h,
             decoration: ShapeDecoration(
-              color: AppColors.primary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.r),
+              gradient: LinearGradient(
+                begin: AlignmentDirectional.centerStart,
+                end: AlignmentDirectional.centerEnd,
+                colors: [
+                  AppColors.gold,
+                  AppColors.gold.withValues(alpha: 0.85),
+                ],
               ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              shadows: [
+                BoxShadow(
+                  color: AppColors.gold.withValues(alpha: 0.30),
+                  blurRadius: 12,
+                  offset: const Offset(0, 5),
+                ),
+              ],
             ),
             child: Center(
-              child: Text(
-                AppStrings.myRequestsPayNow.tr(),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.white,
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  height: 1.43,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.payments_outlined,
+                    size: 18.r,
+                    color: AppColors.textLight,
+                  ),
+                  SizedBox(width: AppSpacing.sm),
+                  Text(
+                    AppStrings.myRequestsPayNow.tr(),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textLight,
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w700,
+                      height: 1.20,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
-        SizedBox(height: 16.h),
       ],
     );
   }

@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
-version: 1.0.0+2
+version: 1.0.3+9
 
 environment:
   sdk: ^3.9.2
@@ -106,10 +106,17 @@ flutter:
 flutter_native_splash:
   color: "#FFFFFF"
   color_dark: "#FFFFFF"
-  image: assets/images/logocanon_splash_zoomed.png
-  image_dark: assets/images/logocanon_splash_zoomed.png
+  image: assets/images/event_length.png
+  image_dark: assets/images/event_length.png
   android_12:
-    image: assets/images/logocanon_splash_zoomed.png
-    image_dark: assets/images/logocanon_splash_zoomed.png
+    image: assets/images/event_length.png
+    image_dark: assets/images/event_length.png
     icon_background_color: "#FFFFFF"
     icon_background_color_dark: "#FFFFFF"
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/images/event_length.png"
+  background_color_ios: "#FFFFFF"

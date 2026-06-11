@@ -5,8 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
-import 'package:ehtirafy_app/core/constants/demo_images.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
+import 'package:ehtirafy_app/core/widgets/custom_empty_state.dart';
+import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_entity.dart';
 import '../cubits/all_freelancers_cubit.dart';
 import '../cubits/all_freelancers_state.dart';
@@ -18,26 +20,37 @@ class AllFreelancersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F9F9),
+      backgroundColor: AppColors.backgroundLight,
       body: CustomScrollView(
         slivers: [
-          // Beautiful App Bar
+          // Premium gradient app bar
           SliverAppBar(
-            expandedHeight: 160.h,
+            expandedHeight: 168.h,
             pinned: true,
-            backgroundColor: const Color(0xFF2B2B2B),
-            leading: GestureDetector(
-              onTap: () => context.pop(),
-              child: Container(
-                margin: EdgeInsets.all(8.w),
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
-                  color: Colors.white,
-                  size: 18.sp,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            backgroundColor: AppColors.dark,
+            leading: Padding(
+              padding: EdgeInsets.all(8.w),
+              child: GestureDetector(
+                onTap: () => context.pop(),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.12),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.18),
+                      width: 1,
+                    ),
+                  ),
+                  alignment: Alignment.center,
+                  child: Icon(
+                    isRtl
+                        ? Icons.arrow_forward_ios_rounded
+                        : Icons.arrow_back_ios_new_rounded,
+                    color: Colors.white,
+                    size: 18.sp,
+                  ),
                 ),
               ),
             ),
@@ -52,8 +65,8 @@ class AllFreelancersScreen extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          AppColors.gold.withValues(alpha: 0.3),
-                          const Color(0xFF2B2B2B),
+                          AppColors.gold.withValues(alpha: 0.35),
+                          AppColors.dark,
                         ],
                       ),
                     ),
@@ -64,10 +77,10 @@ class AllFreelancersScreen extends StatelessWidget {
                     right: -50.w,
                     child: Container(
                       width: 180.w,
-                      height: 180.h,
+                      height: 180.w,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.gold.withValues(alpha: 0.1),
+                        color: AppColors.gold.withValues(alpha: 0.12),
                       ),
                     ),
                   ),
@@ -76,7 +89,7 @@ class AllFreelancersScreen extends StatelessWidget {
                     left: -30.w,
                     child: Container(
                       width: 100.w,
-                      height: 100.h,
+                      height: 100.w,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.white.withValues(alpha: 0.05),
@@ -84,18 +97,23 @@ class AllFreelancersScreen extends StatelessWidget {
                     ),
                   ),
                   // Title
-                  Positioned(
-                    bottom: 24.h,
-                    left: 20.w,
-                    right: 20.w,
+                  PositionedDirectional(
+                    bottom: AppSpacing.lg,
+                    start: 20.w,
+                    end: 20.w,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
                           padding: EdgeInsets.all(10.w),
                           decoration: BoxDecoration(
-                            color: AppColors.gold.withValues(alpha: 0.2),
+                            color: AppColors.gold.withValues(alpha: 0.22),
                             shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppColors.gold.withValues(alpha: 0.4),
+                              width: 1,
+                            ),
                           ),
                           child: Icon(
                             Icons.camera_alt_rounded,
@@ -103,9 +121,11 @@ class AllFreelancersScreen extends StatelessWidget {
                             size: 24.sp,
                           ),
                         ),
-                        SizedBox(height: 12.h),
+                        SizedBox(height: AppSpacing.sm),
                         Text(
                           'أبرز المصورين',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 22.sp,
@@ -113,11 +133,13 @@ class AllFreelancersScreen extends StatelessWidget {
                             fontFamily: 'Cairo',
                           ),
                         ),
-                        SizedBox(height: 4.h),
+                        SizedBox(height: AppSpacing.xs),
                         Text(
                           'اختر من بين أفضل المصورين المحترفين',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.7),
+                            color: Colors.white.withValues(alpha: 0.72),
                             fontSize: 13.sp,
                             fontFamily: 'Cairo',
                           ),
@@ -134,96 +156,42 @@ class AllFreelancersScreen extends StatelessWidget {
           BlocBuilder<AllFreelancersCubit, AllFreelancersState>(
             builder: (context, state) {
               if (state is AllFreelancersLoading) {
-                return const SliverFillRemaining(
+                return SliverFillRemaining(
+                  hasScrollBody: false,
                   child: Center(
-                    child: CircularProgressIndicator(color: AppColors.gold),
+                    child: SizedBox(
+                      width: 38.r,
+                      height: 38.r,
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 3,
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(AppColors.gold),
+                      ),
+                    ),
                   ),
                 );
               }
 
               if (state is AllFreelancersError) {
                 return SliverFillRemaining(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          size: 64.sp,
-                          color: Colors.red.shade300,
-                        ),
-                        SizedBox(height: 16.h),
-                        Text(
-                          'حدث خطأ',
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Cairo',
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        Text(
-                          state.message,
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            color: AppColors.textSecondary,
-                            fontFamily: 'Cairo',
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(height: 24.h),
-                        ElevatedButton(
-                          onPressed: () => context
-                              .read<AllFreelancersCubit>()
-                              .loadAllFreelancers(),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.gold,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 32.w,
-                              vertical: 12.h,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                          ),
-                          child: Text(
-                            'إعادة المحاولة',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14.sp,
-                              fontFamily: 'Cairo',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  hasScrollBody: false,
+                  child: ErrorStateWidget(
+                    message: state.message,
+                    retryText: 'إعادة المحاولة',
+                    onRetry: () => context
+                        .read<AllFreelancersCubit>()
+                        .loadAllFreelancers(),
                   ),
                 );
               }
 
               if (state is AllFreelancersLoaded) {
                 if (state.freelancers.isEmpty) {
-                  return SliverFillRemaining(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.people_outline,
-                            size: 64.sp,
-                            color: AppColors.textSecondary,
-                          ),
-                          SizedBox(height: 16.h),
-                          Text(
-                            'لا يوجد مصورين',
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Cairo',
-                            ),
-                          ),
-                        ],
-                      ),
+                  return const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: CustomEmptyState(
+                      title: 'لا يوجد مصورين',
+                      icon: Icons.people_outline,
                     ),
                   );
                 }
@@ -233,7 +201,7 @@ class AllFreelancersScreen extends StatelessWidget {
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
                       return Padding(
-                        padding: EdgeInsets.only(bottom: 16.h),
+                        padding: EdgeInsets.only(bottom: AppSpacing.md),
                         child: _FreelancerCard(
                           freelancer: state.freelancers[index],
                           index: index,
@@ -261,18 +229,24 @@ class _FreelancerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = DemoImages.items[index % DemoImages.items.length];
+    final imageUrl = freelancer.imageUrl;
     return GestureDetector(
       onTap: () => context.push('/freelancer/${freelancer.id}'),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(18.r),
+          border: Border.all(color: AppColors.grey200, width: 1),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 15,
-              offset: const Offset(0, 5),
+              color: AppColors.gold.withValues(alpha: 0.07),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
+            ),
+            const BoxShadow(
+              color: AppColors.shadowLight,
+              blurRadius: 10,
+              offset: Offset(0, 4),
             ),
           ],
         ),
@@ -282,30 +256,37 @@ class _FreelancerCard extends StatelessWidget {
             Container(
               height: 100.h,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(18.r)),
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    AppColors.gold.withValues(alpha: 0.2),
-                    const Color(0xFF2B2B2B).withValues(alpha: 0.8),
+                    AppColors.gold.withValues(alpha: 0.25),
+                    AppColors.dark.withValues(alpha: 0.85),
                   ],
                 ),
               ),
               child: Stack(
                 children: [
                   // Rating badge
-                  Positioned(
+                  PositionedDirectional(
                     top: 12.h,
-                    right: 12.w,
+                    end: 12.w,
                     child: Container(
                       padding: EdgeInsets.symmetric(
                         horizontal: 10.w,
-                        vertical: 4.h,
+                        vertical: 5.h,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20.r),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: AppColors.shadowLight,
+                            blurRadius: 6,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -315,11 +296,11 @@ class _FreelancerCard extends StatelessWidget {
                             color: AppColors.gold,
                             size: 14.sp,
                           ),
-                          SizedBox(width: 4.w),
+                          SizedBox(width: AppSpacing.xs),
                           Text(
                             freelancer.rating.toString(),
                             style: TextStyle(
-                              color: const Color(0xFF2B2B2B),
+                              color: AppColors.textPrimary,
                               fontSize: 12.sp,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'Cairo',
@@ -330,14 +311,14 @@ class _FreelancerCard extends StatelessWidget {
                     ),
                   ),
                   // Avatar
-                  Positioned(
+                  PositionedDirectional(
                     bottom: -35.h,
-                    left: 20.w,
+                    start: 20.w,
                     child: Container(
                       width: 70.w,
                       height: 70.w,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14.r),
+                        borderRadius: BorderRadius.circular(16.r),
                         border: Border.all(color: Colors.white, width: 3),
                         color: AppColors.grey200,
                         boxShadow: [
@@ -349,7 +330,7 @@ class _FreelancerCard extends StatelessWidget {
                         ],
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(11.r),
+                        borderRadius: BorderRadius.circular(13.r),
                         child: AppCachedNetworkImage(
                           imageUrl: imageUrl,
                           fit: BoxFit.cover,
@@ -369,12 +350,12 @@ class _FreelancerCard extends StatelessWidget {
             ),
             // Content
             Padding(
-              padding: EdgeInsets.fromLTRB(20.w, 45.h, 20.w, 16.h),
+              padding: EdgeInsets.fromLTRB(20.w, 45.h, 20.w, AppSpacing.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Column(
@@ -386,25 +367,28 @@ class _FreelancerCard extends StatelessWidget {
                                   child: Text(
                                     freelancer.name,
                                     style: TextStyle(
-                                      color: const Color(0xFF2B2B2B),
+                                      color: AppColors.textPrimary,
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: 'Cairo',
                                     ),
+                                    maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                                 SizedBox(width: 6.w),
                                 Icon(
                                   Icons.verified,
-                                  color: Colors.blue,
+                                  color: AppColors.info,
                                   size: 16.sp,
                                 ),
                               ],
                             ),
-                            SizedBox(height: 4.h),
+                            SizedBox(height: AppSpacing.xs),
                             Text(
                               freelancer.category,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: AppColors.textSecondary,
                                 fontSize: 13.sp,
@@ -414,6 +398,7 @@ class _FreelancerCard extends StatelessWidget {
                           ],
                         ),
                       ),
+                      SizedBox(width: AppSpacing.sm),
                       // Price badge
                       Container(
                         padding: EdgeInsets.symmetric(
@@ -423,6 +408,10 @@ class _FreelancerCard extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: AppColors.gold.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(20.r),
+                          border: Border.all(
+                            color: AppColors.gold.withValues(alpha: 0.25),
+                            width: 1,
+                          ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -436,7 +425,7 @@ class _FreelancerCard extends StatelessWidget {
                                 fontFamily: 'Cairo',
                               ),
                             ),
-                            SizedBox(width: 4.w),
+                            SizedBox(width: AppSpacing.xs),
                             Text(
                               'ر.س',
                               style: TextStyle(
@@ -450,22 +439,26 @@ class _FreelancerCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 12.h),
+                  SizedBox(height: AppSpacing.sm),
                   // Info row
                   Row(
                     children: [
-                      _buildInfoChip(
-                        Icons.location_on_outlined,
-                        freelancer.location,
+                      Flexible(
+                        child: _buildInfoChip(
+                          Icons.location_on_outlined,
+                          freelancer.location,
+                        ),
                       ),
-                      SizedBox(width: 12.w),
-                      _buildInfoChip(
-                        Icons.star_outline,
-                        '${freelancer.reviewsCount} تقييم',
+                      SizedBox(width: AppSpacing.sm),
+                      Flexible(
+                        child: _buildInfoChip(
+                          Icons.star_outline,
+                          '${freelancer.reviewsCount} تقييم',
+                        ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: AppSpacing.md),
                   // Action button
                   SizedBox(
                     width: double.infinity,
@@ -474,9 +467,10 @@ class _FreelancerCard extends StatelessWidget {
                           context.push('/freelancer/${freelancer.id}'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.gold,
-                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 13.h),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.r),
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                         elevation: 0,
                       ),
@@ -502,22 +496,27 @@ class _FreelancerCard extends StatelessWidget {
 
   Widget _buildInfoChip(IconData icon, String text) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
+        color: AppColors.grey100,
         borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: AppColors.grey200, width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 14.sp, color: AppColors.textSecondary),
-          SizedBox(width: 4.w),
-          Text(
-            text,
-            style: TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 12.sp,
-              fontFamily: 'Cairo',
+          SizedBox(width: AppSpacing.xs),
+          Flexible(
+            child: Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 12.sp,
+                fontFamily: 'Cairo',
+              ),
             ),
           ),
         ],

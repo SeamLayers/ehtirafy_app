@@ -16,8 +16,13 @@ class PhotographerModel extends PhotographerEntity {
 
   factory PhotographerModel.fromJson(Map<String, dynamic> json) {
     // Parse nested user object
-    final user = json['user'] as Map<String, dynamic>?;
-    final advertisement = json['advertisement'] as Map<String, dynamic>?;
+    final userRaw = json['user'];
+    final user =
+        userRaw is Map ? Map<String, dynamic>.from(userRaw) : null;
+    final advertisementRaw = json['advertisement'];
+    final advertisement = advertisementRaw is Map
+        ? Map<String, dynamic>.from(advertisementRaw)
+        : null;
 
     // Get user ID (Freelancer ID)
     final userId =
@@ -46,22 +51,10 @@ class PhotographerModel extends PhotographerEntity {
     }
 
     // Get rating from rate field
-    final ratingValue = json['rate'];
-    double rating = 0.0;
-    if (ratingValue is num) {
-      rating = ratingValue.toDouble();
-    } else if (ratingValue is String) {
-      rating = double.tryParse(ratingValue) ?? 0.0;
-    }
+    final double rating = _asDouble(json['rate']);
 
     // Get price from advertisement or root json
-    int price = 0;
-    final priceValue = advertisement?['price'] ?? json['price'];
-    if (priceValue is num) {
-      price = priceValue.toInt();
-    } else if (priceValue is String) {
-      price = double.tryParse(priceValue)?.toInt() ?? 0;
-    }
+    final int price = _asInt(advertisement?['price'] ?? json['price']);
 
     // Location is not in the API, use empty or country_code from user
     final location = user?['country_code']?.toString() ?? '';
@@ -137,4 +130,18 @@ class PhotographerModel extends PhotographerEntity {
       'imageUrl': imageUrl,
     };
   }
+}
+
+/// Tolerantly parses a dynamic API value into an [int], returning 0 on failure.
+int _asInt(dynamic v) {
+  if (v is num) return v.toInt();
+  final s = v?.toString();
+  if (s == null) return 0;
+  return int.tryParse(s) ?? double.tryParse(s)?.toInt() ?? 0;
+}
+
+/// Tolerantly parses a dynamic API value into a [double], returning 0.0 on failure.
+double _asDouble(dynamic v) {
+  if (v is num) return v.toDouble();
+  return double.tryParse(v?.toString() ?? '') ?? 0.0;
 }

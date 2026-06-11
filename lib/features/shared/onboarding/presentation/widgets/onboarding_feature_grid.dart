@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/widgets/feature_card.dart';
 
@@ -17,8 +18,8 @@ class OnboardingFeatureGrid extends StatelessWidget {
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 16.h,
-      crossAxisSpacing: 16.w,
+      mainAxisSpacing: AppSpacing.md,
+      crossAxisSpacing: AppSpacing.md,
       childAspectRatio: 0.92,
       children: [
         FeatureCard(
@@ -49,14 +50,26 @@ class OnboardingFeatureGrid extends StatelessWidget {
   Widget _svgIcon(String path, Color color) => Container(
     decoration: BoxDecoration(
       gradient: LinearGradient(
-        begin: const Alignment(0, 0),
-        end: const Alignment(1, 1),
+        begin: AlignmentDirectional.topStart,
+        end: AlignmentDirectional.bottomEnd,
         colors: [
-          AppColors.gold.withValues(alpha: 0.2),
-          AppColors.gold.withValues(alpha: 0.1),
+          AppColors.gold.withValues(alpha: 0.22),
+          AppColors.gold.withValues(alpha: 0.08),
         ],
       ),
       borderRadius: BorderRadius.circular(16.r),
+      border: Border.all(
+        color: AppColors.gold.withValues(alpha: 0.18),
+        width: 1,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: AppColors.gold.withValues(alpha: 0.12),
+          blurRadius: 10.r,
+          offset: Offset(0, 4.h),
+          spreadRadius: -2.r,
+        ),
+      ],
     ),
     width: 56.w,
     height: 56.w,

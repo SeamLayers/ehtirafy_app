@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 
 class ProfileTabBar extends StatelessWidget {
@@ -12,22 +13,38 @@ class ProfileTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 24.w),
-      padding: EdgeInsets.all(4.w),
+      margin: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      padding: EdgeInsets.all(5.w),
       decoration: BoxDecoration(
         color: AppColors.grey100,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: AppColors.grey200),
       ),
       child: TabBar(
         controller: tabController,
+        dividerColor: Colors.transparent,
+        splashBorderRadius: BorderRadius.circular(10.r),
+        overlayColor: WidgetStateProperty.all(
+          AppColors.gold.withValues(alpha: 0.06),
+        ),
+        indicatorSize: TabBarIndicatorSize.tab,
+        indicatorPadding: EdgeInsets.zero,
         indicator: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(10.r),
+          border: Border.all(
+            color: AppColors.gold.withValues(alpha: 0.25),
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 4,
+              color: AppColors.gold.withValues(alpha: 0.12),
+              blurRadius: 8,
               offset: const Offset(0, 2),
+            ),
+            BoxShadow(
+              color: AppColors.shadowLight,
+              blurRadius: 4,
+              offset: const Offset(0, 1),
             ),
           ],
         ),
@@ -40,7 +57,7 @@ class ProfileTabBar extends StatelessWidget {
         ),
         unselectedLabelStyle: TextStyle(
           fontSize: 14.sp,
-          fontWeight: FontWeight.normal,
+          fontWeight: FontWeight.w500,
           fontFamily: 'Cairo',
         ),
         tabs: [

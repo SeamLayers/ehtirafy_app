@@ -9,6 +9,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ehtirafy_app/features/shared/reviews/presentation/cubits/reviews_cubit.dart';
 import 'package:ehtirafy_app/features/shared/reviews/presentation/cubits/reviews_state.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
+import 'package:ehtirafy_app/core/session/auth_guard.dart';
 import 'package:ehtirafy_app/core/di/service_locator.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/features/client/freelancer/presentation/cubits/freelancer_cubit.dart';
@@ -90,7 +92,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
             }
           },
           child: Scaffold(
-            backgroundColor: const Color(0xFFFAFAFA),
+            backgroundColor: AppColors.backgroundLight,
             body: BlocBuilder<FreelancerCubit, FreelancerState>(
               builder: (context, state) {
                 if (state is FreelancerLoading) {
@@ -132,7 +134,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
             SliverAppBar(
               pinned: true,
               expandedHeight: 220.h,
-              backgroundColor: const Color(0xFF2B2B2B),
+              backgroundColor: AppColors.dark,
               elevation: 0,
               scrolledUnderElevation: 0,
               leading: _buildBackButton(),
@@ -151,9 +153,26 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
               ),
               centerTitle: true,
               actions: [
-                IconButton(
-                  icon: const Icon(Icons.share_outlined, color: Colors.white),
-                  onPressed: () => AppShareBottomSheet.show(context),
+                GestureDetector(
+                  onTap: () => AppShareBottomSheet.show(context),
+                  child: Container(
+                    margin: EdgeInsets.all(8.w),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.35),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.18),
+                        width: 1,
+                      ),
+                    ),
+                    padding: EdgeInsets.all(8.w),
+                    child: Icon(
+                      Icons.share_outlined,
+                      color: Colors.white,
+                      size: 18.sp,
+                    ),
+                  ),
                 ),
               ],
               flexibleSpace: FlexibleSpaceBar(
@@ -215,14 +234,21 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
       onTap: () => context.pop(),
       child: Container(
         margin: EdgeInsets.all(8.w),
+        alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.3),
+          color: Colors.black.withValues(alpha: 0.35),
           shape: BoxShape.circle,
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.18),
+            width: 1,
+          ),
         ),
         child: Icon(
-          isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
+          isRtl
+              ? Icons.arrow_forward_ios_rounded
+              : Icons.arrow_back_ios_new_rounded,
           color: Colors.white,
-          size: 18,
+          size: 18.sp,
         ),
       ),
     );
@@ -376,7 +402,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                     Text(
                       freelancer.rating.toString(),
                       style: TextStyle(
-                        color: const Color(0xFF2B2B2B),
+                        color: AppColors.textPrimary,
                         fontSize: 13.sp,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Cairo',
@@ -398,9 +424,10 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: AppColors.grey200, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
+            color: AppColors.gold.withValues(alpha: 0.06),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -420,22 +447,22 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
               _buildDivider(),
               _buildStatItem(
                 Icons.work_outline_rounded,
-                const Color(0xFF17A2B8),
+                AppColors.info,
                 freelancer.projectsCount.toString(),
                 AppStrings.freelancerProfileProjects.tr(),
               ),
               _buildDivider(),
               _buildStatItem(
                 Icons.access_time_rounded,
-                const Color(0xFF28A745),
+                AppColors.success,
                 freelancer.responseTime,
                 AppStrings.freelancerProfileResponse.tr(),
               ),
             ],
           ),
-          SizedBox(height: 16.h),
-          const Divider(color: Color(0xFFF0F0F0), height: 1),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
+          const Divider(color: AppColors.grey200, height: 1),
+          SizedBox(height: AppSpacing.md),
           Row(
             children: [
               Icon(
@@ -447,6 +474,8 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
               Expanded(
                 child: Text(
                   freelancer.location,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 13.sp,
                     color: AppColors.textSecondary,
@@ -483,16 +512,19 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
               ),
             ],
           ),
-          SizedBox(height: 12.h),
-          Text(
-            freelancer.bio,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 13.sp,
-              color: AppColors.textSecondary,
-              height: 1.6,
-              fontFamily: 'Cairo',
+          SizedBox(height: AppSpacing.sm),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: Text(
+              freelancer.bio,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 13.sp,
+                color: AppColors.textSecondary,
+                height: 1.6,
+                fontFamily: 'Cairo',
+              ),
             ),
           ),
         ],
@@ -519,10 +551,12 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
         SizedBox(height: 8.h),
         Text(
           value,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.bold,
-            color: const Color(0xFF2B2B2B),
+            color: AppColors.textPrimary,
             fontFamily: 'Cairo',
           ),
         ),
@@ -541,7 +575,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
   }
 
   Widget _buildDivider() {
-    return Container(height: 50.h, width: 1, color: const Color(0xFFF0F0F0));
+    return Container(height: 50.h, width: 1, color: AppColors.grey200);
   }
 
   Widget _buildTabBar() {
@@ -550,18 +584,19 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
+        border: Border.all(color: AppColors.grey200, width: 1),
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: AppColors.shadowLight,
             blurRadius: 10,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
       child: TabBar(
         controller: _tabController,
         labelColor: AppColors.gold,
-        unselectedLabelColor: const Color(0xFF888888),
+        unselectedLabelColor: AppColors.textSecondary,
         labelStyle: TextStyle(
           fontSize: 14.sp,
           fontWeight: FontWeight.bold,
@@ -701,12 +736,17 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                 ),
                 SizedBox(height: 20.h),
                 if (reviews.isEmpty)
-                  Center(
-                    child: Text(
-                      AppStrings.noDataFound.tr(),
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 14.sp,
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
+                    child: Center(
+                      child: Text(
+                        AppStrings.noDataFound.tr(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 14.sp,
+                          fontFamily: 'Cairo',
+                        ),
                       ),
                     ),
                   ),
@@ -725,22 +765,32 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                 SizedBox(height: 20.h),
                 SizedBox(
                   width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: () =>
-                        _showAddReviewDialog(context, freelancer.id),
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      // Reviewing is account-based: require login for guests.
+                      if (!AuthGuard.ensureAuth(context)) return;
+                      _showAddReviewDialog(context, freelancer.id);
+                    },
+                    icon: Icon(
+                      Icons.rate_review_outlined,
+                      color: AppColors.primary,
+                      size: 18.sp,
+                    ),
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: AppColors.primary),
+                      side: const BorderSide(color: AppColors.primary, width: 1.4),
+                      backgroundColor: AppColors.gold.withValues(alpha: 0.06),
                       padding: EdgeInsets.symmetric(vertical: 12.h),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                     ),
-                    child: Text(
+                    label: Text(
                       'أضف تقييم', // localized ideally
                       style: TextStyle(
                         color: AppColors.primary,
                         fontSize: 14.sp,
                         fontWeight: FontWeight.bold,
+                        fontFamily: 'Cairo',
                       ),
                     ),
                   ),
@@ -765,7 +815,20 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
         child: StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: const Text('أضف تقييمك'),
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.r),
+              ),
+              title: Text(
+                'أضف تقييمك',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Cairo',
+                  color: AppColors.textPrimary,
+                ),
+              ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -775,10 +838,10 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                       return IconButton(
                         icon: Icon(
                           index < currentRating
-                              ? Icons.star
-                              : Icons.star_border,
-                          color: AppColors.primary,
-                          size: 30.sp,
+                              ? Icons.star_rounded
+                              : Icons.star_border_rounded,
+                          color: AppColors.gold,
+                          size: 32.sp,
                         ),
                         onPressed: () {
                           setState(() {
@@ -788,13 +851,29 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                       );
                     }),
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: AppSpacing.md),
                   TextField(
                     controller: commentController,
+                    style: TextStyle(fontFamily: 'Cairo', fontSize: 14.sp),
                     decoration: InputDecoration(
                       hintText: 'اكتب تعليقك هنا...',
+                      hintStyle: TextStyle(
+                        fontFamily: 'Cairo',
+                        color: AppColors.textSecondary,
+                        fontSize: 13.sp,
+                      ),
+                      filled: true,
+                      fillColor: AppColors.backgroundLight,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: const BorderSide(color: AppColors.grey200),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: const BorderSide(color: AppColors.gold),
+                      ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.r),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                     ),
                     maxLines: 3,
@@ -877,9 +956,9 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 15,
-            offset: const Offset(0, -3),
+            color: Colors.black.withValues(alpha: 0.10),
+            blurRadius: 18,
+            offset: const Offset(0, -4),
           ),
         ],
       ),
@@ -887,8 +966,26 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
         top: false,
         child: BlocBuilder<FreelancerCubit, FreelancerState>(
           builder: (context, state) {
-            return ElevatedButton(
-              onPressed: () {
+            return Container(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFFD4B466), AppColors.gold],
+                ),
+                borderRadius: BorderRadius.circular(12.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.gold.withValues(alpha: 0.30),
+                    blurRadius: 14,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: ElevatedButton(
+                onPressed: () {
+                // Booking is account-based: require login for guests.
+                if (!AuthGuard.ensureAuth(context)) return;
                 if (state is FreelancerLoaded) {
                   final services = state.freelancer.services;
                   if (services.isEmpty) {
@@ -918,33 +1015,35 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                   }
                 }
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.gold,
-                padding: EdgeInsets.symmetric(vertical: 14.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  padding: EdgeInsets.symmetric(vertical: 14.h),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  elevation: 0,
                 ),
-                elevation: 0,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.calendar_today_outlined,
-                    color: Colors.white,
-                    size: 16.sp,
-                  ),
-                  SizedBox(width: 8.w),
-                  Text(
-                    AppStrings.freelancerProfileOrderNow.tr(),
-                    style: TextStyle(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.calendar_today_outlined,
                       color: Colors.white,
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Cairo',
+                      size: 16.sp,
                     ),
-                  ),
-                ],
+                    SizedBox(width: AppSpacing.sm),
+                    Text(
+                      AppStrings.freelancerProfileOrderNow.tr(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Cairo',
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           },
@@ -971,16 +1070,28 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Center(
+              child: Container(
+                width: 44.w,
+                height: 4.h,
+                decoration: BoxDecoration(
+                  color: AppColors.grey300,
+                  borderRadius: BorderRadius.circular(4.r),
+                ),
+              ),
+            ),
+            SizedBox(height: AppSpacing.md),
             Text(
               'اختر الخدمة',
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Cairo',
+                color: AppColors.textPrimary,
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.md),
             ...freelancer.services.map(
               (service) => GestureDetector(
                 onTap: () {
@@ -1000,9 +1111,9 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                   margin: EdgeInsets.only(bottom: 12.h),
                   padding: EdgeInsets.all(16.w),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFAFAFA),
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: const Color(0xFFE5E5E5)),
+                    color: AppColors.backgroundLight,
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(color: AppColors.grey200),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1013,10 +1124,13 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                           children: [
                             Text(
                               service.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Cairo',
+                                color: AppColors.textPrimary,
                               ),
                             ),
                             if (service.description.isNotEmpty) ...[
@@ -1028,19 +1142,31 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                                 style: TextStyle(
                                   fontSize: 12.sp,
                                   color: AppColors.textSecondary,
+                                  fontFamily: 'Cairo',
                                 ),
                               ),
                             ],
                           ],
                         ),
                       ),
-                      Text(
-                        '${service.price} ر.س',
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.gold,
-                          fontFamily: 'Cairo',
+                      SizedBox(width: AppSpacing.sm),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10.w,
+                          vertical: 6.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.gold.withValues(alpha: 0.10),
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Text(
+                          '${service.price} ر.س',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.gold,
+                            fontFamily: 'Cairo',
+                          ),
                         ),
                       ),
                     ],

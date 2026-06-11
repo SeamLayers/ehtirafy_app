@@ -22,24 +22,24 @@ class UserProfileModel extends UserProfileEntity {
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
     return UserProfileModel(
-      id: json['id'].toString(), // Convert int to String
-      name: json['name'] ?? '',
-      email: json['email'] ?? '',
-      avatarUrl: json['avatar_url'], // Assuming key, or null
-      phone: json['phone'] ?? '',
+      id: json['id']?.toString() ?? '', // Convert int to String
+      name: json['name']?.toString() ?? '',
+      email: json['email']?.toString() ?? '',
+      avatarUrl: json['avatar_url']?.toString(), // Assuming key, or null
+      phone: json['phone']?.toString() ?? '',
       // Map user_type to UserRole or use default
-      currentRole: _mapUserTypeToRole(json['user_type']),
-      sex: json['sex'],
-      materialStatus: json['material_status'],
-      countryCode: json['country_code'],
-      userType: json['user_type'],
-      ipAddress: json['ip_address'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+      currentRole: _mapUserTypeToRole(json['user_type']?.toString()),
+      sex: json['sex']?.toString(),
+      materialStatus: json['material_status']?.toString(),
+      countryCode: json['country_code']?.toString(),
+      userType: json['user_type']?.toString(),
+      ipAddress: json['ip_address']?.toString(),
+      createdAt: json['created_at']?.toString(),
+      updatedAt: json['updated_at']?.toString(),
       // Keep existing logic for these if they exist
-      rating: (json['rating'] as num?)?.toDouble(),
-      reviewCount: json['reviewCount'],
-      bio: json['bio'],
+      rating: _asDoubleOrNull(json['rating']),
+      reviewCount: _asIntOrNull(json['reviewCount']),
+      bio: json['bio']?.toString(),
     );
   }
 
@@ -109,4 +109,21 @@ class UserProfileModel extends UserProfileEntity {
     }
     return UserRole.client; // Default to client if 'user' or null
   }
+}
+
+/// Tolerantly parses a dynamic JSON value into a nullable double.
+/// Accepts num, numeric strings, and null without throwing.
+double? _asDoubleOrNull(dynamic v) {
+  if (v == null) return null;
+  if (v is num) return v.toDouble();
+  return double.tryParse(v.toString());
+}
+
+/// Tolerantly parses a dynamic JSON value into a nullable int.
+/// Accepts num (including double like 5.0), numeric strings, and null
+/// without throwing.
+int? _asIntOrNull(dynamic v) {
+  if (v == null) return null;
+  if (v is num) return v.toInt();
+  return int.tryParse(v.toString());
 }

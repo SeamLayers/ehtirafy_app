@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/entities/contract_details_entity.dart';
@@ -13,35 +14,36 @@ class ContractUnderReviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isArabic =
-        context.locale.languageCode.toLowerCase().startsWith('ar');
-
-    return Column(
-      children: [
-        Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(16.w),
-          decoration: ShapeDecoration(
-            color: const Color(0x0C28A745),
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(width: 1, color: AppColors.success),
-              borderRadius: BorderRadius.circular(14.r),
-            ),
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(AppSpacing.md),
+      decoration: ShapeDecoration(
+        color: AppColors.success.withValues(alpha: 0.05),
+        shadows: [
+          BoxShadow(
+            color: AppColors.success.withValues(alpha: 0.08),
+            blurRadius: 18.r,
+            offset: Offset(0, 6.h),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildStatusHeader(context),
-              SizedBox(height: 16.h),
-              _buildServiceInfo(),
-              SizedBox(height: 16.h),
-              _buildDetailsCard(context),
-            ],
+        ],
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            width: 1,
+            color: AppColors.success.withValues(alpha: 0.35),
           ),
+          borderRadius: BorderRadius.circular(18.r),
         ),
-        SizedBox(height: 16.h),
-        _buildNextStepsCard(isArabic: isArabic),
-      ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildStatusHeader(context),
+          SizedBox(height: AppSpacing.md),
+          _buildServiceInfo(),
+          SizedBox(height: AppSpacing.md),
+          _buildDetailsCard(context),
+        ],
+      ),
     );
   }
 
@@ -54,25 +56,45 @@ class ContractUnderReviewCard extends StatelessWidget {
         Text(
           isArabic ? 'الحالة الحالية' : 'Current Status',
           style: TextStyle(
-            color: AppColors.grey500,
+            fontFamily: 'Cairo',
+            color: AppColors.textSecondary,
             fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        SizedBox(width: 8.w),
+        SizedBox(width: AppSpacing.sm),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
           decoration: BoxDecoration(
-            color: const Color(0xFF17A2B8),
-            borderRadius: BorderRadius.circular(8.r),
+            color: AppColors.info,
+            borderRadius: BorderRadius.circular(20.r),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.info.withValues(alpha: 0.25),
+                blurRadius: 8.r,
+                offset: Offset(0, 2.h),
+              ),
+            ],
           ),
-          child: Text(
-            'Initiate',
-            style: TextStyle(
-              color: AppColors.textLight,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.flag_outlined,
+                color: AppColors.textLight,
+                size: 12.sp,
+              ),
+              SizedBox(width: 4.w),
+              Text(
+                'Initiate',
+                style: TextStyle(
+                  fontFamily: 'Cairo',
+                  color: AppColors.textLight,
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -89,36 +111,51 @@ class ContractUnderReviewCard extends StatelessWidget {
             children: [
               Text(
                 contract.serviceTitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
+                  fontFamily: 'Cairo',
                   color: AppColors.textPrimary,
                   fontSize: 16.sp,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w700,
+                  height: 1.3,
                 ),
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: AppSpacing.xs),
               Text(
                 AppStrings.contractPhotographerName.tr(
                   args: [contract.photographerName],
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  color: AppColors.grey500,
+                  fontFamily: 'Cairo',
+                  color: AppColors.textSecondary,
                   fontSize: 14.sp,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
           ),
         ),
+        SizedBox(width: AppSpacing.sm),
         Container(
           width: 56.w,
           height: 56.w,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14.r),
+            borderRadius: BorderRadius.circular(16.r),
             gradient: const LinearGradient(
               begin: Alignment(0.50, 0.00),
               end: Alignment(0.50, 1.00),
               colors: [Color(0xFFC8A44F), Color(0xFFB8944F)],
             ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withValues(alpha: 0.30),
+                blurRadius: 12.r,
+                offset: Offset(0, 4.h),
+              ),
+            ],
           ),
           child: Center(
             child: Icon(Icons.camera_alt, color: Colors.white, size: 28.sp),
@@ -133,10 +170,11 @@ class ContractUnderReviewCard extends StatelessWidget {
         context.locale.languageCode.toLowerCase().startsWith('ar') ? 'ar' : 'en';
 
     return Container(
-      padding: EdgeInsets.all(12.w),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10.r),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: AppColors.grey200),
       ),
       child: Column(
         children: [
@@ -146,33 +184,42 @@ class ContractUnderReviewCard extends StatelessWidget {
               contract.date,
             ),
           ),
-          SizedBox(height: 8.h),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.h),
+            child: Divider(height: 1.h, color: AppColors.grey200),
+          ),
           _buildDetailRow(
             AppStrings.contractLocationLabel.tr(),
             contract.location,
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: AppSpacing.sm),
           Container(
-            padding: EdgeInsets.symmetric(vertical: 4.h),
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
             decoration: BoxDecoration(
-              border: Border.all(color: AppColors.grey200),
-              borderRadius: BorderRadius.circular(4.r),
+              color: AppColors.gold.withValues(alpha: 0.07),
+              border: Border.all(color: AppColors.gold.withValues(alpha: 0.30)),
+              borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w),
-                  child: Text(
-                    AppStrings.contractBudgetLabel.tr(),
-                    style: TextStyle(color: AppColors.grey500, fontSize: 14.sp),
+                Text(
+                  AppStrings.contractBudgetLabel.tr(),
+                  style: TextStyle(
+                    fontFamily: 'Cairo',
+                    color: AppColors.textSecondary,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w),
+                Flexible(
                   child: Text(
                     '${contract.budget.toStringAsFixed(0)} ${AppStrings.bookingCurrency.tr()}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.end,
                     style: TextStyle(
+                      fontFamily: 'Cairo',
                       color: AppColors.primary,
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
@@ -189,96 +236,36 @@ class ContractUnderReviewCard extends StatelessWidget {
 
   Widget _buildDetailRow(String label, String value) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: TextStyle(color: AppColors.grey500, fontSize: 14.sp),
-        ),
-        Text(
-          value,
-          style: TextStyle(color: AppColors.textPrimary, fontSize: 14.sp),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildNextStepsCard({required bool isArabic}) {
-    final steps = [
-      isArabic
-          ? 'Initiate: تم إنشاء العقد وبانتظار موافقة المصور.'
-          : 'Initiate: The contract was created and is awaiting freelancer approval.',
-      isArabic
-          ? 'Approved: بعد الموافقة ينتقل العقد إلى InProgress.'
-          : 'Approved: After approval, the contract moves to InProgress.',
-      isArabic
-          ? 'InProgress: أثناء تنفيذ الخدمة حتى تأكيد الإغلاق.'
-          : 'InProgress: Service is being delivered until closure confirmation.',
-      isArabic
-          ? 'Closed: الحالة النهائية بعد إكمال الخدمة.'
-          : 'Closed: Final state after service completion.',
-    ];
-
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: AppColors.grey200),
-        borderRadius: BorderRadius.circular(14.r),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            isArabic
-                ? 'تسلسل الحالة (Backend Flow)'
-                : 'Status Sequence (Backend Flow)',
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          SizedBox(height: 12.h),
-          _buildStepItem('1', steps[0]),
-          SizedBox(height: 12.h),
-          _buildStepItem('2', steps[1]),
-          SizedBox(height: 12.h),
-          _buildStepItem('3', steps[2]),
-          SizedBox(height: 12.h),
-          _buildStepItem('4', steps[3]),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStepItem(String number, String text) {
-    return Row(
-      children: [
-        Container(
-          width: 24.w,
-          height: 24.w,
-          decoration: const BoxDecoration(
-            color: AppColors.primary,
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: Text(
-              number,
-              style: TextStyle(color: Colors.white, fontSize: 12.sp),
-            ),
+          style: TextStyle(
+            fontFamily: 'Cairo',
+            color: AppColors.textSecondary,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        SizedBox(width: 12.w),
+        SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Text(
-            text,
-            style: TextStyle(color: AppColors.grey500, fontSize: 14.sp),
+            value,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontFamily: 'Cairo',
+              color: AppColors.textPrimary,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ],
     );
   }
+
 }
 
 class ContractAwaitingPaymentCard extends StatelessWidget {
@@ -296,7 +283,7 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
     return Column(
       children: [
         _buildTimerCard(),
-        SizedBox(height: 16.h),
+        SizedBox(height: AppSpacing.md),
         _buildApprovedContent(context),
       ],
     );
@@ -312,11 +299,21 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
     final minutes = (remaining.inMinutes % 60).clamp(0, 59);
 
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: const Color(0x0CDC3545),
-        border: Border.all(color: AppColors.error, width: 2),
-        borderRadius: BorderRadius.circular(14.r),
+        color: AppColors.error.withValues(alpha: 0.05),
+        border: Border.all(
+          color: AppColors.error.withValues(alpha: 0.45),
+          width: 1.5,
+        ),
+        borderRadius: BorderRadius.circular(18.r),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.error.withValues(alpha: 0.08),
+            blurRadius: 16.r,
+            offset: Offset(0, 6.h),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -327,35 +324,42 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
                 Text(
                   AppStrings.contractPaymentWarningTitle.tr(),
                   style: TextStyle(
+                    fontFamily: 'Cairo',
                     color: AppColors.error,
                     fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                SizedBox(height: 8.h),
+                SizedBox(height: AppSpacing.sm),
                 Row(
                   children: [
                     _buildTimeUnit(
                       hours.toString().padLeft(2, '0'),
                       AppStrings.hour.tr(),
                     ),
-                    SizedBox(width: 8.w),
+                    SizedBox(width: AppSpacing.sm),
                     Text(
                       ':',
-                      style: TextStyle(color: AppColors.error, fontSize: 20.sp),
+                      style: TextStyle(
+                        fontFamily: 'Cairo',
+                        color: AppColors.error,
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                    SizedBox(width: 8.w),
+                    SizedBox(width: AppSpacing.sm),
                     _buildTimeUnit(
                       minutes.toString().padLeft(2, '0'),
                       AppStrings.minute.tr(),
                     ),
                   ],
                 ),
-                SizedBox(height: 8.h),
+                SizedBox(height: AppSpacing.sm),
                 Text(
                   AppStrings.contractPaymentWarningBody.tr(),
                   style: TextStyle(
-                    color: AppColors.grey500,
+                    fontFamily: 'Cairo',
+                    color: AppColors.textSecondary,
                     fontSize: 14.sp,
                     height: 1.5,
                   ),
@@ -363,13 +367,20 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: AppSpacing.sm),
           Container(
             width: 48.w,
             height: 48.w,
             decoration: BoxDecoration(
               color: AppColors.error,
               borderRadius: BorderRadius.circular(14.r),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.error.withValues(alpha: 0.30),
+                  blurRadius: 10.r,
+                  offset: Offset(0, 4.h),
+                ),
+              ],
             ),
             child: Icon(Icons.timer, color: Colors.white, size: 24.sp),
           ),
@@ -386,15 +397,21 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
         Text(
           value,
           style: TextStyle(
+            fontFamily: 'Cairo',
             color: AppColors.error,
             fontSize: 30.sp,
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w800,
           ),
         ),
-        SizedBox(width: 4.w),
+        SizedBox(width: AppSpacing.xs),
         Text(
           label,
-          style: TextStyle(color: AppColors.grey500, fontSize: 16.sp),
+          style: TextStyle(
+            fontFamily: 'Cairo',
+            color: AppColors.textSecondary,
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ],
     );
@@ -405,29 +422,37 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
       children: [
         Container(
           width: double.infinity,
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: ShapeDecoration(
             color: Colors.white, // Or keep transparent if on white bg
+            shadows: [
+              BoxShadow(
+                color: AppColors.shadowLight,
+                blurRadius: 16.r,
+                offset: Offset(0, 4.h),
+              ),
+            ],
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14.r),
+              side: const BorderSide(color: AppColors.grey200),
+              borderRadius: BorderRadius.circular(18.r),
             ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildApprovedHeader(context),
-              SizedBox(height: 16.h),
+              SizedBox(height: AppSpacing.md),
               _buildServiceInfo(),
-              SizedBox(height: 16.h),
+              SizedBox(height: AppSpacing.md),
               _buildDetailsCard(context),
-              SizedBox(height: 16.h),
+              SizedBox(height: AppSpacing.md),
               _buildPayButton(),
-              SizedBox(height: 16.h),
+              SizedBox(height: AppSpacing.md),
               _buildSecurityNote(),
             ],
           ),
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: AppSpacing.md),
         _buildNextStepsCard(),
       ],
     );
@@ -442,25 +467,45 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
         Text(
           isArabic ? 'الحالة الحالية' : 'Current Status',
           style: TextStyle(
-            color: AppColors.grey500,
+            fontFamily: 'Cairo',
+            color: AppColors.textSecondary,
             fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        SizedBox(width: 8.w),
+        SizedBox(width: AppSpacing.sm),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
           decoration: BoxDecoration(
             color: AppColors.success,
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(20.r),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.success.withValues(alpha: 0.25),
+                blurRadius: 8.r,
+                offset: Offset(0, 2.h),
+              ),
+            ],
           ),
-          child: Text(
-            'Approved',
-            style: TextStyle(
-              color: AppColors.textLight,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.verified_outlined,
+                color: AppColors.textLight,
+                size: 12.sp,
+              ),
+              SizedBox(width: 4.w),
+              Text(
+                'Approved',
+                style: TextStyle(
+                  fontFamily: 'Cairo',
+                  color: AppColors.textLight,
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -477,36 +522,51 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
             children: [
               Text(
                 contract.serviceTitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
+                  fontFamily: 'Cairo',
                   color: AppColors.textPrimary,
                   fontSize: 16.sp,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w700,
+                  height: 1.3,
                 ),
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: AppSpacing.xs),
               Text(
                 AppStrings.contractPhotographerName.tr(
                   args: [contract.photographerName],
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  color: AppColors.grey500,
+                  fontFamily: 'Cairo',
+                  color: AppColors.textSecondary,
                   fontSize: 14.sp,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
           ),
         ),
+        SizedBox(width: AppSpacing.sm),
         Container(
           width: 56.w,
           height: 56.w,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14.r),
+            borderRadius: BorderRadius.circular(16.r),
             gradient: const LinearGradient(
               begin: Alignment(0.50, 0.00),
               end: Alignment(0.50, 1.00),
               colors: [Color(0xFFC8A44F), Color(0xFFB8944F)],
             ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withValues(alpha: 0.30),
+                blurRadius: 12.r,
+                offset: Offset(0, 4.h),
+              ),
+            ],
           ),
           child: Center(
             child: Icon(Icons.camera_alt, color: Colors.white, size: 28.sp),
@@ -521,11 +581,11 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
         context.locale.languageCode.toLowerCase().startsWith('ar') ? 'ar' : 'en';
 
     return Container(
-      padding: EdgeInsets.all(12.w),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.grey50,
         border: Border.all(color: AppColors.grey200),
-        borderRadius: BorderRadius.circular(10.r),
+        borderRadius: BorderRadius.circular(14.r),
       ),
       child: Column(
         children: [
@@ -535,33 +595,42 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
               contract.date,
             ),
           ),
-          SizedBox(height: 8.h),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.h),
+            child: Divider(height: 1.h, color: AppColors.grey200),
+          ),
           _buildDetailRow(
             AppStrings.contractLocationLabel.tr(),
             contract.location,
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: AppSpacing.sm),
           Container(
-            padding: EdgeInsets.symmetric(vertical: 4.h),
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
             decoration: BoxDecoration(
-              border: Border.all(color: AppColors.grey200),
-              borderRadius: BorderRadius.circular(4.r),
+              color: AppColors.gold.withValues(alpha: 0.07),
+              border: Border.all(color: AppColors.gold.withValues(alpha: 0.30)),
+              borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w),
-                  child: Text(
-                    AppStrings.contractBudgetLabel.tr(),
-                    style: TextStyle(color: AppColors.grey500, fontSize: 14.sp),
+                Text(
+                  AppStrings.contractBudgetLabel.tr(),
+                  style: TextStyle(
+                    fontFamily: 'Cairo',
+                    color: AppColors.textSecondary,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w),
+                Flexible(
                   child: Text(
                     '${contract.budget.toStringAsFixed(0)} ${AppStrings.bookingCurrency.tr()}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.end,
                     style: TextStyle(
+                      fontFamily: 'Cairo',
                       color: AppColors.primary,
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
@@ -578,15 +647,31 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
 
   Widget _buildDetailRow(String label, String value) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: TextStyle(color: AppColors.grey500, fontSize: 14.sp),
+          style: TextStyle(
+            fontFamily: 'Cairo',
+            color: AppColors.textSecondary,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+          ),
         ),
-        Text(
-          value,
-          style: TextStyle(color: AppColors.textPrimary, fontSize: 14.sp),
+        SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: Text(
+            value,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontFamily: 'Cairo',
+              color: AppColors.textPrimary,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
       ],
     );
@@ -597,19 +682,42 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
       onTap: onPayPressed,
       child: Container(
         width: double.infinity,
-        height: 48.h,
+        height: 52.h,
         decoration: BoxDecoration(
-          color: AppColors.primary,
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFC8A44F), Color(0xFFB8944F)],
+          ),
           borderRadius: BorderRadius.circular(14.r),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.gold.withValues(alpha: 0.35),
+              blurRadius: 14.r,
+              offset: Offset(0, 6.h),
+            ),
+          ],
         ),
         child: Center(
-          child: Text(
-            AppStrings.contractPayNowAction.tr(),
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.lock_outline,
+                color: Colors.white,
+                size: 18.sp,
+              ),
+              SizedBox(width: AppSpacing.sm),
+              Text(
+                AppStrings.contractPayNowAction.tr(),
+                style: TextStyle(
+                  fontFamily: 'Cairo',
+                  color: Colors.white,
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -618,21 +726,35 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
 
   Widget _buildSecurityNote() {
     return Container(
-      padding: EdgeInsets.all(12.w),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: const Color(0x1917A2B8),
-        border: Border.all(color: const Color(0x3316A2B8)),
-        borderRadius: BorderRadius.circular(10.r),
+        color: AppColors.info.withValues(alpha: 0.10),
+        border: Border.all(color: AppColors.info.withValues(alpha: 0.25)),
+        borderRadius: BorderRadius.circular(14.r),
       ),
       child: Row(
         children: [
+          Container(
+            width: 32.w,
+            height: 32.w,
+            decoration: BoxDecoration(
+              color: AppColors.info.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            child: Icon(Icons.security, color: AppColors.info, size: 18.sp),
+          ),
+          SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               AppStrings.contractPaymentSecurityNote.tr(),
-              style: TextStyle(color: AppColors.grey500, fontSize: 12.sp),
+              style: TextStyle(
+                fontFamily: 'Cairo',
+                color: AppColors.textSecondary,
+                fontSize: 12.sp,
+                height: 1.45,
+              ),
             ),
           ),
-          Icon(Icons.security, color: const Color(0xFF17A2B8), size: 16.sp),
         ],
       ),
     );
@@ -640,28 +762,48 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
 
   Widget _buildNextStepsCard() {
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: AppColors.grey200),
-        borderRadius: BorderRadius.circular(14.r),
+        borderRadius: BorderRadius.circular(18.r),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 16.r,
+            offset: Offset(0, 4.h),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            AppStrings.contractWhatHappensAfterPayment.tr(),
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w400,
-            ),
+          Row(
+            children: [
+              Icon(
+                Icons.checklist_rtl_outlined,
+                color: AppColors.gold,
+                size: 18.sp,
+              ),
+              SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  AppStrings.contractWhatHappensAfterPayment.tr(),
+                  style: TextStyle(
+                    fontFamily: 'Cairo',
+                    color: AppColors.textPrimary,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: AppSpacing.md),
           _buildStepItem('1', AppStrings.contractStep1Confirm.tr()),
-          SizedBox(height: 12.h),
+          SizedBox(height: AppSpacing.md),
           _buildStepItem('2', AppStrings.contractStep2Prepare.tr()),
-          SizedBox(height: 12.h),
+          SizedBox(height: AppSpacing.md),
           _buildStepItem('3', AppStrings.contractStep3Contact.tr()),
         ],
       ),
@@ -670,26 +812,48 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
 
   Widget _buildStepItem(String number, String text) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 24.w,
-          height: 24.w,
-          decoration: const BoxDecoration(
-            color: AppColors.primary,
+          width: 26.w,
+          height: 26.w,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFFC8A44F), Color(0xFFB8944F)],
+            ),
             shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withValues(alpha: 0.25),
+                blurRadius: 6.r,
+                offset: Offset(0, 2.h),
+              ),
+            ],
           ),
           child: Center(
             child: Text(
               number,
-              style: TextStyle(color: Colors.white, fontSize: 12.sp),
+              style: TextStyle(
+                fontFamily: 'Cairo',
+                color: Colors.white,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ),
-        SizedBox(width: 12.w),
+        SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Text(
             text,
-            style: TextStyle(color: AppColors.grey500, fontSize: 14.sp),
+            style: TextStyle(
+              fontFamily: 'Cairo',
+              color: AppColors.textSecondary,
+              fontSize: 14.sp,
+              height: 1.45,
+            ),
           ),
         ),
       ],
@@ -713,28 +877,43 @@ class ContractInProgressActions extends StatelessWidget {
       children: [
         SizedBox(
           width: double.infinity,
-          height: 48.h,
-          child: OutlinedButton(
+          height: 52.h,
+          child: OutlinedButton.icon(
             onPressed: onChatPressed,
+            icon: Icon(Icons.chat_bubble_outline, size: 18.sp),
+            label: Text(
+              AppStrings.contractContactPhotographer.tr(),
+              style: TextStyle(
+                fontFamily: 'Cairo',
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: AppColors.primary, width: 2),
+              side: const BorderSide(color: AppColors.primary, width: 1.5),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14.r),
               ),
               foregroundColor: AppColors.primary,
-            ),
-            child: Text(
-              AppStrings.contractContactPhotographer.tr(),
-              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
+              backgroundColor: AppColors.gold.withValues(alpha: 0.05),
             ),
           ),
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: AppSpacing.sm),
         SizedBox(
           width: double.infinity,
-          height: 48.h,
-          child: ElevatedButton(
+          height: 52.h,
+          child: ElevatedButton.icon(
             onPressed: onCompletePressed,
+            icon: Icon(Icons.check_circle_outline, size: 18.sp),
+            label: Text(
+              AppStrings.contractFinishService.tr(),
+              style: TextStyle(
+                fontFamily: 'Cairo',
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.success,
               shape: RoundedRectangleBorder(
@@ -742,10 +921,7 @@ class ContractInProgressActions extends StatelessWidget {
               ),
               foregroundColor: Colors.white,
               elevation: 0,
-            ),
-            child: Text(
-              AppStrings.contractFinishService.tr(),
-              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
+              shadowColor: AppColors.success.withValues(alpha: 0.3),
             ),
           ),
         ),
@@ -762,15 +938,16 @@ class ContractThreeStatusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(12.w),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10.r),
+        borderRadius: BorderRadius.circular(18.r),
+        border: Border.all(color: AppColors.grey200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            color: AppColors.shadowLight,
+            blurRadius: 16.r,
+            offset: Offset(0, 4.h),
           ),
         ],
       ),
@@ -804,26 +981,35 @@ class ContractThreeStatusCard extends StatelessWidget {
           child: Text(
             label,
             style: TextStyle(
+              fontFamily: 'Cairo',
               color: AppColors.textPrimary,
               fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),
-        SizedBox(width: 12.w),
+        SizedBox(width: AppSpacing.sm),
         Container(
           constraints: BoxConstraints(maxWidth: 210.w),
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
           decoration: BoxDecoration(
             color: ui.softColor,
-            borderRadius: BorderRadius.circular(10.r),
+            borderRadius: BorderRadius.circular(12.r),
             border: Border.all(color: ui.color.withValues(alpha: 0.35)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(ui.icon, size: 14.sp, color: ui.color),
-              SizedBox(width: 6.w),
+              Container(
+                width: 24.w,
+                height: 24.w,
+                decoration: BoxDecoration(
+                  color: ui.color.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Icon(ui.icon, size: 14.sp, color: ui.color),
+              ),
+              SizedBox(width: AppSpacing.sm),
               Flexible(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -833,6 +1019,7 @@ class ContractThreeStatusCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
+                        fontFamily: 'Cairo',
                         color: ui.color,
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w700,
@@ -844,6 +1031,7 @@ class ContractThreeStatusCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
+                        fontFamily: 'Cairo',
                         color: AppColors.textSecondary,
                         fontSize: 10.sp,
                         fontWeight: FontWeight.w500,

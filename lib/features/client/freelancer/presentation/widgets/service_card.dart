@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
@@ -26,116 +27,174 @@ class ServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.only(bottom: 16.h),
-        padding: EdgeInsets.all(16.r),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (imageUrl != null && imageUrl!.isNotEmpty) ...[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12.r),
-                child: AppCachedNetworkImage(
-                  imageUrl: imageUrl!,
-                  width: 80.w,
-                  height: 80.w,
-                  fit: BoxFit.cover,
-                  memCacheWidth: 320,
-                  memCacheHeight: 320,
-                  errorWidget: Icon(Icons.broken_image, color: Colors.grey[400]),
-                ),
+    final theme = Theme.of(context);
+    final bool hasImage = imageUrl != null && imageUrl!.isNotEmpty;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18.r),
+        child: Container(
+          padding: EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18.r),
+            border: Border.all(color: AppColors.grey200, width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withValues(alpha: 0.06),
+                blurRadius: 16,
+                offset: const Offset(0, 8),
               ),
-              SizedBox(width: 16.w),
+              BoxShadow(
+                color: AppColors.shadowLight.withValues(alpha: 0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+              ),
             ],
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFF2B2B2B),
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (hasImage) ...[
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(14.r),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14.r),
+                      border: Border.all(color: AppColors.grey100, width: 1),
+                    ),
+                    child: AppCachedNetworkImage(
+                      imageUrl: imageUrl!,
+                      width: 84.w,
+                      height: 84.w,
+                      fit: BoxFit.cover,
+                      memCacheWidth: 320,
+                      memCacheHeight: 320,
+                      borderRadius: BorderRadius.circular(14.r),
+                      errorWidget: const Icon(
+                        Icons.broken_image_outlined,
+                        color: AppColors.grey400,
                       ),
-                      SizedBox(width: 8.w),
-                      Text(
-                        '$price ${AppStrings.bookingCurrency.tr()}',
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.gold,
+                    ),
+                  ),
+                ),
+                SizedBox(width: AppSpacing.md),
+              ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            title,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textPrimary,
+                              height: 1.3,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        SizedBox(width: AppSpacing.sm),
+                        _PriceBadge(price: price),
+                      ],
+                    ),
+                    SizedBox(height: AppSpacing.sm),
+                    Text(
+                      description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontSize: 13.5.sp,
+                        color: AppColors.textSecondary,
+                        height: 1.5,
+                      ),
+                    ),
+                    if (onTap != null) ...[
+                      SizedBox(height: 12.h),
+                      Container(
+                        padding: EdgeInsetsDirectional.symmetric(
+                          horizontal: 14.w,
+                          vertical: 8.h,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: AlignmentDirectional.centerStart,
+                            end: AlignmentDirectional.centerEnd,
+                            colors: [
+                              AppColors.gold.withValues(alpha: 0.16),
+                              AppColors.gold.withValues(alpha: 0.08),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(10.r),
+                          border: Border.all(
+                            color: AppColors.gold.withValues(alpha: 0.25),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.calendar_today_outlined,
+                              color: AppColors.gold,
+                              size: 14.sp,
+                            ),
+                            SizedBox(width: 6.w),
+                            Text(
+                              'احجز الآن',
+                              style: TextStyle(
+                                fontFamily: 'Cairo',
+                                color: AppColors.gold,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
-                  ),
-                  SizedBox(height: 8.h),
-                  Text(
-                    description,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: AppColors.textSecondary,
-                      height: 1.5,
-                    ),
-                  ),
-                  if (onTap != null) ...[
-                    SizedBox(height: 12.h),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 8.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.gold.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.calendar_today_outlined,
-                            color: AppColors.gold,
-                            size: 14.sp,
-                          ),
-                          SizedBox(width: 4.w),
-                          Text(
-                            'احجز الآن',
-                            style: TextStyle(
-                              color: AppColors.gold,
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PriceBadge extends StatelessWidget {
+  final double price;
+
+  const _PriceBadge({required this.price});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsetsDirectional.symmetric(
+        horizontal: 10.w,
+        vertical: 5.h,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.gold.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(10.r),
+      ),
+      child: Text(
+        '$price ${AppStrings.bookingCurrency.tr()}',
+        style: TextStyle(
+          fontFamily: 'Cairo',
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w700,
+          color: AppColors.gold,
         ),
       ),
     );

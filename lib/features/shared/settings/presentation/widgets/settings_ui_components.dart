@@ -1,5 +1,8 @@
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SettingsPageScaffold extends StatelessWidget {
@@ -28,37 +31,62 @@ class SettingsPageScaffold extends StatelessWidget {
       backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
         backgroundColor: theme.colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
-        title: Text(appBarTitle),
+        centerTitle: true,
+        leading: const RtlBackButton(),
+        title: Text(
+          appBarTitle,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontFamily: 'Cairo',
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.h),
+          child: Container(
+            height: 1.h,
+            color: theme.colorScheme.onSurface.withValues(
+              alpha: isDark ? 0.12 : 0.06,
+            ),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 24.h),
+        padding: EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.md,
+          AppSpacing.md,
+          AppSpacing.lg,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               width: double.infinity,
-              padding: EdgeInsets.all(18.w),
+              padding: EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    AppColors.gold.withValues(alpha: isDark ? 0.22 : 0.18),
+                    AppColors.gold.withValues(alpha: isDark ? 0.24 : 0.16),
                     surfaceColor,
                   ],
                 ),
-                borderRadius: BorderRadius.circular(18.r),
+                borderRadius: BorderRadius.circular(20.r),
                 border: Border.all(
-                  color: AppColors.gold.withValues(alpha: 0.35),
+                  color: AppColors.gold.withValues(alpha: 0.32),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color:
-                        (isDark ? AppColors.shadowDark : AppColors.shadowLight)
-                            .withValues(alpha: isDark ? 0.45 : 0.12),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
+                    color: AppColors.gold.withValues(
+                      alpha: isDark ? 0.22 : 0.14,
+                    ),
+                    blurRadius: 22,
+                    offset: const Offset(0, 10),
                   ),
                 ],
               ),
@@ -66,42 +94,51 @@ class SettingsPageScaffold extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: 44.w,
-                    height: 44.w,
+                    width: 52.w,
+                    height: 52.w,
                     decoration: BoxDecoration(
                       color: surfaceColor,
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: AppColors.gold.withValues(alpha: 0.6),
+                        color: AppColors.gold.withValues(alpha: 0.55),
+                        width: 1.4,
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.gold.withValues(alpha: 0.20),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
                     child: Icon(
                       heroIcon,
                       color: AppColors.primary,
-                      size: 22.sp,
+                      size: 26.sp,
                     ),
                   ),
-                  SizedBox(height: 10.h),
+                  SizedBox(height: AppSpacing.md),
                   Text(
                     heroTitle,
                     style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w800,
+                      height: 1.3,
                     ),
                   ),
-                  SizedBox(height: 6.h),
+                  SizedBox(height: AppSpacing.xs + 2.h),
                   Text(
                     heroSubtitle,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurface.withValues(
                         alpha: 0.72,
                       ),
-                      height: 1.6,
+                      height: 1.65,
                     ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.lg),
             ...children,
           ],
         ),
@@ -122,26 +159,30 @@ class SettingsMetaChip extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 7.h),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF242622) : Colors.white,
+        color: isDark
+            ? const Color(0xFF242622)
+            : AppColors.gold.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(999.r),
         border: Border.all(
-          color: theme.colorScheme.onSurface.withValues(
-            alpha: isDark ? 0.22 : 0.10,
-          ),
+          color: AppColors.gold.withValues(alpha: isDark ? 0.30 : 0.24),
         ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14.sp, color: AppColors.primary),
-          SizedBox(width: 6.w),
-          Text(
-            label,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurface,
-              fontWeight: FontWeight.w600,
+          Icon(icon, size: 15.sp, color: AppColors.primary),
+          SizedBox(width: AppSpacing.xs + 2.w),
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurface,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ],
@@ -176,15 +217,24 @@ class SettingsLocaleSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(14.w),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF242622) : Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(18.r),
         border: Border.all(
-          color: theme.colorScheme.onSurface.withValues(
-            alpha: isDark ? 0.22 : 0.10,
-          ),
+          color: isDark
+              ? theme.colorScheme.onSurface.withValues(alpha: 0.18)
+              : AppColors.grey200,
         ),
+        boxShadow: isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: AppColors.shadowLight.withValues(alpha: 0.5),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,38 +242,49 @@ class SettingsLocaleSection extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 30.w,
-                height: 30.w,
+                width: 34.w,
+                height: 34.w,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(8.r),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.gold.withValues(alpha: 0.22),
+                      AppColors.gold.withValues(alpha: 0.10),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
-                child: Icon(icon, size: 16.sp, color: AppColors.primary),
+                child: Icon(icon, size: 18.sp, color: AppColors.primary),
               ),
-              SizedBox(width: 8.w),
-              Text(
-                localeTitle,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
+              SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  localeTitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 10.h),
+          SizedBox(height: AppSpacing.sm + 2.h),
           Text(
             intro,
             textDirection: textDirection,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.85),
               height: 1.7,
             ),
           ),
           if (bullets.isNotEmpty) ...[
-            SizedBox(height: 10.h),
+            SizedBox(height: AppSpacing.sm + 2.h),
             ...List.generate(
               bullets.length,
               (index) => Padding(
-                padding: EdgeInsets.only(bottom: 8.h),
+                padding: EdgeInsets.only(bottom: AppSpacing.sm + 2.h),
                 child: _BulletLine(
                   text: bullets[index],
                   marker: numbered ? '${index + 1}' : '•',
@@ -252,30 +313,36 @@ class _BulletLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isNumbered = marker != '•';
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          margin: EdgeInsets.only(top: 3.h),
-          width: marker == '•' ? 16.w : 20.w,
+          margin: EdgeInsets.only(top: 2.h),
+          width: 22.w,
+          height: 22.w,
           alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: AppColors.gold.withValues(alpha: isNumbered ? 0.14 : 0.0),
+            shape: BoxShape.circle,
+          ),
           child: Text(
             marker,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w700,
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w800,
               color: AppColors.primary,
             ),
           ),
         ),
-        SizedBox(width: 6.w),
+        SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Text(
             text,
             textDirection: isEnglish ? TextDirection.ltr : TextDirection.rtl,
             style: theme.textTheme.bodyMedium?.copyWith(
-              height: 1.65,
-              color: theme.colorScheme.onSurface,
+              height: 1.7,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.9),
             ),
           ),
         ),
@@ -289,6 +356,7 @@ class SettingsInfoTile extends StatelessWidget {
   final String title;
   final String value;
   final bool isEnglish;
+  final bool copyable;
 
   const SettingsInfoTile({
     super.key,
@@ -296,6 +364,7 @@ class SettingsInfoTile extends StatelessWidget {
     required this.title,
     required this.value,
     this.isEnglish = false,
+    this.copyable = false,
   });
 
   @override
@@ -305,42 +374,60 @@ class SettingsInfoTile extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.only(bottom: 10.h),
-      padding: EdgeInsets.all(12.w),
+      margin: EdgeInsets.only(bottom: AppSpacing.sm + 2.h),
+      padding: EdgeInsets.all(AppSpacing.md - 2.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1F211D) : const Color(0xFFFCFCFD),
-        borderRadius: BorderRadius.circular(12.r),
+        color: isDark ? const Color(0xFF1F211D) : Colors.white,
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: theme.colorScheme.onSurface.withValues(
-            alpha: isDark ? 0.20 : 0.10,
-          ),
+          color: isDark
+              ? theme.colorScheme.onSurface.withValues(alpha: 0.18)
+              : AppColors.grey200,
         ),
+        boxShadow: isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: AppColors.shadowLight.withValues(alpha: 0.45),
+                  blurRadius: 14,
+                  offset: const Offset(0, 5),
+                ),
+              ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 34.w,
-            height: 34.w,
+            width: 38.w,
+            height: 38.w,
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(9.r),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.gold.withValues(alpha: 0.20),
+                  AppColors.gold.withValues(alpha: 0.08),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(11.r),
             ),
-            child: Icon(icon, color: AppColors.primary, size: 18.sp),
+            child: Icon(icon, color: AppColors.primary, size: 19.sp),
           ),
-          SizedBox(width: 10.w),
+          SizedBox(width: AppSpacing.sm + 2.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: 3.h),
+                SizedBox(height: AppSpacing.xs),
                 Text(
                   value,
                   textDirection: isEnglish
@@ -348,13 +435,28 @@ class SettingsInfoTile extends StatelessWidget {
                       : TextDirection.rtl,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurface,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                     height: 1.5,
                   ),
                 ),
               ],
             ),
           ),
+          if (copyable)
+            IconButton(
+              icon: Icon(
+                Icons.copy_rounded,
+                color: AppColors.primary,
+                size: 18.sp,
+              ),
+              tooltip: 'نسخ / Copy',
+              onPressed: () {
+                Clipboard.setData(ClipboardData(text: value));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('تم النسخ / Copied')),
+                );
+              },
+            ),
         ],
       ),
     );

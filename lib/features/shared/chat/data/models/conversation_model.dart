@@ -12,12 +12,16 @@ class ConversationModel extends ConversationEntity {
 
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
     return ConversationModel(
-      id: json['id'],
-      otherUserName: json['otherUserName'],
-      otherUserImage: json['otherUserImage'],
-      lastMessage: json['lastMessage'],
-      unreadCount: json['unreadCount'],
-      lastMessageTime: DateTime.parse(json['lastMessageTime']),
+      id: json['id']?.toString() ?? '',
+      otherUserName: json['otherUserName']?.toString() ?? '',
+      otherUserImage: json['otherUserImage']?.toString() ?? '',
+      lastMessage: json['lastMessage']?.toString() ?? '',
+      unreadCount: json['unreadCount'] is int
+          ? json['unreadCount']
+          : int.tryParse(json['unreadCount']?.toString() ?? '') ?? 0,
+      lastMessageTime:
+          DateTime.tryParse(json['lastMessageTime']?.toString() ?? '') ??
+              DateTime.now(),
     );
   }
 

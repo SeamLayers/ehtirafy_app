@@ -1,6 +1,12 @@
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+const String _kBankName = 'مصرف الراجحي / Al Rajhi Bank';
+const String _kBankAccountNumber = '609000010006086201357';
+const String _kBankIban = 'SA3380000609608016201357';
 
 enum FinancialPledgeRole { advertiser, client }
 
@@ -24,25 +30,254 @@ class FinancialPledgeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.gold.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: AppColors.gold.withValues(alpha: 0.35)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.gold.withValues(alpha: 0.10),
+            AppColors.gold.withValues(alpha: 0.03),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(18.r),
+        border: Border.all(color: AppColors.gold.withValues(alpha: 0.30)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gold.withValues(alpha: 0.12),
+            blurRadius: 16.r,
+            offset: Offset(0, 6.h),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.gavel_rounded, color: AppColors.primary, size: 20.sp),
-              SizedBox(width: 8.w),
+              Container(
+                padding: EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.gold.withValues(alpha: 0.16),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Icon(
+                  Icons.gavel_rounded,
+                  color: AppColors.primary,
+                  size: 20.sp,
+                ),
+              ),
+              SizedBox(width: AppSpacing.sm + 2.w),
               Expanded(
                 child: Text(
                   _headerText(),
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  style: textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: AppSpacing.md),
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.textLight.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(14.r),
+              border: Border.all(color: AppColors.gold.withValues(alpha: 0.18)),
+            ),
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                dividerColor: Colors.transparent,
+              ),
+              child: ExpansionTile(
+                initiallyExpanded: initiallyExpanded,
+                tilePadding: EdgeInsetsDirectional.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.xs,
+                ),
+                childrenPadding: EdgeInsetsDirectional.fromSTEB(
+                  AppSpacing.md,
+                  0,
+                  AppSpacing.md,
+                  AppSpacing.md,
+                ),
+                collapsedIconColor: AppColors.primary,
+                iconColor: AppColors.primary,
+                leading: Icon(
+                  Icons.description_outlined,
+                  color: AppColors.primary,
+                  size: 18.sp,
+                ),
+                title: Text(
+                  'عرض نص التعهد الكامل / View full pledge',
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                shape: const Border(),
+                collapsedShape: const Border(),
+                children: [
+                  Text(
+                    _arabicText(),
+                    style: textTheme.bodySmall?.copyWith(
+                      height: 1.7,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  SizedBox(height: AppSpacing.md),
+                  Divider(
+                    color: AppColors.gold.withValues(alpha: 0.35),
+                    height: 1,
+                  ),
+                  SizedBox(height: AppSpacing.md),
+                  Text(
+                    _englishText(),
+                    style: textTheme.bodySmall?.copyWith(
+                      height: 1.7,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: AppSpacing.md),
+          InkWell(
+            onTap: () => onAcceptedChanged(!accepted),
+            borderRadius: BorderRadius.circular(12.r),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: EdgeInsetsDirectional.fromSTEB(
+                AppSpacing.sm,
+                AppSpacing.sm,
+                AppSpacing.md,
+                AppSpacing.sm,
+              ),
+              decoration: BoxDecoration(
+                color: accepted
+                    ? AppColors.gold.withValues(alpha: 0.14)
+                    : AppColors.textLight.withValues(alpha: 0.55),
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(
+                  color: accepted
+                      ? AppColors.gold.withValues(alpha: 0.45)
+                      : AppColors.gold.withValues(alpha: 0.18),
+                ),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Checkbox(
+                    value: accepted,
+                    activeColor: AppColors.primary,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6.r),
+                    ),
+                    onChanged: (value) => onAcceptedChanged(value ?? false),
+                  ),
+                  SizedBox(width: AppSpacing.xs),
+                  Expanded(
+                    child: Text(
+                      '$agreementAr / $agreementEn',
+                      style: textTheme.bodySmall?.copyWith(
+                        color: AppColors.textPrimary,
+                        height: 1.5,
+                        fontWeight:
+                            accepted ? FontWeight.w600 : FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: AppSpacing.md),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => _showBankAccountDialog(context),
+              icon: Icon(
+                Icons.account_balance_outlined,
+                color: AppColors.primary,
+                size: 18.sp,
+              ),
+              label: Text(
+                'تفاصيل الحساب للدفع / Bank account details',
+                textAlign: TextAlign.center,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primary,
+                backgroundColor: AppColors.gold.withValues(alpha: 0.10),
+                padding: EdgeInsetsDirectional.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm + 2.h,
+                ),
+                side: BorderSide(
+                  color: AppColors.gold.withValues(alpha: 0.45),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showBankAccountDialog(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          backgroundColor: AppColors.backgroundLight,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.r),
+          ),
+          titlePadding: EdgeInsets.all(AppSpacing.lg),
+          contentPadding: EdgeInsetsDirectional.fromSTEB(
+            AppSpacing.lg,
+            0,
+            AppSpacing.lg,
+            AppSpacing.md,
+          ),
+          actionsPadding: EdgeInsets.all(AppSpacing.md),
+          title: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.gold.withValues(alpha: 0.16),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Icon(
+                  Icons.account_balance_outlined,
+                  color: AppColors.primary,
+                  size: 22.sp,
+                ),
+              ),
+              SizedBox(width: AppSpacing.sm + 2.w),
+              Expanded(
+                child: Text(
+                  'تفاصيل الحساب البنكي / Bank Account Details',
+                  style: textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
                   ),
@@ -50,73 +285,121 @@ class FinancialPledgeSection extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 12.h),
-          Theme(
-            data: Theme.of(context).copyWith(
-              dividerColor: Colors.transparent,
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _bankAccountRow(
+                  context: dialogContext,
+                  label: 'اسم البنك / Bank',
+                  value: _kBankName,
+                ),
+                SizedBox(height: AppSpacing.sm),
+                _bankAccountRow(
+                  context: dialogContext,
+                  label: 'رقم الحساب / Account Number',
+                  value: _kBankAccountNumber,
+                  forceLtr: true,
+                ),
+                SizedBox(height: AppSpacing.sm),
+                _bankAccountRow(
+                  context: dialogContext,
+                  label: 'رقم الآيبان / IBAN',
+                  value: _kBankIban,
+                  forceLtr: true,
+                ),
+              ],
             ),
-            child: ExpansionTile(
-              initiallyExpanded: initiallyExpanded,
-              tilePadding: EdgeInsets.zero,
-              childrenPadding: EdgeInsets.zero,
-              collapsedIconColor: AppColors.primary,
-              iconColor: AppColors.primary,
-              title: Text(
-                'عرض نص التعهد الكامل / View full pledge',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w600,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.primary,
+                padding: EdgeInsetsDirectional.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm + 2.h,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
               ),
-              shape: const Border(),
-              collapsedShape: const Border(),
+              child: const Text('إغلاق / Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _bankAccountRow({
+    required BuildContext context,
+    required String label,
+    required String value,
+    bool forceLtr = false,
+  }) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Container(
+      padding: EdgeInsets.all(AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: AppColors.textLight.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: AppColors.gold.withValues(alpha: 0.18)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _arabicText(),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    height: 1.6,
-                    color: AppColors.textPrimary,
+                  label,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: 12.h),
-                Divider(color: AppColors.gold.withValues(alpha: 0.45)),
-                SizedBox(height: 12.h),
-                Text(
-                  _englishText(),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    height: 1.6,
-                    color: AppColors.textPrimary,
+                SizedBox(height: AppSpacing.xs),
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: SelectableText(
+                    value,
+                    textDirection: forceLtr ? TextDirection.ltr : null,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w700,
+                      height: 1.4,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          SizedBox(height: 8.h),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Checkbox(
-                value: accepted,
-                activeColor: AppColors.primary,
-                onChanged: (value) => onAcceptedChanged(value ?? false),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => onAcceptedChanged(!accepted),
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 12.h),
-                    child: Text(
-                      '$agreementAr / $agreementEn',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+          SizedBox(width: AppSpacing.xs),
+          IconButton(
+            onPressed: () => _copyToClipboard(context, value),
+            visualDensity: VisualDensity.compact,
+            tooltip: 'نسخ / Copy',
+            icon: Icon(
+              Icons.copy_outlined,
+              color: AppColors.primary,
+              size: 18.sp,
+            ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _copyToClipboard(BuildContext context, String value) {
+    Clipboard.setData(ClipboardData(text: value));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('تم النسخ / Copied'),
+        duration: Duration(seconds: 2),
       ),
     );
   }
@@ -144,29 +427,29 @@ class FinancialPledgeSection extends StatelessWidget {
       case FinancialPledgeRole.advertiser:
         return 'Advertiser Commitment\n'
             'I, the advertiser, hereby commit to:\n'
-            '• Pay Batal Platform fees (1% of the value) upon publishing the ad.\n'
+            '• Pay Events Lens platform fees (1% of the value) upon publishing the ad.\n'
             '• Settle fees within 7 days of transaction completion.\n'
             '(Included Quranic verses emphasizing honesty, trust, and fulfilling covenants).\n\n'
-            'All rights reserved © Batal Photography & Events';
+            'All rights reserved © Events Lens';
       case FinancialPledgeRole.client:
         return 'Client Commitment\n'
             'I, the client, hereby commit to:\n'
-            '• Pay Batal Platform fees (1% of the value) upon initiating the contract.\n'
+            '• Pay Events Lens platform fees (1% of the value) upon initiating the contract.\n'
             '• Settle fees within 7 days of transaction completion.\n'
             '(Included Quranic verses emphasizing honesty, trust, and fulfilling covenants).\n\n'
-            'All rights reserved © Batal Photography & Events';
+            'All rights reserved © Events Lens';
     }
   }
 
   String _arabicText() {
     return 'أتعهد أنا ${_arabicRoleLabel()} بما يلي:\n'
-        '• دفع رسوم منصة بطل والتي تبلغ 1% من قيمة كل إعلان عند نشر الإعلان على المنصة.\n'
+        '• دفع رسوم منصة عدسة المناسبات والتي تبلغ 1% من قيمة كل إعلان عند نشر الإعلان على المنصة.\n'
         '• دفع الرسوم خلال 7 أيام من تمام العملية أو استلام المبلغ كاملاً.\n\n'
         'الوفاء بالعهد: قال الله تعالى: "وَأَوْفُوا بِالْعَهْدِ إِنَّ الْعَهْدَ كَانَ مَسْؤُولًا" (الأنعام: 152)\n'
         'الأمانة وعدم الغش: قال الله تعالى: "إِنَّ اللَّهَ يَأْمُرُكُمْ أَنْ تُؤَدُّوا الْأَمَانَاتِ إِلَى أَهْلِهَا" (النساء: 58)\n'
         'عدم التعدي على الحقوق المالية للآخرين: قال الله تعالى: "وَلَا تَبْخَسُوا النَّاسَ أَشْيَاءَهُمْ" (المعارج: 85)\n'
         'الالتزام بالحق: قال الله تعالى: "يَا أَيُّهَا الَّذِينَ آمَنُوا كُونُوا قَوَّامِينَ بِالْقِسْطِ شُهَدَاءَ لِلَّهِ" (النساء: 135)\n\n'
-        'جميع الحقوق محفوظة © بطل للتصوير والمناسبات';
+        'جميع الحقوق محفوظة © عدسة المناسبات';
   }
 }
 
@@ -187,11 +470,44 @@ Future<bool> showFinancialPledgeAgreementDialog(
       return StatefulBuilder(
         builder: (statefulContext, setDialogState) {
           return AlertDialog(
-            title: Text(
-              isArabic ? 'التعهد قبل المتابعة' : 'Pledge Before Proceeding',
-              style: Theme.of(statefulContext).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+            backgroundColor: AppColors.backgroundLight,
+            surfaceTintColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.r),
+            ),
+            titlePadding: EdgeInsets.all(AppSpacing.lg),
+            contentPadding: EdgeInsetsDirectional.symmetric(
+              horizontal: AppSpacing.lg,
+            ),
+            actionsPadding: EdgeInsets.all(AppSpacing.md),
+            title: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(AppSpacing.sm),
+                  decoration: BoxDecoration(
+                    color: AppColors.gold.withValues(alpha: 0.16),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Icon(
+                    Icons.verified_user_outlined,
+                    color: AppColors.primary,
+                    size: 22.sp,
+                  ),
+                ),
+                SizedBox(width: AppSpacing.sm + 2.w),
+                Expanded(
+                  child: Text(
+                    isArabic ? 'التعهد قبل المتابعة' : 'Pledge Before Proceeding',
+                    style: Theme.of(statefulContext)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                        ),
+                  ),
+                ),
+              ],
             ),
             content: ConstrainedBox(
               constraints: BoxConstraints(
@@ -213,6 +529,16 @@ Future<bool> showFinancialPledgeAgreementDialog(
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(false),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.textSecondary,
+                  padding: EdgeInsetsDirectional.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm + 2.h,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                ),
                 child: Text(isArabic ? 'إلغاء' : 'Cancel'),
               ),
               ElevatedButton(
@@ -221,9 +547,24 @@ Future<bool> showFinancialPledgeAgreementDialog(
                     : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppColors.textLight,
+                  disabledBackgroundColor:
+                      AppColors.gold.withValues(alpha: 0.30),
+                  disabledForegroundColor:
+                      AppColors.textLight.withValues(alpha: 0.85),
+                  elevation: 0,
+                  padding: EdgeInsetsDirectional.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.sm + 2.h,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
                 ),
-                child: Text(isArabic ? 'متابعة' : 'Continue'),
+                child: Text(
+                  isArabic ? 'متابعة' : 'Continue',
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
               ),
             ],
           );

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
@@ -24,7 +25,7 @@ class PortfolioScreen extends StatelessWidget {
         statusBarColor: Colors.transparent,
       ),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF9F9F9),
+        backgroundColor: AppColors.backgroundLight,
         body: Column(
           children: [
             _buildHeader(context),
@@ -40,11 +41,23 @@ class PortfolioScreen extends StatelessWidget {
                         context
                             .read<FreelancerPortfolioCubit>()
                             .loadPortfolio();
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.gold,
+                            ),
+                          ),
+                        );
                       }
 
                       if (state is FreelancerPortfolioLoading) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.gold,
+                            ),
+                          ),
+                        );
                       }
 
                       if (state is FreelancerPortfolioError) {
@@ -78,7 +91,13 @@ class PortfolioScreen extends StatelessWidget {
             }
           },
           backgroundColor: AppColors.primary,
-          child: const Icon(Icons.add, color: Colors.white),
+          foregroundColor: AppColors.textLight,
+          elevation: 4,
+          highlightElevation: 8,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          child: Icon(Icons.add_rounded, color: AppColors.textLight, size: 28.sp),
         ),
       ),
     );
@@ -86,35 +105,43 @@ class PortfolioScreen extends StatelessWidget {
 
   Widget _buildHeader(BuildContext context) {
     return Container(
-      color: AppColors.dark,
+      decoration: BoxDecoration(
+        color: AppColors.dark,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(24),
+          bottomRight: Radius.circular(24),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gold.withValues(alpha: 0.18),
+            blurRadius: 18,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
       child: SafeArea(
         bottom: false,
-        child: Container(
+        child: Padding(
           padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-          decoration: const BoxDecoration(
-            color: AppColors.dark,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(24),
-              bottomRight: Radius.circular(24),
-            ),
-          ),
           child: Row(
             children: [
-              RtlBackButton(color: Colors.white, size: 20.sp),
+              RtlBackButton(color: AppColors.textLight, size: 20.sp),
               Expanded(
                 child: Center(
                   child: Text(
                     AppStrings.freelancerPortfolioTitle.tr(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w400,
+                      color: AppColors.textLight,
+                      fontSize: 17.sp,
+                      fontWeight: FontWeight.w600,
                       height: 1.50,
                     ),
                   ),
                 ),
               ),
-              SizedBox(width: 20.w), // Balance for back button
+              SizedBox(width: 40.w), // Balance for back button
             ],
           ),
         ),
@@ -145,13 +172,18 @@ class PortfolioScreen extends StatelessWidget {
     List<PortfolioItemEntity> items,
   ) {
     return Padding(
-      padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 0.h, bottom: 0.h),
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.xxl,
+      ),
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          crossAxisSpacing: 12.w,
-          mainAxisSpacing: 12.h,
-          childAspectRatio: 1,
+          crossAxisSpacing: AppSpacing.md,
+          mainAxisSpacing: AppSpacing.md,
+          childAspectRatio: 0.82,
         ),
         itemCount: items.length,
         itemBuilder: (context, index) {
@@ -177,55 +209,64 @@ class PortfolioScreen extends StatelessWidget {
       onLongPress: () => _showDeleteDialog(context, item),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.r),
+          color: AppColors.textLight,
+          borderRadius: BorderRadius.circular(18.r),
+          border: Border.all(color: AppColors.grey200, width: 1),
           boxShadow: const [
             BoxShadow(
-              color: Color(0x0D000000),
-              blurRadius: 10,
-              offset: Offset(0, 4),
+              color: AppColors.shadowLight,
+              blurRadius: 14,
+              offset: Offset(0, 6),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(18.r),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  color: const Color(0xFFF5F5F5),
+                  color: AppColors.grey100,
                   child: AppCachedNetworkImage(
                     imageUrl: item.image ?? 'https://picsum.photos/400/400',
                     fit: BoxFit.cover,
                     memCacheWidth: 512,
                     memCacheHeight: 512,
-                    errorWidget: Icon(Icons.image, color: Colors.grey, size: 32.sp),
+                    errorWidget: Icon(
+                      Icons.image_outlined,
+                      color: AppColors.grey400,
+                      size: 32.sp,
+                    ),
                   ),
                 ),
               ),
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.all(12.w),
-                decoration: const BoxDecoration(color: Colors.white),
+                padding: EdgeInsets.all(AppSpacing.sm + 2.w),
+                color: AppColors.textLight,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       item.title,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
                         fontSize: 12.sp,
+                        height: 1.3,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 4.h),
+                    SizedBox(height: AppSpacing.xs),
                     Text(
                       item.description,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey[600],
+                        color: AppColors.textSecondary,
                         fontSize: 10.sp,
+                        height: 1.4,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -244,11 +285,30 @@ class PortfolioScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(AppStrings.deleteConfirmation.tr()),
-        content: Text(AppStrings.deletePortfolioItemConfirmation.tr()),
+        backgroundColor: AppColors.textLight,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        title: Text(
+          AppStrings.deleteConfirmation.tr(),
+          style: Theme.of(dialogContext).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        content: Text(
+          AppStrings.deletePortfolioItemConfirmation.tr(),
+          style: Theme.of(dialogContext).textTheme.bodyMedium?.copyWith(
+            color: AppColors.textSecondary,
+            height: 1.4,
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.textSecondary,
+            ),
             child: Text(AppStrings.cancel.tr()),
           ),
           TextButton(
@@ -258,9 +318,13 @@ class PortfolioScreen extends StatelessWidget {
               );
               Navigator.of(dialogContext).pop();
             },
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
             child: Text(
               AppStrings.delete.tr(),
-              style: const TextStyle(color: Colors.red),
+              style: const TextStyle(
+                color: AppColors.error,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ],

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/di/service_locator.dart';
 import 'package:ehtirafy_app/features/client/contract/data/datasources/contract_remote_data_source.dart';
@@ -74,7 +75,7 @@ class MyRequestsScreen extends StatelessWidget {
             }
           },
           child: Scaffold(
-            backgroundColor: const Color(0xFFF9F9F9),
+            backgroundColor: AppColors.backgroundLight,
             body: Column(
               children: [
                 _buildHeader(context),
@@ -82,7 +83,12 @@ class MyRequestsScreen extends StatelessWidget {
                   child: BlocBuilder<RequestsCubit, RequestsState>(
                     builder: (context, state) {
                       if (state is RequestsLoading) {
-                        return const Center(child: CircularProgressIndicator());
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.gold,
+                            strokeWidth: 2.5.w,
+                          ),
+                        );
                       } else if (state is RequestsError) {
                         // Keep the specific error widget as well for non-intrusive retry if preferred
                         // or just rely on the SnackBar. The user requested handling "exception... if we got any 400"
@@ -98,7 +104,12 @@ class MyRequestsScreen extends StatelessWidget {
                         return Column(
                           children: [
                             Padding(
-                              padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
+                              padding: EdgeInsetsDirectional.fromSTEB(
+                                24.w,
+                                AppSpacing.md,
+                                24.w,
+                                0,
+                              ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
@@ -112,7 +123,7 @@ class MyRequestsScreen extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            SizedBox(height: 10.h),
+                            SizedBox(height: AppSpacing.md),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 24.w),
                               child: RequestsFilterTab(
@@ -124,7 +135,7 @@ class MyRequestsScreen extends StatelessWidget {
                                 },
                               ),
                             ),
-                            SizedBox(height: 24.h),
+                            SizedBox(height: AppSpacing.lg),
                             Expanded(
                               child: AnimatedSwitcher(
                                 duration: const Duration(milliseconds: 300),
@@ -182,23 +193,52 @@ class MyRequestsScreen extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 16.h),
-          decoration: const BoxDecoration(
-            color: AppColors.dark,
-            borderRadius: BorderRadius.only(
+          padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: AlignmentDirectional.topStart,
+              end: AlignmentDirectional.bottomEnd,
+              colors: [
+                AppColors.dark,
+                AppColors.dark.withValues(alpha: 0.92),
+              ],
+            ),
+            borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(24),
               bottomRight: Radius.circular(24),
             ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withValues(alpha: 0.12),
+                blurRadius: 16.r,
+                offset: Offset(0, 4.h),
+              ),
+            ],
           ),
           child: Center(
-            child: Text(
-              AppStrings.myRequestsTitle.tr(),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.white,
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w400,
-                height: 1.50,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.assignment_outlined,
+                  color: AppColors.gold,
+                  size: 18.sp,
+                ),
+                SizedBox(width: AppSpacing.sm),
+                Flexible(
+                  child: Text(
+                    AppStrings.myRequestsTitle.tr(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      height: 1.50,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

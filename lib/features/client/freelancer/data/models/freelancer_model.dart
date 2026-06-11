@@ -2,6 +2,16 @@ import 'package:ehtirafy_app/features/client/freelancer/domain/entities/freelanc
 import 'package:ehtirafy_app/features/client/freelancer/data/models/service_model.dart';
 import 'package:ehtirafy_app/features/client/freelancer/data/models/review_model.dart';
 
+int _asInt(dynamic v) {
+  if (v is num) return v.toInt();
+  return int.tryParse(v?.toString() ?? '') ?? 0;
+}
+
+double _asDouble(dynamic v) {
+  if (v is num) return v.toDouble();
+  return double.tryParse(v?.toString() ?? '') ?? 0.0;
+}
+
 class FreelancerModel extends FreelancerEntity {
   const FreelancerModel({
     required super.id,
@@ -47,7 +57,10 @@ class FreelancerModel extends FreelancerEntity {
     }
 
     // Title from user_type or job_title
-    String title = json['title'] ?? json['job_title'] ?? '';
+    final titleData = json['title'];
+    String title = titleData is Map
+        ? (titleData['ar']?.toString() ?? titleData['en']?.toString() ?? '')
+        : (titleData?.toString() ?? json['job_title']?.toString() ?? '');
     if (title.isEmpty && json['user_type'] != null) {
       final userType = json['user_type'].toString();
       if (userType == 'user' || userType == 'freelancer') {
@@ -63,11 +76,9 @@ class FreelancerModel extends FreelancerEntity {
       title: title,
       location: location,
       bio: json['bio']?.toString() ?? json['about']?.toString() ?? '',
-      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
-      reviewsCount:
-          json['reviews_count'] as int? ?? json['reviewsCount'] as int? ?? 0,
-      projectsCount:
-          json['projects_count'] as int? ?? json['projectsCount'] as int? ?? 0,
+      rating: _asDouble(json['rating']),
+      reviewsCount: _asInt(json['reviews_count'] ?? json['reviewsCount']),
+      projectsCount: _asInt(json['projects_count'] ?? json['projectsCount']),
       responseTime:
           json['response_time']?.toString() ??
           json['responseTime']?.toString() ??
@@ -75,14 +86,26 @@ class FreelancerModel extends FreelancerEntity {
       memberSince: memberSince,
       imageUrl:
           json['avatar']?.toString() ?? json['imageUrl']?.toString() ?? '',
-      portfolio: rawPortfolio != null && rawPortfolio is List
-          ? rawPortfolio.map((e) => PortfolioItemModel.fromJson(e)).toList()
+      portfolio: rawPortfolio is List
+          ? rawPortfolio
+                .whereType<Map>()
+                .map(
+                  (e) =>
+                      PortfolioItemModel.fromJson(Map<String, dynamic>.from(e)),
+                )
+                .toList()
           : [],
-      services: rawServices != null && rawServices is List
-          ? rawServices.map((e) => ServiceModel.fromJson(e)).toList()
+      services: rawServices is List
+          ? rawServices
+                .whereType<Map>()
+                .map((e) => ServiceModel.fromJson(Map<String, dynamic>.from(e)))
+                .toList()
           : [],
-      reviews: rawReviews != null && rawReviews is List
-          ? rawReviews.map((e) => ReviewModel.fromJson(e)).toList()
+      reviews: rawReviews is List
+          ? rawReviews
+                .whereType<Map>()
+                .map((e) => ReviewModel.fromJson(Map<String, dynamic>.from(e)))
+                .toList()
           : [],
     );
   }

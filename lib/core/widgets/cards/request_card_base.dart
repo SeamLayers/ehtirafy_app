@@ -1,3 +1,5 @@
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
+import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -25,57 +27,86 @@ class RequestCardBase extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x0D000000),
-              blurRadius: 10,
-              offset: Offset(0, 4),
-              spreadRadius: 0,
-            ),
-          ],
-          border: Border.all(color: const Color(0xFFF2F2F2)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    final borderRadius = BorderRadius.circular(18.r);
+
+    return Material(
+      color: Colors.white,
+      borderRadius: borderRadius,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: borderRadius,
+        splashColor: AppColors.gold.withValues(alpha: 0.06),
+        highlightColor: AppColors.gold.withValues(alpha: 0.04),
+        child: Ink(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: borderRadius,
+            border: Border.all(color: AppColors.grey200),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withValues(alpha: 0.05),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
+                spreadRadius: 0,
+              ),
+              BoxShadow(
+                color: AppColors.shadowLight.withValues(alpha: 0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                avatar,
-                SizedBox(width: 16.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      title,
-                      SizedBox(height: 8.h),
-                      subtitle,
-                      SizedBox(height: 8.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [statusBadge, price],
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    avatar,
+                    SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          title,
+                          SizedBox(height: AppSpacing.sm),
+                          subtitle,
+                          SizedBox(height: AppSpacing.sm),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Flexible(child: statusBadge),
+                              SizedBox(width: AppSpacing.sm),
+                              Flexible(child: price),
+                            ],
+                          ),
+                          SizedBox(height: AppSpacing.sm),
+                          timeAgo,
+                        ],
                       ),
-                      SizedBox(height: 8.h),
-                      timeAgo,
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+                if (footer != null) ...[
+                  SizedBox(height: AppSpacing.md),
+                  const Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: AppColors.grey100,
+                  ),
+                  SizedBox(height: AppSpacing.md),
+                  footer!,
+                ],
               ],
             ),
-            if (footer != null) ...[
-              SizedBox(height: 16.h),
-              footer!,
-            ],
-          ],
+          ),
         ),
       ),
     );

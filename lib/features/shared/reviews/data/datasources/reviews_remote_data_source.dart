@@ -61,19 +61,30 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
       final response = await dioClient.get('/api/v1/front/user-rates/$userId');
 
       if (response.statusCode == 200) {
-        final data = response.data['data'];
+        final body = response.data;
+        final data = (body is Map) ? body['data'] : null;
         // API returns { count: N, ratings: [...] }
-        final ratings = data['ratings'];
-        if (ratings != null && ratings is List) {
-          return ratings.map((e) => ReviewModel.fromJson(e)).toList();
+        if (data is Map) {
+          final ratings = data['ratings'];
+          if (ratings is List) {
+            return ratings
+                .whereType<Map>()
+                .map((e) => ReviewModel.fromJson(Map<String, dynamic>.from(e)))
+                .toList();
+          }
         }
         // Fallback if data is directly a list
         if (data is List) {
-          return data.map((e) => ReviewModel.fromJson(e)).toList();
+          return data
+              .whereType<Map>()
+              .map((e) => ReviewModel.fromJson(Map<String, dynamic>.from(e)))
+              .toList();
         }
         return [];
       } else {
-        throw ServerException(response.data['message'] ?? 'خطأ غير معروف');
+        final body = response.data;
+        final msg = (body is Map) ? body['message'] : null;
+        throw ServerException(msg ?? 'خطأ غير معروف');
       }
     } on ServerException {
       rethrow;

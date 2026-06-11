@@ -1,5 +1,10 @@
 import '../../domain/entities/review_entity.dart';
 
+double _asDouble(dynamic v) {
+  if (v is num) return v.toDouble();
+  return double.tryParse(v?.toString() ?? '') ?? 0.0;
+}
+
 class ReviewModel extends ReviewEntity {
   const ReviewModel({
     required super.id,
@@ -13,11 +18,12 @@ class ReviewModel extends ReviewEntity {
   factory ReviewModel.fromJson(Map<String, dynamic> json) {
     return ReviewModel(
       id: json['id']?.toString() ?? '',
-      userName: json['user_name'] ?? json['client_name'] ?? 'Unknown',
-      userImage: json['user_image'] ?? json['client_avatar'],
-      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
-      date: json['date'] ?? json['created_at'] ?? '',
-      comment: json['comment'] ?? json['description'] ?? '',
+      userName:
+          (json['user_name'] ?? json['client_name'])?.toString() ?? 'Unknown',
+      userImage: (json['user_image'] ?? json['client_avatar'])?.toString(),
+      rating: _asDouble(json['rating']),
+      date: (json['date'] ?? json['created_at'])?.toString() ?? '',
+      comment: (json['comment'] ?? json['description'])?.toString() ?? '',
     );
   }
 

@@ -1,0 +1,636 @@
+{
+  "app_name": "Events Lens",
+  "welcome": "Welcome",
+  "login": "Log In",
+  "signup": "Sign Up",
+  "logout": "Log Out",
+  "email": "Email",
+  "password": "Password",
+  "client": "Client",
+  "switch_to_client": "Switch to Client Mode",
+  "switch_to_freelancer": "Switch to Photographer Mode",
+  "home": "Home",
+  "bookings": "My Bookings",
+  "dashboard": "Dashboard",
+  "my_gigs": "My Services",
+  "error": "Error",
+  "loading": "Loading...",
+  "success": "Success",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "save": "Save",
+  "label_freelancer": "Professional Photographer",
+  "label_booking": "Bookings",
+  "label_profile": "Profile",
+  "label_chat": "Chats",
+  "register": "Sign Up",
+  "skip": "Skip",
+  "next": "Next",
+  "start": "Get Started",
+  "auth": {
+    "welcomeBack": "Welcome Back",
+    "loginSubtitle": "Log in to continue",
+    "emailLabel": "Email",
+    "emailHint": "example@email.com",
+    "passwordLabel": "Password",
+    "passwordHint": "••••••••",
+    "forgotPassword": "Forgot password?",
+    "loginButton": "Log In",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create New Account",
+    "signupTitle": "Create Account",
+    "signupSubtitle": "Create your account as a new user",
+    "fullNameLabel": "Full Name",
+    "fullNameHint": "Name as on your ID",
+    "signupButton": "Create Account",
+    "passwordRequirements": "Must contain at least 8 characters",
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordHint": "••••••••",
+    "otpTitle": "Enter Verification Code",
+    "otpSubtitle": "We've sent a verification code to",
+    "otpConfirm": "Confirm",
+    "otpSentTo": "We've sent a verification code to",
+    "otpPhoneMask": "+966 xxx xxx xxx",
+    "otpEnterCode": "Enter the verification code",
+    "otpResendAfter": "Resend the code after",
+    "otpSeconds": "seconds",
+    "otpResend": "Resend Code",
+    "otpCanResend": "You can send another code",
+    "otpLabel": "Verification Code",
+    "otpHint": "123456",
+    "otpWhyTitle": "Why do we need a verification code?",
+    "otpWhyDesc": "We need to verify your number to keep your account secure and protect your personal information",
+    "or": "or",
+    "loginGoogle": "Continue with Google",
+    "loginApple": "Continue with Apple",
+    "phoneLabel": "Phone Number",
+    "phoneLabelOptional": "Phone Number (optional)",
+    "phoneHint": "123 456 789",
+    "haveAccount": "Already have an account?",
+    "loginNow": "Log In",
+    "termsPrefix": "By creating an account, you agree to the ",
+    "terms": "Terms & Conditions",
+    "and": " and ",
+    "privacy": "Privacy Policy",
+    "resetPasswordTitle": "Set Password",
+    "resetPasswordSubtitle": "Enter your new password",
+    "resetPasswordButton": "Save Password",
+    "sexLabel": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "maritalStatusLabel": "Marital Status",
+    "single": "Single",
+    "married": "Married"
+  },
+  "failures": {
+    "server": "A server error occurred",
+    "cache": "A local storage error occurred",
+    "network": "Check your internet connection",
+    "validation": "The entered data is invalid",
+    "authentication": "Authentication failed",
+    "authorization": "You don't have permission to access this",
+    "unexpected": "An unexpected error occurred"
+  },
+  "validation": {
+    "passwordMismatch": "Passwords do not match",
+    "passwordLength": "Password must be at least 8 characters"
+  },
+  "splash": {
+    "tagline": "Events Lens, your gateway to the world of photography"
+  },
+  "nav": {
+    "home": "Home",
+    "requests": "My Requests",
+    "messages": "Messages",
+    "account": "Account",
+    "dashboard": "Dashboard",
+    "myGigs": "My Services",
+    "orders": "Orders"
+  },
+  "role": {
+    "current": "Current Role",
+    "client": "Client",
+    "freelancer": "Professional Photographer",
+    "switchedToClient": "Switched to Client Mode",
+    "switchedToFreelancer": "Switched to Photographer Mode"
+  },
+  "onboarding": {
+    "welcomeTitle": "Welcome to Events Lens",
+    "subtitle": "Events Lens, your gateway to the world of photography",
+    "login": "Log In",
+    "signup": "Create New Account",
+    "bannerTitle": "Join the largest platform",
+    "bannerSubtitle": "for professional photographers in Saudi Arabia",
+    "disclaimer": "By continuing, you agree to the Terms of Service and Privacy Policy",
+    "servicesSubtitle": "All Categories",
+    "photographersSubtitle": "+500 Photographers",
+    "growthSubtitle": "Thousands of Projects",
+    "qualitySubtitle": "4.8+ Rating",
+    "continueAsGuest": "Browse as Guest"
+  },
+  "guest": {
+    "loginRequiredTitle": "Login Required",
+    "loginRequiredMessage": "You need to log in to access this feature",
+    "login": "Log In",
+    "cancel": "Cancel",
+    "profileGreeting": "Welcome, Guest",
+    "profileMessage": "Log in to access your profile, bookings, and messages",
+    "createAccount": "Create New Account"
+  },
+  "booking": {
+    "requests": {
+      "title": "My Requests",
+      "active": "Active",
+      "pending": "Under Review",
+      "completed": "Completed"
+    },
+    "service": {
+      "weddingTitle": "Wedding Photography",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Full service details here...",
+      "priceLabel": "Price",
+      "bookButton": "Book Service",
+      "currencySuffix": "SAR",
+      "photographerPrefix": "Photographer",
+      "clientPrefix": "Client",
+      "requestTitle": "Service Booking Request",
+      "serviceRequired": "Requested Service",
+      "photographer": "Photographer",
+      "price": "Price",
+      "detailsTitle": "Booking Details",
+      "detailsSubtitle": "Please specify the event date and time so the photographer can confirm their availability",
+      "eventDate": "Event Date",
+      "startTime": "Expected Start Time",
+      "location": "Location",
+      "locationHint": "Example: Wedding Hall - Al Nakheel District, Riyadh",
+      "notesTitle": "Add notes for the photographer",
+      "notesHint": "Add any additional details that may help the photographer (event type, number of hours required, special requirements...)",
+      "charCount": "0/500 characters",
+      "importantNoteTitle": "Important Note",
+      "importantNoteBody": "The photographer will review your request and confirm their availability on the specified date and time. You'll receive a notification once your request is accepted to complete the payment.",
+      "submitButton": "Submit Booking Request",
+      "successTitle": "Your request has been sent to the photographer!",
+      "successSubtitle": "The photographer will review your request (date and time). You'll receive a notification to make the payment once they approve.",
+      "step1Title": "Awaiting Approval",
+      "step1Desc": "The photographer is reviewing their availability for the requested date and time",
+      "step2Title": "We'll send you a notification",
+      "step2Desc": "Once the photographer approves, to complete the payment and confirm the booking",
+      "step3Title": "Track your request",
+      "step3Desc": "You can track the status of your request from the \"My Requests\" page",
+      "nextStepsTitle": "Next Steps",
+      "nextStep1": "Photographer reviews the request",
+      "nextStep2": "Photographer approval",
+      "nextStep3": "Complete payment and confirm booking",
+      "viewRequestsButton": "View My Requests",
+      "backHomeButton": "Back to Home"
+    }
+  },
+  "chat": {
+    "list": {
+      "title": "Messages",
+      "photographerPrefix": "Photographer",
+      "clientPrefix": "Client",
+      "placeholderMessage": "Hi, may I ask about...",
+      "timePlaceholder": "10:30 AM",
+      "noMessages": "No messages",
+      "startConversation": "Start a conversation with a photographer",
+      "findPhotographer": "Find a Photographer",
+      "freelancerNoMessages": "No conversations yet",
+      "freelancerStartConversation": "Work hard and add your standout work to land new contracts and clients",
+      "freelancerExploreGigs": "Manage My Services",
+      "ago": "ago",
+      "minute": "minute",
+      "hour": "hour"
+    },
+    "room": {
+      "title": "Conversation",
+      "sample": {
+        "mine": "This is a sample of my message",
+        "other": "This is a message from the other party"
+      },
+      "inputHint": "Type your message...",
+      "onlineNow": "Online now"
+    }
+  },
+  "freelancer": {
+    "gigs": {
+      "title": "My Services",
+      "sampleTitle": "Aerial Photography"
+    },
+    "orders": {
+      "title": "Client Requests",
+      "newStatus": "New"
+    }
+  },
+  "freelancerDashboard": {
+    "welcome": "Welcome",
+    "online": "Online",
+    "offline": "Offline",
+    "totalEarnings": "Total Earnings",
+    "activeOrders": "Active Orders",
+    "profileViews": "Profile Views",
+    "portfolioSection": "Portfolio",
+    "managePortfolio": "Manage Portfolio",
+    "servicesSection": "My Services",
+    "addService": "Add Service",
+    "recentRequests": "Recent Requests",
+    "viewAll": "View All",
+    "emptyPortfolio": "No work yet",
+    "emptyServices": "No services yet",
+    "addFirstWork": "Add your work to attract clients"
+  },
+  "freelancerGigs": {
+    "title": "Manage My Services",
+    "createTitle": "New Listing",
+    "editTitle": "Edit Listing",
+    "titleLabel": "Title",
+    "titleHint": "Example: Premium Wedding Photography",
+    "descriptionLabel": "Service Description",
+    "descriptionHint": "Write a detailed description of your service...",
+    "priceLabel": "Price",
+    "priceHint": "0",
+    "categoryLabel": "Category",
+    "coverImageLabel": "Cover Image",
+    "selectCoverImage": "Select Image",
+    "statusActive": "Active",
+    "statusPending": "Under Review",
+    "statusInactive": "Inactive",
+    "submitForReview": "Submit for Review",
+    "saveChanges": "Save Changes",
+    "deleteGig": "Delete Listing",
+    "emptyState": "No services yet",
+    "emptyStateSubtitle": "Add your first service to attract clients",
+    "addFirstGig": "Add Service",
+    "charCount": "0/1000 characters"
+  },
+  "freelancerPortfolio": {
+    "title": "Portfolio",
+    "addWork": "Add Work",
+    "addWorkTitle": "Add Work to Your Portfolio",
+    "addWorkSubtitle": "Fill in the details and they will be reviewed by the admin team",
+    "emptyTitle": "Your portfolio is empty",
+    "emptySubtitle": "Add your work to attract clients",
+    "addButton": "Add",
+    "workTitleLabel": "Title",
+    "workTitleHint": "Example: Wedding Photography in Riyadh",
+    "cameraTypeLabel": "Camera Used",
+    "cameraTypeHint": "Example: Canon EOS R5",
+    "workDescriptionLabel": "Work Description",
+    "workDescriptionHint": "Write a detailed description of this work, the equipment used, shooting duration, number of photos, and camera type...",
+    "uploadImages": "Upload Listing Images",
+    "uploadHint": "Add high-quality images of your service (up to 6 images)",
+    "selectImages": "Select Images",
+    "importantNote": "Important Note",
+    "reviewNote": "Your listing will be reviewed by the admin team to ensure it meets the standards. Please make sure the description is clear and the images are high quality.",
+    "submitForReview": "Submit for Review",
+    "charCount": "0/1000 characters",
+    "workTitle": "Work Title",
+    "cameraType": "Camera Type",
+    "workDescription": "Work Description"
+  },
+  "general": {
+    "delete": "Delete",
+    "deleteConfirmation": "Confirm Deletion",
+    "deletePortfolioItemConfirmation": "Are you sure you want to delete this work?"
+  },
+  "freelancerOrders": {
+    "title": "My Orders",
+    "tabRequests": "Offers",
+    "tabActive": "Active Contracts",
+    "tabArchived": "Archived",
+    "accept": "Accept",
+    "reject": "Reject",
+    "viewDetails": "View Details",
+    "chat": "Chat",
+    "clientLabel": "Client",
+    "statusPending": "Under Review",
+    "statusInProgress": "In Progress",
+    "statusCompleted": "Completed",
+    "statusCancelled": "Cancelled",
+    "noRequests": "No new requests",
+    "noActiveOrders": "No active contracts",
+    "noArchivedOrders": "No archived work"
+  },
+  "profile": {
+    "title": "Account",
+    "browsing_as": "You are browsing as",
+    "role_client": "Client",
+    "role_freelancer": "Photographer",
+    "switch_to_freelancer": "Switch to Photographer Mode",
+    "switch_to_client": "Switch to Client Mode",
+    "menu": {
+      "edit_profile": "Edit Profile",
+      "payment_methods": "Payment Methods",
+      "settings": "Settings",
+      "my_gigs": "Manage My Services",
+      "portfolio": "Portfolio",
+      "logout": "Log Out"
+    },
+    "edit": {
+      "full_name": "Full Name",
+      "email_read_only": "Email cannot be changed",
+      "phone": "Phone Number",
+      "bio": "About Me",
+      "bio_hint": "Write a brief summary of your experience and skills...",
+      "verifyPhoneTitle": "Verify Phone Number",
+      "otpSentMessage": "A verification code has been sent to {}",
+      "enterOtpHint": "Enter the verification code"
+    },
+    "logout": "Log Out",
+    "logout_dialog": {
+      "title": "Log Out",
+      "message": "Are you sure you want to log out?"
+    },
+    "transactions": "Transaction History",
+    "clientRole": "Your role: Client",
+    "freelancerRole": "Your role: Photographer"
+  },
+  "settings": {
+    "change_password": "Change Password",
+    "language": "Language",
+    "notifications": "Notification Settings",
+    "help_support": "Help & Support",
+    "privacy_policy": "Privacy Policy",
+    "terms_conditions": "Terms & Conditions"
+  },
+  "wallet": {
+    "title": "Wallet",
+    "total_balance": "Total Balance",
+    "withdraw": "Withdraw Funds",
+    "recent_transactions": "Recent Transactions",
+    "deposit_from_client": "Deposit from Client",
+    "withdrawal": "Withdrawal",
+    "status_completed": "Completed",
+    "withdrawal_amount": "Withdrawal Amount",
+    "available_balance": "Available Balance",
+    "bank_account": "Bank Account",
+    "withdrawal_success": "Withdrawal request submitted successfully"
+  },
+  "currency": "SAR",
+  "view_all": "View All",
+  "services": "Various Services",
+  "growth": "Continuous Growth",
+  "quality": "High Quality",
+  "roleSelection": {
+    "title": "How would you like to use Events Lens?",
+    "subtitle": "Choose the role that suits you",
+    "clientTitle": "Client",
+    "clientSubtitle": "Looking for photographers",
+    "clientDesc": "Browse photographers' listings and request the services you need",
+    "clientBadge1": "Request Services",
+    "clientBadge2": "Browse Listings",
+    "freelancerTitle": "Professional Photographer",
+    "freelancerSubtitle": "Offering photography services",
+    "freelancerDesc": "Create listings for your services and receive requests from clients",
+    "freelancerBadge1": "Receive Requests",
+    "freelancerBadge2": "Create Listings",
+    "footerNote": "You can switch between the two roles anytime from Settings",
+    "confirm": "Confirm Selection"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "unread": "Unread",
+    "all": "All",
+    "markAllRead": "Mark All as Read",
+    "empty": "No notifications"
+  },
+  "search": {
+    "recentSearches": "Recent Searches",
+    "mostSearched": "Most Searched",
+    "hint": "Search for photography services...",
+    "filter": {
+      "title": "Filter Results",
+      "priceRange": "Price Range",
+      "rating": "Rating",
+      "apply": "Apply"
+    }
+  },
+  "freelancerProfile": {
+    "title": "Profile",
+    "message": "Message",
+    "orderNow": "Order Now",
+    "reviews": "Reviews",
+    "services": "Services",
+    "portfolio": "Portfolio",
+    "projects": "projects",
+    "response": "Response",
+    "withinHour": "Within an hour",
+    "memberSince": "Member since",
+    "bookNow": "Book Now",
+    "requestService": "Request Service",
+    "reviewsCount": "({count} reviews)"
+  },
+  "appShare": {
+    "title": "Share the Events Lens App",
+    "subtitle": "Quickly send the app link via WhatsApp or any social platform you prefer",
+    "whatsapp": "WhatsApp",
+    "moreOptions": "Other Platforms",
+    "copyLink": "Copy Link",
+    "copied": "App link copied",
+    "whatsappUnavailable": "Couldn't open WhatsApp on this device",
+    "message": "Try the Events Lens app and easily book the best photographers:\n{link}",
+    "subject": "Try the Events Lens App",
+    "linkLabel": "App Link"
+  },
+  "myRequests": {
+    "title": "My Requests",
+    "tabs": {
+      "active": "Active",
+      "underReview": "Under Review",
+      "completed": "Completed"
+    },
+    "empty": {
+      "noRequests": "No requests yet",
+      "startRequesting": "Start by requesting a service from a photographer",
+      "browsePhotographers": "Browse Photographers"
+    },
+    "card": {
+      "photographer": "Photographer",
+      "currency": "SAR"
+    },
+    "status": {
+      "approved": "Approved!",
+      "underReview": "Under Review",
+      "active": "Active",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "action": {
+      "payNow": "Complete Payment Now",
+      "rateService": "Rate the Service"
+    },
+    "message": {
+      "paymentRequired": "The photographer approved your request! Pay now to confirm the booking.",
+      "approvedSince": "Approved"
+    }
+  },
+  "contract_date_and_time": "Date & Time",
+  "contract_location": "Shooting Location",
+  "contract_required_amount": "Required Amount",
+  "contract": {
+    "details": {
+      "title": "Request Details"
+    },
+    "status": {
+      "inProgress": "In Progress",
+      "photographerApproved": "The photographer approved your request",
+      "approvedBadge": "Approved",
+      "cancelledArchived": "Cancelled / Archived"
+    },
+    "description": {
+      "label": "Description"
+    },
+    "location": {
+      "label": "Location"
+    },
+    "date": {
+      "label": "Event Date"
+    },
+    "budget": {
+      "label": "Budget"
+    },
+    "paymentStatus": {
+      "label": "Payment Status",
+      "deposited": "The amount has been deposited with Events Lens",
+      "secureMessage": "The amount is held securely and will be transferred to the photographer after completion"
+    },
+    "workStages": {
+      "label": "Work Stages",
+      "confirmBooking": "Confirm Booking",
+      "shooting": "Event Shooting",
+      "deliveringPhotos": "Delivering Photos"
+    },
+    "paymentWarning": {
+      "title": "Alert: Time Remaining for Payment",
+      "body": "Please pay within 24 hours to confirm the booking, otherwise the request will be cancelled automatically."
+    },
+    "action": {
+      "payNow": "Pay Now & Confirm Booking"
+    },
+    "payment": {
+      "secureNote": "The amount will be held securely and will not be transferred to the photographer until the service is completed."
+    },
+    "timeline": {
+      "title": "What happens after payment?",
+      "step1": "The booking will be confirmed immediately",
+      "step2": "The photographer will prepare for the scheduled time",
+      "step3": "You can contact them through messages"
+    },
+    "requiredAmount": {
+      "label": "Required Amount"
+    },
+    "history": "Activity Log"
+  },
+  "time": {
+    "minute": "minute",
+    "hour": "hour"
+  },
+  "booking_service_label": "Service",
+  "booking_photographer_label": "Photographer",
+  "booking_date_label": "Booking Date",
+  "booking_time_label": "Booking Time",
+  "booking_notes_label": "Additional Notes",
+  "booking_success_message": "The photographer will review your request and respond to you shortly",
+  "booking_back_to_home": "Back to Home",
+  "validation_required": "This field is required",
+  "pending_view_status_text": "Awaiting photographer's approval",
+  "pending_view_badge_text": "Under Review",
+  "pending_view_timeline_title": "What happens after the photographer approves?",
+  "pending_view_timeline_step1": "The booking amount will be paid by you",
+  "pending_view_timeline_step2": "The photographer will prepare for the scheduled time",
+  "pending_view_timeline_step3": "You can contact them through messages",
+  "contract_status_under_review": "Your request is currently under review",
+  "contract_status_under_review_badge": "Under Review",
+  "contract_photographer_name": "Photographer: {}",
+  "contract_contact_photographer": "Message the Photographer",
+  "contract_finish_service": "Confirm Service Receipt",
+  "bank_details_title": "Bank Account Details",
+  "bank_details_instruction": "Please transfer the required amount to the bank account below. Make sure to copy the details correctly before transferring.",
+  "payment_proof_title": "Payment Proof",
+  "payment_proof_instruction": "After transferring the amount, please upload the payment proof (image or PDF file) and fill in the required details below.",
+  "sender_name": "Sender Name",
+  "enter_sender_name": "Enter the sender's name",
+  "transfer_date": "Transfer Date",
+  "select_date": "Select the transfer date",
+  "transfer_reference": "Reference Number (optional)",
+  "optional_transfer_ref": "Enter the reference number if available",
+  "notes": "Additional Notes",
+  "additional_notes": "Add any additional notes",
+  "proof_of_payment": "Payment Proof",
+  "tap_to_upload": "Tap to upload the file",
+  "accepted_formats": "Accepted formats: images (JPG, PNG) or PDF",
+  "file_selected": "File selected",
+  "submit_proof": "Submit Payment Proof",
+  "proceed_to_payment_proof": "Proceed to Upload Payment Proof",
+  "payment_awaiting_admin_review": "Payment proof is awaiting admin verification. The contract will be activated after verification.",
+  "payment_proof_submitted_title": "Payment proof submitted successfully",
+  "payment_proof_submitted_message": "Your payment proof has been received. It will be reviewed by the admin and the contract will be activated after verification.",
+  "back_to_contract": "Back to Contract",
+  "retry": "Retry",
+  "home_main": {
+    "retry": "Retry"
+  },
+  "home_categories": {
+    "title": "Categories",
+    "subtitle": "Choose the service type that suits your occasion",
+    "count_badge": "{count} categories",
+    "empty_state": "No categories available",
+    "browse": "Browse"
+  },
+  "home_featured": {
+    "section_title": "Featured Photographers",
+    "section_subtitle": "Top picks based on rating and quality",
+    "view_all": "View all",
+    "available_days": "Available {count} days",
+    "available_for_booking": "Available for booking",
+    "verified": "Verified",
+    "reviews_count": "{count} reviews",
+    "view_profile": "View profile",
+    "currency_sar": "SAR"
+  },
+  "home_header": {
+    "hero_label": "Champion",
+    "greeting_evening": "Good evening, Ahmed",
+    "search_placeholder": "Search for services or photographers..."
+  },
+  "home_sliver": {
+    "greeting_hero": "Champion",
+    "good_evening_user": "Good evening, {name}",
+    "search_hint": "Search for services or photographers..."
+  },
+  "home_stats": {
+    "label_project": "Project",
+    "hint_completed": "Completed",
+    "label_rating": "Rating",
+    "hint_client_average": "Client average",
+    "label_beneficiary": "Beneficiary",
+    "hint_trusted_client": "Trusted client"
+  },
+  "settings_x": {
+    "contact_us": "Contact Us",
+    "privacy_policy": "Privacy Policy",
+    "terms_of_use": "Terms of Use",
+    "safety_center": "Safety Center",
+    "platform_fees": "Platform Fees"
+  },
+  "profile_header": {
+    "no_rating_yet": "No ratings yet",
+    "review_count": "({count} reviews)"
+  },
+  "profile_menu_x": {
+    "delete_account": "Delete Account",
+    "delete_account_dialog_title": "Delete Account",
+    "delete_account_dialog_message": "Are you sure you want to permanently delete your account? This action cannot be undone.",
+    "confirm_delete": "Confirm Delete"
+  },
+  "role_card": {
+    "browsing_as_client": "You are browsing as a client",
+    "browsing_as_photographer": "You are browsing as a photographer",
+    "switch_to_photographer_mode": "Switch to photographer mode",
+    "switch_to_client_mode": "Switch to client mode",
+    "role_client": "Client",
+    "role_photographer": "Photographer",
+    "switching": "Switching..."
+  },
+  "refresh": "Refresh"
+}

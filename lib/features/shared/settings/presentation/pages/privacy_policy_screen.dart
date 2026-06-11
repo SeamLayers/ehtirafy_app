@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../../core/constants/app_spacing.dart';
 import '../widgets/settings_ui_components.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
@@ -28,13 +28,13 @@ class PrivacyPolicyScreen extends StatelessWidget {
     return SettingsPageScaffold(
       appBarTitle: 'الخصوصية وبيان سرية المعلومات / Privacy Policy',
       heroIcon: Icons.shield_moon_outlined,
-      heroTitle: 'خصوصيتك أولوية في منصة بطل',
+      heroTitle: 'خصوصيتك أولوية في منصة عدسة المناسبات',
       heroSubtitle:
           'نلتزم بمعايير واضحة لحماية البيانات، مع شفافية كاملة حول كيفية استخدام المعلومات.',
       children: [
         Wrap(
-          spacing: 8.w,
-          runSpacing: 8.h,
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
           children: const [
             SettingsMetaChip(
               icon: Icons.lock_outline_rounded,
@@ -47,7 +47,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: AppSpacing.md),
         const SettingsLocaleSection(
           localeTitle: 'العربية',
           icon: Icons.translate_rounded,
@@ -55,7 +55,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               'نقدر مخاوفكم واهتمامكم بشأن خصوصية بياناتكم على شبكة الإنترنت.',
           bullets: _arabicPrinciples,
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: AppSpacing.md),
         const SettingsLocaleSection(
           localeTitle: 'English',
           icon: Icons.language_rounded,

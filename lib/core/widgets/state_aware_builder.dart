@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../theme/app_colors.dart';
 import 'error_state_widget.dart';
 import 'custom_empty_state.dart';
@@ -29,9 +30,33 @@ class StateAwareBuilder<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(AppColors.gold),
+      return Center(
+        child: Container(
+          padding: EdgeInsets.all(20.r),
+          decoration: BoxDecoration(
+            color: AppColors.textLight,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: AppColors.gold.withValues(alpha: 0.18),
+              width: 1.r,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withValues(alpha: 0.12),
+                blurRadius: 16.r,
+                offset: Offset(0, 4.h),
+              ),
+            ],
+          ),
+          child: SizedBox(
+            width: 36.r,
+            height: 36.r,
+            child: CircularProgressIndicator(
+              strokeWidth: 3.r,
+              valueColor:
+                  const AlwaysStoppedAnimation<Color>(AppColors.gold),
+            ),
+          ),
         ),
       );
     }

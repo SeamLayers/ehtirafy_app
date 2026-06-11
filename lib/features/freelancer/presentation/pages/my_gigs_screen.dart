@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import '../cubit/freelancer_gigs_cubit.dart';
@@ -34,7 +35,7 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
         statusBarColor: Colors.transparent,
       ),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF9F9F9),
+        backgroundColor: AppColors.backgroundLight,
         body: Column(
           children: [
             _buildHeader(context),
@@ -42,10 +43,15 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
               child: BlocBuilder<FreelancerGigsCubit, FreelancerGigsState>(
                 builder: (context, state) {
                   if (state is FreelancerGigsLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          AppColors.gold,
+                    return Center(
+                      child: SizedBox(
+                        width: 38.w,
+                        height: 38.w,
+                        child: const CircularProgressIndicator(
+                          strokeWidth: 3,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColors.gold,
+                          ),
                         ),
                       ),
                     );
@@ -69,9 +75,15 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
                           context.read<FreelancerGigsCubit>().loadGigs(),
                       color: AppColors.gold,
                       child: ListView.separated(
-                        padding: EdgeInsets.all(16.w),
+                        padding: EdgeInsets.fromLTRB(
+                          AppSpacing.md,
+                          AppSpacing.md,
+                          AppSpacing.md,
+                          AppSpacing.xxl + AppSpacing.lg,
+                        ),
                         itemCount: state.gigs.length,
-                        separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                        separatorBuilder: (_, __) =>
+                            SizedBox(height: AppSpacing.md),
                         itemBuilder: (context, index) {
                           final gig = state.gigs[index];
                           return _buildGigCard(context, gig);
@@ -95,10 +107,21 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
             }
           },
           backgroundColor: AppColors.primary,
-          icon: const Icon(Icons.add, color: Colors.white),
+          foregroundColor: AppColors.textLight,
+          elevation: 4,
+          highlightElevation: 6,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          icon: const Icon(Icons.add_rounded, color: AppColors.textLight),
           label: Text(
             AppStrings.freelancerGigsAddFirstGig.tr(),
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(
+              color: AppColors.textLight,
+              fontFamily: 'Cairo',
+              fontWeight: FontWeight.w600,
+              fontSize: 14.sp,
+            ),
           ),
         ),
       ),
@@ -107,17 +130,26 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
 
   Widget _buildHeader(BuildContext context) {
     return Container(
-      color: AppColors.dark,
+      decoration: BoxDecoration(
+        color: AppColors.dark,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(24),
+          bottomRight: Radius.circular(24),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.dark.withValues(alpha: 0.20),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
       child: SafeArea(
         bottom: false,
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
-          decoration: const BoxDecoration(
-            color: AppColors.dark,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(24),
-              bottomRight: Radius.circular(24),
-            ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: AppSpacing.md,
+            horizontal: AppSpacing.md,
           ),
           child: Row(
             children: [
@@ -126,16 +158,18 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
                 child: Center(
                   child: Text(
                     AppStrings.freelancerGigsTitle.tr(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w400,
+                      fontSize: 17.sp,
+                      fontWeight: FontWeight.w600,
                       height: 1.50,
                     ),
                   ),
                 ),
               ),
-              SizedBox(width: 20.w),
+              SizedBox(width: 40.w),
             ],
           ),
         ),
@@ -145,98 +179,112 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
 
   Widget _buildGigCard(BuildContext context, GigEntity gig) {
     return Container(
-      decoration: ShapeDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFFE5E5E5)),
-          borderRadius: BorderRadius.circular(14.r),
-        ),
+        borderRadius: BorderRadius.circular(18.r),
+        border: Border.all(color: AppColors.grey200, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gold.withValues(alpha: 0.05),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+          BoxShadow(
+            color: AppColors.shadowLight.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: EdgeInsets.all(16.w),
+            padding: EdgeInsets.all(AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Title and status row
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
                       child: Text(
                         gig.title,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: const Color(0xFF2B2B2B),
+                          color: AppColors.textPrimary,
                           fontSize: 16.sp,
-                          fontWeight: FontWeight.w400,
-                          height: 1.50,
+                          fontWeight: FontWeight.w700,
+                          height: 1.40,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    SizedBox(width: 8.w),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 8.w,
-                        vertical: 2.h,
-                      ),
-                      decoration: ShapeDecoration(
-                        color: _getStatusColor(gig.status),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                      ),
-                      child: Text(
-                        _getStatusText(gig.status),
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12.sp,
-                          fontFamily: 'Cairo',
-                          fontWeight: FontWeight.w500,
-                          height: 1.33,
-                        ),
-                      ),
-                    ),
+                    SizedBox(width: AppSpacing.sm),
+                    _buildStatusChip(gig.status),
                   ],
                 ),
-                SizedBox(height: 4.h),
+                SizedBox(height: AppSpacing.xs + 2.h),
                 // Description
                 Text(
                   gig.description,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: const Color(0xFF888888),
+                    color: AppColors.textSecondary,
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
                     height: 1.43,
                   ),
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 4.h),
+                SizedBox(height: AppSpacing.sm + 2.h),
                 // Price row
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(
-                      'ريال',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: const Color(0xFF888888),
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                        height: 1.43,
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 6.h,
                       ),
-                    ),
-                    SizedBox(width: 4.w),
-                    Text(
-                      gig.price.toInt().toString(),
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: AppColors.gold,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w400,
-                        height: 1.56,
+                      decoration: BoxDecoration(
+                        color: AppColors.gold.withValues(alpha: 0.10),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          Text(
+                            'ريال',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                              color: AppColors.gold,
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w500,
+                              height: 1.43,
+                            ),
+                          ),
+                          SizedBox(width: AppSpacing.xs),
+                          Text(
+                            gig.price.toInt().toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                              color: AppColors.gold,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w700,
+                              height: 1.40,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -246,10 +294,10 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
           ),
           // Divider and action buttons
           Container(
-            padding: EdgeInsets.all(12.w),
+            padding: EdgeInsets.all(AppSpacing.sm + 4.w),
             decoration: const BoxDecoration(
               border: Border(
-                top: BorderSide(width: 1, color: Color(0xFFE5E5E5)),
+                top: BorderSide(width: 1, color: AppColors.grey200),
               ),
             ),
             child: Row(
@@ -258,26 +306,24 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
                 GestureDetector(
                   onTap: () => _showDeleteDialog(context, gig.id),
                   child: Container(
-                    width: 38.w,
-                    height: 32.h,
-                    decoration: ShapeDecoration(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        side: const BorderSide(
-                          width: 1,
-                          color: Color(0xFFDC3545),
-                        ),
-                        borderRadius: BorderRadius.circular(10.r),
+                    width: 40.w,
+                    height: 36.h,
+                    decoration: BoxDecoration(
+                      color: AppColors.error.withValues(alpha: 0.08),
+                      border: Border.all(
+                        width: 1,
+                        color: AppColors.error.withValues(alpha: 0.40),
                       ),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                     child: Icon(
-                      Icons.delete_outline,
-                      color: const Color(0xFFDC3545),
-                      size: 16.sp,
+                      Icons.delete_outline_rounded,
+                      color: AppColors.error,
+                      size: 18.sp,
                     ),
                   ),
                 ),
-                SizedBox(width: 8.w),
+                SizedBox(width: AppSpacing.sm),
                 // Edit button
                 Expanded(
                   child: GestureDetector(
@@ -292,13 +338,14 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
                       }
                     },
                     child: Container(
-                      height: 32.h,
-                      decoration: ShapeDecoration(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(width: 1, color: AppColors.primary),
-                          borderRadius: BorderRadius.circular(10.r),
+                      height: 36.h,
+                      decoration: BoxDecoration(
+                        color: AppColors.gold.withValues(alpha: 0.08),
+                        border: Border.all(
+                          width: 1,
+                          color: AppColors.primary.withValues(alpha: 0.55),
                         ),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -309,11 +356,11 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
                               color: AppColors.primary,
                               fontSize: 14.sp,
                               fontFamily: 'Cairo',
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w600,
                               height: 1.43,
                             ),
                           ),
-                          SizedBox(width: 4.w),
+                          SizedBox(width: AppSpacing.xs),
                           Icon(
                             Icons.edit_outlined,
                             color: AppColors.primary,
@@ -332,14 +379,50 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
     );
   }
 
+  Widget _buildStatusChip(GigStatus status) {
+    final Color color = _getStatusColor(status);
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: color.withValues(alpha: 0.35), width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6.w,
+            height: 6.w,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+            ),
+          ),
+          SizedBox(width: AppSpacing.xs + 2.w),
+          Text(
+            _getStatusText(status),
+            style: TextStyle(
+              color: color,
+              fontSize: 12.sp,
+              fontFamily: 'Cairo',
+              fontWeight: FontWeight.w600,
+              height: 1.33,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Color _getStatusColor(GigStatus status) {
     switch (status) {
       case GigStatus.active:
-        return const Color(0xFF28A745);
+        return AppColors.success;
       case GigStatus.pending:
-        return const Color(0xFFFFC107);
+        return AppColors.warning;
       case GigStatus.inactive:
-        return const Color(0xFF6C757D);
+        return AppColors.grey600;
     }
   }
 
@@ -376,19 +459,97 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('حذف الخدمة'),
-        content: const Text('هل أنت متأكد من حذف هذه الخدمة؟'),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18.r),
+        ),
+        title: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(8.r),
+              decoration: BoxDecoration(
+                color: AppColors.error.withValues(alpha: 0.10),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.delete_outline_rounded,
+                color: AppColors.error,
+                size: 22.sp,
+              ),
+            ),
+            SizedBox(width: AppSpacing.sm + 2.w),
+            Expanded(
+              child: Text(
+                'حذف الخدمة',
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 17.sp,
+                  fontFamily: 'Cairo',
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'هل أنت متأكد من حذف هذه الخدمة؟',
+          style: TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 14.sp,
+            fontFamily: 'Cairo',
+            fontWeight: FontWeight.w400,
+            height: 1.5,
+          ),
+        ),
+        actionsPadding: EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          0,
+          AppSpacing.md,
+          AppSpacing.md,
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('إلغاء'),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.textSecondary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+            ),
+            child: Text(
+              'إلغاء',
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(ctx).pop();
               context.read<FreelancerGigsCubit>().deleteGig(gigId);
             },
-            child: const Text('حذف', style: TextStyle(color: Colors.red)),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.error,
+              backgroundColor: AppColors.error.withValues(alpha: 0.08),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
+              ),
+            ),
+            child: Text(
+              'حذف',
+              style: TextStyle(
+                color: AppColors.error,
+                fontSize: 14.sp,
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
         ],
       ),

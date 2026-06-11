@@ -6,8 +6,12 @@ class LoginModel extends LoginResult {
 
   factory LoginModel.fromJson(Map<String, dynamic> json) {
     return LoginModel(
-      user: RegisterResponseModel.fromJson(json['user']),
-      token: json['token'] ?? '',
+      user: RegisterResponseModel.fromJson(
+        json['user'] is Map<String, dynamic>
+            ? json['user'] as Map<String, dynamic>
+            : <String, dynamic>{},
+      ),
+      token: json['token']?.toString() ?? '',
     );
   }
 

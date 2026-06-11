@@ -1,7 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
-import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
+import 'package:ehtirafy_app/core/widgets/user_avatar.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/entities/contract_details_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,60 +25,107 @@ class ContractInfoCard extends StatelessWidget {
         context.locale.languageCode.toLowerCase().startsWith('ar') ? 'ar' : 'en';
 
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(color: AppColors.grey200),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gold.withValues(alpha: 0.06),
+            blurRadius: 20.r,
+            offset: Offset(0, 8.h),
+          ),
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 8.r,
+            offset: Offset(0, 2.h),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            contract.serviceTitle,
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 16.sp,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 12.h),
+          _buildTitle(),
+          SizedBox(height: AppSpacing.md),
           _buildInfoRow(
             AppStrings.contractDescriptionLabel.tr(),
             contract.description,
             isDescription: true,
           ),
-          Divider(color: Colors.white10, height: 24.h),
+          _buildDivider(),
           _buildInfoRow(
             AppStrings.contractLocationLabel.tr(),
             contract.location,
             icon: Icons.location_on_outlined,
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
           _buildInfoRow(
             AppStrings.contractDateLabel.tr(),
             DateFormat('d MMMM yyyy', localeCode).format(contract.date),
             icon: Icons.calendar_today_outlined,
           ),
           if (contract.daysAvailability.isNotEmpty) ...[
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.md),
             _buildInfoRow(
               AppStrings.contractDaysAvailability.tr(),
               contract.daysAvailability.join(', '),
               icon: Icons.event_available,
             ),
           ],
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
           _buildInfoRow(
             AppStrings.contractBudgetLabel.tr(),
             '${NumberFormat('#,###').format(contract.budget)} ${AppStrings.bookingCurrency.tr()}',
             icon: Icons.monetization_on_outlined,
             isBudget: true,
           ),
-          Divider(color: Colors.white10, height: 24.h),
+          _buildDivider(),
           _buildCounterpartyInfo(),
         ],
       ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 4.w,
+          height: 22.h,
+          margin: EdgeInsetsDirectional.only(end: AppSpacing.sm),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [AppColors.gold, Color(0xFFD4AF37)],
+            ),
+            borderRadius: BorderRadius.circular(4.r),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            contract.serviceTitle,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontFamily: 'Cairo',
+              fontSize: 17.sp,
+              fontWeight: FontWeight.bold,
+              height: 1.3,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDivider() {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
+      child: Divider(color: AppColors.grey200, height: 1.h, thickness: 1),
     );
   }
 
@@ -93,22 +141,43 @@ class ContractInfoCard extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(color: AppColors.grey500, fontSize: 12.sp),
+          style: TextStyle(
+            color: AppColors.textSecondary,
+            fontFamily: 'Cairo',
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.2,
+          ),
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: AppSpacing.sm),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (icon != null) ...[
-              Icon(icon, color: AppColors.primary, size: 18.sp),
-              SizedBox(width: 8.w),
+              Container(
+                padding: EdgeInsets.all(7.r),
+                decoration: BoxDecoration(
+                  color: (isBudget ? AppColors.success : AppColors.gold)
+                      .withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Icon(
+                  icon,
+                  color: isBudget ? AppColors.success : AppColors.gold,
+                  size: 18.sp,
+                ),
+              ),
+              SizedBox(width: AppSpacing.sm),
             ],
             Expanded(
               child: Text(
                 value,
+                maxLines: isDescription ? 5 : 3,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: isBudget ? AppColors.success : AppColors.textPrimary,
-                  fontSize: 14.sp,
+                  fontFamily: 'Cairo',
+                  fontSize: isBudget ? 16.sp : 14.sp,
                   fontWeight: isBudget ? FontWeight.bold : FontWeight.w500,
                   height: 1.5,
                 ),
@@ -127,7 +196,6 @@ class ContractInfoCard extends StatelessWidget {
     final label = isFreelancer
         ? AppStrings.contractCustomerName.tr()
         : AppStrings.bookingPhotographer.tr();
-    // Use initials if image not available or if using initials design
 
     final image = isFreelancer
         ? contract.customerImage
@@ -135,95 +203,75 @@ class ContractInfoCard extends StatelessWidget {
 
     return Row(
       children: [
-        Container(
-          width: 40.r,
-          height: 40.r,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: (image.isNotEmpty && image.startsWith('http'))
-                ? null
-                : const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFFC8A44F), Color(0xFFD4AF37)],
-                  ),
-          ),
-          child: (image.isNotEmpty && image.startsWith('http'))
-              ? ClipOval(
-                  child: AppCachedNetworkImage(
-                    imageUrl: image,
-                    fit: BoxFit.cover,
-                    memCacheWidth: 160,
-                    memCacheHeight: 160,
-                    errorWidget: Text(
-                      _getInitials(name),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                )
-              : Center(
-                  child: Text(
-                    _getInitials(name),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+        UserAvatar(
+          name: name,
+          imageUrl: image,
+          size: 44,
+          fontSize: 14.sp,
+        ),
+        SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontFamily: 'Cairo',
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w600,
                 ),
-        ),
-        SizedBox(width: 12.w),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: TextStyle(color: AppColors.grey500, fontSize: 12.sp),
-            ),
-            Text(
-              name,
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.bold,
               ),
-            ),
-          ],
+              SizedBox(height: 2.h),
+              Text(
+                name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontFamily: 'Cairo',
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ),
-        const Spacer(),
-        GestureDetector(
-          onTap: contract.isChatAllowed ? onChat : null,
-          child: Container(
-            padding: EdgeInsets.all(8.w),
-            decoration: BoxDecoration(
-              color: contract.isChatAllowed
-                  ? AppColors.primary.withValues(alpha: 0.1)
-                  : AppColors.grey200,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.chat_bubble_outline,
-              color: contract.isChatAllowed
-                  ? AppColors.primary
-                  : AppColors.grey400,
-              size: 20.sp,
+        SizedBox(width: AppSpacing.sm),
+        Material(
+          color: Colors.transparent,
+          shape: const CircleBorder(),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: contract.isChatAllowed ? onChat : null,
+            child: Container(
+              padding: EdgeInsets.all(10.w),
+              decoration: BoxDecoration(
+                color: contract.isChatAllowed
+                    ? AppColors.gold.withValues(alpha: 0.12)
+                    : AppColors.grey200,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: contract.isChatAllowed
+                      ? AppColors.gold.withValues(alpha: 0.30)
+                      : Colors.transparent,
+                ),
+              ),
+              child: Icon(
+                Icons.chat_bubble_outline,
+                color: contract.isChatAllowed
+                    ? AppColors.gold
+                    : AppColors.grey400,
+                size: 20.sp,
+              ),
             ),
           ),
         ),
       ],
     );
-  }
-
-  String _getInitials(String name) {
-    if (name.isEmpty) return '?';
-    final parts = name.trim().split(' ');
-    if (parts.length >= 2) {
-      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
-    }
-    return parts[0][0].toUpperCase();
   }
 }

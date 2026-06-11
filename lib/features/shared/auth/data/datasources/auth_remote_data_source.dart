@@ -53,9 +53,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         }),
       );
 
+      final raw = response.data;
+      if (raw is! Map<String, dynamic>) {
+        throw const ServerException('استجابة غير متوقعة من الخادم');
+      }
+
       final baseResponse = BaseResponse<LoginModel>.fromJson(
-        response.data,
-        (json) => LoginModel.fromJson(json as Map<String, dynamic>),
+        raw,
+        (json) {
+          if (json is! Map<String, dynamic>) {
+            throw const ServerException('استجابة غير صالحة');
+          }
+          return LoginModel.fromJson(json);
+        },
       );
 
       if (baseResponse.data != null) {
@@ -79,9 +89,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         data: params.toJson(),
       );
 
+      final raw = response.data;
+      if (raw is! Map<String, dynamic>) {
+        throw const ServerException('استجابة غير متوقعة من الخادم');
+      }
+
       final baseResponse = BaseResponse<RegisterResponseModel>.fromJson(
-        response.data,
-        (json) => RegisterResponseModel.fromJson(json as Map<String, dynamic>),
+        raw,
+        (json) {
+          if (json is! Map<String, dynamic>) {
+            throw const ServerException('استجابة غير صالحة');
+          }
+          return RegisterResponseModel.fromJson(json);
+        },
       );
 
       if (baseResponse.data != null) {
@@ -105,8 +125,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         data: FormData.fromMap({'email': email}),
       );
 
+      final raw = response.data;
+      if (raw is! Map<String, dynamic>) {
+        throw const ServerException('استجابة غير متوقعة من الخادم');
+      }
+
       final baseResponse = BaseResponse<String>.fromJson(
-        response.data,
+        raw,
         (json) => json
             .toString(),
       );
@@ -138,8 +163,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         }),
       );
 
+      final raw = response.data;
+      if (raw is! Map<String, dynamic>) {
+        throw const ServerException('استجابة غير متوقعة من الخادم');
+      }
+
       final baseResponse = BaseResponse<String>.fromJson(
-        response.data,
+        raw,
         (json) => json.toString(),
       );
 
@@ -178,7 +208,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         }
       }
 
-      final baseResponse = BaseResponse<String>.fromJson(response.data, (json) {
+      final raw = response.data;
+      if (raw is! Map<String, dynamic>) {
+        throw const ServerException('استجابة غير متوقعة من الخادم');
+      }
+
+      final baseResponse = BaseResponse<String>.fromJson(raw, (json) {
         if (json is Map<String, dynamic>) {
           return json['code']?.toString() ??
               json['otp']?.toString() ??
@@ -204,7 +239,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final response = await _dioClient.post(ApiConstants.logout);
 
-      final baseResponse = BaseResponse<void>.fromJson(response.data, (_) {});
+      final raw = response.data;
+      // A 204 / empty body is a common successful logout response.
+      if (raw is! Map<String, dynamic>) {
+        return;
+      }
+
+      final baseResponse = BaseResponse<void>.fromJson(raw, (_) {});
 
       if (baseResponse.status != 200) {
         throw ServerException(baseResponse.message);
@@ -219,7 +260,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final response = await _dioClient.delete(ApiConstants.deleteAccount(userId));
 
-      final baseResponse = BaseResponse<void>.fromJson(response.data, (_) {});
+      final raw = response.data;
+      // A 204 / empty body is a common successful delete response.
+      if (raw is! Map<String, dynamic>) {
+        return;
+      }
+
+      final baseResponse = BaseResponse<void>.fromJson(raw, (_) {});
 
       if (baseResponse.status != 200) {
         throw ServerException(baseResponse.message);
@@ -245,8 +292,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         }),
       );
 
+      final raw = response.data;
+      if (raw is! Map<String, dynamic>) {
+        throw const ServerException('استجابة غير متوقعة من الخادم');
+      }
+
       final baseResponse = BaseResponse<String>.fromJson(
-        response.data,
+        raw,
         (json) => json.toString(),
       );
 

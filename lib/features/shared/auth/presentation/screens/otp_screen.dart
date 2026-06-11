@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/widgets/primary_button.dart';
 import 'package:ehtirafy_app/features/shared/auth/presentation/widgets/auth_header.dart';
 import 'package:ehtirafy_app/features/shared/auth/presentation/cubits/otp_cubit.dart';
@@ -38,27 +39,41 @@ class _OtpView extends StatelessWidget {
     return Scaffold(
       backgroundColor: isDark ? AppColors.dark : AppColors.backgroundLight,
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              AuthHeader(
-                iconAsset: 'assets/images/new_logo.png',
-                title: 'auth.otpTitle'.tr(),
-                subtitle: 'auth.otpSubtitle'.tr(),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.md,
               ),
-              _OtpTarget(phone: phone),
-              SizedBox(height: 24.h),
-              _OtpDigits(signupData: signupData),
-              SizedBox(height: 24.h),
-              _OtpTimer(),
-              SizedBox(height: 24.h),
-              _OtpActions(signupData: signupData),
-              const Spacer(),
-              _OtpInfo(),
-            ],
-          ),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AuthHeader(
+                        iconAsset: 'assets/images/new_logo.png',
+                        title: 'auth.otpTitle'.tr(),
+                        subtitle: 'auth.otpSubtitle'.tr(),
+                      ),
+                      _OtpTarget(phone: phone),
+                      SizedBox(height: AppSpacing.lg),
+                      _OtpDigits(signupData: signupData),
+                      SizedBox(height: AppSpacing.lg),
+                      _OtpTimer(),
+                      SizedBox(height: AppSpacing.lg),
+                      _OtpActions(signupData: signupData),
+                      const Spacer(),
+                      SizedBox(height: AppSpacing.lg),
+                      _OtpInfo(),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -71,13 +86,55 @@ class _OtpTarget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(
-      children: [
-        Text(
-          phone.isEmpty ? 'auth.otpPhoneMask'.tr() : phone,
-          style: theme.textTheme.titleMedium?.copyWith(color: AppColors.gold),
+    return Center(
+      child: Container(
+        padding: EdgeInsetsDirectional.only(
+          start: AppSpacing.sm,
+          end: AppSpacing.md,
+          top: AppSpacing.sm,
+          bottom: AppSpacing.sm,
         ),
-      ],
+        decoration: BoxDecoration(
+          color: AppColors.gold.withValues(alpha: 0.10),
+          borderRadius: BorderRadius.circular(30.r),
+          border: Border.all(
+            color: AppColors.gold.withValues(alpha: 0.30),
+            width: 1.w,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 28.w,
+              height: 28.w,
+              decoration: BoxDecoration(
+                color: AppColors.gold.withValues(alpha: 0.18),
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.phone_iphone_rounded,
+                size: 16.r,
+                color: AppColors.gold,
+              ),
+            ),
+            SizedBox(width: AppSpacing.sm),
+            Flexible(
+              child: Text(
+                phone.isEmpty ? 'auth.otpPhoneMask'.tr() : phone,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: AppColors.gold,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -153,14 +210,37 @@ class _OtpDigitsState extends State<_OtpDigits> {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<OtpCubit>();
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(4, (i) {
+        final bool isFilled = _controllers[i].text.isNotEmpty;
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.w),
-          child: SizedBox(
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
             width: 64.w,
             height: 64.w,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.r),
+              boxShadow: isFilled
+                  ? [
+                      BoxShadow(
+                        color: AppColors.gold.withValues(alpha: 0.18),
+                        blurRadius: 12.r,
+                        offset: Offset(0, 4.h),
+                        spreadRadius: -2.r,
+                      ),
+                    ]
+                  : [
+                      BoxShadow(
+                        color: AppColors.shadowLight,
+                        blurRadius: 8.r,
+                        offset: Offset(0, 2.h),
+                      ),
+                    ],
+            ),
             child: TextField(
               controller: _controllers[i],
               focusNode: _nodes[i],
@@ -168,17 +248,24 @@ class _OtpDigitsState extends State<_OtpDigits> {
               keyboardType: TextInputType.number,
               maxLength: 1,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              style: Theme.of(context).textTheme.titleLarge,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: isDark ? AppColors.textPrimary : AppColors.textPrimary,
+              ),
               decoration: InputDecoration(
                 counterText: '',
                 filled: true,
                 fillColor: Colors.white,
+                contentPadding: EdgeInsets.zero,
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14.r),
-                  borderSide: BorderSide(color: AppColors.grey300, width: 2.w),
+                  borderRadius: BorderRadius.circular(16.r),
+                  borderSide: BorderSide(
+                    color: isFilled ? AppColors.gold : AppColors.grey300,
+                    width: 1.6.w,
+                  ),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14.r),
+                  borderRadius: BorderRadius.circular(16.r),
                   borderSide: BorderSide(color: AppColors.gold, width: 2.w),
                 ),
               ),
@@ -220,37 +307,102 @@ class _OtpTimer extends StatelessWidget {
         int remaining = 60;
         if (state is OtpTick) remaining = state.remaining;
         if (remaining > 0) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'auth.otpResendAfter'.tr(),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: AppColors.grey600,
-                ),
+          return Center(
+            child: Container(
+              padding: EdgeInsetsDirectional.only(
+                start: AppSpacing.sm,
+                end: AppSpacing.md,
+                top: AppSpacing.xs,
+                bottom: AppSpacing.xs,
               ),
-              SizedBox(width: 6.w),
-              Text(
-                remaining.toString(),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: AppColors.gold,
-                ),
+              decoration: BoxDecoration(
+                color: AppColors.grey100,
+                borderRadius: BorderRadius.circular(30.r),
+                border: Border.all(color: AppColors.grey200, width: 1.w),
               ),
-              SizedBox(width: 4.w),
-              Text(
-                'auth.otpSeconds'.tr(),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: AppColors.grey600,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.timer_outlined,
+                    size: 16.r,
+                    color: AppColors.gold,
+                  ),
+                  SizedBox(width: AppSpacing.sm),
+                  Flexible(
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'auth.otpResendAfter'.tr(),
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: AppColors.grey600,
+                            ),
+                          ),
+                          const TextSpan(text: ' '),
+                          TextSpan(
+                            text: remaining.toString(),
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: AppColors.gold,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const TextSpan(text: ' '),
+                          TextSpan(
+                            text: 'auth.otpSeconds'.tr(),
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: AppColors.grey600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           );
         }
         return Center(
-          child: Text(
-            'auth.otpCanResend'.tr(),
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppColors.grey600,
+          child: Container(
+            padding: EdgeInsetsDirectional.only(
+              start: AppSpacing.sm,
+              end: AppSpacing.md,
+              top: AppSpacing.xs,
+              bottom: AppSpacing.xs,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.success.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(30.r),
+              border: Border.all(
+                color: AppColors.success.withValues(alpha: 0.30),
+                width: 1.w,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.check_circle_outline_rounded,
+                  size: 16.r,
+                  color: AppColors.success,
+                ),
+                SizedBox(width: AppSpacing.sm),
+                Flexible(
+                  child: Text(
+                    'auth.otpCanResend'.tr(),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: AppColors.grey700,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
           ),
         );
@@ -301,17 +453,45 @@ class _OtpActions extends StatelessWidget {
                   : () {},
               isLoading: state is OtpVerifying,
             ),
-            SizedBox(height: 16.h),
-            GestureDetector(
-              onTap: () => cubit.resend(),
-              child: Text(
-                'auth.otpResend'.tr(),
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: (state is OtpTick && (state.remaining > 0))
-                      ? AppColors.grey400
-                      : AppColors.gold,
-                ),
-              ),
+            SizedBox(height: AppSpacing.md),
+            Builder(
+              builder: (context) {
+                final bool isWaiting =
+                    state is OtpTick && (state.remaining > 0);
+                final Color resendColor =
+                    isWaiting ? AppColors.grey400 : AppColors.gold;
+                return GestureDetector(
+                  onTap: () => cubit.resend(),
+                  behavior: HitTestBehavior.opaque,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: AppSpacing.xs),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.refresh_rounded,
+                          size: 18.r,
+                          color: resendColor,
+                        ),
+                        SizedBox(width: AppSpacing.xs),
+                        Flexible(
+                          child: Text(
+                            'auth.otpResend'.tr(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: resendColor,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         );
@@ -325,21 +505,58 @@ class _OtpInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.grey100,
-        borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: AppColors.grey300, width: 2.w),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18.r),
+        border: Border.all(color: AppColors.grey200, width: 1.w),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 10.r,
+            offset: Offset(0, 4.h),
+            spreadRadius: -2.r,
+          ),
+        ],
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('auth.otpWhyTitle'.tr(), style: theme.textTheme.titleMedium),
-          SizedBox(height: 8.h),
-          Text(
-            'auth.otpWhyDesc'.tr(),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: AppColors.grey600,
+          Container(
+            width: 40.w,
+            height: 40.w,
+            decoration: BoxDecoration(
+              color: AppColors.gold.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            alignment: Alignment.center,
+            child: Icon(
+              Icons.shield_outlined,
+              size: 22.r,
+              color: AppColors.gold,
+            ),
+          ),
+          SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'auth.otpWhyTitle'.tr(),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                SizedBox(height: AppSpacing.xs),
+                Text(
+                  'auth.otpWhyDesc'.tr(),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppColors.grey600,
+                    height: 1.5,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

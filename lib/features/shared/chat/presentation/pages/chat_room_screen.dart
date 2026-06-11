@@ -5,8 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
-import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
+import 'package:ehtirafy_app/core/widgets/user_avatar.dart';
+import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
+import 'package:ehtirafy_app/core/widgets/custom_empty_state.dart';
 import '../../domain/entities/conversation_entity.dart';
 import '../../domain/entities/message_entity.dart';
 import '../cubit/chat_cubit.dart';
@@ -47,6 +50,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     super.dispose();
   }
 
+  void _reload() {
+    context.read<ChatCubit>().loadMessages(
+      widget.conversation.id,
+      userType: widget.userType,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
@@ -54,11 +64,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       listener: (context, state) {
         if (state is MessagesLoaded) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('تم تحديث الرسائل'),
-              backgroundColor: Colors.green,
+            SnackBar(
+              content: const Text('تم تحديث الرسائل'),
+              backgroundColor: AppColors.success,
               behavior: SnackBarBehavior.floating,
-              duration: Duration(seconds: 1),
+              duration: const Duration(seconds: 1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
             ),
           );
         } else if (state is ChatError) {
@@ -67,87 +80,18 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               content: Text(state.message),
               backgroundColor: AppColors.error,
               behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
             ),
           );
         }
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFF9F9F9),
-        appBar: AppBar(
-          backgroundColor: const Color(0xFF2B2B2B),
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(
-              isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
-              color: Colors.white,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
-          title: Row(
-            children: [
-              Container(
-                width: 40.w,
-                height: 40.h,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: AppCachedNetworkImage(
-                  imageUrl: widget.conversation.otherUserImage,
-                  fit: BoxFit.cover,
-                  memCacheWidth: 160,
-                  memCacheHeight: 160,
-                  errorWidget: Icon(
-                    Icons.person_outline,
-                    color: Colors.white70,
-                    size: 22.r,
-                  ),
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.conversation.otherUserName,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.sp,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Text(
-                    AppStrings.chatOnlineNow.tr(),
-                    style: TextStyle(
-                      color: const Color(0xB2FFFEFE),
-                      fontSize: 12.sp,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.refresh, color: Colors.white),
-              onPressed: () {
-                context.read<ChatCubit>().loadMessages(
-                  widget.conversation.id,
-                  userType: widget.userType,
-                );
-              },
-            ),
-          ],
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(24.r)),
-          ),
-        ),
+        backgroundColor: AppColors.backgroundLight,
+        appBar: _buildAppBar(isRtl),
         body: Column(
           children: [
-
             Expanded(
               child: BlocBuilder<ChatCubit, ChatState>(
                 buildWhen: (previous, current) =>
@@ -156,14 +100,37 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     current is ChatError,
                 builder: (context, state) {
                   if (state is ChatLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(
+                      child: SizedBox(
+                        width: 36.r,
+                        height: 36.r,
+                        child: const CircularProgressIndicator(
+                          strokeWidth: 3,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColors.gold,
+                          ),
+                        ),
+                      ),
+                    );
                   } else if (state is ChatError) {
-                    // Also show center text if needed, or just rely on SnackBar
-                    return Center(child: Text(state.message));
+                    return ErrorStateWidget(
+                      message: state.message,
+                      onRetry: _reload,
+                      retryText: 'إعادة المحاولة',
+                    );
                   } else if (state is MessagesLoaded) {
+                    if (state.messages.isEmpty) {
+                      return CustomEmptyState(
+                        title: AppStrings.chatNoMessages.tr(),
+                        icon: Icons.forum_outlined,
+                      );
+                    }
                     return ListView.builder(
                       reverse: true,
-                      padding: EdgeInsets.symmetric(vertical: 24.h),
+                      padding: EdgeInsets.symmetric(
+                        vertical: AppSpacing.md,
+                        horizontal: AppSpacing.xs,
+                      ),
                       itemCount: state.messages.length,
                       itemBuilder: (context, index) {
                         final message = state.messages[index];
@@ -201,6 +168,102 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar(bool isRtl) {
+    return AppBar(
+      backgroundColor: AppColors.dark,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      titleSpacing: 0,
+      leadingWidth: 44.w,
+      leading: IconButton(
+        splashRadius: 22.r,
+        icon: Icon(
+          isRtl
+              ? Icons.arrow_forward_ios_rounded
+              : Icons.arrow_back_ios_new_rounded,
+          color: AppColors.textLight,
+          size: 20.sp,
+        ),
+        onPressed: () => Navigator.pop(context),
+        tooltip: isRtl ? 'رجوع' : 'Back',
+      ),
+      title: Row(
+        children: [
+          UserAvatar(
+            name: widget.conversation.otherUserName,
+            imageUrl: widget.conversation.otherUserImage,
+            size: 42,
+          ),
+          SizedBox(width: AppSpacing.sm + 2.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  widget.conversation.otherUserName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: AppColors.textLight,
+                    fontSize: 16.sp,
+                    fontFamily: 'Cairo',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 7.r,
+                      height: 7.r,
+                      decoration: const BoxDecoration(
+                        color: AppColors.success,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    SizedBox(width: 6.w),
+                    Flexible(
+                      child: Text(
+                        AppStrings.chatOnlineNow.tr(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: AppColors.textLight.withValues(alpha: 0.70),
+                          fontSize: 12.sp,
+                          fontFamily: 'Cairo',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        Padding(
+          padding: EdgeInsetsDirectional.only(end: AppSpacing.xs),
+          child: IconButton(
+            splashRadius: 22.r,
+            icon: Icon(
+              Icons.refresh_rounded,
+              color: AppColors.gold,
+              size: 22.sp,
+            ),
+            onPressed: _reload,
+          ),
+        ),
+      ],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(24.r)),
       ),
     );
   }

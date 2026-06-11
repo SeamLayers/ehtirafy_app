@@ -23,11 +23,19 @@ class FreelancerDashboardRemoteDataSourceImpl
         ApiConstants.freelancerStatistics(freelancerId.toString()),
       );
       debugPrint('DEBUG: Statistics Response Data: ${response.data}');
-      if (response.data['status'] == 'success') {
-        return FreelancerStatisticsModel.fromJson(response.data['data']);
+      final body = response.data;
+      if (body is Map && body['status'] == 'success') {
+        final data = body['data'];
+        if (data is Map) {
+          return FreelancerStatisticsModel.fromJson(
+            Map<String, dynamic>.from(data),
+          );
+        } else {
+          throw const ServerException('فشل في جلب الإحصائيات');
+        }
       } else {
         throw ServerException(
-          response.data['message'] ?? 'فشل في جلب الإحصائيات',
+          (body is Map ? body['message'] : null) ?? 'فشل في جلب الإحصائيات',
         );
       }
     } catch (e) {
@@ -46,14 +54,21 @@ class FreelancerDashboardRemoteDataSourceImpl
       debugPrint(
         'DEBUG: Last Contracts Response Data: ${response.data}',
       );
-      if (response.data['status'] == 'success') {
-        final List<dynamic> data = response.data['data'];
+      final body = response.data;
+      if (body is Map && body['status'] == 'success') {
+        final raw = body['data'];
+        final List<dynamic> data = raw is List ? raw : const [];
         return data
-            .map((e) => FreelancerLastContractModel.fromJson(e))
+            .whereType<Map>()
+            .map(
+              (e) => FreelancerLastContractModel.fromJson(
+                Map<String, dynamic>.from(e),
+              ),
+            )
             .toList();
       } else {
         throw ServerException(
-          response.data['message'] ?? 'فشل في جلب آخر العقود',
+          (body is Map ? body['message'] : null) ?? 'فشل في جلب آخر العقود',
         );
       }
     } catch (e) {

@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import '../widgets/settings_ui_components.dart';
 
 class PlatformFeesScreen extends StatelessWidget {
   const PlatformFeesScreen({super.key});
 
   static const List<String> _arabicFeeNotes = [
-    'تقوم منصة بطل بتحصيل رسوم قدرها 1% من قيمة كل إعلان يتم عرضه.',
+    'تقوم منصة عدسة المناسبات بتحصيل رسوم قدرها 1% من قيمة كل إعلان يتم عرضه.',
     'يتم تطبيق الرسوم بشكل واضح وموحد على الإعلانات المنشورة.',
   ];
 
   static const List<String> _englishFeeNotes = [
-    'Batal Platform collects a fee of 1% from the value of each published advertisement.',
+    'Events Lens platform collects a fee of 1% from the value of each published advertisement.',
     'The fee policy is applied clearly and consistently across published ads.',
   ];
 
@@ -28,8 +29,8 @@ class PlatformFeesScreen extends StatelessWidget {
           'نعرض تفاصيل الرسوم والبيانات المالية بوضوح كامل لضمان الشفافية بين جميع الأطراف.',
       children: [
         Wrap(
-          spacing: 8.w,
-          runSpacing: 8.h,
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
           children: const [
             SettingsMetaChip(
               icon: Icons.percent_rounded,
@@ -45,30 +46,47 @@ class PlatformFeesScreen extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: AppSpacing.md),
         Container(
           width: double.infinity,
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
                 AppColors.gold.withValues(alpha: 0.16),
-                AppColors.gold.withValues(alpha: 0.08),
+                AppColors.gold.withValues(alpha: 0.06),
               ],
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
             ),
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(18.r),
             border: Border.all(color: AppColors.gold.withValues(alpha: 0.35)),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withValues(alpha: 0.12),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
           child: Row(
             children: [
               Container(
-                width: 52.w,
-                height: 52.w,
+                width: 54.w,
+                height: 54.w,
                 decoration: BoxDecoration(
-                  color: AppColors.gold.withValues(alpha: 0.22),
-                  borderRadius: BorderRadius.circular(14.r),
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.gold.withValues(alpha: 0.30),
+                      AppColors.gold.withValues(alpha: 0.16),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                  borderRadius: BorderRadius.circular(15.r),
+                  border: Border.all(
+                    color: AppColors.gold.withValues(alpha: 0.30),
+                  ),
                 ),
                 alignment: Alignment.center,
                 child: Icon(
@@ -77,13 +95,15 @@ class PlatformFeesScreen extends StatelessWidget {
                   size: 28.sp,
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: AppSpacing.sm + 4.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'رسوم المنصة / Platform Fee',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: theme.colorScheme.onSurface.withValues(
                           alpha: 0.75,
@@ -91,12 +111,13 @@ class PlatformFeesScreen extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    SizedBox(height: 4.h),
+                    SizedBox(height: AppSpacing.xs),
                     Text(
                       '1%',
                       style: theme.textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.w900,
                         color: AppColors.gold,
+                        letterSpacing: 0.5,
                       ),
                     ),
                   ],
@@ -105,14 +126,14 @@ class PlatformFeesScreen extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: AppSpacing.md),
         const SettingsLocaleSection(
           localeTitle: 'العربية',
           icon: Icons.translate_rounded,
           intro: 'رسوم المنصة:',
           bullets: _arabicFeeNotes,
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: AppSpacing.md),
         const SettingsLocaleSection(
           localeTitle: 'English',
           icon: Icons.language_rounded,
@@ -120,34 +141,24 @@ class PlatformFeesScreen extends StatelessWidget {
           bullets: _englishFeeNotes,
           isEnglish: true,
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: AppSpacing.md),
         const SettingsInfoTile(
           icon: Icons.account_balance_outlined,
           title: 'رقم الحساب / Account Number',
           value: '609000010006086201357',
+          copyable: true,
         ),
-        SizedBox(height: 10.h),
+        SizedBox(height: AppSpacing.sm),
         const SettingsInfoTile(
           icon: Icons.credit_card_outlined,
           title: 'رقم الآيبان / IBAN',
           value: 'SA3380000609608016201357',
+          copyable: true,
         ),
-        SizedBox(height: 10.h),
+        SizedBox(height: AppSpacing.sm),
         const SettingsInfoTile(
           icon: Icons.person_outline,
           title: 'اسم مستخدم الراجحي / Al Rajhi Username',
-          value: '-',
-        ),
-        SizedBox(height: 10.h),
-        const SettingsInfoTile(
-          icon: Icons.badge_outlined,
-          title: 'رقم العضوية / Membership Number',
-          value: '-',
-        ),
-        SizedBox(height: 10.h),
-        const SettingsInfoTile(
-          icon: Icons.confirmation_number_outlined,
-          title: 'رقم العميل / Customer Number',
           value: '-',
         ),
       ],

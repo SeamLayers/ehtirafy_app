@@ -28,9 +28,13 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
 
       if (response.statusCode == 200) {
         final data = response.data;
-        if (data['data'] != null && data['data'] is List) {
-          return (data['data'] as List)
-              .map((json) => SearchResultModel.fromJson(json))
+        final rawData = (data is Map) ? data['data'] : null;
+        if (rawData is List) {
+          return rawData
+              .whereType<Map>()
+              .map((json) => SearchResultModel.fromJson(
+                    Map<String, dynamic>.from(json),
+                  ))
               .toList();
         }
       }

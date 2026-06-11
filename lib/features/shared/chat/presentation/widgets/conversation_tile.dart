@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../domain/entities/conversation_entity.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
+import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 
 class ConversationTile extends StatelessWidget {
@@ -17,91 +19,143 @@ class ConversationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14.r),
-          border: Border.all(color: const Color(0xFFE5E5E5)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 56.w,
-              height: 56.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: _AvatarImage(url: conversation.otherUserImage),
+    final bool hasUnread = conversation.unreadCount > 0;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18.r),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: 14.h,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18.r),
+            border: Border.all(
+              color: hasUnread
+                  ? AppColors.gold.withValues(alpha: 0.35)
+                  : AppColors.grey200,
             ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        conversation.otherUserName,
-                        style: TextStyle(
-                          color: const Color(0xFF2B2B2B),
-                          fontSize: 16.sp,
-                          fontFamily: 'Cairo',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      if (conversation.unreadCount > 0)
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8.w,
-                            vertical: 2.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFC8A44F),
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
+            boxShadow: [
+              BoxShadow(
+                color: hasUnread
+                    ? AppColors.gold.withValues(alpha: 0.08)
+                    : AppColors.shadowLight,
+                blurRadius: 14.r,
+                offset: Offset(0, 4.h),
+              ),
+            ],
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _AvatarImage(url: conversation.otherUserImage),
+              SizedBox(width: AppSpacing.sm + 4.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
                           child: Text(
-                            conversation.unreadCount.toString(),
+                            conversation.otherUserName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12.sp,
+                              color: AppColors.textPrimary,
+                              fontSize: 16.sp,
                               fontFamily: 'Cairo',
-                              fontWeight: FontWeight.w500,
+                              fontWeight:
+                                  hasUnread ? FontWeight.w700 : FontWeight.w600,
                             ),
                           ),
                         ),
-                    ],
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    conversation.lastMessage,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: const Color(0xFF888888),
-                      fontSize: 14.sp,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w400,
+                        SizedBox(width: AppSpacing.sm),
+                        Text(
+                          _formatTime(conversation.lastMessageTime),
+                          style: TextStyle(
+                            color: hasUnread
+                                ? AppColors.gold
+                                : AppColors.textSecondary,
+                            fontSize: 11.sp,
+                            fontFamily: 'Cairo',
+                            fontWeight:
+                                hasUnread ? FontWeight.w600 : FontWeight.w400,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    _formatTime(conversation.lastMessageTime),
-                    style: TextStyle(
-                      color: const Color(0xFF888888),
-                      fontSize: 12.sp,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w400,
+                    SizedBox(height: 6.h),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            conversation.lastMessage,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: hasUnread
+                                  ? AppColors.textPrimary
+                                  : AppColors.textSecondary,
+                              fontSize: 13.sp,
+                              fontFamily: 'Cairo',
+                              fontWeight:
+                                  hasUnread ? FontWeight.w500 : FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                        if (hasUnread) ...[
+                          SizedBox(width: AppSpacing.sm),
+                          Container(
+                            constraints: BoxConstraints(minWidth: 22.r),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 7.w,
+                              vertical: 3.h,
+                            ),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  AppColors.gold,
+                                  Color(0xFFB8923F),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(11.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.gold.withValues(alpha: 0.30),
+                                  blurRadius: 6.r,
+                                  offset: Offset(0, 2.h),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              conversation.unreadCount.toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: AppColors.textLight,
+                                fontSize: 11.sp,
+                                fontFamily: 'Cairo',
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -126,6 +180,29 @@ class _AvatarImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Container(
+      width: 56.w,
+      height: 56.w,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: AppColors.gold.withValues(alpha: 0.18),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 8.r,
+            offset: Offset(0, 2.h),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: _buildImage(),
+    );
+  }
+
+  Widget _buildImage() {
     if (url.isEmpty) {
       return _fallback();
     }
@@ -140,10 +217,16 @@ class _AvatarImage extends StatelessWidget {
 
   Widget _fallback() {
     return Container(
-      color: const Color(0xFFF3F3F3),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.grey100, AppColors.grey200],
+        ),
+      ),
       child: Icon(
         Icons.person_outline,
-        color: const Color(0xFFBDBDBD),
+        color: AppColors.grey400,
         size: 28.r,
       ),
     );

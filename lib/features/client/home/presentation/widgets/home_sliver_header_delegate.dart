@@ -1,5 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../../core/theme/app_colors.dart';
 
 class HomeSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
   final double topPadding;
@@ -17,21 +21,35 @@ class HomeSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
     final double fadeOpacity = (1 - progress).clamp(0.0, 1.0);
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF2B2B2B),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(24),
-          bottomRight: Radius.circular(24),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            AppColors.dark,
+            AppColors.textPrimary,
+          ],
         ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(28.r),
+          bottomRight: Radius.circular(28.r),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gold.withValues(alpha: 0.18),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Stack(
         fit: StackFit.expand,
         children: [
           // Greeting and Logo (Fades out)
           Positioned(
-            top: topPadding + 10,
-            left: 24,
-            right: 24,
+            top: topPadding + 12.h,
+            left: 24.w,
+            right: 24.w,
             child: Opacity(
               opacity: fadeOpacity,
               child: Row(
@@ -40,80 +58,53 @@ class HomeSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                   // Notification Icon
                   GestureDetector(
                     onTap: () => context.push('/notifications'),
-                    child: Stack(
-                      clipBehavior: Clip.none,
+                    child: Container(
+                      width: 42.w,
+                      height: 42.w,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.12),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.10),
+                          width: 1,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.notifications_outlined,
+                        color: Colors.white,
+                        size: 22.sp,
+                      ),
+                    ),
+                  ),
+                  // Greeting and Logo
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.notifications_outlined,
+                        Text(
+                          'home_sliver.greeting_hero'.tr(),
+                          style: TextStyle(
                             color: Colors.white,
-                            size: 24,
+                            fontSize: 18.sp,
+                            fontFamily: 'Cairo',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 2.h),
+                        Text(
+                          'home_sliver.good_evening_user'.tr(namedArgs: {'name': userName}),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.70),
+                            fontSize: 14.sp,
+                            fontFamily: 'Cairo',
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  // Greeting and Logo
-                  Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  gradient: const LinearGradient(
-                                    colors: [
-                                      Color(0xFFC8A44F),
-                                      Color(0xFFB8944F),
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: const Text(
-                                  'PRO',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              const Text(
-                                'بطل',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontFamily: 'Cairo',
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            'مساء الخير، $userName',
-                            style: const TextStyle(
-                              color: Color(0xB2FFFFFF),
-                              fontSize: 14,
-                              fontFamily: 'Cairo',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
                   ),
                 ],
               ),
@@ -121,33 +112,46 @@ class HomeSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
           ),
           // Search Bar (Always visible, moves up)
           Positioned(
-            bottom: 24,
-            left: 24,
-            right: 24,
+            bottom: 24.h,
+            left: 24.w,
+            right: 24.w,
             child: GestureDetector(
               onTap: () => context.push('/search'),
               child: Container(
-                height: 48,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                height: 50.h,
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(14.r),
+                  border: Border.all(
+                    color: AppColors.gold.withValues(alpha: 0.25),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.12),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.search,
-                      color: Color(0xFF717182),
-                      size: 24,
+                      color: AppColors.gold,
+                      size: 24.sp,
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.w),
                     Expanded(
                       child: Text(
-                        'ابحث عن خدمات أو مصورين...',
+                        'home_sliver.search_hint'.tr(),
                         textAlign: TextAlign.right,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          color: const Color(0xFF717182).withValues(alpha: 0.8),
-                          fontSize: 14,
+                          color: AppColors.textSecondary,
+                          fontSize: 14.sp,
                           fontFamily: 'Cairo',
                           fontWeight: FontWeight.w400,
                         ),

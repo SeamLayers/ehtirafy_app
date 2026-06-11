@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
@@ -14,15 +15,21 @@ class ProfileInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: AppColors.grey200, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: AppColors.gold.withValues(alpha: 0.06),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+          BoxShadow(
+            color: AppColors.shadowLight,
             blurRadius: 10,
-            offset: const Offset(0, 5),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -33,17 +40,31 @@ class ProfileInfoCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Profile Image (Rounded Square)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12.r),
-                child: AppCachedNetworkImage(
-                  imageUrl: freelancer.imageUrl,
-                  width: 80.w,
-                  height: 80.w,
-                  fit: BoxFit.cover,
+              // Profile Image (Rounded Square with gold ring)
+              Container(
+                padding: EdgeInsets.all(2.r),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(18.r),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.gold.withValues(alpha: 0.55),
+                      AppColors.gold.withValues(alpha: 0.15),
+                    ],
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16.r),
+                  child: AppCachedNetworkImage(
+                    imageUrl: freelancer.imageUrl,
+                    width: 80.w,
+                    height: 80.w,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-              SizedBox(width: 16.w),
+              SizedBox(width: AppSpacing.md),
               // Name, Verified, Rating
               Expanded(
                 child: Column(
@@ -55,79 +76,136 @@ class ProfileInfoCard extends StatelessWidget {
                           child: Text(
                             freelancer.name,
                             style: TextStyle(
+                              fontFamily: 'Cairo',
                               fontSize: 18.sp,
                               fontWeight: FontWeight.bold,
-                              color: const Color(0xFF2B2B2B),
+                              color: AppColors.textPrimary,
                             ),
+                            maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        SizedBox(width: 4.w),
-                        Icon(Icons.verified, color: Colors.blue, size: 16.sp),
+                        SizedBox(width: AppSpacing.xs),
+                        Icon(Icons.verified, color: AppColors.info, size: 18.sp),
                       ],
                     ),
-                    SizedBox(height: 8.h),
-                    Row(
-                      children: [
-                        Icon(Icons.star, color: AppColors.gold, size: 16.sp),
-                        SizedBox(width: 4.w),
-                        Text(
-                          freelancer.rating.toString(),
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFF2B2B2B),
-                          ),
+                    SizedBox(height: AppSpacing.sm),
+                    // Rating pill
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 5.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.gold.withValues(alpha: 0.10),
+                        borderRadius: BorderRadius.circular(10.r),
+                        border: Border.all(
+                          color: AppColors.gold.withValues(alpha: 0.25),
+                          width: 1,
                         ),
-                        SizedBox(width: 4.w),
-                        Text(
-                          AppStrings.freelancerProfileReviewsCount.tr(
-                            namedArgs: {
-                              'count': freelancer.reviewsCount.toString(),
-                            },
-                          ),
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
+                      ),
+                      child: (freelancer.rating <= 0 &&
+                              freelancer.reviewsCount <= 0)
+                          ? Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.star_outline_rounded,
+                                    color: AppColors.textSecondary, size: 16.sp),
+                                SizedBox(width: AppSpacing.xs),
+                                Flexible(
+                                  child: Text(
+                                    'لا يوجد تقييم بعد',
+                                    style: TextStyle(
+                                      fontFamily: 'Cairo',
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.textSecondary,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.star_rounded,
+                                    color: AppColors.gold, size: 16.sp),
+                                SizedBox(width: AppSpacing.xs),
+                                Text(
+                                  freelancer.rating.toStringAsFixed(1),
+                                  style: TextStyle(
+                                    fontFamily: 'Cairo',
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                                SizedBox(width: AppSpacing.xs),
+                                Flexible(
+                                  child: Text(
+                                    AppStrings.freelancerProfileReviewsCount.tr(
+                                      namedArgs: {
+                                        'count':
+                                            freelancer.reviewsCount.toString(),
+                                      },
+                                    ),
+                                    style: TextStyle(
+                                      fontFamily: 'Cairo',
+                                      fontSize: 12.sp,
+                                      color: AppColors.textSecondary,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
 
           // Row 2: Job Title & Location
           Text(
             freelancer.title,
             style: TextStyle(
+              fontFamily: 'Cairo',
               fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-              color: const Color(0xFF2B2B2B),
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
             ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: AppSpacing.sm),
           Row(
             children: [
               Icon(
                 Icons.location_on_outlined,
                 size: 16.sp,
-                color: AppColors.textSecondary,
+                color: AppColors.gold,
               ),
-              SizedBox(width: 4.w),
-              Text(
-                freelancer.location,
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: AppColors.textSecondary,
+              SizedBox(width: AppSpacing.xs),
+              Flexible(
+                child: Text(
+                  freelancer.location,
+                  style: TextStyle(
+                    fontFamily: 'Cairo',
+                    fontSize: 12.sp,
+                    color: AppColors.textSecondary,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
 
           // Row 3: Bio
           Text(
@@ -135,18 +213,15 @@ class ProfileInfoCard extends StatelessWidget {
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
+              fontFamily: 'Cairo',
               fontSize: 12.sp,
               color: AppColors.textSecondary,
-              height: 1.5,
+              height: 1.6,
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
 
-          // Divider
-          Divider(color: AppColors.grey200, height: 1.h),
-          SizedBox(height: 16.h),
-
-          // Row 4: Stats
+          // Row 4: Stats (in subtle surface)
           _buildStatsRow(),
         ],
       ),
@@ -154,48 +229,82 @@ class ProfileInfoCard extends StatelessWidget {
   }
 
   Widget _buildStatsRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        _buildStatItem(
-          freelancer.memberSince,
-          AppStrings.freelancerProfileMemberSince.tr(),
-        ),
-        _buildVerticalDivider(),
-        _buildStatItem(
-          freelancer.responseTime,
-          AppStrings.freelancerProfileResponse.tr(),
-        ),
-        _buildVerticalDivider(),
-        _buildStatItem(
-          freelancer.projectsCount.toString(),
-          AppStrings.freelancerProfileProjects.tr(),
-        ),
-      ],
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.md,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.grey50,
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: AppColors.grey200, width: 1),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: _buildStatItem(
+              freelancer.memberSince,
+              AppStrings.freelancerProfileMemberSince.tr(),
+            ),
+          ),
+          _buildVerticalDivider(),
+          Expanded(
+            child: _buildStatItem(
+              freelancer.responseTime,
+              AppStrings.freelancerProfileResponse.tr(),
+            ),
+          ),
+          _buildVerticalDivider(),
+          Expanded(
+            child: _buildStatItem(
+              freelancer.projectsCount.toString(),
+              AppStrings.freelancerProfileProjects.tr(),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildStatItem(String value, String label) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           value,
+          textAlign: TextAlign.center,
           style: TextStyle(
+            fontFamily: 'Cairo',
             fontSize: 14.sp,
             fontWeight: FontWeight.bold,
-            color: const Color(0xFF2B2B2B),
+            color: AppColors.textPrimary,
           ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
-        SizedBox(height: 4.h),
+        SizedBox(height: AppSpacing.xs),
         Text(
           label,
-          style: TextStyle(fontSize: 10.sp, color: AppColors.textSecondary),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Cairo',
+            fontSize: 10.sp,
+            color: AppColors.textSecondary,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ],
     );
   }
 
   Widget _buildVerticalDivider() {
-    return Container(height: 30.h, width: 1.w, color: AppColors.grey200);
+    return Container(
+      height: 32.h,
+      width: 1.w,
+      margin: EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+      color: AppColors.grey200,
+    );
   }
 }

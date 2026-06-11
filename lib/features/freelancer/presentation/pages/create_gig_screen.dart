@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/widgets/financial_pledge_section.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
@@ -92,7 +93,7 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFAFA),
+      backgroundColor: AppColors.backgroundLight,
       appBar: AppBar(
         title: Column(
           mainAxisSize: MainAxisSize.min,
@@ -102,10 +103,11 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
               widget.gig != null ? 'تعديل الخدمة الحالية' : 'إضافة خدمة جديدة',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
               ),
             ),
-            SizedBox(height: 4.h),
+            SizedBox(height: 2.h),
             Text(
               widget.gig != null
                   ? 'قم بتعديل تفاصيل الخدمة الخاصة بك'
@@ -120,8 +122,17 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
-        elevation: 1,
+        surfaceTintColor: Colors.white,
+        elevation: 0,
+        scrolledUnderElevation: 0,
         leading: const RtlBackButton(color: AppColors.textPrimary),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.h),
+          child: Container(
+            height: 1.h,
+            color: AppColors.grey200,
+          ),
+        ),
       ),
       body: BlocListener<FreelancerGigsCubit, FreelancerGigsState>(
         listener: (context, state) {
@@ -156,7 +167,17 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
             }
           } else if (state is FreelancerGigAdded) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('تم إضافة الخدمة بنجاح')),
+              SnackBar(
+                content: const Text(
+                  'تم إنشاء إعلانك بنجاح وهو الآن في انتظار موافقة الإدارة',
+                ),
+                backgroundColor: AppColors.success,
+                behavior: SnackBarBehavior.floating,
+                duration: const Duration(seconds: 3),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+              ),
             );
             context.go('/freelancer/dashboard');
           } else if (state is FreelancerGigUpdated) {
@@ -178,7 +199,9 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
           builder: (context, state) {
             // Show loading while fetching gigs and categories
             if (state is FreelancerGigsLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                child: CircularProgressIndicator(color: AppColors.gold),
+              );
             }
 
             // Get categories from state - handle multiple state types
@@ -198,7 +221,7 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
             }
 
             return SingleChildScrollView(
-              padding: EdgeInsets.all(16.w),
+              padding: EdgeInsets.all(AppSpacing.md),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -207,144 +230,198 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
                     // Info Card
                     Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(12.w),
+                      padding: EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
-                        color: AppColors.gold.withValues(alpha: 0.1),
+                        gradient: LinearGradient(
+                          begin: AlignmentDirectional.topStart,
+                          end: AlignmentDirectional.bottomEnd,
+                          colors: [
+                            AppColors.gold.withValues(alpha: 0.14),
+                            AppColors.gold.withValues(alpha: 0.04),
+                          ],
+                        ),
                         border: Border.all(
                           color: AppColors.gold.withValues(alpha: 0.3),
-                          width: 1.5,
+                          width: 1,
                         ),
-                        borderRadius: BorderRadius.circular(12.r),
+                        borderRadius: BorderRadius.circular(16.r),
                       ),
                       child: Row(
                         children: [
-                          Icon(
-                            Icons.info_outlined,
-                            color: AppColors.gold,
-                            size: 20.sp,
+                          Container(
+                            width: 36.w,
+                            height: 36.w,
+                            decoration: BoxDecoration(
+                              color: AppColors.gold.withValues(alpha: 0.18),
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
+                            child: Icon(
+                              Icons.info_outlined,
+                              color: AppColors.gold,
+                              size: 20.sp,
+                            ),
                           ),
-                          SizedBox(width: 12.w),
+                          SizedBox(width: AppSpacing.sm + 4.w),
                           Expanded(
                             child: Text(
                               'حزمة الخدمة الواحدة = عرض واحد يمكن للعملاء طلبه',
                               style: TextStyle(
                                 fontSize: 13.sp,
                                 color: AppColors.textPrimary,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
+                                height: 1.5,
                               ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 24.h),
+                    SizedBox(height: AppSpacing.lg),
 
                     // Image Upload Section
+                    _buildSectionHeader(
+                      Icons.image_outlined,
+                      AppStrings.freelancerPortfolioUploadImages.tr(),
+                    ),
+                    SizedBox(height: AppSpacing.sm + 4.h),
                     _buildImageUploadWidget(),
-                    SizedBox(height: 24.h),
+                    SizedBox(height: AppSpacing.lg),
 
-                    // Title field
-                    _buildLabel(AppStrings.freelancerGigsTitleLabel.tr()),
-                    SizedBox(height: 8.h),
-                    TextFormField(
-                      controller: _titleController,
-                      decoration: _buildInputDecoration(
-                        AppStrings.freelancerGigsTitleHint.tr(),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return AppStrings.validationRequired.tr();
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 20.h),
-
-                    // Description field
-                    _buildLabel(AppStrings.freelancerGigsDescriptionLabel.tr()),
-                    SizedBox(height: 8.h),
-                    TextFormField(
-                      controller: _descriptionController,
-                      maxLines: 4,
-                      decoration: _buildInputDecoration(
-                        AppStrings.freelancerGigsDescriptionHint.tr(),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return AppStrings.validationRequired.tr();
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 20.h),
-
-                    // Price field
-                    _buildLabel(AppStrings.freelancerGigsPriceLabel.tr()),
-                    SizedBox(height: 8.h),
-                    TextFormField(
-                      controller: _priceController,
-                      keyboardType: TextInputType.number,
-                      decoration: _buildInputDecoration(
-                        AppStrings.freelancerGigsPriceHint.tr(),
-                        suffix: Text(
-                          'ريال',
-                          style: TextStyle(
-                            color: const Color(0xFF888888),
-                            fontSize: 14.sp,
+                    // Details card
+                    _buildCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Title field
+                          _buildLabel(
+                            AppStrings.freelancerGigsTitleLabel.tr(),
                           ),
-                        ),
+                          SizedBox(height: AppSpacing.sm),
+                          TextFormField(
+                            controller: _titleController,
+                            decoration: _buildInputDecoration(
+                              AppStrings.freelancerGigsTitleHint.tr(),
+                              prefixIcon: Icons.title_rounded,
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return AppStrings.validationRequired.tr();
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(height: AppSpacing.md + 4.h),
+
+                          // Description field
+                          _buildLabel(
+                            AppStrings.freelancerGigsDescriptionLabel.tr(),
+                          ),
+                          SizedBox(height: AppSpacing.sm),
+                          TextFormField(
+                            controller: _descriptionController,
+                            maxLines: 4,
+                            decoration: _buildInputDecoration(
+                              AppStrings.freelancerGigsDescriptionHint.tr(),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return AppStrings.validationRequired.tr();
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(height: AppSpacing.md + 4.h),
+
+                          // Price field
+                          _buildLabel(
+                            AppStrings.freelancerGigsPriceLabel.tr(),
+                          ),
+                          SizedBox(height: AppSpacing.sm),
+                          TextFormField(
+                            controller: _priceController,
+                            keyboardType: TextInputType.number,
+                            decoration: _buildInputDecoration(
+                              AppStrings.freelancerGigsPriceHint.tr(),
+                              prefixIcon: Icons.payments_outlined,
+                              suffix: Text(
+                                'ريال',
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return AppStrings.validationRequired.tr();
+                              }
+                              final price = double.tryParse(value);
+                              if (price == null || price <= 0) {
+                                return 'يرجى إدخال سعر صحيح';
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(height: AppSpacing.md + 4.h),
+
+                          // Category dropdown - using real categories from API
+                          _buildLabel(
+                            AppStrings.freelancerGigsCategoryLabel.tr(),
+                          ),
+                          SizedBox(height: AppSpacing.sm),
+                          DropdownButtonFormField<CategoryEntity>(
+                            initialValue: _selectedCategory,
+                            isExpanded: true,
+                            icon: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: AppColors.gold,
+                              size: 24.sp,
+                            ),
+                            borderRadius: BorderRadius.circular(12.r),
+                            decoration: _buildInputDecoration(
+                              'اختر التصنيف',
+                              prefixIcon: Icons.category_outlined,
+                            ),
+                            items: categories.map((category) {
+                              return DropdownMenuItem(
+                                value: category,
+                                child: Text(
+                                  category.nameAr,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() => _selectedCategory = value);
+                            },
+                            validator: (value) {
+                              if (value == null) {
+                                return AppStrings.validationRequired.tr();
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(height: AppSpacing.md + 4.h),
+
+                          // Days Availability
+                          _buildLabel('أيام التوفر'),
+                          SizedBox(height: AppSpacing.sm),
+                          _buildDaysAvailabilityWidget(),
+                        ],
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return AppStrings.validationRequired.tr();
-                        }
-                        final price = double.tryParse(value);
-                        if (price == null || price <= 0) {
-                          return 'يرجى إدخال سعر صحيح';
-                        }
-                        return null;
-                      },
                     ),
-                    SizedBox(height: 20.h),
-
-                    // Category dropdown - using real categories from API
-                    _buildLabel(AppStrings.freelancerGigsCategoryLabel.tr()),
-                    SizedBox(height: 8.h),
-                    DropdownButtonFormField<CategoryEntity>(
-                      initialValue: _selectedCategory,
-                      decoration: _buildInputDecoration('اختر التصنيف'),
-                      items: categories.map((category) {
-                        return DropdownMenuItem(
-                          value: category,
-                          child: Text(category.nameAr),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() => _selectedCategory = value);
-                      },
-                      validator: (value) {
-                        if (value == null) {
-                          return AppStrings.validationRequired.tr();
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 20.h),
-
-                    // Days Availability
-                    _buildLabel('أيام التوفر'),
-                    SizedBox(height: 8.h),
-                    _buildDaysAvailabilityWidget(),
-                    SizedBox(height: 32.h),
+                    SizedBox(height: AppSpacing.lg),
 
                     // Important note
                     Container(
-                      padding: EdgeInsets.all(16.w),
+                      padding: EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12.r),
+                        color: AppColors.primary.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(16.r),
                         border: Border.all(
-                          color: AppColors.primary.withValues(alpha: 0.3),
+                          color: AppColors.primary.withValues(alpha: 0.25),
                         ),
                       ),
                       child: Row(
@@ -355,7 +432,7 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
                             color: AppColors.primary,
                             size: 20.sp,
                           ),
-                          SizedBox(width: 12.w),
+                          SizedBox(width: AppSpacing.sm + 4.w),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -365,18 +442,19 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
                                       .tr(),
                                   style: Theme.of(context).textTheme.bodyMedium
                                       ?.copyWith(
-                                        color: const Color(0xFF2B2B2B),
+                                        color: AppColors.textPrimary,
                                         fontSize: 14.sp,
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.w700,
                                       ),
                                 ),
-                                SizedBox(height: 4.h),
+                                SizedBox(height: AppSpacing.xs),
                                 Text(
                                   AppStrings.freelancerPortfolioReviewNote.tr(),
                                   style: Theme.of(context).textTheme.bodySmall
                                       ?.copyWith(
-                                        color: const Color(0xFF888888),
+                                        color: AppColors.textSecondary,
                                         fontSize: 12.sp,
+                                        height: 1.5,
                                       ),
                                 ),
                               ],
@@ -385,17 +463,17 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 32.h),
+                    SizedBox(height: AppSpacing.xl),
 
                     if (widget.gig == null) ...[
                       _buildPledgeSection(),
-                      SizedBox(height: 24.h),
+                      SizedBox(height: AppSpacing.lg),
                     ],
 
                     // Submit button
                     SizedBox(
                       width: double.infinity,
-                      height: 50.h,
+                      height: 54.h,
                       child:
                           BlocBuilder<FreelancerGigsCubit, FreelancerGigsState>(
                             builder: (context, state) {
@@ -409,9 +487,19 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
                                     : _submitForm,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.primary,
-                                  foregroundColor: Colors.white,
+                                  foregroundColor: AppColors.textLight,
+                                  disabledBackgroundColor:
+                                      AppColors.primary.withValues(alpha: 0.4),
+                                  disabledForegroundColor:
+                                      AppColors.textLight.withValues(
+                                        alpha: 0.85,
+                                      ),
+                                  elevation: 0,
+                                  shadowColor: AppColors.gold.withValues(
+                                    alpha: 0.4,
+                                  ),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12.r),
+                                    borderRadius: BorderRadius.circular(14.r),
                                   ),
                                 ),
                                 child: isLoading
@@ -423,19 +511,32 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
                                           color: Colors.white,
                                         ),
                                       )
-                                    : Text(
-                                        AppStrings.freelancerGigsSubmitForReview
-                                            .tr(),
-                                        style: TextStyle(
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.send_rounded,
+                                            size: 18.sp,
+                                            color: AppColors.textLight,
+                                          ),
+                                          SizedBox(width: AppSpacing.sm),
+                                          Text(
+                                            AppStrings
+                                                .freelancerGigsSubmitForReview
+                                                .tr(),
+                                            style: TextStyle(
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                               );
                             },
                           ),
                     ),
-                    SizedBox(height: 32.h),
+                    SizedBox(height: AppSpacing.xl),
                   ],
                 ),
               ),
@@ -461,8 +562,8 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
 
   Widget _buildDaysAvailabilityWidget() {
     return Wrap(
-      spacing: 8.w,
-      runSpacing: 8.h,
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.sm,
       children: _dayOptions.map((day) {
         final isSelected = _selectedDays.contains(day);
         return GestureDetector(
@@ -475,22 +576,42 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
               }
             });
           },
-          child: Container(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.primary : Colors.white,
-              borderRadius: BorderRadius.circular(8.r),
+              color: isSelected
+                  ? AppColors.primary
+                  : AppColors.gold.withValues(alpha: 0.04),
+              borderRadius: BorderRadius.circular(12.r),
               border: Border.all(
-                color: isSelected ? AppColors.primary : const Color(0xFFEEEEEE),
+                color: isSelected ? AppColors.primary : AppColors.grey200,
               ),
             ),
-            child: Text(
-              _dayLabels[day] ?? day,
-              style: TextStyle(
-                color: isSelected ? Colors.white : const Color(0xFF2B2B2B),
-                fontSize: 14.sp,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (isSelected) ...[
+                  Icon(
+                    Icons.check_rounded,
+                    size: 16.sp,
+                    color: AppColors.textLight,
+                  ),
+                  SizedBox(width: 6.w),
+                ],
+                Text(
+                  _dayLabels[day] ?? day,
+                  style: TextStyle(
+                    color: isSelected
+                        ? AppColors.textLight
+                        : AppColors.textPrimary,
+                    fontSize: 14.sp,
+                    fontWeight: isSelected
+                        ? FontWeight.w700
+                        : FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
         );
@@ -499,54 +620,79 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
   }
 
   Widget _buildImageUploadWidget() {
+    final bool hasImage =
+        _pickedImage != null ||
+        (_existingImageUrl != null && _existingImageUrl!.isNotEmpty);
     return GestureDetector(
       onTap: _pickImage,
       child: Container(
         width: double.infinity,
         height: 200.h,
         decoration: ShapeDecoration(
-          color: const Color(0x0CC8A44F),
+          color: AppColors.gold.withValues(alpha: 0.05),
           shape: RoundedRectangleBorder(
-            side: const BorderSide(width: 2, color: Color(0xFFC8A44F)),
-            borderRadius: BorderRadius.circular(14.r),
+            side: BorderSide(
+              width: 1.5,
+              color: AppColors.gold.withValues(alpha: hasImage ? 0.3 : 0.45),
+            ),
+            borderRadius: BorderRadius.circular(16.r),
           ),
         ),
         child: _pickedImage != null
-            ? ClipRRect(
-                borderRadius: BorderRadius.circular(12.r),
-                child: Image.file(_pickedImage!, fit: BoxFit.cover),
+            ? Stack(
+                fit: StackFit.expand,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15.r),
+                    child: Image.file(_pickedImage!, fit: BoxFit.cover),
+                  ),
+                  _buildEditImageBadge(),
+                ],
               )
             : (_existingImageUrl != null && _existingImageUrl!.isNotEmpty)
-            ? ClipRRect(
-                borderRadius: BorderRadius.circular(12.r),
-                child: AppCachedNetworkImage(
-                  imageUrl: _existingImageUrl!,
-                  fit: BoxFit.cover,
-                  memCacheWidth: 1024,
-                  memCacheHeight: 1024,
-                  errorWidget: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.broken_image, size: 32.sp, color: Colors.grey),
-                      SizedBox(height: 4.h),
-                      Text(
-                        'خطأ في تحميل الصورة',
-                        style: TextStyle(fontSize: 12.sp, color: Colors.grey),
+            ? Stack(
+                fit: StackFit.expand,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15.r),
+                    child: AppCachedNetworkImage(
+                      imageUrl: _existingImageUrl!,
+                      fit: BoxFit.cover,
+                      memCacheWidth: 1024,
+                      memCacheHeight: 1024,
+                      errorWidget: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.broken_image,
+                            size: 32.sp,
+                            color: AppColors.grey400,
+                          ),
+                          SizedBox(height: AppSpacing.xs),
+                          Text(
+                            'خطأ في تحميل الصورة',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: AppColors.grey500,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  _buildEditImageBadge(),
+                ],
               )
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                     width: 64.w,
-                    height: 64.h,
+                    height: 64.w,
                     decoration: ShapeDecoration(
-                      color: const Color(0x33C8A34E),
+                      color: AppColors.gold.withValues(alpha: 0.18),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.r),
+                        borderRadius: BorderRadius.circular(18.r),
                       ),
                     ),
                     child: Icon(
@@ -555,49 +701,60 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
                       color: AppColors.primary,
                     ),
                   ),
-                  SizedBox(height: 12.h),
+                  SizedBox(height: AppSpacing.sm + 4.h),
                   Text(
                     AppStrings.freelancerPortfolioUploadImages.tr(),
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: const Color(0xFF2B2B2B),
+                      color: AppColors.textPrimary,
                       fontSize: 16.sp,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w600,
                       height: 1.50,
                     ),
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: AppSpacing.sm),
                   Text(
                     AppStrings.freelancerPortfolioUploadHint.tr(),
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: const Color(0xFF888888),
+                      color: AppColors.textSecondary,
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
                       height: 1.43,
                     ),
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: AppSpacing.md),
                   Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 8.h,
+                      horizontal: 18.w,
+                      vertical: 10.h,
                     ),
                     decoration: ShapeDecoration(
                       color: AppColors.primary,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.r),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                     ),
-                    child: Text(
-                      AppStrings.freelancerPortfolioSelectImages.tr(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14.sp,
-                        fontFamily: 'Cairo',
-                        fontWeight: FontWeight.w500,
-                        height: 1.43,
-                      ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.add_photo_alternate_outlined,
+                          size: 16.sp,
+                          color: AppColors.textLight,
+                        ),
+                        SizedBox(width: 6.w),
+                        Text(
+                          AppStrings.freelancerPortfolioSelectImages.tr(),
+                          style: TextStyle(
+                            color: AppColors.textLight,
+                            fontSize: 14.sp,
+                            fontFamily: 'Cairo',
+                            fontWeight: FontWeight.w600,
+                            height: 1.43,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -606,46 +763,132 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
     );
   }
 
-  Widget _buildLabel(String text) {
-    return Text(
-      text,
-      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        color: const Color(0xFF2B2B2B),
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w500,
+  Widget _buildEditImageBadge() {
+    return PositionedDirectional(
+      bottom: AppSpacing.sm,
+      end: AppSpacing.sm,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+        decoration: BoxDecoration(
+          color: AppColors.dark.withValues(alpha: 0.65),
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.edit_outlined,
+              size: 14.sp,
+              color: AppColors.textLight,
+            ),
+            SizedBox(width: 6.w),
+            Text(
+              AppStrings.freelancerPortfolioSelectImages.tr(),
+              style: TextStyle(
+                color: AppColors.textLight,
+                fontSize: 12.sp,
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  InputDecoration _buildInputDecoration(String hint, {Widget? suffix}) {
+  Widget _buildCard({required Widget child}) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18.r),
+        border: Border.all(color: AppColors.grey200),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 16.r,
+            offset: Offset(0, 4.h),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+
+  Widget _buildSectionHeader(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, color: AppColors.gold, size: 18.sp),
+        SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: Text(
+            text,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: AppColors.textPrimary,
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+        color: AppColors.textPrimary,
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w600,
+      ),
+    );
+  }
+
+  InputDecoration _buildInputDecoration(
+    String hint, {
+    Widget? suffix,
+    IconData? prefixIcon,
+  }) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: TextStyle(color: const Color(0xFFAAAAAA), fontSize: 14.sp),
+      hintStyle: TextStyle(color: AppColors.grey400, fontSize: 14.sp),
+      prefixIcon: prefixIcon != null
+          ? Icon(prefixIcon, color: AppColors.grey500, size: 20.sp)
+          : null,
       suffixIcon: suffix != null
           ? Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              padding: EdgeInsetsDirectional.symmetric(horizontal: 16.w),
               child: suffix,
             )
           : null,
       suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
       filled: true,
-      fillColor: Colors.white,
+      fillColor: AppColors.grey50,
       contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12.r),
-        borderSide: const BorderSide(color: Color(0xFFEEEEEE)),
+        borderSide: const BorderSide(color: AppColors.grey200),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12.r),
-        borderSide: const BorderSide(color: Color(0xFFEEEEEE)),
+        borderSide: const BorderSide(color: AppColors.grey200),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12.r),
-        borderSide: const BorderSide(color: AppColors.primary),
+        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12.r),
-        borderSide: const BorderSide(color: Colors.red),
+        borderSide: const BorderSide(color: AppColors.error),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.r),
+        borderSide: const BorderSide(color: AppColors.error, width: 1.5),
       ),
     );
   }

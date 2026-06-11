@@ -31,38 +31,44 @@ class ContractDetailsModel extends ContractDetailsEntity {
   });
 
   factory ContractDetailsModel.fromJson(Map<String, dynamic> json) {
+    final advertisement = json['advertisement'] is Map
+        ? Map<String, dynamic>.from(json['advertisement'] as Map)
+        : <String, dynamic>{};
+    final rawTitle = advertisement['title'];
+    final rawDescription = advertisement['description'];
     return ContractDetailsModel(
       id: json['id']?.toString() ?? '',
       status: deriveStatus(json),
-      serviceTitle: json['advertisement']?['title'] is Map
-          ? (json['advertisement']?['title']['en'] ?? '')
-          : (json['advertisement']?['title'] ?? ''),
-      serviceCategory: json['advertisement']?['category_id']?.toString() ?? '',
-      description: json['advertisement']?['description'] is Map
-          ? (json['advertisement']?['description']['en'] ?? '')
-          : (json['advertisement']?['description'] ?? ''),
+      serviceTitle: (rawTitle is Map ? rawTitle['en'] : rawTitle)?.toString() ??
+          '',
+      serviceCategory: advertisement['category_id']?.toString() ?? '',
+      description:
+          (rawDescription is Map ? rawDescription['en'] : rawDescription)
+                  ?.toString() ??
+              '',
       location: 'Saudi Arabia', // Mock or parse if available
-      date: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime.now(),
+      date: DateTime.tryParse(json['created_at']?.toString() ?? '') ??
+          DateTime.now(),
       budget:
           double.tryParse(json['requested_amount']?.toString() ?? '0') ?? 0.0,
         isPaymentDeposited:
           json['contract_status']?.toString().toLowerCase() == 'inprocess' ||
           json['contract_status']?.toString().toLowerCase() == 'inprogress' ||
           json['contract_status']?.toString().toLowerCase() == 'completed',
-      photographerName: json['publisher']?['name'] ?? '',
-      photographerImage: json['publisher']?['image'] ?? '',
+      photographerName: json['publisher']?['name']?.toString() ?? '',
+      photographerImage: json['publisher']?['image']?.toString() ?? '',
       approvedAt: json['approval_at'] != null
-          ? DateTime.tryParse(json['approval_at'])
+          ? DateTime.tryParse(json['approval_at'].toString())
           : null,
-      contractStatus: json['contract_status'],
+      contractStatus: json['contract_status']?.toString(),
       publisherId: json['publisher']?['id']?.toString() ?? '',
-      publisherPhone: json['publisher']?['phone'] ?? '',
-      publisherEmail: json['publisher']?['email'] ?? '',
+      publisherPhone: json['publisher']?['phone']?.toString() ?? '',
+      publisherEmail: json['publisher']?['email']?.toString() ?? '',
       customerId: json['customer']?['id']?.toString() ?? '',
-      customerName: json['customer']?['name'] ?? '',
-      customerImage: json['customer']?['image'] ?? '',
-      customerPhone: json['customer']?['phone'] ?? '',
-      customerEmail: json['customer']?['email'] ?? '',
+      customerName: json['customer']?['name']?.toString() ?? '',
+      customerImage: json['customer']?['image']?.toString() ?? '',
+      customerPhone: json['customer']?['phone']?.toString() ?? '',
+      customerEmail: json['customer']?['email']?.toString() ?? '',
       notes: _parseNotes(json),
       daysAvailability: _parseDaysAvailability(json),
       advertisementId: json['advertisement_id']?.toString() ?? '',
@@ -75,14 +81,18 @@ class ContractDetailsModel extends ContractDetailsEntity {
     // Parse Publisher Notes
     if (json['contr_pub_notes'] != null && json['contr_pub_notes'] is List) {
       for (var note in json['contr_pub_notes']) {
-        notes.add(ContractNoteModel.fromJson(note));
+        if (note is Map) {
+          notes.add(ContractNoteModel.fromJson(Map<String, dynamic>.from(note)));
+        }
       }
     }
 
     // Parse Customer Notes
     if (json['contr_cust_notes'] != null && json['contr_cust_notes'] is List) {
       for (var note in json['contr_cust_notes']) {
-        notes.add(ContractNoteModel.fromJson(note));
+        if (note is Map) {
+          notes.add(ContractNoteModel.fromJson(Map<String, dynamic>.from(note)));
+        }
       }
     }
 
@@ -125,11 +135,12 @@ class ContractNoteModel extends ContractNoteEntity {
 
   factory ContractNoteModel.fromJson(Map<String, dynamic> json) {
     return ContractNoteModel(
-      note: json['note'],
+      note: json['note']?.toString(),
       dateOfNote:
-          DateTime.tryParse(json['date_of_note'] ?? '') ?? DateTime.now(),
-      creator: json['creator'] ?? '',
-      userType: json['user_type'] ?? '',
+          DateTime.tryParse(json['date_of_note']?.toString() ?? '') ??
+              DateTime.now(),
+      creator: json['creator']?.toString() ?? '',
+      userType: json['user_type']?.toString() ?? '',
     );
   }
 }

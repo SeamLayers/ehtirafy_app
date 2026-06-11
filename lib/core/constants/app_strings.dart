@@ -89,6 +89,7 @@ class AppStrings {
   static const onboardingSubtitle = 'onboarding.subtitle';
   static const onboardingLogin = 'onboarding.login';
   static const onboardingSignup = 'onboarding.signup';
+  static const onboardingContinueAsGuest = 'onboarding.continueAsGuest';
   static const onboardingBannerTitle = 'onboarding.bannerTitle';
   static const onboardingBannerSubtitle = 'onboarding.bannerSubtitle';
   static const onboardingDisclaimer = 'onboarding.disclaimer';

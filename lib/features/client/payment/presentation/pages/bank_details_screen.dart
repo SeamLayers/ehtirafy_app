@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../../core/constants/app_spacing.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/widgets/error_state_widget.dart';
+import '../../../../../core/widgets/primary_button.dart';
+import '../../../../../core/widgets/rtl_back_button.dart';
 import '../cubit/bank_details_cubit.dart';
 import '../cubit/bank_details_state.dart';
 import '../widgets/bank_details_card.dart';
@@ -31,10 +35,33 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
+      backgroundColor: AppColors.backgroundLight,
       appBar: AppBar(
-        title: Text('bank_details_title'.tr()),
+        backgroundColor: theme.scaffoldBackgroundColor,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0.5,
         centerTitle: true,
+        leading: const RtlBackButton(),
+        title: Text(
+          'bank_details_title'.tr(),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.h),
+          child: Container(
+            height: 1.h,
+            color: AppColors.grey200,
+          ),
+        ),
       ),
       body: BlocConsumer<BankDetailsCubit, BankDetailsState>(
         listener: (context, state) {
@@ -42,103 +69,97 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
-                backgroundColor: Colors.red,
+                backgroundColor: AppColors.error,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
               ),
             );
           }
         },
         builder: (context, state) {
           if (state is BankDetailsLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
+                strokeWidth: 3.w,
+              ),
+            );
           }
 
           if (state is BankDetailsError) {
-            return Center(
-              child: Padding(
-                padding: EdgeInsets.all(24.w),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: Colors.red,
-                      size: 80.sp,
-                    ),
-                    SizedBox(height: 16.h),
-                    Text(
-                      state.message,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16.sp),
-                    ),
-                    SizedBox(height: 32.h),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<BankDetailsCubit>().fetchBankDetails();
-                      },
-                      child: Text('retry'.tr()),
-                    ),
-                  ],
-                ),
-              ),
+            return ErrorStateWidget(
+              message: state.message,
+              retryText: 'retry'.tr(),
+              onRetry: () {
+                context.read<BankDetailsCubit>().fetchBankDetails();
+              },
             );
           }
 
           if (state is BankDetailsLoaded) {
             return SingleChildScrollView(
-              padding: EdgeInsets.all(16.w),
+              padding: EdgeInsets.all(AppSpacing.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Instructions
                   Container(
-                    padding: EdgeInsets.all(12.w),
+                    padding: EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: Colors.blue.shade50,
-                      borderRadius: BorderRadius.circular(8.r),
-                      border: Border.all(color: Colors.blue.shade200),
-                    ),
-                    child: Text(
-                      'bank_details_instruction'.tr(),
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: Colors.blue.shade900,
-                        height: 1.5,
+                      color: AppColors.gold.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(16.r),
+                      border: Border.all(
+                        color: AppColors.gold.withValues(alpha: 0.25),
                       ),
                     ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(AppSpacing.sm),
+                          decoration: BoxDecoration(
+                            color: AppColors.gold.withValues(alpha: 0.14),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.info_outline_rounded,
+                            size: 20.sp,
+                            color: AppColors.gold,
+                          ),
+                        ),
+                        SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: Text(
+                            'bank_details_instruction'.tr(),
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontSize: 14.sp,
+                              color: AppColors.textPrimary,
+                              height: 1.5,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(height: 24.h),
+                  SizedBox(height: AppSpacing.lg),
 
                   // Bank Account Details Card
                   BankDetailsCard(bankAccount: state.bankAccount),
-                  SizedBox(height: 32.h),
+                  SizedBox(height: AppSpacing.xl),
 
                   // Proceed to Payment Proof Button
-                  SizedBox(
-                    height: 56.h,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.r),
-                        ),
-                      ),
-                      onPressed: () {
-                        // Navigate to payment proof screen
-                        context.push(
-                          '/payment/proof/${widget.contractId}?advId=${widget.advertisementId}',
-                        );
-                      },
-                      child: Text(
-                        'proceed_to_payment_proof'.tr(),
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                  PrimaryButton(
+                    text: 'proceed_to_payment_proof'.tr(),
+                    onPressed: () {
+                      // Navigate to payment proof screen
+                      context.push(
+                        '/payment/proof/${widget.contractId}?advId=${widget.advertisementId}',
+                      );
+                    },
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: AppSpacing.md),
                 ],
               ),
             );

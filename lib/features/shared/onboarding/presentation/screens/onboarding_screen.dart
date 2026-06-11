@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import '../widgets/onboarding_header.dart';
 import '../widgets/onboarding_feature_grid.dart';
 import '../widgets/onboarding_banner.dart';
@@ -15,22 +15,55 @@ class OnboardingScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.dark : AppColors.backgroundLight,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-            child: const Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                OnboardingHeader(),
-                SizedBox(height: 24),
-                OnboardingFeatureGrid(),
-                SizedBox(height: 24),
-                OnboardingBanner(),
-                SizedBox(height: 24),
-                OnboardingFooter(),
-              ],
-            ),
+      body: Container(
+        // Subtle premium gold-tinted backdrop that fades into the base
+        // surface — adds depth behind the brand logo without being noisy.
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: isDark
+                ? [
+                    AppColors.gold.withValues(alpha: 0.08),
+                    AppColors.dark,
+                  ]
+                : [
+                    AppColors.gold.withValues(alpha: 0.06),
+                    AppColors.backgroundLight,
+                  ],
+            stops: const [0.0, 0.45],
+          ),
+        ),
+        child: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.md,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const OnboardingHeader(),
+                        SizedBox(height: AppSpacing.lg),
+                        const OnboardingFeatureGrid(),
+                        SizedBox(height: AppSpacing.lg),
+                        const OnboardingBanner(),
+                        SizedBox(height: AppSpacing.lg),
+                        const OnboardingFooter(),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),

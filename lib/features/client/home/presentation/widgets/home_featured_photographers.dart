@@ -1,8 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:ehtirafy_app/core/constants/demo_images.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_entity.dart';
@@ -19,33 +20,66 @@ class HomeFeaturedPhotographers extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'أبرز المصورين',
-                    style: TextStyle(
-                      color: const Color(0xFF2B2B2B),
-                      fontSize: 18.sp,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w700,
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 4.w,
+                      height: 36.h,
+                      margin: EdgeInsetsDirectional.only(end: 10.w, top: 2.h),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [AppColors.gold, Color(0xFFEAD39C)],
+                        ),
+                        borderRadius: BorderRadius.circular(999.r),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    'اختيارات مميزة حسب التقييم والجودة',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: const Color(0xFF8D8D8D),
-                      fontWeight: FontWeight.w600,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'home_featured.section_title'.tr(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style:
+                                theme.textTheme.titleLarge?.copyWith(
+                                  color: AppColors.textPrimary,
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w700,
+                                ) ??
+                                TextStyle(
+                                  color: AppColors.textPrimary,
+                                  fontSize: 18.sp,
+                                  fontFamily: 'Cairo',
+                                  fontWeight: FontWeight.w700,
+                                ),
+                          ),
+                          SizedBox(height: 2.h),
+                          Text(
+                            'home_featured.section_subtitle'.tr(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              SizedBox(width: AppSpacing.sm),
               Container(
                 decoration: BoxDecoration(
                   color: AppColors.gold.withValues(alpha: 0.10),
@@ -64,32 +98,40 @@ class HomeFeaturedPhotographers extends StatelessWidget {
                     ),
                   ),
                   onPressed: () => context.push('/all-freelancers'),
-                  child: Text(
-                    'عرض الكل',
-                    style: TextStyle(
-                      color: AppColors.gold,
-                      fontSize: 12.sp,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w700,
-                    ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'home_featured.view_all'.tr(),
+                        style: TextStyle(
+                          color: AppColors.gold,
+                          fontSize: 12.sp,
+                          fontFamily: 'Cairo',
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      SizedBox(width: 3.w),
+                      Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: AppColors.gold,
+                        size: 11.sp,
+                      ),
+                    ],
                   ),
                 ),
               ),
             ],
           ),
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: AppSpacing.md),
         ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           itemCount: photographers.length,
-          separatorBuilder: (context, index) => SizedBox(height: 16.h),
+          separatorBuilder: (context, index) => SizedBox(height: AppSpacing.md),
           itemBuilder: (context, index) {
-            return _PhotographerCard(
-              photographer: photographers[index],
-              index: index,
-            );
+            return _PhotographerCard(photographer: photographers[index]);
           },
         ),
       ],
@@ -99,19 +141,20 @@ class HomeFeaturedPhotographers extends StatelessWidget {
 
 class _PhotographerCard extends StatelessWidget {
   final PhotographerEntity photographer;
-  final int index;
 
-  const _PhotographerCard({required this.photographer, required this.index});
+  const _PhotographerCard({required this.photographer});
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = photographer.imageUrl.isNotEmpty
-        ? photographer.imageUrl
-        : DemoImages.items[index % DemoImages.items.length];
+    // Use the real photographer image from the API. When it is empty,
+    // AppCachedNetworkImage shows its branded placeholder/error fallback.
+    final imageUrl = photographer.imageUrl;
     final theme = Theme.of(context);
     final availabilityLabel = photographer.daysAvailability.isNotEmpty
-        ? 'متاح ${photographer.daysAvailability.length} أيام'
-        : 'متاح للحجز';
+        ? 'home_featured.available_days'.tr(
+            namedArgs: {'count': '${photographer.daysAvailability.length}'},
+          )
+        : 'home_featured.available_for_booking'.tr();
 
     return GestureDetector(
       onTap: () => context.push('/freelancer/${photographer.id}'),
@@ -122,13 +165,18 @@ class _PhotographerCard extends StatelessWidget {
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFFC8A44F), Color(0xFFEAD39C), Color(0xFFF5EED5)],
+            colors: [AppColors.gold, Color(0xFFEAD39C), Color(0xFFF5EED5)],
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.gold.withValues(alpha: 0.18),
+              color: AppColors.gold.withValues(alpha: 0.16),
               blurRadius: 24,
               offset: const Offset(0, 12),
+            ),
+            const BoxShadow(
+              color: AppColors.shadowLight,
+              blurRadius: 8,
+              offset: Offset(0, 2),
             ),
           ],
         ),
@@ -172,9 +220,9 @@ class _PhotographerCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Positioned(
+                    PositionedDirectional(
                       top: 6.h,
-                      left: 6.w,
+                      start: 6.w,
                       child: Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 6.w,
@@ -196,7 +244,7 @@ class _PhotographerCard extends StatelessWidget {
                             ),
                             SizedBox(width: 3.w),
                             Text(
-                              'موثوق',
+                              'home_featured.verified'.tr(),
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 9.sp,
@@ -208,9 +256,9 @@ class _PhotographerCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Positioned(
+                    PositionedDirectional(
                       bottom: 6.h,
-                      right: 6.w,
+                      end: 6.w,
                       child: Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 7.w,
@@ -258,19 +306,24 @@ class _PhotographerCard extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: const Color(0xFF2B2B2B),
+                              color: AppColors.textPrimary,
                               fontSize: 17.sp,
                               fontFamily: 'Cairo',
                               fontWeight: FontWeight.w800,
                             ),
                           ),
                         ),
+                        SizedBox(width: 6.w),
                         Container(
                           width: 30.w,
                           height: 30.w,
+                          alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: AppColors.gold.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(9.r),
+                            border: Border.all(
+                              color: AppColors.gold.withValues(alpha: 0.22),
+                            ),
                           ),
                           child: Icon(
                             Icons.bookmark_border_rounded,
@@ -308,11 +361,15 @@ class _PhotographerCard extends StatelessWidget {
                         SizedBox(width: 4.w),
                         Expanded(
                           child: Text(
-                            '${photographer.reviewsCount} تقييم',
+                            'home_featured.reviews_count'.tr(
+                              namedArgs: {
+                                'count': '${photographer.reviewsCount}',
+                              },
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: const Color(0xFF707070),
+                              color: AppColors.textSecondary,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -320,7 +377,7 @@ class _PhotographerCard extends StatelessWidget {
                         SizedBox(width: 6.w),
                         Icon(
                           Icons.location_on_outlined,
-                          color: const Color(0xFF8C8C8C),
+                          color: AppColors.grey500,
                           size: 15.sp,
                         ),
                         SizedBox(width: 3.w),
@@ -330,7 +387,7 @@ class _PhotographerCard extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: const Color(0xFF888888),
+                              color: AppColors.textSecondary,
                               fontSize: 11.sp,
                               fontFamily: 'Cairo',
                               fontWeight: FontWeight.w700,
@@ -345,7 +402,7 @@ class _PhotographerCard extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.event_available_outlined,
-                            color: const Color(0xFF7D7D7D),
+                            color: AppColors.grey500,
                             size: 14.sp,
                           ),
                           SizedBox(width: 4.w),
@@ -355,7 +412,7 @@ class _PhotographerCard extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                color: const Color(0xFF888888),
+                                color: AppColors.textSecondary,
                                 fontSize: 11.sp,
                                 fontFamily: 'Cairo',
                                 fontWeight: FontWeight.w600,
@@ -379,7 +436,7 @@ class _PhotographerCard extends StatelessWidget {
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                     colors: [
-                                      Color(0xFFC8A44F),
+                                      AppColors.gold,
                                       Color(0xFFB58E39),
                                     ],
                                   ),
@@ -399,11 +456,11 @@ class _PhotographerCard extends StatelessWidget {
                                   children: [
                                     Flexible(
                                       child: Text(
-                                        'عرض الملف',
+                                        'home_featured.view_profile'.tr(),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
-                                          color: Colors.white,
+                                          color: AppColors.textLight,
                                           fontSize: 11.sp,
                                           fontFamily: 'Cairo',
                                           fontWeight: FontWeight.w700,
@@ -412,8 +469,8 @@ class _PhotographerCard extends StatelessWidget {
                                     ),
                                     SizedBox(width: 4.w),
                                     Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      color: Colors.white,
+                                      Icons.arrow_back_ios_new_rounded,
+                                      color: AppColors.textLight,
                                       size: 11.sp,
                                     ),
                                   ],
@@ -456,9 +513,9 @@ class _PhotographerCard extends StatelessWidget {
                                       ),
                                       SizedBox(width: 4.w),
                                       Text(
-                                        'ريال',
+                                        'home_featured.currency_sar'.tr(),
                                         style: TextStyle(
-                                          color: const Color(0xFF888888),
+                                          color: AppColors.textSecondary,
                                           fontSize: 11.sp,
                                           fontFamily: 'Cairo',
                                           fontWeight: FontWeight.w700,

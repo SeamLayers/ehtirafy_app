@@ -1,12 +1,14 @@
-import 'dart:ui' as ui;
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../../core/constants/app_spacing.dart';
 import '../../../../../core/di/service_locator.dart';
+import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/widgets/rtl_back_button.dart';
+import '../../../../../core/widgets/user_avatar.dart';
 import '../manager/profile_cubit.dart';
 import '../manager/profile_state.dart';
 
@@ -22,12 +24,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
   late TextEditingController _bioController;
-
-  final Color _primaryGold = const Color(0xFFC8A44F);
-  final Color _darkText = const Color(0xFF2B2B2B);
-  final Color _lightText = const Color(0xFF888888);
-
-  final Color _inputBorder = const Color(0xFFE0E0E0);
 
   @override
   void initState() {
@@ -49,7 +45,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return BlocProvider(
       create: (context) => sl<ProfileCubit>()..loadUserProfile(),
       child: BlocConsumer<ProfileCubit, ProfileState>(
@@ -64,203 +59,237 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         builder: (context, state) {
           if (state is ProfileLoading) {
             return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
+              backgroundColor: AppColors.backgroundLight,
+              body: Center(
+                child: CircularProgressIndicator(color: AppColors.gold),
+              ),
             );
           }
 
+          final String displayName =
+              state is ProfileLoaded ? state.userProfile.name : '';
+
           return Scaffold(
-            backgroundColor: const Color(0xFFF8F9FA),
+            backgroundColor: AppColors.backgroundLight,
             appBar: AppBar(
               backgroundColor: Colors.white,
               elevation: 0,
+              scrolledUnderElevation: 0,
+              shape: const Border(
+                bottom: BorderSide(color: AppColors.grey200, width: 1),
+              ),
               title: Text(
                 'profile.menu.edit_profile'.tr(),
-                style: TextStyle(
-                  color: _darkText,
-                  fontSize: 18.sp,
-                  fontFamily: 'Cairo',
-                  fontWeight: FontWeight.w600,
-                ),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
               ),
               centerTitle: true,
-              leading: IconButton(
-                icon: Icon(
-                  isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
-                  color: _darkText,
-                  size: 20.sp,
-                ),
-                onPressed: () => context.pop(),
-              ),
+              leadingWidth: 56.w,
+              leading: RtlBackButton(onPressed: () => context.pop()),
               actions: [
-                TextButton(
-                  onPressed: () {
-                    final cubit = context.read<ProfileCubit>();
-                    final currentState = cubit.state;
+                Padding(
+                  padding: EdgeInsetsDirectional.only(end: AppSpacing.sm),
+                  child: TextButton(
+                    onPressed: () {
+                      final cubit = context.read<ProfileCubit>();
+                      final currentState = cubit.state;
 
-                    if (currentState is ProfileLoaded) {
-                      final currentPhone = currentState.userProfile.phone;
-                      final newPhone = _phoneController.text;
+                      if (currentState is ProfileLoaded) {
+                        final currentPhone = currentState.userProfile.phone;
+                        final newPhone = _phoneController.text;
 
-                      if (currentPhone != newPhone) {
-                        _showOtpDialog(context, newPhone);
-                        return;
+                        if (currentPhone != newPhone) {
+                          _showOtpDialog(context, newPhone);
+                          return;
+                        }
                       }
-                    }
 
-                    _updateProfile(context);
-                  },
-                  child: BlocConsumer<ProfileCubit, ProfileState>(
-                    listener: (context, state) {
-                      if (state is ProfileUpdateSuccess) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('profile.update_success'.tr()),
+                      _updateProfile(context);
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: AppColors.gold.withValues(alpha: 0.10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.xs,
+                      ),
+                      minimumSize: Size(0, 36.h),
+                    ),
+                    child: BlocConsumer<ProfileCubit, ProfileState>(
+                      listener: (context, state) {
+                        if (state is ProfileUpdateSuccess) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('profile.update_success'.tr()),
+                            ),
+                          );
+                        } else if (state is ProfileError) {
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(SnackBar(content: Text(state.message)));
+                        }
+                      },
+                      builder: (context, state) {
+                        if (state is ProfileLoading) {
+                          return SizedBox(
+                            width: 20.w,
+                            height: 20.w,
+                            child: const CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.gold,
+                            ),
+                          );
+                        }
+                        return Text(
+                          'save'.tr(),
+                          style: TextStyle(
+                            color: AppColors.gold,
+                            fontSize: 15.sp,
+                            fontFamily: 'Cairo',
+                            fontWeight: FontWeight.w700,
                           ),
                         );
-                      } else if (state is ProfileError) {
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(SnackBar(content: Text(state.message)));
-                      }
-                    },
-                    builder: (context, state) {
-                      if (state is ProfileLoading) {
-                        return SizedBox(
-                          width: 20.w,
-                          height: 20.w,
-                          child: const CircularProgressIndicator(
-                            strokeWidth: 2,
-                          ),
-                        );
-                      }
-                      return Text(
-                        'save'.tr(),
-                        style: TextStyle(
-                          color: _primaryGold,
-                          fontSize: 16.sp,
-                          fontFamily: 'Cairo',
-                          fontWeight: FontWeight.w600,
-                        ),
-                      );
-                    },
+                      },
+                    ),
                   ),
                 ),
               ],
             ),
             body: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.lg,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Avatar Section - Using initials instead of photo
                   Center(
-                    child: Container(
-                      width: 120.w,
-                      height: 120.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [_primaryGold, const Color(0xFFD4AF37)],
-                        ),
-                        border: Border.all(color: Colors.white, width: 3),
-                        boxShadow: [
-                          BoxShadow(
-                            color: _primaryGold.withValues(alpha: 0.3),
-                            blurRadius: 15,
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          _getInitials(
-                            state is ProfileLoaded
-                                ? state.userProfile.name
-                                : '',
-                          ),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 40.sp,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'Cairo',
-                          ),
-                        ),
-                      ),
+                    child: UserAvatar(
+                      name: displayName,
+                      size: 120,
+                      fontSize: 40.sp,
                     ),
                   ),
-                  SizedBox(height: 40.h),
-
-                  // Form Fields
-                  _buildSectionTitle('profile.edit.full_name'.tr()),
-                  SizedBox(height: 12.h),
-                  _buildTextField(
-                    controller: _nameController,
-                    icon: Icons.person_outline_rounded,
-                  ),
-                  SizedBox(height: 24.h),
-
-                  _buildSectionTitle('email'.tr()),
-                  SizedBox(height: 12.h),
-                  _buildTextField(
-                    controller: _emailController,
-                    icon: Icons.email_outlined,
-                    readOnly: true,
-                  ),
-                  SizedBox(height: 8.h),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.info_outline_rounded,
-                        size: 14.sp,
-                        color: _lightText,
-                      ),
-                      SizedBox(width: 6.w),
-                      Text(
-                        'profile.edit.email_read_only'.tr(),
-                        style: TextStyle(
-                          color: _lightText,
-                          fontSize: 12.sp,
-                          fontFamily: 'Cairo',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 24.h),
-
-                  _buildSectionTitle('profile.edit.phone'.tr()),
-                  SizedBox(height: 12.h),
-                  _buildTextField(
-                    controller: _phoneController,
-                    icon: Icons.phone_outlined,
-                  ),
-                  SizedBox(height: 24.h),
-
-                  _buildSectionTitle('profile.edit.bio'.tr()),
-                  SizedBox(height: 12.h),
-                  _buildTextField(
-                    controller: _bioController,
-                    icon: Icons.edit_note_rounded,
-                    maxLines: 4,
-                    hint: 'profile.edit.bio_hint'.tr(),
-                    alignTop: true,
-                  ),
-                  SizedBox(height: 8.h),
-                  Align(
-                    alignment: AlignmentDirectional.centerEnd,
-                    child: Text(
-                      '${_bioController.text.length}/500',
-                      style: TextStyle(
-                        color: _lightText,
-                        fontSize: 12.sp,
-                        fontFamily: 'Cairo',
-                        fontWeight: FontWeight.w400,
+                  SizedBox(height: AppSpacing.md),
+                  if (displayName.isNotEmpty)
+                    Center(
+                      child: Text(
+                        displayName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textPrimary,
+                            ),
                       ),
                     ),
+                  SizedBox(height: AppSpacing.xl),
+
+                  // Form Card
+                  Container(
+                    padding: EdgeInsets.all(AppSpacing.lg),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.r),
+                      border: Border.all(color: AppColors.grey200, width: 1),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.gold.withValues(alpha: 0.05),
+                          blurRadius: 16,
+                          offset: const Offset(0, 6),
+                        ),
+                        const BoxShadow(
+                          color: AppColors.shadowLight,
+                          blurRadius: 8,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildSectionTitle('profile.edit.full_name'.tr()),
+                        SizedBox(height: AppSpacing.sm),
+                        _buildTextField(
+                          controller: _nameController,
+                          icon: Icons.person_outline_rounded,
+                        ),
+                        SizedBox(height: AppSpacing.lg),
+
+                        _buildSectionTitle('email'.tr()),
+                        SizedBox(height: AppSpacing.sm),
+                        _buildTextField(
+                          controller: _emailController,
+                          icon: Icons.email_outlined,
+                          readOnly: true,
+                        ),
+                        SizedBox(height: AppSpacing.sm),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.info_outline_rounded,
+                              size: 14.sp,
+                              color: AppColors.textSecondary,
+                            ),
+                            SizedBox(width: AppSpacing.xs),
+                            Flexible(
+                              child: Text(
+                                'profile.edit.email_read_only'.tr(),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12.sp,
+                                  fontFamily: 'Cairo',
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: AppSpacing.lg),
+
+                        _buildSectionTitle('profile.edit.phone'.tr()),
+                        SizedBox(height: AppSpacing.sm),
+                        _buildTextField(
+                          controller: _phoneController,
+                          icon: Icons.phone_outlined,
+                        ),
+                        SizedBox(height: AppSpacing.lg),
+
+                        _buildSectionTitle('profile.edit.bio'.tr()),
+                        SizedBox(height: AppSpacing.sm),
+                        _buildTextField(
+                          controller: _bioController,
+                          icon: Icons.edit_note_rounded,
+                          maxLines: 4,
+                          hint: 'profile.edit.bio_hint'.tr(),
+                          alignTop: true,
+                        ),
+                        SizedBox(height: AppSpacing.sm),
+                        Align(
+                          alignment: AlignmentDirectional.centerEnd,
+                          child: Text(
+                            '${_bioController.text.length}/500',
+                            style: TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 12.sp,
+                              fontFamily: 'Cairo',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(height: 40.h),
+                  SizedBox(height: AppSpacing.xl),
                 ],
               ),
             ),
@@ -271,14 +300,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: TextStyle(
-        color: _darkText,
-        fontSize: 14.sp,
-        fontFamily: 'Cairo',
-        fontWeight: FontWeight.w600,
-      ),
+    return Row(
+      children: [
+        Container(
+          width: 4.w,
+          height: 14.h,
+          decoration: BoxDecoration(
+            color: AppColors.gold,
+            borderRadius: BorderRadius.circular(4.r),
+          ),
+        ),
+        SizedBox(width: AppSpacing.sm),
+        Flexible(
+          child: Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 14.sp,
+              fontFamily: 'Cairo',
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -292,22 +338,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: readOnly ? const Color(0xFFF5F5F5) : Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
+        color: readOnly ? AppColors.grey100 : AppColors.grey50,
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
-          color: readOnly ? Colors.transparent : _inputBorder,
+          color: readOnly ? AppColors.grey200 : AppColors.grey300,
           width: 1,
         ),
-        boxShadow: readOnly
-            ? []
-            : [
-                const BoxShadow(
-                  color: Color(0x08000000),
-                  blurRadius: 10,
-                  offset: Offset(0, 4),
-                  spreadRadius: 0,
-                ),
-              ],
       ),
       child: Row(
         crossAxisAlignment: alignTop
@@ -315,22 +351,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             : CrossAxisAlignment.center,
         children: [
           Padding(
-            padding: EdgeInsets.only(
-              left: 16.w,
-              right: 16.w,
-              top: alignTop ? 16.h : 0,
+            padding: EdgeInsetsDirectional.only(
+              start: AppSpacing.md,
+              end: AppSpacing.md,
+              top: alignTop ? AppSpacing.md : 0,
             ),
-            child: Icon(icon, color: _primaryGold, size: 22.sp),
+            child: Icon(
+              icon,
+              color: readOnly ? AppColors.grey400 : AppColors.gold,
+              size: 22.sp,
+            ),
           ),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: alignTop ? 8.h : 4.h),
+              padding: EdgeInsetsDirectional.only(
+                end: AppSpacing.md,
+                top: alignTop ? AppSpacing.sm : 0,
+                bottom: alignTop ? AppSpacing.sm : 0,
+              ),
               child: TextField(
                 controller: controller,
                 readOnly: readOnly,
                 maxLines: maxLines,
                 style: TextStyle(
-                  color: readOnly ? _lightText : _darkText,
+                  color: readOnly
+                      ? AppColors.textSecondary
+                      : AppColors.textPrimary,
                   fontSize: 15.sp,
                   fontFamily: 'Cairo',
                   fontWeight: FontWeight.w500,
@@ -339,7 +385,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   border: InputBorder.none,
                   hintText: hint,
                   hintStyle: TextStyle(
-                    color: _lightText.withValues(alpha: 0.7),
+                    color: AppColors.grey400,
                     fontSize: 14.sp,
                     fontFamily: 'Cairo',
                     fontWeight: FontWeight.w400,
@@ -355,15 +401,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ],
       ),
     );
-  }
-
-  String _getInitials(String name) {
-    if (name.isEmpty) return '?';
-    final parts = name.trim().split(' ');
-    if (parts.length >= 2) {
-      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
-    }
-    return parts[0][0].toUpperCase();
   }
 
   void _updateProfile(BuildContext context) {
@@ -393,9 +430,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       context: context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
         title: Text(
           'profile.edit.verifyPhoneTitle'.tr(),
-          style: TextStyle(fontFamily: 'Cairo', fontSize: 16.sp),
+          style: TextStyle(
+            fontFamily: 'Cairo',
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+          ),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -403,17 +449,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           children: [
             Text(
               'profile.edit.otpSentMessage'.tr(args: [phone]),
-              style: TextStyle(fontFamily: 'Cairo', fontSize: 14.sp),
+              style: TextStyle(
+                fontFamily: 'Cairo',
+                fontSize: 14.sp,
+                color: AppColors.textSecondary,
+              ),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.md),
             TextField(
               controller: otpController,
               keyboardType: TextInputType.number,
+              style: TextStyle(
+                fontFamily: 'Cairo',
+                fontSize: 14.sp,
+                color: AppColors.textPrimary,
+              ),
               decoration: InputDecoration(
+                filled: true,
+                fillColor: AppColors.grey50,
                 hintText: 'profile.edit.enterOtpHint'.tr(),
-                hintStyle: TextStyle(fontFamily: 'Cairo', fontSize: 12.sp),
+                hintStyle: TextStyle(
+                  fontFamily: 'Cairo',
+                  fontSize: 12.sp,
+                  color: AppColors.grey400,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                  borderSide: const BorderSide(color: AppColors.grey300),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                  borderSide: const BorderSide(color: AppColors.gold, width: 2),
+                ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.r),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
               ),
             ),
@@ -424,7 +493,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             onPressed: () => Navigator.pop(ctx),
             child: Text(
               AppStrings.cancel.tr(),
-              style: const TextStyle(fontFamily: 'Cairo', color: Colors.grey),
+              style: const TextStyle(
+                fontFamily: 'Cairo',
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           ElevatedButton(
@@ -436,10 +509,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 _updateProfile(context);
               }
             },
-            style: ElevatedButton.styleFrom(backgroundColor: _primaryGold),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.gold,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+            ),
             child: Text(
               AppStrings.confirm.tr(),
-              style: const TextStyle(fontFamily: 'Cairo', color: Colors.white),
+              style: const TextStyle(
+                fontFamily: 'Cairo',
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],

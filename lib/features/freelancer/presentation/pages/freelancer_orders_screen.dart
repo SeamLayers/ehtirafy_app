@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/widgets/financial_pledge_section.dart';
 import '../cubit/freelancer_orders_cubit.dart';
@@ -50,7 +51,7 @@ class _FreelancerOrdersScreenState extends State<FreelancerOrdersScreen> {
         statusBarColor: Colors.transparent,
       ),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF9F9F9),
+        backgroundColor: AppColors.backgroundLight,
         body: Column(
           children: [
             _buildHeader(context),
@@ -58,7 +59,14 @@ class _FreelancerOrdersScreenState extends State<FreelancerOrdersScreen> {
               child: BlocBuilder<FreelancerOrdersCubit, FreelancerOrdersState>(
                 builder: (context, state) {
                   if (state is FreelancerOrdersLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5.r,
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          AppColors.gold,
+                        ),
+                      ),
+                    );
                   }
 
                   if (state is FreelancerOrdersError) {
@@ -73,7 +81,12 @@ class _FreelancerOrdersScreenState extends State<FreelancerOrdersScreen> {
                     return Column(
                       children: [
                         Padding(
-                          padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                            AppSpacing.lg,
+                            AppSpacing.md,
+                            AppSpacing.lg,
+                            0,
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -87,9 +100,11 @@ class _FreelancerOrdersScreenState extends State<FreelancerOrdersScreen> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 10.h),
+                        SizedBox(height: AppSpacing.md),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 24.w),
+                          padding: EdgeInsetsDirectional.symmetric(
+                            horizontal: AppSpacing.lg,
+                          ),
                           child: OrdersFilterTab(
                             selectedIndex: state.selectedTabIndex,
                             onTabSelected: (index) {
@@ -99,7 +114,7 @@ class _FreelancerOrdersScreenState extends State<FreelancerOrdersScreen> {
                             },
                           ),
                         ),
-                        SizedBox(height: 24.h),
+                        SizedBox(height: AppSpacing.lg),
                         Expanded(
                           child: AnimatedSwitcher(
                             duration: const Duration(milliseconds: 300),
@@ -110,14 +125,14 @@ class _FreelancerOrdersScreenState extends State<FreelancerOrdersScreen> {
                                   )
                                 : ListView.separated(
                                     key: ValueKey<int>(state.selectedTabIndex),
-                                    padding: EdgeInsets.only(
-                                      left: 24.w,
-                                      right: 24.w,
-                                      bottom: 24.h,
+                                    padding: EdgeInsetsDirectional.only(
+                                      start: AppSpacing.lg,
+                                      end: AppSpacing.lg,
+                                      bottom: AppSpacing.lg,
                                     ),
                                     itemCount: state.filteredOrders.length,
                                     separatorBuilder: (context, index) =>
-                                        SizedBox(height: 16.h),
+                                        SizedBox(height: AppSpacing.md),
                                     itemBuilder: (context, index) {
                                       final order = state.filteredOrders[index];
                                       return GestureDetector(
@@ -176,23 +191,58 @@ class _FreelancerOrdersScreenState extends State<FreelancerOrdersScreen> {
       child: SafeArea(
         bottom: false,
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 16.h),
-          decoration: const BoxDecoration(
+          padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
+          decoration: BoxDecoration(
             color: AppColors.dark,
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(24),
               bottomRight: Radius.circular(24),
             ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withValues(alpha: 0.18),
+                blurRadius: 16.r,
+                offset: Offset(0, 6.h),
+              ),
+            ],
           ),
           child: Center(
-            child: Text(
-              AppStrings.freelancerOrdersTitle.tr(),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.white,
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w400,
-                height: 1.50,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 30.w,
+                  height: 30.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.gold.withValues(alpha: 0.16),
+                    border: Border.all(
+                      color: AppColors.gold.withValues(alpha: 0.45),
+                      width: 1,
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.receipt_long_rounded,
+                    size: 16.sp,
+                    color: AppColors.gold,
+                  ),
+                ),
+                SizedBox(width: AppSpacing.sm),
+                Flexible(
+                  child: Text(
+                    AppStrings.freelancerOrdersTitle.tr(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Colors.white,
+                      fontSize: 17.sp,
+                      fontWeight: FontWeight.w700,
+                      height: 1.50,
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

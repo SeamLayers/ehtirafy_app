@@ -1,9 +1,10 @@
-import 'dart:ui' as ui;
-
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/di/service_locator.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
+import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/entities/contract_details_entity.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/manager/contract_details_cubit.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/manager/contract_details_state.dart';
@@ -16,7 +17,6 @@ import 'package:ehtirafy_app/features/client/contract/presentation/widgets/work_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:ehtirafy_app/features/shared/auth/presentation/cubits/role_cubit.dart';
 import 'package:ehtirafy_app/features/shared/auth/domain/entities/user_role.dart';
@@ -28,42 +28,52 @@ class OrderDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return BlocProvider(
       create: (context) =>
           sl<ContractDetailsCubit>()..getContractDetails(orderId),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF9F9F9),
+        backgroundColor: AppColors.backgroundLight,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
           elevation: 0,
+          scrolledUnderElevation: 0,
           centerTitle: true,
+          shape: Border(
+            bottom: BorderSide(color: AppColors.grey200, width: 1.h),
+          ),
           title: Text(
             AppStrings.contractDetailsTitle.tr(),
             style: TextStyle(
+              fontFamily: 'Cairo',
               color: AppColors.textPrimary,
-              fontSize: 16.sp,
+              fontSize: 17.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          leading: IconButton(
-            icon: Icon(
-              isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
-              color: AppColors.textPrimary,
-            ),
-            onPressed: () => context.pop(),
-          ),
+          leading: const RtlBackButton(),
         ),
         body: BlocBuilder<ContractDetailsCubit, ContractDetailsState>(
           builder: (context, state) {
             if (state is ContractDetailsLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is ContractDetailsError) {
               return Center(
-                child: Text(
-                  state.message.tr(),
-                  style: const TextStyle(color: AppColors.textPrimary),
+                child: SizedBox(
+                  width: 40.r,
+                  height: 40.r,
+                  child: const CircularProgressIndicator(
+                    strokeWidth: 3,
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(AppColors.gold),
+                  ),
                 ),
+              );
+            } else if (state is ContractDetailsError) {
+              return ErrorStateWidget(
+                message: state.message.tr(),
+                onRetry: () => context
+                    .read<ContractDetailsCubit>()
+                    .getContractDetails(orderId),
+                retryText: AppStrings.retry.tr(),
               );
             } else if (state is ContractDetailsSuccess) {
               return _buildContent(context, state.contract);
@@ -98,20 +108,24 @@ class OrderDetailsScreen extends StatelessWidget {
         contract.status == ContractStatus.pendingPayment ||
         contract.status == ContractStatus.awaitingAdminReview) {
       return SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.md,
+          AppSpacing.md,
+          AppSpacing.xl,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ContractHeader(contract: contract),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.md),
             ContractInfoCard(contract: contract, isFreelancer: isFreelancer),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.md),
             PaymentStatusCard(contract: contract),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.md),
             WorkStagesList(contract: contract),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.md),
             const ContractInProgressActions(),
-            SizedBox(height: 32.h),
           ],
         ),
       );
@@ -119,14 +133,19 @@ class OrderDetailsScreen extends StatelessWidget {
 
     // State 4: Completed or Cancelled
     return SingleChildScrollView(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.xl,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ContractHeader(contract: contract),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
           ContractInfoCard(contract: contract, isFreelancer: isFreelancer),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
           // Add specific UI for completed/cancelled if needed, e.g. Rate Button
           if (contract.status == ContractStatus.completed) Container(),
         ],

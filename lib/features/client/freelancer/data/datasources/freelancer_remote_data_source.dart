@@ -22,9 +22,16 @@ class FreelancerRemoteDataSourceImpl implements FreelancerRemoteDataSource {
       final response = await dioClient.get(ApiConstants.freelancerProfile(id));
 
       if (response.statusCode == 200) {
-        return FreelancerModel.fromJson(response.data['data']);
+        final body = response.data;
+        final data = (body is Map) ? body['data'] : null;
+        if (data is! Map<String, dynamic>) {
+          throw const ServerException('Invalid response format');
+        }
+        return FreelancerModel.fromJson(data);
       } else {
-        throw ServerException(response.data['message'] ?? 'Unknown error');
+        final body = response.data;
+        final message = (body is Map) ? body['message'] : null;
+        throw ServerException(message?.toString() ?? 'Unknown error');
       }
     } catch (e) {
       throw ServerException(e.toString());
@@ -39,9 +46,16 @@ class FreelancerRemoteDataSourceImpl implements FreelancerRemoteDataSource {
       );
 
       if (response.statusCode == 200) {
-        return WorkDetailsModel.fromJson(response.data['data']);
+        final body = response.data;
+        final data = (body is Map) ? body['data'] : null;
+        if (data is! Map<String, dynamic>) {
+          throw const ServerException('Invalid response format');
+        }
+        return WorkDetailsModel.fromJson(data);
       } else {
-        throw ServerException(response.data['message'] ?? 'Unknown error');
+        final body = response.data;
+        final message = (body is Map) ? body['message'] : null;
+        throw ServerException(message?.toString() ?? 'Unknown error');
       }
     } catch (e) {
       throw ServerException(e.toString());
@@ -56,9 +70,16 @@ class FreelancerRemoteDataSourceImpl implements FreelancerRemoteDataSource {
       );
 
       if (response.statusCode == 200) {
-        return AdvertisementDetailsModel.fromJson(response.data['data']);
+        final body = response.data;
+        final data = (body is Map) ? body['data'] : null;
+        if (data is! Map<String, dynamic>) {
+          throw const ServerException('Invalid response format');
+        }
+        return AdvertisementDetailsModel.fromJson(data);
       } else {
-        throw ServerException(response.data['message'] ?? 'Unknown error');
+        final body = response.data;
+        final message = (body is Map) ? body['message'] : null;
+        throw ServerException(message?.toString() ?? 'Unknown error');
       }
     } catch (e) {
       throw ServerException(e.toString());

@@ -22,15 +22,23 @@ class RegisterRequestParams {
   });
 
   Map<String, dynamic> toJson() {
-    return {
+    final map = <String, dynamic>{
       'name': name,
       'email': email,
       'password': password,
       'password_confirmation': passwordConfirmation,
-      'phone': phone,
       'user_type': userType,
       'country_code': countryCode,
       'device_token': deviceToken,
     };
+    // Phone is optional (App Store guideline 5.1.1). Only include it when the
+    // user actually provided one. Sending an empty string makes Laravel's
+    // ConvertEmptyStringsToNull middleware turn it into null, which then fails
+    // the backend "The phone must be a string." validation. Omitting the key
+    // entirely lets the backend skip phone validation.
+    if (phone.trim().isNotEmpty) {
+      map['phone'] = phone;
+    }
+    return map;
   }
 }

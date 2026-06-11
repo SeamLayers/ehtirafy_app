@@ -10,10 +10,16 @@ class FreelancerStatisticsModel extends FreelancerStatistics {
 
   factory FreelancerStatisticsModel.fromJson(Map<String, dynamic> json) {
     return FreelancerStatisticsModel(
-      completedOrders: json['completed_orders'] ?? 0,
-      averageRating: (json['average_rating'] ?? 0).toDouble(),
-      totalEarnings: (json['total_earnings'] ?? 0).toDouble(),
-      activeGigs: json['active_gigs'] ?? 0,
+      completedOrders: _asInt(json['completed_orders']),
+      averageRating: _asDouble(json['average_rating']),
+      totalEarnings: _asDouble(json['total_earnings']),
+      activeGigs: _asInt(json['active_gigs']),
     );
   }
 }
+
+int _asInt(dynamic v) =>
+    (v is num) ? v.toInt() : int.tryParse(v?.toString() ?? '') ?? 0;
+
+double _asDouble(dynamic v) =>
+    (v is num) ? v.toDouble() : double.tryParse(v?.toString() ?? '') ?? 0.0;

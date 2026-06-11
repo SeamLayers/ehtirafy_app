@@ -35,11 +35,13 @@ class RequestCard extends StatelessWidget {
   Widget _buildServiceName(BuildContext context) {
     return Text(
       request.serviceName,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-        color: const Color(0xFF2B2B2B),
+        color: AppColors.textPrimary,
         fontSize: 16.sp,
-        fontWeight: FontWeight.w400,
-        height: 1.50,
+        fontWeight: FontWeight.w700,
+        height: 1.40,
       ),
     );
   }
@@ -47,8 +49,10 @@ class RequestCard extends StatelessWidget {
   Widget _buildPhotographerName(BuildContext context) {
     return Text(
       '${AppStrings.myRequestsPhotographerLabel.tr()}: ${request.photographerName}',
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        color: const Color(0xFF888888),
+        color: AppColors.textSecondary,
         fontSize: 14.sp,
         fontWeight: FontWeight.w400,
         height: 1.43,
@@ -57,69 +61,95 @@ class RequestCard extends StatelessWidget {
   }
 
   Widget _buildStatusBadge(BuildContext context) {
-    Color backgroundColor;
+    Color statusColor;
     String text;
 
     // Logic for Badge Color and Text
     if (request.status == RequestStatus.underReview) {
-      backgroundColor = AppColors.grey500; // Grey for Waiting Approval
+      statusColor = AppColors.grey500; // Grey for Waiting Approval
       text = AppStrings.myRequestsStatusUnderReview.tr(); // "Waiting Approval"
     } else if (request.status == RequestStatus.active) {
       if (request.isPaymentRequired) {
-        backgroundColor = AppColors.success; // Green for Approved
+        statusColor = AppColors.success; // Green for Approved
         text = AppStrings.myRequestsStatusApproved.tr(); // "Approved"
       } else {
-        backgroundColor = AppColors.info; // Blue for In Progress
+        statusColor = AppColors.info; // Blue for In Progress
         text = AppStrings.contractStatusInProgress.tr(); // "In Progress"
       }
     } else if (request.status == RequestStatus.completed) {
-      backgroundColor = AppColors.success;
+      statusColor = AppColors.success;
       text = AppStrings.myRequestsStatusCompleted.tr();
     } else {
       // Cancelled
-      backgroundColor = AppColors.error;
+      statusColor = AppColors.error;
       text = AppStrings.myRequestsStatusCancelled.tr();
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+      padding: EdgeInsetsDirectional.symmetric(horizontal: 10.w, vertical: 5.h),
       decoration: ShapeDecoration(
-        color: backgroundColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-      ),
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: Colors.white,
-          fontSize: 12.sp,
-          fontWeight: FontWeight.w500,
-          height: 1.33,
+        color: statusColor.withValues(alpha: 0.12),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: statusColor.withValues(alpha: 0.22)),
+          borderRadius: BorderRadius.circular(9.r),
         ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6.r,
+            height: 6.r,
+            decoration: BoxDecoration(
+              color: statusColor,
+              shape: BoxShape.circle,
+            ),
+          ),
+          SizedBox(width: 6.w),
+          Flexible(
+            child: Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: statusColor,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w700,
+                height: 1.33,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildPrice(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.baseline,
       textBaseline: TextBaseline.alphabetic,
       children: [
-        Text(
-          NumberFormat('#,###').format(request.price),
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: AppColors.primary,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w400,
-            height: 1.50,
+        Flexible(
+          child: Text(
+            NumberFormat('#,###').format(request.price),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: AppColors.primary,
+              fontSize: 17.sp,
+              fontWeight: FontWeight.w800,
+              height: 1.40,
+            ),
           ),
         ),
         SizedBox(width: 4.w),
         Text(
           AppStrings.myRequestsCurrency.tr(),
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: const Color(0xFF888888),
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
+            color: AppColors.textSecondary,
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w600,
             height: 1.43,
           ),
         ),
@@ -140,14 +170,29 @@ class RequestCard extends StatelessWidget {
 
     return Align(
       alignment: AlignmentDirectional.centerEnd,
-      child: Text(
-        timeAgo,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: const Color(0xFF888888),
-          fontSize: 12.sp,
-          fontWeight: FontWeight.w400,
-          height: 1.33,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.access_time_rounded,
+            size: 14.r,
+            color: AppColors.textSecondary,
+          ),
+          SizedBox(width: 4.w),
+          Flexible(
+            child: Text(
+              timeAgo,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.textSecondary,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+                height: 1.33,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -219,23 +264,37 @@ class RequestCard extends StatelessWidget {
       },
       child: Container(
         width: double.infinity,
-        height: 44.h,
+        height: 46.h,
         decoration: ShapeDecoration(
           color: buttonColor,
           shape: RoundedRectangleBorder(
             side: isOutlined
-                ? const BorderSide(width: 1, color: AppColors.primary)
+                ? BorderSide(
+                    width: 1.4,
+                    color: AppColors.primary.withValues(alpha: 0.6),
+                  )
                 : BorderSide.none,
-            borderRadius: BorderRadius.circular(10.r),
+            borderRadius: BorderRadius.circular(12.r),
           ),
+          shadows: isOutlined
+              ? null
+              : [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.28),
+                    blurRadius: 12,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
         ),
         child: Center(
           child: Text(
             buttonText,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: textColor,
               fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w700,
               height: 1.43,
             ),
           ),

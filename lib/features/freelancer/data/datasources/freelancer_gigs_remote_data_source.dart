@@ -37,12 +37,19 @@ class FreelancerGigsRemoteDataSourceImpl
       ApiConstants.advertisements,
       queryParameters: {'user_type': userType},
     );
+    final raw = response.data;
+    if (raw is! Map<String, dynamic>) {
+      throw const ServerException('Invalid server response');
+    }
     final baseResponse = BaseResponse<List<dynamic>>.fromJson(
-      response.data,
-      (data) => data as List<dynamic>,
+      raw,
+      (data) => data is List ? data : <dynamic>[],
     );
     if (baseResponse.status == 200) {
-      return baseResponse.data!.map((e) => GigModel.fromJson(e)).toList();
+      return (baseResponse.data ?? const [])
+          .whereType<Map<String, dynamic>>()
+          .map(GigModel.fromJson)
+          .toList();
     } else {
       throw ServerException(baseResponse.message);
     }
@@ -53,12 +60,20 @@ class FreelancerGigsRemoteDataSourceImpl
     final response = await _dioClient.get(
       ApiConstants.advertisementDetails(id),
     );
+    final raw = response.data;
+    if (raw is! Map<String, dynamic>) {
+      throw const ServerException('Invalid server response');
+    }
     final baseResponse = BaseResponse<Map<String, dynamic>>.fromJson(
-      response.data,
-      (data) => data as Map<String, dynamic>,
+      raw,
+      (data) => data is Map<String, dynamic> ? data : <String, dynamic>{},
     );
     if (baseResponse.status == 200) {
-      return GigModel.fromJson(baseResponse.data!);
+      final d = baseResponse.data;
+      if (d == null) {
+        throw ServerException(baseResponse.message);
+      }
+      return GigModel.fromJson(d);
     } else {
       throw ServerException(baseResponse.message);
     }
@@ -73,13 +88,13 @@ class FreelancerGigsRemoteDataSourceImpl
 
       if (response.statusCode == 200) {
         final data = response.data;
-        if (data['data'] != null && data['data'] is List) {
+        if (data is Map && data['data'] is List) {
           final list = data['data'] as List;
           debugPrint('Categories count from API: ${list.length}');
-          final categories = list.map((json) {
-            debugPrint('Parsing category: $json');
-            return CategoryModel.fromJson(json);
-          }).toList();
+          final categories = list
+              .whereType<Map<String, dynamic>>()
+              .map(CategoryModel.fromJson)
+              .toList();
           debugPrint(
             'Parsed categories: ${categories.map((c) => c.nameAr).join(", ")}',
           );
@@ -134,9 +149,19 @@ class FreelancerGigsRemoteDataSourceImpl
     // API returns the created advertisement object in 'data' field
     // Example: { "status": 200, "message": "...", "data": { "id": 8, "title": {...}, ... } }
 
-    if (response.statusCode == 200 && response.data['status'] == 200) {
-      final responseData = response.data['data'];
-      if (responseData != null && responseData is Map<String, dynamic>) {
+    final body = response.data;
+    // Accept all the success shapes this backend uses: HTTP 200/201 plus either
+    // a numeric status field (200/201) OR success: true (most write endpoints
+    // return {"success": true, ...} with no "status" field).
+    final bool created =
+        (response.statusCode == 200 || response.statusCode == 201) &&
+        body is Map &&
+        (body['status'] == 200 ||
+            body['status'] == 201 ||
+            body['success'] == true);
+    if (created) {
+      final responseData = body['data'];
+      if (responseData is Map<String, dynamic>) {
         // Parse the created gig from response
         return GigModel(
           id: responseData['id']?.toString() ?? 'temp',
@@ -151,9 +176,23 @@ class FreelancerGigsRemoteDataSourceImpl
               : null,
         );
       }
+      // Created successfully but the response body has no/unexpected data —
+      // return a minimal pending gig so the success flow (message + navigation
+      // to home) still proceeds instead of being treated as a failure.
+      return const GigModel(
+        id: 'temp',
+        title: '',
+        description: '',
+        price: 0,
+        category: '',
+        status: GigStatus.pending,
+        coverImage: '',
+        createdAt: null,
+      );
     }
 
-    throw ServerException(response.data['message'] ?? 'فشل في إضافة الخدمة');
+    final msg = body is Map ? body['message']?.toString() : null;
+    throw ServerException(msg ?? 'فشل في إضافة الخدمة');
   }
 
   /// Helper to extract Arabic text from localized object
@@ -202,12 +241,16 @@ class FreelancerGigsRemoteDataSourceImpl
       data: formData,
     );
 
+    final body = response.data;
+    if (body is! Map<String, dynamic>) {
+      throw const ServerException('Invalid server response');
+    }
     final baseResponse = BaseResponse<Map<String, dynamic>>.fromJson(
-      response.data,
-      (data) => data as Map<String, dynamic>,
+      body,
+      (data) => data is Map<String, dynamic> ? data : <String, dynamic>{},
     );
 
-    if (baseResponse.status == 200 || response.data['success'] == true) {
+    if (baseResponse.status == 200 || body['success'] == true) {
       // Return a dummy model or parse the actual data if available
       // The log shows data contains the updated object
       final data = baseResponse.data;

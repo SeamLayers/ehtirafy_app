@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
@@ -19,20 +20,18 @@ class OrderDetailsPendingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFFF9F9F9),
+      color: AppColors.backgroundLight,
       child: SingleChildScrollView(
-        padding: EdgeInsets.only(
-          top: 24.h,
-          left: 20.w,
-          right: 20.w,
-          bottom: 24.h,
+        padding: EdgeInsetsDirectional.only(
+          top: AppSpacing.lg,
+          start: 20.w,
+          end: 20.w,
+          bottom: AppSpacing.lg,
         ),
         child: Column(
           children: [
             _buildStatusCard(context),
-            SizedBox(height: 16.h),
-            _buildTimeline(context),
-            SizedBox(height: 32.h),
+            SizedBox(height: AppSpacing.xl),
             _buildCancelButton(context),
           ],
         ),
@@ -43,29 +42,39 @@ class OrderDetailsPendingView extends StatelessWidget {
   Widget _buildCancelButton(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 48.h,
+      height: 52.h,
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: AppColors.error.withValues(alpha: 0.5)),
+        border: Border.all(color: AppColors.error.withValues(alpha: 0.45)),
         borderRadius: BorderRadius.circular(14.r),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Color(0x0A000000),
-            blurRadius: 4,
-            offset: Offset(0, 2),
-            spreadRadius: 0,
+            color: AppColors.error.withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Center(
-        child: Text(
-          AppStrings.cancel.tr(),
-          style: TextStyle(
-            color: AppColors.error,
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w500,
-            fontFamily: _fontFamily(context),
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.close_rounded,
+              color: AppColors.error,
+              size: 18.r,
+            ),
+            SizedBox(width: AppSpacing.sm),
+            Text(
+              AppStrings.cancel.tr(),
+              style: TextStyle(
+                color: AppColors.error,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                fontFamily: _fontFamily(context),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -75,25 +84,20 @@ class OrderDetailsPendingView extends StatelessWidget {
     final isArabic =
         context.locale.languageCode.toLowerCase().startsWith('ar');
     final localeCode = isArabic ? 'ar' : 'en';
+    final statusUi = backendContractStatusUi('Initiate');
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16.w),
-      decoration: ShapeDecoration(
-        color: const Color(0xFFF0FDF4), // Softer Light Green
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(
-            width: 1,
-            color: Color(0xFFDCFCE7), // Subtle Green Border
-          ),
-          borderRadius: BorderRadius.circular(16.r),
-        ),
-        shadows: const [
+      padding: EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: AppColors.grey200),
+        boxShadow: const [
           BoxShadow(
-            color: Color(0x0A000000),
-            blurRadius: 10,
-            offset: Offset(0, 4),
-            spreadRadius: 0,
+            color: AppColors.shadowLight,
+            blurRadius: 16,
+            offset: Offset(0, 6),
           ),
         ],
       ),
@@ -107,36 +111,51 @@ class OrderDetailsPendingView extends StatelessWidget {
                 child: Text(
                   isArabic ? 'الحالة الحالية' : 'Current Status',
                   style: TextStyle(
-                    color: const Color(0xFF888888),
+                    color: AppColors.textSecondary,
                     fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w500,
                     fontFamily: _fontFamily(context),
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: AppSpacing.sm),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-                decoration: ShapeDecoration(
-                  color: const Color(0xFF17A2B8), // Cyan/Teal
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 10.w,
+                  vertical: 5.h,
+                ),
+                decoration: BoxDecoration(
+                  color: statusUi.softColor,
+                  borderRadius: BorderRadius.circular(10.r),
+                  border: Border.all(
+                    color: statusUi.color.withValues(alpha: 0.25),
                   ),
                 ),
-                child: Text(
-                  'Initiate',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: _fontFamily(context),
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      statusUi.icon,
+                      size: 14.r,
+                      color: statusUi.color,
+                    ),
+                    SizedBox(width: 5.w),
+                    Text(
+                      'Initiate',
+                      style: TextStyle(
+                        color: statusUi.color,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: _fontFamily(context),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
           // Row 2: Service Name + Photographer
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,45 +167,66 @@ class OrderDetailsPendingView extends StatelessWidget {
                     Text(
                       contract.serviceTitle,
                       style: TextStyle(
-                        color: const Color(0xFF2B2B2B),
+                        color: AppColors.textPrimary,
                         fontSize: 16.sp,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w700,
                         fontFamily: _fontFamily(context),
+                        height: 1.3,
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 4.h),
+                    SizedBox(height: AppSpacing.xs),
                     Text(
                       '${AppStrings.bookingPhotographerLabel.tr()}: ${contract.photographerName}',
                       style: TextStyle(
-                        color: const Color(0xFF888888),
+                        color: AppColors.textSecondary,
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w400,
                         fontFamily: _fontFamily(context),
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(14.r),
-                child: AppCachedNetworkImage(
-                  imageUrl: contract.photographerImage,
-                  width: 56.w,
-                  height: 56.h,
-                  fit: BoxFit.cover,
+              SizedBox(width: AppSpacing.sm),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.r),
+                  border: Border.all(
+                    color: AppColors.gold.withValues(alpha: 0.4),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.gold.withValues(alpha: 0.12),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14.r),
+                  child: AppCachedNetworkImage(
+                    imageUrl: contract.photographerImage,
+                    width: 56.w,
+                    height: 56.h,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
           // Inner Card: Details
           Container(
-            padding: EdgeInsets.all(12.w),
-            decoration: ShapeDecoration(
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.r),
-              ),
+            padding: EdgeInsets.all(14.w),
+            decoration: BoxDecoration(
+              color: AppColors.grey50,
+              borderRadius: BorderRadius.circular(14.r),
+              border: Border.all(color: AppColors.grey200),
             ),
             child: Column(
               children: [
@@ -197,41 +237,64 @@ class OrderDetailsPendingView extends StatelessWidget {
                     'dd MMMM yyyy - hh:mm a',
                     localeCode,
                   ).format(contract.date),
+                  icon: Icons.event_outlined,
                 ),
-                SizedBox(height: 8.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.h),
+                  child: const Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: AppColors.grey200,
+                  ),
+                ),
                 _buildDetailRow(
                   context,
                   AppStrings.contractLocation.tr(),
                   contract.location,
+                  icon: Icons.location_on_outlined,
                 ),
-                SizedBox(height: 8.h),
-                // Price Row with Border
+                SizedBox(height: AppSpacing.md),
+                // Price Row with gold-tinted highlight
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(
-                        width: 1,
-                        color: Color(0xFFE5E5E5),
-                      ),
-                      borderRadius: BorderRadius.circular(4.r),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 12.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.gold.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(
+                      color: AppColors.gold.withValues(alpha: 0.25),
                     ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(
-                        child: Text(
-                          AppStrings.contractRequiredAmount.tr(),
-                          style: TextStyle(
-                            color: const Color(0xFF888888),
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: _fontFamily(context),
-                          ),
-                          overflow: TextOverflow.ellipsis,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.payments_outlined,
+                              size: 18.r,
+                              color: AppColors.gold,
+                            ),
+                            SizedBox(width: AppSpacing.sm),
+                            Flexible(
+                              child: Text(
+                                AppStrings.contractRequiredAmount.tr(),
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: _fontFamily(context),
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+                      SizedBox(width: AppSpacing.sm),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.baseline,
                         textBaseline: TextBaseline.alphabetic,
@@ -239,19 +302,19 @@ class OrderDetailsPendingView extends StatelessWidget {
                           Text(
                             NumberFormat('#,###').format(contract.budget),
                             style: TextStyle(
-                              color: const Color(0xFFC8A44F), // Gold
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w400,
+                              color: AppColors.gold,
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.w700,
                               fontFamily: _fontFamily(context),
                             ),
                           ),
-                          SizedBox(width: 4.w),
+                          SizedBox(width: AppSpacing.xs),
                           Text(
                             AppStrings.bookingCurrency.tr(),
                             style: TextStyle(
-                              color: const Color(0xFF888888),
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w400,
+                              color: AppColors.textSecondary,
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w500,
                               fontFamily: _fontFamily(context),
                             ),
                           ),
@@ -268,30 +331,44 @@ class OrderDetailsPendingView extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(BuildContext context, String label, String value) {
+  Widget _buildDetailRow(
+    BuildContext context,
+    String label,
+    String value, {
+    IconData? icon,
+  }) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (icon != null) ...[
+          Icon(
+            icon,
+            size: 18.r,
+            color: AppColors.textSecondary,
+          ),
+          SizedBox(width: AppSpacing.sm),
+        ],
         Text(
           label,
           style: TextStyle(
-            color: const Color(0xFF888888),
+            color: AppColors.textSecondary,
             fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w500,
             fontFamily: _fontFamily(context),
           ),
         ),
-        SizedBox(width: 8.w),
+        SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Text(
             value,
             textAlign: TextAlign.end,
             style: TextStyle(
-              color: const Color(0xFF2B2B2B),
+              color: AppColors.textPrimary,
               fontSize: 14.sp,
-              fontWeight: FontWeight.w400,
+              fontWeight: FontWeight.w600,
               fontFamily: _fontFamily(context),
             ),
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -299,120 +376,4 @@ class OrderDetailsPendingView extends StatelessWidget {
     );
   }
 
-  Widget _buildTimeline(BuildContext context) {
-    final isArabic =
-      context.locale.languageCode.toLowerCase().startsWith('ar');
-
-    final steps = [
-      isArabic
-        ? 'Initiate: تم إنشاء العقد وبانتظار موافقة المصور.'
-        : 'Initiate: Contract created and waiting for freelancer approval.',
-      isArabic
-        ? 'Approved: عند قبول المصور ينتقل العقد للحالة التالية.'
-        : 'Approved: Once freelancer accepts, the contract moves forward.',
-      isArabic
-        ? 'InProgress: تبدأ مرحلة التنفيذ والمتابعة.'
-        : 'InProgress: Service execution starts and progress is tracked.',
-      isArabic
-        ? 'Closed: بعد التأكيد النهائي يتم إغلاق العقد.'
-        : 'Closed: After final confirmation, the contract is closed.',
-    ];
-
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFFF3F4F6)),
-          borderRadius: BorderRadius.circular(16.r),
-        ),
-        shadows: const [
-          BoxShadow(
-            color: Color(0x0A000000),
-            blurRadius: 10,
-            offset: Offset(0, 4),
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            isArabic
-                ? 'تسلسل الحالة (Backend Flow)'
-                : 'Status Sequence (Backend Flow)',
-            style: TextStyle(
-              color: const Color(0xFF2B2B2B),
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w400,
-              fontFamily: _fontFamily(context),
-            ),
-          ),
-          SizedBox(height: 12.h),
-          _buildTimelineStep(
-            context,
-            '1',
-            steps[0],
-          ),
-          SizedBox(height: 12.h),
-          _buildTimelineStep(
-            context,
-            '2',
-            steps[1],
-          ),
-          SizedBox(height: 12.h),
-          _buildTimelineStep(
-            context,
-            '3',
-            steps[2],
-          ),
-          SizedBox(height: 12.h),
-          _buildTimelineStep(
-            context,
-            '4',
-            steps[3],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTimelineStep(BuildContext context, String number, String text) {
-    return Row(
-      children: [
-        Container(
-          width: 24.w,
-          height: 24.h,
-          decoration: const ShapeDecoration(
-            color: Color(0xFFC8A44F), // Gold
-            shape: CircleBorder(),
-          ),
-          child: Center(
-            child: Text(
-              number,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w400,
-                fontFamily: _fontFamily(context),
-              ),
-            ),
-          ),
-        ),
-        SizedBox(width: 12.w),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              color: const Color(0xFF888888),
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w400,
-              fontFamily: _fontFamily(context),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 }

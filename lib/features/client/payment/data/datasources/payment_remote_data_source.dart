@@ -71,15 +71,19 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
       );
 
       final data = response.data;
-      if (data['success'] != true && data['status'] != 200) {
-        throw ServerException(
-          data['message'] ?? 'فشل في إرسال إثبات الدفع',
-        );
+      if (data is Map) {
+        if (data['success'] != true && data['status'] != 200) {
+          throw ServerException(
+            (data['message'] as String?) ?? 'فشل في إرسال إثبات الدفع',
+          );
+        }
+      } else {
+        throw const ServerException('فشل في إرسال إثبات الدفع');
       }
     } on DioException catch (e) {
-      throw ServerException(
-        e.response?.data['message'] ?? 'فشل في إرسال إثبات الدفع',
-      );
+      final body = e.response?.data;
+      final msg = body is Map ? (body['message'] as String?) : null;
+      throw ServerException(msg ?? 'فشل في إرسال إثبات الدفع');
     }
   }
 }

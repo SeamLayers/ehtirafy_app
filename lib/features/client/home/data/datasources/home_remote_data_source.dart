@@ -27,10 +27,11 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
 
       if (response.statusCode == 200) {
         final data = response.data;
-        if (data['data'] != null && data['data'] is List) {
+        if (data is Map && data['data'] != null && data['data'] is List) {
           // Return all best freelancers, including those without advertisement
           // The model handles null advertisements gracefully
           return (data['data'] as List)
+              .whereType<Map<String, dynamic>>()
               .map((json) => PhotographerModel.fromJson(json))
               .toList();
         }
@@ -48,9 +49,10 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
 
       if (response.statusCode == 200) {
         final data = response.data;
-        if (data['data'] != null && data['data'] is List) {
+        if (data is Map && data['data'] != null && data['data'] is List) {
           // Return ALL entries, including those without advertisement
           return (data['data'] as List)
+              .whereType<Map<String, dynamic>>()
               .map((json) => PhotographerModel.fromJson(json))
               .toList();
         }
@@ -68,8 +70,9 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
 
       if (response.statusCode == 200) {
         final data = response.data;
-        if (data['data'] != null && data['data'] is List) {
+        if (data is Map && data['data'] != null && data['data'] is List) {
           return (data['data'] as List)
+              .whereType<Map<String, dynamic>>()
               .map((json) => CategoryModel.fromJson(json))
               .toList();
         }
@@ -88,10 +91,19 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
 
       // Check both HTTP status and API status
       final data = response.data;
-      if (response.statusCode == 200 && data != null && data['data'] != null) {
-        return AppStatisticsModel.fromJson(data['data']);
+      if (response.statusCode == 200 &&
+          data is Map &&
+          data['data'] != null) {
+        final stats = data['data'];
+        if (stats is Map<String, dynamic>) {
+          return AppStatisticsModel.fromJson(stats);
+        } else {
+          throw const ServerException('Invalid statistics payload');
+        }
       } else {
-        throw ServerException(data?['message'] ?? 'Unknown error');
+        throw ServerException(
+          (data is Map ? data['message'] : null) ?? 'Unknown error',
+        );
       }
     } catch (e) {
       throw ServerException(e.toString());
@@ -109,8 +121,9 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
 
       if (response.statusCode == 200) {
         final data = response.data;
-        if (data['data'] != null && data['data'] is List) {
+        if (data is Map && data['data'] != null && data['data'] is List) {
           return (data['data'] as List)
+              .whereType<Map<String, dynamic>>()
               .map((json) => PhotographerModel.fromJson(json))
               .toList();
         }

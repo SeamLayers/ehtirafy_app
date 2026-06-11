@@ -7,6 +7,8 @@ import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
+
 import '../cubit/chat_cubit.dart';
 import '../cubit/chat_state.dart';
 import '../widgets/conversation_tile.dart';
@@ -31,7 +33,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
         statusBarColor: Colors.transparent,
       ),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF9F9F9),
+        backgroundColor: AppColors.backgroundLight,
         body: Column(
           children: [
             _buildHeader(context),
@@ -43,7 +45,14 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
                     current is ChatError,
                 builder: (context, state) {
                   if (state is ChatLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5.w,
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          AppColors.gold,
+                        ),
+                      ),
+                    );
                   } else if (state is ChatError) {
                     return ErrorStateWidget(
                       message: state.message,
@@ -57,48 +66,25 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
                     if (state.conversations.isEmpty) {
                       return Column(
                         children: [
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                OutlinedRefreshButton(
-                                  onPressed: () {
-                                    context.read<ChatCubit>().loadConversations(
-                                      userType: widget.userType,
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
+                          _buildRefreshBar(context),
                           Expanded(child: _buildEmptyState()),
                         ],
                       );
                     }
                     return Column(
                       children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              OutlinedRefreshButton(
-                                onPressed: () {
-                                  context.read<ChatCubit>().loadConversations(
-                                    userType: widget.userType,
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
+                        _buildRefreshBar(context),
                         Expanded(
                           child: ListView.separated(
-                            padding: EdgeInsets.all(24.w),
+                            padding: EdgeInsets.fromLTRB(
+                              AppSpacing.lg,
+                              AppSpacing.md,
+                              AppSpacing.lg,
+                              AppSpacing.lg,
+                            ),
                             itemCount: state.conversations.length,
                             separatorBuilder: (context, index) =>
-                                SizedBox(height: 12.h),
+                                SizedBox(height: AppSpacing.sm + AppSpacing.xs),
                             itemBuilder: (context, index) {
                               final conv = state.conversations[index];
                               return ConversationTile(
@@ -127,31 +113,98 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final radius = BorderRadius.only(
+      bottomLeft: Radius.circular(24.r),
+      bottomRight: Radius.circular(24.r),
+    );
+
     return Container(
-      color: AppColors.dark,
-      child: SafeArea(
-        bottom: false,
+      decoration: BoxDecoration(
+        borderRadius: radius,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.dark.withValues(alpha: 0.18),
+            blurRadius: 16.r,
+            offset: Offset(0, 4.h),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: radius,
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 16.h),
-          decoration: const BoxDecoration(
-            color: AppColors.dark,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(24),
-              bottomRight: Radius.circular(24),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: AlignmentDirectional.topStart,
+              end: AlignmentDirectional.bottomEnd,
+              colors: [
+                AppColors.dark,
+                AppColors.dark.withValues(alpha: 0.92),
+              ],
+            ),
+            border: Border(
+              bottom: BorderSide(
+                color: AppColors.gold.withValues(alpha: 0.35),
+                width: 1.5.h,
+              ),
             ),
           ),
-          child: Center(
-            child: Text(
-              AppStrings.chatListTitle.tr(),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.white,
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w400,
-                height: 1.50,
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.forum_rounded,
+                      color: AppColors.gold,
+                      size: 18.sp,
+                    ),
+                    SizedBox(width: AppSpacing.sm),
+                    Flexible(
+                      child: Text(
+                        AppStrings.chatListTitle.tr(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          height: 1.50,
+                          letterSpacing: 0.2,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildRefreshBar(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(
+        AppSpacing.lg,
+        AppSpacing.sm + AppSpacing.xs,
+        AppSpacing.lg,
+        0,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          OutlinedRefreshButton(
+            onPressed: () {
+              context.read<ChatCubit>().loadConversations(
+                userType: widget.userType,
+              );
+            },
+          ),
+        ],
       ),
     );
   }

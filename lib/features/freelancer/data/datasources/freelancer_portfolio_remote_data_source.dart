@@ -29,12 +29,17 @@ class FreelancerPortfolioRemoteDataSourceImpl
     final response = await _dioClient.get(ApiConstants.freelancerPortfolio);
     final data = response.data;
 
+    if (data is! Map) {
+      throw const ServerException('صيغة الاستجابة غير صالحة');
+    }
+
     // Manual parsing to avoid generic issues and handle flexibility
     if (data['success'] == true || data['status'] == 200) {
       final responseData = data['data'];
       if (responseData is List) {
         return responseData
-            .map((e) => PortfolioItemModel.fromJson(e as Map<String, dynamic>))
+            .whereType<Map>()
+            .map((e) => PortfolioItemModel.fromJson(Map<String, dynamic>.from(e)))
             .toList();
       }
       return [];
@@ -50,10 +55,14 @@ class FreelancerPortfolioRemoteDataSourceImpl
     );
     final data = response.data;
 
+    if (data is! Map) {
+      throw const ServerException('صيغة الاستجابة غير صالحة');
+    }
+
     if (data['success'] == true || data['status'] == 200) {
       final responseData = data['data'];
-      if (responseData is Map<String, dynamic>) {
-        return PortfolioItemModel.fromJson(responseData);
+      if (responseData is Map) {
+        return PortfolioItemModel.fromJson(Map<String, dynamic>.from(responseData));
       }
       throw const ServerException('صيغة الاستجابة غير صالحة');
     } else {
@@ -85,10 +94,14 @@ class FreelancerPortfolioRemoteDataSourceImpl
     );
     final responseData = response.data;
 
+    if (responseData is! Map) {
+      throw const ServerException('فشل في إضافة العنصر');
+    }
+
     if (responseData['success'] == true || responseData['status'] == 200) {
       final innerData = responseData['data'];
-      if (innerData is Map<String, dynamic>) {
-        return PortfolioItemModel.fromJson(innerData);
+      if (innerData is Map) {
+        return PortfolioItemModel.fromJson(Map<String, dynamic>.from(innerData));
       }
       // If standard success message string, we return a dummy or rely on refresh.
       // Returning a partial model to indicate success, but caller should refresh.
@@ -131,10 +144,15 @@ class FreelancerPortfolioRemoteDataSourceImpl
     );
 
     final responseData = response.data;
+
+    if (responseData is! Map) {
+      throw const ServerException('فشل في تحديث العنصر');
+    }
+
     if (responseData['success'] == true || responseData['status'] == 200) {
       final innerData = responseData['data'];
-      if (innerData is Map<String, dynamic>) {
-        return PortfolioItemModel.fromJson(innerData);
+      if (innerData is Map) {
+        return PortfolioItemModel.fromJson(Map<String, dynamic>.from(innerData));
       }
       // Fallback
       return PortfolioItemModel(

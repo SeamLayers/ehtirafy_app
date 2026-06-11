@@ -1,13 +1,13 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/widgets/primary_button.dart';
+import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import 'package:ehtirafy_app/features/shared/auth/presentation/widgets/auth_header.dart';
 import 'package:ehtirafy_app/features/shared/auth/presentation/widgets/auth_text_field.dart';
 import 'package:ehtirafy_app/core/di/service_locator.dart';
@@ -55,16 +55,24 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.dark : AppColors.backgroundLight,
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            isRtl ? Icons.arrow_forward : Icons.arrow_back,
+        leadingWidth: 64.w,
+        leading: Padding(
+          padding: EdgeInsetsDirectional.only(start: AppSpacing.sm),
+          child: const RtlBackButton(),
+        ),
+        centerTitle: true,
+        title: Text(
+          AppStrings.authResetPasswordTitle.tr(),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: isDark ? AppColors.textLight : AppColors.textPrimary,
           ),
-          onPressed: () => context.pop(),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -72,7 +80,10 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+            padding: EdgeInsetsDirectional.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.md,
+            ),
             child: Form(
               key: _formKey,
               child: Column(
@@ -83,14 +94,18 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
                     title: AppStrings.authResetPasswordTitle.tr(),
                     subtitle: AppStrings.authResetPasswordSubtitle.tr(),
                   ),
-                  SizedBox(height: 32.h),
+                  SizedBox(height: AppSpacing.xl),
                   BlocConsumer<ResetPasswordCubit, ResetPasswordState>(
                     listener: (context, state) {
                       if (state is ResetPasswordSuccess) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(state.message),
-                            backgroundColor: Colors.green,
+                            backgroundColor: AppColors.success,
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
                           ),
                         );
                         context.go('/auth/login');
@@ -98,14 +113,44 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(state.message),
-                            backgroundColor: Colors.red,
+                            backgroundColor: AppColors.error,
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
                           ),
                         );
                       }
                     },
                     builder: (context, state) {
-                      return Column(
-                        children: [
+                      return Container(
+                        padding: EdgeInsetsDirectional.all(AppSpacing.lg),
+                        decoration: BoxDecoration(
+                          color: isDark ? AppColors.grey900 : Colors.white,
+                          borderRadius: BorderRadius.circular(20.r),
+                          border: Border.all(
+                            color: isDark
+                                ? AppColors.grey800
+                                : AppColors.grey200,
+                            width: 1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.gold.withValues(alpha: 0.06),
+                              blurRadius: 24.r,
+                              offset: Offset(0, 10.h),
+                              spreadRadius: -6.r,
+                            ),
+                            const BoxShadow(
+                              color: AppColors.shadowLight,
+                              blurRadius: 8,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
                           AuthTextField(
                             label: AppStrings.authOtpLabel.tr(),
                             hint: AppStrings.authOtpHint.tr(),
@@ -118,7 +163,7 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
                               return null;
                             },
                           ),
-                          SizedBox(height: 16.h),
+                          SizedBox(height: AppSpacing.md),
                           AuthTextField(
                             label: AppStrings.authPasswordLabel.tr(),
                             hint: AppStrings.authPasswordHint.tr(),
@@ -134,7 +179,7 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
                               return null;
                             },
                           ),
-                          SizedBox(height: 16.h),
+                          SizedBox(height: AppSpacing.md),
                           AuthTextField(
                             label: AppStrings.authConfirmPasswordLabel.tr(),
                             hint: AppStrings.authConfirmPasswordHint.tr(),
@@ -152,7 +197,7 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
                               return null;
                             },
                           ),
-                          SizedBox(height: 32.h),
+                          SizedBox(height: AppSpacing.xl),
                           PrimaryButton(
                             text: AppStrings.authResetPasswordButton.tr(),
                             onPressed: () {
@@ -170,7 +215,8 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
                             },
                             isLoading: state is ResetPasswordLoading,
                           ),
-                        ],
+                          ],
+                        ),
                       );
                     },
                   ),

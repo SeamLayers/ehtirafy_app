@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/widgets/primary_button.dart';
 import 'package:ehtirafy_app/features/shared/auth/presentation/widgets/auth_header.dart';
@@ -37,8 +38,12 @@ class _SignupView extends StatelessWidget {
       backgroundColor: isDark ? AppColors.dark : AppColors.backgroundLight,
       body: SafeArea(
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.md,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -47,8 +52,9 @@ class _SignupView extends StatelessWidget {
                   title: AppStrings.authSignupTitle.tr(),
                   subtitle: AppStrings.authSignupSubtitle.tr(),
                 ),
-                SizedBox(height: 24.h),
+                SizedBox(height: AppSpacing.lg),
                 const _SignupForm(),
+                SizedBox(height: AppSpacing.lg),
               ],
             ),
           ),
@@ -135,107 +141,181 @@ class _SignupFormState extends State<_SignupForm> {
       },
       builder: (context, state) {
         final theme = Theme.of(context);
+        final isDark = theme.brightness == Brightness.dark;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            AuthTextField(
-              label: AppStrings.authFullNameLabel.tr(),
-              hint: AppStrings.authFullNameHint.tr(),
-              controller: _fullNameController,
-              textInputAction: TextInputAction.next,
-            ),
-            SizedBox(height: 16.h),
-            AuthTextField(
-              label: AppStrings.authEmailLabel.tr(),
-              hint: AppStrings.authEmailHint.tr(),
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.next,
-            ),
-            SizedBox(height: 16.h),
-            AuthTextField(
-              label: AppStrings.authPhoneLabel.tr(),
-              hint: AppStrings.authPhoneHint.tr(),
-              controller: _phoneController,
-              keyboardType: TextInputType.phone,
-              textInputAction: TextInputAction.next,
-              prefixWidget: Row(
-                mainAxisSize: MainAxisSize.min,
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.lg,
+              ),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.grey900 : Colors.white,
+                borderRadius: BorderRadius.circular(20.r),
+                border: Border.all(
+                  color: isDark
+                      ? AppColors.grey800
+                      : AppColors.grey200,
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.gold.withValues(alpha: 0.06),
+                    blurRadius: 24.r,
+                    offset: Offset(0, 10.h),
+                    spreadRadius: -6.r,
+                  ),
+                  BoxShadow(
+                    color: AppColors.shadowLight,
+                    blurRadius: 12.r,
+                    offset: Offset(0, 4.h),
+                    spreadRadius: -4.r,
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  SizedBox(width: 12.w),
-                  GestureDetector(
-                    onTap: () async {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (context) => CountryCodePickerDialog(
-                          onCountrySelected: (country) {
-                            setState(() {
-                              _selectedCountry = country;
-                            });
-                          },
-                        ),
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                      );
-                    },
-                    child: Row(
+                  AuthTextField(
+                    label: AppStrings.authFullNameLabel.tr(),
+                    hint: AppStrings.authFullNameHint.tr(),
+                    controller: _fullNameController,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  SizedBox(height: AppSpacing.md),
+                  AuthTextField(
+                    label: AppStrings.authEmailLabel.tr(),
+                    hint: AppStrings.authEmailHint.tr(),
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  SizedBox(height: AppSpacing.md),
+                  AuthTextField(
+                    label: 'auth.phoneLabelOptional'.tr(),
+                    hint: AppStrings.authPhoneHint.tr(),
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    textInputAction: TextInputAction.next,
+                    prefixWidget: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          _selectedCountry.flag,
-                          style: TextStyle(fontSize: 20.sp),
+                        SizedBox(width: 12.w),
+                        InkWell(
+                          borderRadius: BorderRadius.circular(8.r),
+                          onTap: () async {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) => CountryCodePickerDialog(
+                                onCountrySelected: (country) {
+                                  setState(() {
+                                    _selectedCountry = country;
+                                  });
+                                },
+                              ),
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                            );
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 4.w,
+                              vertical: 4.h,
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  _selectedCountry.flag,
+                                  style: TextStyle(fontSize: 20.sp),
+                                ),
+                                SizedBox(width: 4.w),
+                                Text(
+                                  '+${_selectedCountry.dialCode}',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const Icon(
+                                  Icons.arrow_drop_down,
+                                  color: AppColors.grey600,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        SizedBox(width: 4.w),
-                        Text(
-                          '+${_selectedCountry.dialCode}',
-                          style: theme.textTheme.bodyMedium,
+                        Container(
+                          width: 1.w,
+                          height: 24.h,
+                          color: AppColors.grey300,
+                          margin: EdgeInsets.symmetric(horizontal: 8.w),
                         ),
-                        const Icon(Icons.arrow_drop_down, color: AppColors.grey600),
                       ],
                     ),
                   ),
+                  SizedBox(height: AppSpacing.md),
+                  AuthTextField(
+                    label: AppStrings.authPasswordLabel.tr(),
+                    hint: AppStrings.authPasswordHint.tr(),
+                    controller: _passwordController,
+                    obscureText: true,
+                  ),
+                  SizedBox(height: AppSpacing.md),
+                  AuthTextField(
+                    label: AppStrings.authConfirmPasswordLabel.tr(),
+                    hint: AppStrings.authConfirmPasswordHint.tr(),
+                    controller: _confirmPasswordController,
+                    obscureText: true,
+                  ),
+                  SizedBox(height: AppSpacing.md),
                   Container(
-                    width: 1.w,
-                    height: 24.h,
-                    color: Colors.grey[300],
-                    margin: EdgeInsets.symmetric(horizontal: 8.w),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 10.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.gold.withValues(alpha: 0.07),
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: AppColors.gold.withValues(alpha: 0.18),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          size: 16.sp,
+                          color: AppColors.gold,
+                        ),
+                        SizedBox(width: 8.w),
+                        Expanded(
+                          child: Text(
+                            AppStrings.authPasswordRequirements.tr(),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: isDark
+                                  ? AppColors.grey400
+                                  : AppColors.grey700,
+                              height: 1.4,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 16.h),
-            AuthTextField(
-              label: AppStrings.authPasswordLabel.tr(),
-              hint: AppStrings.authPasswordHint.tr(),
-              controller: _passwordController,
-              obscureText: true,
-            ),
-            SizedBox(height: 16.h),
-            AuthTextField(
-              label: AppStrings.authConfirmPasswordLabel.tr(),
-              hint: AppStrings.authConfirmPasswordHint.tr(),
-              controller: _confirmPasswordController,
-              obscureText: true,
-            ),
-            SizedBox(height: 16.h),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                AppStrings.authPasswordRequirements.tr(),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.grey600,
-                ),
-              ),
-            ),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.lg),
             PrimaryButton(
               text: AppStrings.authSignupButton.tr(),
               // Use builder to access the form state validation if needed, but controllers are here
               onPressed: () {
-                // Basic validation
+                // Basic validation (phone is optional per App Store guideline 5.1.1)
                 if (_fullNameController.text.isEmpty ||
                     _emailController.text.isEmpty ||
-                    _phoneController.text.isEmpty ||
                     _passwordController.text.isEmpty ||
                     _confirmPasswordController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -254,16 +334,58 @@ class _SignupFormState extends State<_SignupForm> {
                   return;
                 }
 
-                context.read<SignupCubit>().sendOtp(
-                  _phoneController.text,
-                  _selectedCountry.dialCode,
-                );
+                // If the user provided a phone number, verify it via OTP.
+                // Otherwise skip OTP and go straight to role selection so the
+                // account can be created without a phone number.
+                if (_phoneController.text.trim().isEmpty) {
+                  context.push(
+                    '/auth/select-role',
+                    extra: {
+                      'fullName': _fullNameController.text,
+                      'email': _emailController.text,
+                      'phone': '',
+                      'password': _passwordController.text,
+                      'passwordConfirmation': _confirmPasswordController.text,
+                      'countryCode': _selectedCountry.dialCode,
+                    },
+                  );
+                } else {
+                  context.read<SignupCubit>().sendOtp(
+                    _phoneController.text,
+                    _selectedCountry.dialCode,
+                  );
+                }
               },
               isLoading:
                   state
                       is SignupLoading, // Kept this line as it's good practice and not explicitly removed
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.lg),
+            Row(
+              children: [
+                Expanded(
+                  child: Divider(
+                    color: AppColors.grey300.withValues(alpha: 0.7),
+                    thickness: 1,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+                  child: Icon(
+                    Icons.diamond_outlined,
+                    size: 14.sp,
+                    color: AppColors.gold.withValues(alpha: 0.6),
+                  ),
+                ),
+                Expanded(
+                  child: Divider(
+                    color: AppColors.grey300.withValues(alpha: 0.7),
+                    thickness: 1,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: AppSpacing.md),
             Center(
               child: Text.rich(
                 TextSpan(
@@ -278,6 +400,7 @@ class _SignupFormState extends State<_SignupForm> {
                       text: AppStrings.authLoginNow.tr(),
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: AppColors.gold,
+                        fontWeight: FontWeight.w700,
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () => context.go('/auth/login'),
@@ -287,7 +410,7 @@ class _SignupFormState extends State<_SignupForm> {
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.lg),
             Center(
               child: Text.rich(
                 TextSpan(

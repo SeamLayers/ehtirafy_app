@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/entities/contract_details_entity.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contract_header.dart';
@@ -17,14 +18,14 @@ class OrderDetailsCancelledView extends StatelessWidget {
         context.locale.languageCode.toLowerCase().startsWith('ar');
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ContractHeader(contract: contract),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
           ContractThreeStatusCard(contract: contract),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
           _buildCancelledMessage(isArabic: isArabic),
         ],
       ),
@@ -36,25 +37,55 @@ class OrderDetailsCancelledView extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.error.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: AppColors.error),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            AppColors.error.withValues(alpha: 0.10),
+            AppColors.error.withValues(alpha: 0.04),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: AppColors.error.withValues(alpha: 0.35)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.error.withValues(alpha: 0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Column(
         children: [
-          Icon(Icons.cancel_outlined, color: AppColors.error, size: 48.sp),
-          SizedBox(height: 12.h),
+          Container(
+            width: 72.w,
+            height: 72.w,
+            decoration: BoxDecoration(
+              color: AppColors.error.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: AppColors.error.withValues(alpha: 0.25),
+              ),
+            ),
+            child: Icon(
+              Icons.cancel_outlined,
+              color: AppColors.error,
+              size: 38.sp,
+            ),
+          ),
+          SizedBox(height: AppSpacing.md),
           Text(
             isRejected ? 'Rejected' : 'Cancelled',
             style: TextStyle(
+              fontFamily: 'Cairo',
               color: AppColors.error,
               fontSize: 18.sp,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w700,
             ),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: AppSpacing.sm),
           Text(
             isRejected
                 ? (isArabic
@@ -63,7 +94,13 @@ class OrderDetailsCancelledView extends StatelessWidget {
                 : (isArabic
                       ? 'تم إلغاء العقد.'
                       : 'The contract was cancelled.'),
-            style: TextStyle(color: AppColors.grey500, fontSize: 14.sp),
+            style: TextStyle(
+              fontFamily: 'Cairo',
+              color: AppColors.textSecondary,
+              fontSize: 14.sp,
+              height: 1.5,
+              fontWeight: FontWeight.w500,
+            ),
             textAlign: TextAlign.center,
           ),
         ],

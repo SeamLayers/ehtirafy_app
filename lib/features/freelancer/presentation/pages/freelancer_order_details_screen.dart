@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/widgets/financial_pledge_section.dart';
 import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
+import 'package:ehtirafy_app/core/widgets/user_avatar.dart';
 import '../../domain/entities/freelancer_order_entity.dart';
 import '../cubit/freelancer_orders_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -104,15 +106,20 @@ class _FreelancerOrderDetailsScreenState
               statusBarColor: Colors.transparent,
             ),
             child: Scaffold(
-              backgroundColor: const Color(0xFFF9F9F9),
+              backgroundColor: AppColors.backgroundLight,
               body: state is ContractDetailsLoading && _details == null
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(AppColors.gold),
+                      ),
+                    )
                   : Column(
                       children: [
                         _buildHeader(context),
                         Expanded(
                           child: SingleChildScrollView(
-                            padding: EdgeInsets.all(24.w),
+                            padding: EdgeInsets.all(AppSpacing.lg),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -166,18 +173,24 @@ class _FreelancerOrderDetailsScreenState
         : 'تفاصيل العقد';
 
     return Container(
-      color: AppColors.dark,
+      decoration: BoxDecoration(
+        color: AppColors.dark,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(24),
+          bottomRight: Radius.circular(24),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.dark.withValues(alpha: 0.18),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
       child: SafeArea(
         bottom: false,
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
-          decoration: const BoxDecoration(
-            color: AppColors.dark,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(24),
-              bottomRight: Radius.circular(24),
-            ),
-          ),
           child: Row(
             children: [
               RtlBackButton(color: Colors.white, size: 20.sp),
@@ -186,16 +199,18 @@ class _FreelancerOrderDetailsScreenState
                   child: Text(
                     title,
                     textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w400,
+                      fontSize: 17.sp,
+                      fontWeight: FontWeight.w600,
                       height: 1.50,
                     ),
                   ),
                 ),
               ),
-              SizedBox(width: 20.w),
+              SizedBox(width: 40.w),
             ],
           ),
         ),
@@ -206,35 +221,55 @@ class _FreelancerOrderDetailsScreenState
   Widget _buildNewRequestBanner(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16.w),
-      decoration: ShapeDecoration(
+      padding: EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
         gradient: const LinearGradient(
           begin: Alignment(0.50, 0.00),
           end: Alignment(0.50, 1.00),
-          colors: [Color(0xFFC8A44F), Color(0xFFB8944F)],
+          colors: [AppColors.gold, Color(0xFFB8944F)],
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14.r),
-        ),
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gold.withValues(alpha: 0.32),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Column(
         children: [
-          Text(
-            'طلب حجز جديد!',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Colors.white,
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w400,
-              height: 1.50,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.notifications_active_outlined,
+                color: Colors.white,
+                size: 18.sp,
+              ),
+              SizedBox(width: 8.w),
+              Flexible(
+                child: Text(
+                  'طلب حجز جديد!',
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Colors.white,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                    height: 1.50,
+                  ),
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 4.h),
           Text(
             'تم الاستلام منذ ساعة',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.white.withValues(alpha: 0.8),
+              color: Colors.white.withValues(alpha: 0.85),
               fontSize: 14.sp,
               fontWeight: FontWeight.w400,
               height: 1.43,
@@ -249,32 +284,53 @@ class _FreelancerOrderDetailsScreenState
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          'منذ 3 أيام',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: const Color(0xFF888888),
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
-            height: 1.43,
+        Flexible(
+          child: Text(
+            'منذ 3 أيام',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppColors.textSecondary,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w400,
+              height: 1.43,
+            ),
           ),
         ),
+        SizedBox(width: 8.w),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-          decoration: ShapeDecoration(
-            color: const Color(0xFF17A2B8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.r),
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
+          decoration: BoxDecoration(
+            color: AppColors.info.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(20.r),
+            border: Border.all(
+              color: AppColors.info.withValues(alpha: 0.35),
+              width: 1,
             ),
           ),
-          child: Text(
-            'جاري العمل',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12.sp,
-              fontFamily: 'Cairo',
-              fontWeight: FontWeight.w500,
-              height: 1.33,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 7.w,
+                height: 7.w,
+                decoration: const BoxDecoration(
+                  color: AppColors.info,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              SizedBox(width: 6.w),
+              Text(
+                'جاري العمل',
+                style: TextStyle(
+                  color: AppColors.info,
+                  fontSize: 12.sp,
+                  fontFamily: 'Cairo',
+                  fontWeight: FontWeight.w700,
+                  height: 1.33,
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -286,11 +342,13 @@ class _FreelancerOrderDetailsScreenState
       padding: EdgeInsets.only(top: 16.h),
       child: Text(
         serviceTitle,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-          color: const Color(0xFF2B2B2B),
+          color: AppColors.textPrimary,
           fontSize: 24.sp,
-          fontWeight: FontWeight.w500,
-          height: 1.50,
+          fontWeight: FontWeight.w700,
+          height: 1.40,
         ),
       ),
     );
@@ -299,13 +357,18 @@ class _FreelancerOrderDetailsScreenState
   Widget _buildRequestedServiceCard(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16.w),
-      decoration: ShapeDecoration(
+      padding: EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
         color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFFE5E5E5)),
-          borderRadius: BorderRadius.circular(14.r),
-        ),
+        border: Border.all(width: 1, color: AppColors.grey200),
+        borderRadius: BorderRadius.circular(18.r),
+        boxShadow: const [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -313,76 +376,82 @@ class _FreelancerOrderDetailsScreenState
           Text(
             'الخدمة المطلوبة',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: const Color(0xFF2B2B2B),
+              color: AppColors.textPrimary,
               fontSize: 16.sp,
-              fontWeight: FontWeight.w400,
+              fontWeight: FontWeight.w700,
               height: 1.50,
             ),
           ),
           SizedBox(height: 12.h),
           Row(
             children: [
+              Container(
+                width: 56.w,
+                height: 56.h,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment(0.50, 0.00),
+                    end: Alignment(0.50, 1.00),
+                    colors: [AppColors.gold, Color(0xFFB8944F)],
+                  ),
+                  borderRadius: BorderRadius.circular(14.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.gold.withValues(alpha: 0.30),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  Icons.camera_alt_outlined,
+                  color: Colors.white,
+                  size: 28.sp,
+                ),
+              ),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       serviceTitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: const Color(0xFF2B2B2B),
+                        color: AppColors.textPrimary,
                         fontSize: 16.sp,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w600,
                         height: 1.50,
                       ),
                     ),
                     SizedBox(height: 8.h),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(
-                          'ريال',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                color: const Color(0xFF888888),
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w400,
-                                height: 1.50,
-                              ),
-                        ),
-                        SizedBox(width: 4.w),
                         Text(
                           price.toInt().toString(),
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(
                                 color: AppColors.gold,
                                 fontSize: 20.sp,
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w700,
                                 height: 1.40,
+                              ),
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          'ريال',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: AppColors.textSecondary,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                height: 1.50,
                               ),
                         ),
                       ],
                     ),
                   ],
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Container(
-                width: 56.w,
-                height: 56.h,
-                decoration: ShapeDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment(0.50, 0.00),
-                    end: Alignment(0.50, 1.00),
-                    colors: [Color(0xFFC8A44F), Color(0xFFB8944F)],
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                  ),
-                ),
-                child: Icon(
-                  Icons.camera_alt_outlined,
-                  color: Colors.white,
-                  size: 28.sp,
                 ),
               ),
             ],
@@ -395,25 +464,40 @@ class _FreelancerOrderDetailsScreenState
   Widget _buildBookingDetailsCard(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16.w),
-      decoration: ShapeDecoration(
-        color: const Color(0x0CC8A44F),
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFFC8A44F)),
-          borderRadius: BorderRadius.circular(14.r),
+      padding: EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.gold.withValues(alpha: 0.05),
+        border: Border.all(
+          width: 1,
+          color: AppColors.gold.withValues(alpha: 0.45),
         ),
+        borderRadius: BorderRadius.circular(18.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'تفاصيل الحجز المطلوبة',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: const Color(0xFF2B2B2B),
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w400,
-              height: 1.50,
-            ),
+          Row(
+            children: [
+              Icon(
+                Icons.event_note_outlined,
+                color: AppColors.gold,
+                size: 20.sp,
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Text(
+                  'تفاصيل الحجز المطلوبة',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: AppColors.textPrimary,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                    height: 1.50,
+                  ),
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 12.h),
           _buildBookingDetailRow(
@@ -449,22 +533,36 @@ class _FreelancerOrderDetailsScreenState
   }) {
     return Container(
       padding: EdgeInsets.all(12.w),
-      decoration: ShapeDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.r),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          width: 1,
+          color: AppColors.gold.withValues(alpha: 0.12),
         ),
       ),
       child: Row(
         children: [
+          Container(
+            width: 38.w,
+            height: 38.w,
+            decoration: BoxDecoration(
+              color: AppColors.gold.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            child: Icon(icon, color: AppColors.gold, size: 20.sp),
+          ),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: const Color(0xFF888888),
+                    color: AppColors.textSecondary,
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w400,
                     height: 1.33,
@@ -473,17 +571,18 @@ class _FreelancerOrderDetailsScreenState
                 SizedBox(height: 4.h),
                 Text(
                   value,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: const Color(0xFF2B2B2B),
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w400,
+                    color: AppColors.textPrimary,
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w600,
                     height: 1.50,
                   ),
                 ),
               ],
             ),
           ),
-          Icon(icon, color: const Color(0xFFC8A44F), size: 20.sp),
         ],
       ),
     );
@@ -493,13 +592,18 @@ class _FreelancerOrderDetailsScreenState
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(bottom: 16.h),
-      padding: EdgeInsets.all(16.w),
-      decoration: ShapeDecoration(
+      padding: EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
         color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFFE5E5E5)),
-          borderRadius: BorderRadius.circular(14.r),
-        ),
+        border: Border.all(width: 1, color: AppColors.grey200),
+        borderRadius: BorderRadius.circular(18.r),
+        boxShadow: const [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -508,16 +612,16 @@ class _FreelancerOrderDetailsScreenState
             children: [
               Icon(
                 Icons.message_outlined,
-                color: const Color(0xFF888888),
+                color: AppColors.gold,
                 size: 20.sp,
               ),
               SizedBox(width: 8.w),
               Text(
                 'رسالة العميل',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: const Color(0xFF2B2B2B),
+                  color: AppColors.textPrimary,
                   fontSize: 16.sp,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w700,
                   height: 1.50,
                 ),
               ),
@@ -526,18 +630,17 @@ class _FreelancerOrderDetailsScreenState
           SizedBox(height: 12.h),
           Container(
             width: double.infinity,
-            padding: EdgeInsets.all(16.w),
-            decoration: ShapeDecoration(
-              color: const Color(0xFFF9F9F9),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.r),
-              ),
+            padding: EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: AppColors.grey50,
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(width: 1, color: AppColors.grey200),
             ),
             child: Text(
               'السلام عليكم، نحتاج تغطية كاملة لحفل الزفاف من الساعة 6 مساءً حتى 12 منتصف الليل. الحفل سيكون في قاعة الأفراح الكبرى ونتوقع حضور 300 ضيف. نرغب في الحصول على صور عالية الجودة للحفل بالكامل بالإضافة إلى فيديو تريلر. شكراً لكم.',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: const Color(0xFF2B2B2B),
-                fontSize: 16.sp,
+                color: AppColors.textPrimary,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w400,
                 height: 1.63,
               ),
@@ -551,13 +654,18 @@ class _FreelancerOrderDetailsScreenState
   Widget _buildClientInfoCard(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16.w),
-      decoration: ShapeDecoration(
+      padding: EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
         color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFFE5E5E5)),
-          borderRadius: BorderRadius.circular(14.r),
-        ),
+        border: Border.all(width: 1, color: AppColors.grey200),
+        borderRadius: BorderRadius.circular(18.r),
+        boxShadow: const [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -565,74 +673,70 @@ class _FreelancerOrderDetailsScreenState
           Text(
             'معلومات العميل',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: const Color(0xFF2B2B2B),
+              color: AppColors.textPrimary,
               fontSize: 16.sp,
-              fontWeight: FontWeight.w400,
+              fontWeight: FontWeight.w700,
               height: 1.50,
             ),
           ),
           SizedBox(height: 12.h),
           Row(
             children: [
+              UserAvatar(
+                name: clientName,
+                imageUrl: clientImage,
+                size: 48,
+              ),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       clientName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: const Color(0xFF2B2B2B),
+                        color: AppColors.textPrimary,
                         fontSize: 16.sp,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w700,
                         height: 1.50,
                       ),
                     ),
                     SizedBox(height: 4.h),
                     Row(
                       children: [
+                        Icon(Icons.star_rounded,
+                            color: AppColors.gold, size: 16.sp),
+                        SizedBox(width: 2.w),
                         Text(
-                          '★ 4.8',
+                          '4.8',
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(
                                 color: AppColors.gold,
                                 fontSize: 14.sp,
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w700,
                                 height: 1.43,
                               ),
                         ),
                         SizedBox(width: 4.w),
-                        Text(
-                          '(12 طلب)',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                color: const Color(0xFF888888),
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w400,
-                                height: 1.43,
-                              ),
+                        Flexible(
+                          child: Text(
+                            '(12 طلب)',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.43,
+                                ),
+                          ),
                         ),
                       ],
                     ),
                   ],
-                ),
-              ),
-              Container(
-                width: 48.w,
-                height: 48.h,
-                decoration: ShapeDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment(0.50, 0.00),
-                    end: Alignment(0.50, 1.00),
-                    colors: [Color(0xFF17A2B8), Color(0xFF138496)],
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                  ),
-                ),
-                child: Icon(
-                  Icons.chat_bubble_outline,
-                  color: Colors.white,
-                  size: 24.sp,
                 ),
               ),
             ],
@@ -643,20 +747,21 @@ class _FreelancerOrderDetailsScreenState
               children: [
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 8.h),
-                    decoration: ShapeDecoration(
-                      color: const Color(0xFFF9F9F9),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
+                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                    decoration: BoxDecoration(
+                      color: AppColors.grey50,
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(width: 1, color: AppColors.grey200),
                     ),
                     child: Center(
                       child: Text(
                         'عضو منذ 2023',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: const Color(0xFF2B2B2B),
+                          color: AppColors.textPrimary,
                           fontSize: 12.sp,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.w600,
                           height: 1.33,
                         ),
                       ),
@@ -666,12 +771,11 @@ class _FreelancerOrderDetailsScreenState
                 SizedBox(width: 8.w),
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 8.h),
-                    decoration: ShapeDecoration(
-                      color: const Color(0xFFF9F9F9),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
+                    padding: EdgeInsets.symmetric(vertical: 6.h),
+                    decoration: BoxDecoration(
+                      color: AppColors.grey50,
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(width: 1, color: AppColors.grey200),
                     ),
                     child: Column(
                       children: [
@@ -679,17 +783,19 @@ class _FreelancerOrderDetailsScreenState
                           '12',
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(
-                                color: const Color(0xFF2B2B2B),
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w400,
+                                color: AppColors.textPrimary,
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w700,
                                 height: 1.43,
                               ),
                         ),
                         Text(
                           'طلب سابق',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(
-                                color: const Color(0xFF888888),
+                                color: AppColors.textSecondary,
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w400,
                                 height: 1.33,
@@ -704,24 +810,30 @@ class _FreelancerOrderDetailsScreenState
             SizedBox(height: 12.h),
             Container(
               width: double.infinity,
-              height: 36.h,
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  side: const BorderSide(width: 1, color: Color(0xFF17A2B8)),
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
+              height: 40.h,
+              decoration: BoxDecoration(
+                color: AppColors.gold.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(width: 1, color: AppColors.gold),
               ),
               child: Center(
-                child: Text(
-                  'عرض الملف الشخصي',
-                  style: TextStyle(
-                    color: const Color(0xFF17A2B8),
-                    fontSize: 14.sp,
-                    fontFamily: 'Cairo',
-                    fontWeight: FontWeight.w500,
-                    height: 1.43,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.person_outline,
+                        color: AppColors.gold, size: 16.sp),
+                    SizedBox(width: 6.w),
+                    Text(
+                      'عرض الملف الشخصي',
+                      style: TextStyle(
+                        color: AppColors.gold,
+                        fontSize: 14.sp,
+                        fontFamily: 'Cairo',
+                        fontWeight: FontWeight.w700,
+                        height: 1.43,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -735,32 +847,44 @@ class _FreelancerOrderDetailsScreenState
     if (description.isEmpty) return const SizedBox.shrink();
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16.w),
-      decoration: ShapeDecoration(
+      padding: EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
         color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFFE5E5E5)),
-          borderRadius: BorderRadius.circular(14.r),
-        ),
+        border: Border.all(width: 1, color: AppColors.grey200),
+        borderRadius: BorderRadius.circular(18.r),
+        boxShadow: const [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'الوصف',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: const Color(0xFF2B2B2B),
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w500,
-              height: 1.50,
-            ),
+          Row(
+            children: [
+              Icon(Icons.description_outlined,
+                  color: AppColors.gold, size: 20.sp),
+              SizedBox(width: 8.w),
+              Text(
+                'الوصف',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: AppColors.textPrimary,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w700,
+                  height: 1.50,
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 8.h),
           Text(
             description,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: const Color(0xFF2B2B2B),
-              fontSize: 16.sp,
+              color: AppColors.textPrimary,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w400,
               height: 1.63,
             ),
@@ -773,13 +897,18 @@ class _FreelancerOrderDetailsScreenState
   Widget _buildDetailsCard(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16.w),
-      decoration: ShapeDecoration(
+      padding: EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
         color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFFE5E5E5)),
-          borderRadius: BorderRadius.circular(14.r),
-        ),
+        border: Border.all(width: 1, color: AppColors.grey200),
+        borderRadius: BorderRadius.circular(18.r),
+        boxShadow: const [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -789,14 +918,14 @@ class _FreelancerOrderDetailsScreenState
             label: 'الموقع',
             value: location,
           ),
-          Divider(color: const Color(0xFFE5E5E5), height: 24.h),
+          Divider(color: AppColors.grey200, height: 24.h),
           _buildDetailRow(
             context,
             icon: Icons.calendar_today_outlined,
             label: 'التاريخ',
             value: DateFormat('dd MMMM yyyy', 'ar').format(eventDate),
           ),
-          Divider(color: const Color(0xFFE5E5E5), height: 24.h),
+          Divider(color: AppColors.grey200, height: 24.h),
           _buildPriceRow(context),
         ],
       ),
@@ -811,15 +940,27 @@ class _FreelancerOrderDetailsScreenState
   }) {
     return Row(
       children: [
+        Container(
+          width: 40.w,
+          height: 40.w,
+          decoration: BoxDecoration(
+            color: AppColors.gold.withValues(alpha: 0.10),
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Icon(icon, color: AppColors.gold, size: 20.sp),
+        ),
+        SizedBox(width: 12.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: const Color(0xFF888888),
-                  fontSize: 14.sp,
+                  color: AppColors.textSecondary,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w400,
                   height: 1.43,
                 ),
@@ -827,17 +968,18 @@ class _FreelancerOrderDetailsScreenState
               SizedBox(height: 4.h),
               Text(
                 value,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: const Color(0xFF2B2B2B),
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w400,
+                  color: AppColors.textPrimary,
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w600,
                   height: 1.50,
                 ),
               ),
             ],
           ),
         ),
-        Icon(icon, color: const Color(0xFF888888), size: 20.sp),
       ],
     );
   }
@@ -845,15 +987,27 @@ class _FreelancerOrderDetailsScreenState
   Widget _buildPriceRow(BuildContext context) {
     return Row(
       children: [
+        Container(
+          width: 40.w,
+          height: 40.w,
+          decoration: BoxDecoration(
+            color: AppColors.gold.withValues(alpha: 0.10),
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Icon(Icons.attach_money, color: AppColors.gold, size: 20.sp),
+        ),
+        SizedBox(width: 12.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'المبلغ',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: const Color(0xFF888888),
-                  fontSize: 14.sp,
+                  color: AppColors.textSecondary,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w400,
                   height: 1.43,
                 ),
@@ -866,7 +1020,7 @@ class _FreelancerOrderDetailsScreenState
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: AppColors.gold,
                       fontSize: 18.sp,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w700,
                       height: 1.56,
                     ),
                   ),
@@ -874,8 +1028,8 @@ class _FreelancerOrderDetailsScreenState
                   Text(
                     'ريال',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: const Color(0xFF888888),
-                      fontSize: 16.sp,
+                      color: AppColors.textSecondary,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w400,
                       height: 1.50,
                     ),
@@ -885,7 +1039,6 @@ class _FreelancerOrderDetailsScreenState
             ],
           ),
         ),
-        Icon(Icons.attach_money, color: const Color(0xFF888888), size: 20.sp),
       ],
     );
   }
@@ -893,17 +1046,32 @@ class _FreelancerOrderDetailsScreenState
   Widget _buildPaymentStatusCard(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16.w),
-      decoration: ShapeDecoration(
-        color: const Color(0x0C28A745),
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFF28A745)),
-          borderRadius: BorderRadius.circular(14.r),
+      padding: EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.success.withValues(alpha: 0.06),
+        border: Border.all(
+          width: 1,
+          color: AppColors.success.withValues(alpha: 0.45),
         ),
+        borderRadius: BorderRadius.circular(18.r),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Container(
+            width: 40.w,
+            height: 40.w,
+            decoration: BoxDecoration(
+              color: AppColors.success.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Icon(
+              Icons.check_circle_outline,
+              color: AppColors.success,
+              size: 22.sp,
+            ),
+          ),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -911,19 +1079,19 @@ class _FreelancerOrderDetailsScreenState
                 Text(
                   'حالة الدفع',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: const Color(0xFF2B2B2B),
+                    color: AppColors.textPrimary,
                     fontSize: 16.sp,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w700,
                     height: 1.50,
                   ),
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  'تم إيداع المبلغ لدى بطل',
+                  'تم إيداع المبلغ لدى عدسة المناسبات',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: const Color(0xFF28A745),
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w400,
+                    color: AppColors.success,
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w700,
                     height: 1.50,
                   ),
                 ),
@@ -931,20 +1099,14 @@ class _FreelancerOrderDetailsScreenState
                 Text(
                   'المبلغ محفوظ بشكل آمن وسيتم تحويله لك بعد تسليم الخدمة واستلام العميل.',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: const Color(0xFF888888),
-                    fontSize: 14.sp,
+                    color: AppColors.textSecondary,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w400,
                     height: 1.63,
                   ),
                 ),
               ],
             ),
-          ),
-          SizedBox(width: 8.w),
-          Icon(
-            Icons.check_circle_outline,
-            color: const Color(0xFF28A745),
-            size: 20.sp,
           ),
         ],
       ),
@@ -954,25 +1116,26 @@ class _FreelancerOrderDetailsScreenState
   Widget _buildReminderCard(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16.w),
-      decoration: ShapeDecoration(
-        color: const Color(0x1917A2B8),
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0x3316A2B8)),
-          borderRadius: BorderRadius.circular(14.r),
+      padding: EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.info.withValues(alpha: 0.08),
+        border: Border.all(
+          width: 1,
+          color: AppColors.info.withValues(alpha: 0.30),
         ),
+        borderRadius: BorderRadius.circular(18.r),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('💡', style: TextStyle(fontSize: 14.sp)),
+          Text('💡', style: TextStyle(fontSize: 16.sp)),
           SizedBox(width: 8.w),
           Expanded(
             child: RichText(
               text: TextSpan(
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: const Color(0xFF888888),
-                  fontSize: 14.sp,
+                  color: AppColors.textSecondary,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w400,
                   height: 1.63,
                 ),
@@ -980,7 +1143,7 @@ class _FreelancerOrderDetailsScreenState
                   TextSpan(
                     text: 'تذكير: ',
                     style: TextStyle(
-                      color: Color(0xFF2B2B2B),
+                      color: AppColors.textPrimary,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -1021,11 +1184,18 @@ class _FreelancerOrderDetailsScreenState
           right: 16.w,
           bottom: 24.h,
         ),
-        decoration: const ShapeDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(width: 1, color: Color(0xFFE5E5E5)),
+          border: Border(
+            top: BorderSide(width: 1, color: AppColors.grey200),
           ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.shadowLight,
+              blurRadius: 16,
+              offset: Offset(0, -4),
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -1033,25 +1203,30 @@ class _FreelancerOrderDetailsScreenState
               child: GestureDetector(
                 onTap: () => _acceptOrderWithPledge(context),
                 child: Container(
-                  height: 48.h,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFF28A745),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14.r),
-                    ),
+                  height: 50.h,
+                  decoration: BoxDecoration(
+                    color: AppColors.success,
+                    borderRadius: BorderRadius.circular(14.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.success.withValues(alpha: 0.28),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.check, color: Colors.white, size: 16.sp),
+                      Icon(Icons.check, color: Colors.white, size: 18.sp),
                       SizedBox(width: 8.w),
                       Text(
                         'قبول الطلب',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 14.sp,
+                          fontSize: 15.sp,
                           fontFamily: 'Cairo',
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w700,
                           height: 1.43,
                         ),
                       ),
@@ -1071,33 +1246,28 @@ class _FreelancerOrderDetailsScreenState
                   context.pop();
                 },
                 child: Container(
-                  height: 48.h,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(
-                        width: 2,
-                        color: Color(0xFFDC3545),
-                      ),
-                      borderRadius: BorderRadius.circular(14.r),
-                    ),
+                  height: 50.h,
+                  decoration: BoxDecoration(
+                    color: AppColors.error.withValues(alpha: 0.06),
+                    borderRadius: BorderRadius.circular(14.r),
+                    border: Border.all(width: 1.5, color: AppColors.error),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.close,
-                        color: const Color(0xFFDC3545),
-                        size: 16.sp,
+                        color: AppColors.error,
+                        size: 18.sp,
                       ),
                       SizedBox(width: 8.w),
                       Text(
                         'رفض الطلب',
                         style: TextStyle(
-                          color: const Color(0xFFDC3545),
-                          fontSize: 14.sp,
+                          color: AppColors.error,
+                          fontSize: 15.sp,
                           fontFamily: 'Cairo',
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w700,
                           height: 1.43,
                         ),
                       ),
@@ -1119,6 +1289,19 @@ class _FreelancerOrderDetailsScreenState
         right: 16.w,
         bottom: 24.h,
       ),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          top: BorderSide(width: 1, color: AppColors.grey200),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 16,
+            offset: Offset(0, -4),
+          ),
+        ],
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -1137,13 +1320,11 @@ class _FreelancerOrderDetailsScreenState
             },
             child: Container(
               width: double.infinity,
-              height: 48.h,
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  side: const BorderSide(width: 2, color: AppColors.primary),
-                  borderRadius: BorderRadius.circular(14.r),
-                ),
+              height: 50.h,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.06),
+                borderRadius: BorderRadius.circular(14.r),
+                border: Border.all(width: 1.5, color: AppColors.primary),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -1151,16 +1332,16 @@ class _FreelancerOrderDetailsScreenState
                   Icon(
                     Icons.chat_bubble_outline,
                     color: AppColors.primary,
-                    size: 16.sp,
+                    size: 18.sp,
                   ),
                   SizedBox(width: 8.w),
                   Text(
                     'مراسلة العميل',
                     style: TextStyle(
                       color: AppColors.primary,
-                      fontSize: 14.sp,
+                      fontSize: 15.sp,
                       fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w700,
                       height: 1.43,
                     ),
                   ),
@@ -1228,12 +1409,17 @@ class _FreelancerOrderDetailsScreenState
             },
             child: Container(
               width: double.infinity,
-              height: 48.h,
-              decoration: ShapeDecoration(
-                color: const Color(0xFF28A745),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14.r),
-                ),
+              height: 50.h,
+              decoration: BoxDecoration(
+                color: AppColors.success,
+                borderRadius: BorderRadius.circular(14.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.success.withValues(alpha: 0.28),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -1241,16 +1427,16 @@ class _FreelancerOrderDetailsScreenState
                   Icon(
                     Icons.check_circle_outline,
                     color: Colors.white,
-                    size: 16.sp,
+                    size: 18.sp,
                   ),
                   SizedBox(width: 8.w),
                   Text(
                     'تسليم الخدمة',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 14.sp,
+                      fontSize: 15.sp,
                       fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w700,
                       height: 1.43,
                     ),
                   ),

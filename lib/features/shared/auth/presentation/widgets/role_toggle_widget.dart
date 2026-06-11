@@ -21,115 +21,125 @@ class RoleToggleWidget extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return Container(
-      height: 56.h,
+      height: 60.h,
+      padding: EdgeInsets.all(4.r),
       decoration: BoxDecoration(
         color: isDark ? AppColors.grey800 : AppColors.grey100,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: isDark ? AppColors.grey700 : AppColors.grey200,
+        ),
       ),
       child: Row(
         children: [
           // Client Option
           Expanded(
-            child: GestureDetector(
+            child: _RoleSegment(
+              icon: Icons.person_search_rounded,
+              label: 'Client',
+              isSelected: !isFreelancer,
+              isDark: isDark,
               onTap: () => onChanged(false),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                margin: EdgeInsets.all(4.w),
-                decoration: BoxDecoration(
-                  color: !isFreelancer
-                      ? AppColors.gold
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(10.r),
-                  boxShadow: !isFreelancer
-                      ? [
-                          BoxShadow(
-                            color: AppColors.gold.withValues(alpha: 0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ]
-                      : null,
-                ),
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.person_search_rounded,
-                        size: 20.sp,
-                        color: !isFreelancer
-                            ? Colors.white
-                            : (isDark ? AppColors.grey400 : AppColors.grey600),
-                      ),
-                      SizedBox(width: 8.w),
-                      Text(
-                        'Client',
-                        style: GoogleFonts.cairo(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: !isFreelancer
-                              ? Colors.white
-                              : (isDark ? AppColors.grey400 : AppColors.grey600),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
             ),
           ),
-
+          SizedBox(width: 4.w),
           // Freelancer Option
           Expanded(
-            child: GestureDetector(
+            child: _RoleSegment(
+              icon: Icons.camera_alt_rounded,
+              label: 'Freelancer',
+              isSelected: isFreelancer,
+              isDark: isDark,
               onTap: () => onChanged(true),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                margin: EdgeInsets.all(4.w),
-                decoration: BoxDecoration(
-                  color: isFreelancer
-                      ? AppColors.gold
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(10.r),
-                  boxShadow: isFreelancer
-                      ? [
-                          BoxShadow(
-                            color: AppColors.gold.withValues(alpha: 0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ]
-                      : null,
-                ),
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.camera_alt_rounded,
-                        size: 20.sp,
-                        color: isFreelancer
-                            ? Colors.white
-                            : (isDark ? AppColors.grey400 : AppColors.grey600),
-                      ),
-                      SizedBox(width: 8.w),
-                      Text(
-                        'Freelancer',
-                        style: GoogleFonts.cairo(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: isFreelancer
-                              ? Colors.white
-                              : (isDark ? AppColors.grey400 : AppColors.grey600),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _RoleSegment extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isSelected;
+  final bool isDark;
+  final VoidCallback onTap;
+
+  const _RoleSegment({
+    required this.icon,
+    required this.label,
+    required this.isSelected,
+    required this.isDark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final Color foreground = isSelected
+        ? AppColors.textLight
+        : (isDark ? AppColors.grey400 : AppColors.grey600);
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOutCubic,
+        decoration: BoxDecoration(
+          gradient: isSelected
+              ? LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.gold,
+                    AppColors.gold.withValues(alpha: 0.88),
+                  ],
+                )
+              : null,
+          color: isSelected ? null : Colors.transparent,
+          borderRadius: BorderRadius.circular(12.r),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppColors.gold.withValues(alpha: 0.32),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : const [],
+        ),
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 20.sp,
+                color: foreground,
+              ),
+              SizedBox(width: 8.w),
+              Flexible(
+                child: AnimatedDefaultTextStyle(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeOutCubic,
+                  style: GoogleFonts.cairo(
+                    fontSize: 14.sp,
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.w600,
+                    color: foreground,
+                  ),
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

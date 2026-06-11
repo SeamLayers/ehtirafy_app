@@ -20,59 +20,90 @@ class StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color accent = iconColor ?? AppColors.primary;
+
     return Container(
       height: 130.h,
-      padding: EdgeInsets.all(12.w),
+      padding: EdgeInsetsDirectional.fromSTEB(14.w, 14.h, 14.w, 14.h),
       decoration: BoxDecoration(
-        color: backgroundColor ?? Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: const [
+        gradient: backgroundColor == null
+            ? LinearGradient(
+                begin: AlignmentDirectional.topStart,
+                end: AlignmentDirectional.bottomEnd,
+                colors: [
+                  Colors.white,
+                  accent.withValues(alpha: 0.03),
+                ],
+              )
+            : null,
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(18.r),
+        boxShadow: [
           BoxShadow(
-            color: Color(0x0D000000),
-            blurRadius: 10,
-            offset: Offset(0, 4),
+            color: accent.withValues(alpha: 0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+          BoxShadow(
+            color: AppColors.shadowLight.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
-        border: Border.all(color: const Color(0xFFF2F2F2)),
+        border: Border.all(color: AppColors.grey200, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            padding: EdgeInsets.all(8.w),
+            padding: EdgeInsets.all(9.w),
             decoration: BoxDecoration(
-              color: (iconColor ?? AppColors.primary).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8.r),
+              gradient: LinearGradient(
+                begin: AlignmentDirectional.topStart,
+                end: AlignmentDirectional.bottomEnd,
+                colors: [
+                  accent.withValues(alpha: 0.16),
+                  accent.withValues(alpha: 0.08),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(10.r),
+              border: Border.all(
+                color: accent.withValues(alpha: 0.18),
+                width: 1,
+              ),
             ),
             child: Icon(
               icon,
-              color: iconColor ?? AppColors.primary,
-              size: 18.sp,
+              color: accent,
+              size: 19.sp,
             ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               FittedBox(
                 fit: BoxFit.scaleDown,
-                alignment: Alignment.centerRight,
+                alignment: AlignmentDirectional.centerStart,
                 child: Text(
                   value,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: const Color(0xFF2B2B2B),
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                    fontSize: 19.sp,
+                    fontWeight: FontWeight.w700,
+                    height: 1.1,
                   ),
                   maxLines: 1,
                 ),
               ),
-              SizedBox(height: 2.h),
+              SizedBox(height: 4.h),
               Text(
                 title,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: const Color(0xFF888888),
-                  fontSize: 10.sp,
+                  color: AppColors.textSecondary,
+                  fontSize: 10.5.sp,
+                  fontWeight: FontWeight.w500,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

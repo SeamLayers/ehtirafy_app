@@ -18,16 +18,16 @@ class PortfolioItemModel extends PortfolioItemEntity {
       return val?.toString() ?? '';
     }
 
+    final imgs = json['images'];
     return PortfolioItemModel(
       id: json['id']?.toString() ?? '',
       title: parseLocalized(json['title']),
       description: parseLocalized(json['description']),
-      image: json['images'] != null && (json['images'] as List).isNotEmpty
-          ? json['images'][0]?.toString()
+      image: (imgs is List && imgs.isNotEmpty)
+          ? imgs[0]?.toString()
           : (json['image']?.toString()), // Fallback
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
-          : DateTime.now(),
+      createdAt: DateTime.tryParse(json['created_at']?.toString() ?? '') ??
+          DateTime.now(),
     );
   }
 

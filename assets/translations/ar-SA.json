@@ -1,5 +1,5 @@
 {
-  "app_name": "البطل للتصوير والمناسبات",
+  "app_name": "عدسة المناسبات",
   "welcome": "مرحباً بك",
   "login": "تسجيل الدخول",
   "signup": "إنشاء حساب",
@@ -64,6 +64,7 @@
     "loginGoogle": "تسجيل الدخول بواسطة Google",
     "loginApple": "تسجيل الدخول بواسطة Apple",
     "phoneLabel": "رقم الهاتف",
+    "phoneLabelOptional": "رقم الهاتف (اختياري)",
     "phoneHint": "123 456 789",
     "haveAccount": "لديك حساب بالفعل؟",
     "loginNow": "تسجيل الدخول",
@@ -95,7 +96,7 @@
     "passwordLength": "يجب أن تكون كلمة المرور 8 أحرف على الأقل"
   },
   "splash": {
-    "tagline": "بوابة بطل لعالم التصوير"
+    "tagline": "بوابة عدسة المناسبات لعالم التصوير"
   },
   "nav": {
     "home": "الرئيسية",
@@ -114,8 +115,8 @@
     "switchedToFreelancer": "تم التبديل إلى وضع المصور"
   },
   "onboarding": {
-    "welcomeTitle": "مرحباً بك في بطل",
-    "subtitle": "بوابة بطل لعالم التصوير الفوتوغرافي",
+    "welcomeTitle": "مرحباً بك في عدسة المناسبات",
+    "subtitle": "بوابة عدسة المناسبات لعالم التصوير الفوتوغرافي",
     "login": "تسجيل الدخول",
     "signup": "إنشاء حساب جديد",
     "bannerTitle": "انضم إلى أكبر منصة",
@@ -124,7 +125,17 @@
     "servicesSubtitle": "جميع المجالات",
     "photographersSubtitle": "+500 مصور",
     "growthSubtitle": "آلاف المشاريع",
-    "qualitySubtitle": "4.8+ تقييم"
+    "qualitySubtitle": "4.8+ تقييم",
+    "continueAsGuest": "تصفح كزائر"
+  },
+  "guest": {
+    "loginRequiredTitle": "تسجيل الدخول مطلوب",
+    "loginRequiredMessage": "يجب تسجيل الدخول للوصول إلى هذه الميزة",
+    "login": "تسجيل الدخول",
+    "cancel": "إلغاء",
+    "profileGreeting": "مرحباً بك، زائر",
+    "profileMessage": "سجّل الدخول للوصول إلى ملفك الشخصي وحجوزاتك ورسائلك",
+    "createAccount": "إنشاء حساب جديد"
   },
   "booking": {
     "requests": {
@@ -361,7 +372,7 @@
   "growth": "نمو مستمر",
   "quality": "جودة عالية",
   "roleSelection": {
-    "title": "كيف تريد استخدام بطل؟",
+    "title": "كيف تريد استخدام عدسة المناسبات؟",
     "subtitle": "اختر الدور المناسب لك",
     "clientTitle": "عميل",
     "clientSubtitle": "أبحث عن مصورين",
@@ -410,15 +421,15 @@
     "reviewsCount": "({count} تقييم)"
   },
   "appShare": {
-    "title": "شارك تطبيق بطل",
+    "title": "شارك تطبيق عدسة المناسبات",
     "subtitle": "أرسل رابط التطبيق بسرعة عبر واتساب أو أي منصة تواصل تفضلها",
     "whatsapp": "واتساب",
     "moreOptions": "منصات أخرى",
     "copyLink": "نسخ الرابط",
     "copied": "تم نسخ رابط التطبيق",
     "whatsappUnavailable": "تعذر فتح واتساب على هذا الجهاز",
-    "message": "جرّب تطبيق بطل للتصوير وحجز أفضل المصورين بسهولة:\n{link}",
-    "subject": "جرّب تطبيق بطل",
+    "message": "جرّب تطبيق عدسة المناسبات للتصوير وحجز أفضل المصورين بسهولة:\n{link}",
+    "subject": "جرّب تطبيق عدسة المناسبات",
     "linkLabel": "رابط التطبيق"
   },
   "myRequests": {
@@ -480,7 +491,7 @@
     },
     "paymentStatus": {
       "label": "حالة الدفع",
-      "deposited": "تم إيداع المبلغ لدى بطل",
+      "deposited": "تم إيداع المبلغ لدى عدسة المناسبات",
       "secureMessage": "المبلغ محفوظ بشكل آمن وسيتم تحويله للمصور بعد الإتمام"
     },
     "workStages": {
@@ -555,5 +566,71 @@
   "payment_proof_submitted_title": "تم إرسال إثبات الدفع بنجاح",
   "payment_proof_submitted_message": "تم استلام إثبات الدفع الخاص بك. سيتم مراجعته من قبل الإدارة وتفعيل العقد بعد التحقق.",
   "back_to_contract": "العودة للعقد",
-  "retry": "إعادة محاولة"
+  "retry": "إعادة محاولة",
+  "home_main": {
+    "retry": "إعادة المحاولة"
+  },
+  "home_categories": {
+    "title": "الفئات",
+    "subtitle": "اختر نوع الخدمة المناسبة لمناسبتك",
+    "count_badge": "{count} فئة",
+    "empty_state": "لا توجد فئات متاحة",
+    "browse": "استعرض"
+  },
+  "home_featured": {
+    "section_title": "أبرز المصورين",
+    "section_subtitle": "اختيارات مميزة حسب التقييم والجودة",
+    "view_all": "عرض الكل",
+    "available_days": "متاح {count} أيام",
+    "available_for_booking": "متاح للحجز",
+    "verified": "موثوق",
+    "reviews_count": "{count} تقييم",
+    "view_profile": "عرض الملف",
+    "currency_sar": "ريال"
+  },
+  "home_header": {
+    "hero_label": "عدسة المناسبات",
+    "greeting_evening": "مساء الخير، أحمد",
+    "search_placeholder": "ابحث عن خدمات أو مصورين..."
+  },
+  "home_sliver": {
+    "greeting_hero": "عدسة المناسبات",
+    "good_evening_user": "مساء الخير، {name}",
+    "search_hint": "ابحث عن خدمات أو مصورين..."
+  },
+  "home_stats": {
+    "label_project": "مشروع",
+    "hint_completed": "منجز",
+    "label_rating": "تقييم",
+    "hint_client_average": "متوسط العملاء",
+    "label_beneficiary": "مستفيد",
+    "hint_trusted_client": "عميل موثوق"
+  },
+  "settings_x": {
+    "contact_us": "اتصل بنا",
+    "privacy_policy": "الخصوصية وبيان سرية المعلومات",
+    "terms_of_use": "اتفاقية الاستخدام",
+    "safety_center": "مركز الأمان",
+    "platform_fees": "رسوم المنصة"
+  },
+  "profile_header": {
+    "no_rating_yet": "لا يوجد تقييم بعد",
+    "review_count": "({count} تقييم)"
+  },
+  "profile_menu_x": {
+    "delete_account": "حذف الحساب",
+    "delete_account_dialog_title": "حذف الحساب",
+    "delete_account_dialog_message": "هل أنت متأكد من رغبتك في حذف الحساب نهائياً؟ لا يمكن التراجع عن هذا الإجراء.",
+    "confirm_delete": "تأكيد الحذف"
+  },
+  "role_card": {
+    "browsing_as_client": "انت تتصفح كـ عميل",
+    "browsing_as_photographer": "انت تتصفح كـ مصور",
+    "switch_to_photographer_mode": "التبديل إلى وضع المصور",
+    "switch_to_client_mode": "التبديل إلى وضع العميل",
+    "role_client": "عميل",
+    "role_photographer": "مصور",
+    "switching": "جاري التبديل..."
+  },
+  "refresh": "تحديث"
 }

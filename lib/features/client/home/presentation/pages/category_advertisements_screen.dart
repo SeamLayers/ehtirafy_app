@@ -6,9 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
+import 'package:ehtirafy_app/core/widgets/custom_empty_state.dart';
+import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
-import 'package:ehtirafy_app/core/constants/demo_images.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_entity.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/category_advertisements_cubit.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/category_advertisements_state.dart';
@@ -72,10 +74,14 @@ class _CategoryAdvertisementsScreenState extends State<CategoryAdvertisementsScr
                     >(
                       builder: (context, state) {
                         if (state is CategoryAdvertisementsLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.gold,
-                              strokeWidth: 2,
+                          return Center(
+                            child: SizedBox(
+                              width: 36.r,
+                              height: 36.r,
+                              child: const CircularProgressIndicator(
+                                color: AppColors.gold,
+                                strokeWidth: 2.5,
+                              ),
                             ),
                           );
                         }
@@ -105,13 +111,27 @@ class _CategoryAdvertisementsScreenState extends State<CategoryAdvertisementsScr
 
   Widget _buildHeader(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 20.h),
+      padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 22.h),
       decoration: BoxDecoration(
-        color: AppColors.dark,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(24.r),
-          bottomRight: Radius.circular(24.r),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            AppColors.dark,
+            AppColors.dark.withValues(alpha: 0.94),
+          ],
         ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(28.r),
+          bottomRight: Radius.circular(28.r),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.dark.withValues(alpha: 0.28),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -124,55 +144,75 @@ class _CategoryAdvertisementsScreenState extends State<CategoryAdvertisementsScr
                 height: 44.w,
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(14.r),
                   border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.12),
+                    color: AppColors.gold.withValues(alpha: 0.30),
                   ),
                 ),
                 child: Icon(
                   Icons.tune_rounded,
-                  color: Colors.white,
+                  color: AppColors.gold,
                   size: 20.sp,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
           Text(
             widget.categoryName,
             textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: Colors.white,
               fontSize: 22.sp,
               fontFamily: 'Cairo',
               fontWeight: FontWeight.bold,
+              height: 1.25,
             ),
           ),
           SizedBox(height: 6.h),
           Text(
             'اكتشف أفضل الخدمات المتاحة في هذه الفئة',
             textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.75),
               fontSize: 12.sp,
               fontFamily: 'Cairo',
+              height: 1.4,
             ),
           ),
           SizedBox(height: 14.h),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Text(
-              'خدمات مختارة بعناية',
-              style: TextStyle(
-                color: AppColors.gold,
-                fontSize: 12.sp,
-                fontFamily: 'Cairo',
-                fontWeight: FontWeight.w600,
+              color: AppColors.gold.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(20.r),
+              border: Border.all(
+                color: AppColors.gold.withValues(alpha: 0.35),
               ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.auto_awesome_rounded,
+                  color: AppColors.gold,
+                  size: 14.sp,
+                ),
+                SizedBox(width: 6.w),
+                Text(
+                  'خدمات مختارة بعناية',
+                  style: TextStyle(
+                    color: AppColors.gold,
+                    fontSize: 12.sp,
+                    fontFamily: 'Cairo',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -184,14 +224,17 @@ class _CategoryAdvertisementsScreenState extends State<CategoryAdvertisementsScr
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 8.h),
+          padding: EdgeInsets.fromLTRB(20.w, AppSpacing.md, 20.w, AppSpacing.sm),
           child: Row(
             children: [
               Container(
                 padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
                   color: AppColors.gold.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(14.r),
+                  border: Border.all(
+                    color: AppColors.gold.withValues(alpha: 0.20),
+                  ),
                 ),
                 child: Icon(
                   Icons.camera_alt_rounded,
@@ -200,38 +243,45 @@ class _CategoryAdvertisementsScreenState extends State<CategoryAdvertisementsScr
                 ),
               ),
               SizedBox(width: 12.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'الخدمات المتاحة',
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 16.sp,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w700,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'الخدمات المتاحة',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 16.sp,
+                        fontFamily: 'Cairo',
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-                  Text(
-                    '${photographers.length} خدمة متوفرة',
-                    style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12.sp,
-                      fontFamily: 'Cairo',
+                    SizedBox(height: 2.h),
+                    Text(
+                      '${photographers.length} خدمة متوفرة',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 12.sp,
+                        fontFamily: 'Cairo',
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
         ),
         Expanded(
           child: ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+            padding: EdgeInsets.fromLTRB(20.w, AppSpacing.sm, 20.w, AppSpacing.lg),
             itemCount: photographers.length,
             itemBuilder: (context, index) {
               return Padding(
-                padding: EdgeInsets.only(bottom: 16.h),
+                padding: EdgeInsets.only(bottom: AppSpacing.md),
                 child: _PremiumServiceCard(
                   photographer: photographers[index],
                   index: index,
@@ -245,93 +295,24 @@ class _CategoryAdvertisementsScreenState extends State<CategoryAdvertisementsScr
   }
 
   Widget _buildEmptyState(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: EdgeInsets.all(20.w),
-            decoration: const BoxDecoration(
-              color: AppColors.grey100,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.search_off_rounded,
-              size: 44.sp,
-              color: AppColors.grey400,
-            ),
-          ),
-          SizedBox(height: 16.h),
-          Text(
-            'لا توجد خدمات متاحة',
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 18.sp,
-              fontFamily: 'Cairo',
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 6.h),
-          Text(
-            'جرب البحث في فئة أخرى',
-            style: TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 14.sp,
-              fontFamily: 'Cairo',
-            ),
-          ),
-        ],
-      ),
+    return const CustomEmptyState(
+      title: 'لا توجد خدمات متاحة',
+      message: 'جرب البحث في فئة أخرى',
+      icon: Icons.search_off_rounded,
+      iconSize: 44,
     );
   }
 
   Widget _buildErrorState(BuildContext context, String message) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline_rounded,
-            size: 44.sp,
-            color: AppColors.error.withValues(alpha: 0.8),
-          ),
-          SizedBox(height: 12.h),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 14.sp,
-              fontFamily: 'Cairo',
-            ),
-          ),
-          SizedBox(height: 16.h),
-          GestureDetector(
-            onTap: () {
-              context.read<CategoryAdvertisementsCubit>().loadAdvertisements(
-                categoryId: widget.categoryId,
-                categoryName: widget.categoryName,
-              );
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-              decoration: BoxDecoration(
-                color: AppColors.gold,
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Text(
-                'إعادة المحاولة',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14.sp,
-                  fontFamily: 'Cairo',
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+    return ErrorStateWidget(
+      message: message,
+      retryText: 'إعادة المحاولة',
+      onRetry: () {
+        context.read<CategoryAdvertisementsCubit>().loadAdvertisements(
+          categoryId: widget.categoryId,
+          categoryName: widget.categoryName,
+        );
+      },
     );
   }
 }
@@ -345,7 +326,7 @@ class _PremiumServiceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
-    final imageUrl = DemoImages.items[index % DemoImages.items.length];
+    final imageUrl = photographer.imageUrl;
     return GestureDetector(
       onTap: () {
         context.push(
@@ -361,8 +342,13 @@ class _PremiumServiceCard extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(color: AppColors.grey200),
-          boxShadow: const [
+          boxShadow: [
             BoxShadow(
+              color: AppColors.gold.withValues(alpha: 0.06),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
+            ),
+            const BoxShadow(
               color: AppColors.shadowLight,
               blurRadius: 16,
               offset: Offset(0, 6),
@@ -391,6 +377,28 @@ class _PremiumServiceCard extends StatelessWidget {
                   ),
                 ),
 
+                // Subtle gradient scrim for badge legibility
+                Positioned.fill(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20.r),
+                    ),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            AppColors.dark.withValues(alpha: 0.18),
+                          ],
+                          stops: const [0.6, 1.0],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
                 // Rating badge
                 Positioned(
                   top: 12.h,
@@ -404,6 +412,13 @@ class _PremiumServiceCard extends StatelessWidget {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(color: AppColors.grey200),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: AppColors.shadowLight,
+                          blurRadius: 8,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -440,8 +455,22 @@ class _PremiumServiceCard extends StatelessWidget {
                       vertical: 8.h,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.gold,
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          AppColors.gold,
+                          AppColors.gold.withValues(alpha: 0.82),
+                        ],
+                      ),
                       borderRadius: BorderRadius.circular(14.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.gold.withValues(alpha: 0.32),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
                     child: Text(
                       '${photographer.price.toInt()} ر.س',
@@ -508,12 +537,19 @@ class _PremiumServiceCard extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: AppColors.dark,
                           borderRadius: BorderRadius.circular(14.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.dark.withValues(alpha: 0.20),
+                              blurRadius: 8,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
                         ),
                         child: Icon(
                           isRtl
                               ? Icons.arrow_back_rounded
                               : Icons.arrow_forward_rounded,
-                          color: Colors.white,
+                          color: AppColors.gold,
                           size: 20.sp,
                         ),
                       ),

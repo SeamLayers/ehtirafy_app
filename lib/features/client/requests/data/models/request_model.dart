@@ -17,21 +17,25 @@ class RequestModel extends RequestEntity {
 
   factory RequestModel.fromJson(Map<String, dynamic> json) {
     return RequestModel(
-      id: json['id'],
-      serviceName: json['serviceName'],
-      photographerName: json['photographerName'],
-      photographerId: json['photographerId'] ?? '',
-      advertisementId: json['advertisementId'] ?? '',
-      photographerImage: json['photographerImage'],
+      id: json['id']?.toString() ?? '',
+      serviceName: json['serviceName']?.toString() ?? '',
+      photographerName: json['photographerName']?.toString() ?? '',
+      photographerId: json['photographerId']?.toString() ?? '',
+      advertisementId: json['advertisementId']?.toString() ?? '',
+      photographerImage: json['photographerImage']?.toString() ?? '',
       status: RequestStatus.values.firstWhere(
         (e) => e.toString() == 'RequestStatus.${json['status']}',
         orElse: () => RequestStatus.underReview,
       ),
-      price: (json['price'] as num).toDouble(),
-      date: DateTime.parse(json['date']),
-      isPaymentRequired: json['isPaymentRequired'] ?? false,
+      price: (json['price'] is num)
+          ? (json['price'] as num).toDouble()
+          : double.tryParse(json['price']?.toString() ?? '') ?? 0.0,
+      date: DateTime.tryParse(json['date']?.toString() ?? '') ?? DateTime.now(),
+      isPaymentRequired: json['isPaymentRequired'] is bool
+          ? json['isPaymentRequired'] as bool
+          : false,
       approvedDate: json['approvedDate'] != null
-          ? DateTime.parse(json['approvedDate'])
+          ? DateTime.tryParse(json['approvedDate'].toString())
           : null,
     );
   }

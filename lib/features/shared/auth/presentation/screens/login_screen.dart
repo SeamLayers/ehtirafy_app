@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/widgets/primary_button.dart';
 import 'package:ehtirafy_app/features/shared/auth/presentation/widgets/auth_header.dart';
@@ -12,6 +13,7 @@ import 'package:ehtirafy_app/features/shared/auth/presentation/widgets/auth_text
 import 'package:ehtirafy_app/features/shared/auth/presentation/cubits/login_cubit.dart';
 import 'package:ehtirafy_app/features/shared/auth/presentation/cubits/login_state.dart';
 import 'package:ehtirafy_app/core/di/service_locator.dart';
+import 'package:ehtirafy_app/core/session/guest_mode.dart';
 import 'package:ehtirafy_app/core/notifications/notification_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -38,8 +40,12 @@ class _LoginView extends StatelessWidget {
       backgroundColor: isDark ? AppColors.dark : AppColors.backgroundLight,
       body: SafeArea(
         child: SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+            padding: EdgeInsetsDirectional.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.md,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -48,10 +54,42 @@ class _LoginView extends StatelessWidget {
                   title: AppStrings.authWelcomeBack.tr(),
                   subtitle: AppStrings.authLoginSubtitle.tr(),
                 ),
-                SizedBox(height: 24.h),
-                const _LoginForm(),
-                SizedBox(height: 24.h),
-                SizedBox(height: 24.h),
+                SizedBox(height: AppSpacing.lg),
+                // Premium surface card hosting the login form
+                Container(
+                  padding: EdgeInsetsDirectional.fromSTEB(
+                    AppSpacing.lg,
+                    AppSpacing.lg,
+                    AppSpacing.lg,
+                    AppSpacing.md,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isDark ? AppColors.grey900 : Colors.white,
+                    borderRadius: BorderRadius.circular(20.r),
+                    border: Border.all(
+                      color: isDark
+                          ? AppColors.gold.withValues(alpha: 0.18)
+                          : AppColors.grey200,
+                      width: 1,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.gold.withValues(alpha: 0.06),
+                        blurRadius: 24.r,
+                        offset: Offset(0, 10.h),
+                        spreadRadius: -6.r,
+                      ),
+                      BoxShadow(
+                        color: AppColors.shadowLight,
+                        blurRadius: 12.r,
+                        offset: Offset(0, 4.h),
+                        spreadRadius: -4.r,
+                      ),
+                    ],
+                  ),
+                  child: const _LoginForm(),
+                ),
+                SizedBox(height: AppSpacing.lg),
                 // _SocialDivider(),
                 // SizedBox(height: 12.h),
                 // _SocialButtons(),
@@ -152,33 +190,48 @@ class _LoginFormState extends State<_LoginForm> {
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.md),
             AuthTextField(
               label: AppStrings.authPasswordLabel.tr(),
               hint: AppStrings.authPasswordHint.tr(),
               controller: _passwordController,
               obscureText: true,
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: AppSpacing.xs),
             Align(
-              alignment: Alignment.centerLeft,
+              alignment: AlignmentDirectional.centerStart,
               child: TextButton(
                 onPressed: () => context.push('/auth/forgot-password'),
+                style: TextButton.styleFrom(
+                  padding: EdgeInsetsDirectional.symmetric(
+                    horizontal: AppSpacing.xs,
+                  ),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
                 child: Text(
                   AppStrings.authForgotPassword.tr(),
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: AppColors.gold,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.md),
             PrimaryButton(
               text: AppStrings.authLoginButton.tr(),
               onPressed: () => _handleLogin(context, cubit),
               isLoading: state is LoginLoading,
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.lg),
+            // Subtle divider before secondary actions
+            Divider(
+              height: 1.h,
+              thickness: 1,
+              color: AppColors.grey200,
+            ),
+            SizedBox(height: AppSpacing.md),
             // Inline text with clickable trailing action (no extra spacing)
             Center(
               child: Text.rich(
@@ -194,6 +247,7 @@ class _LoginFormState extends State<_LoginForm> {
                       text: AppStrings.authCreateAccount.tr(),
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: AppColors.gold,
+                        fontWeight: FontWeight.w700,
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () => context.go('/auth/signup'),
@@ -201,6 +255,36 @@ class _LoginFormState extends State<_LoginForm> {
                   ],
                 ),
                 textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: AppSpacing.sm),
+            // Continue as guest — browse without an account (guideline 5.1.1)
+            Center(
+              child: TextButton.icon(
+                onPressed: () async {
+                  await GuestMode.enter();
+                  if (context.mounted) context.go('/home');
+                },
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.gold,
+                  padding: EdgeInsetsDirectional.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  backgroundColor: AppColors.gold.withValues(alpha: 0.08),
+                ),
+                icon: Icon(Icons.explore_outlined,
+                    color: AppColors.gold, size: 18.sp),
+                label: Text(
+                  AppStrings.onboardingContinueAsGuest.tr(),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: AppColors.gold,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             ),
           ],

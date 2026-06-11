@@ -21,10 +21,15 @@ class SettingsRemoteDataSourceImpl implements SettingsRemoteDataSource {
         ApiConstants.privacyPolicy,
         queryParameters: {'lang': lang},
       );
+      final body = response.data;
       if (response.statusCode == 200) {
-        return StaticPageModel.fromJson(response.data['data']);
+        final data = (body is Map) ? body['data'] : null;
+        if (data is! Map<String, dynamic>) {
+          throw Exception('Invalid privacy policy response');
+        }
+        return StaticPageModel.fromJson(data);
       } else {
-        throw Exception(response.data['message']);
+        throw Exception((body is Map) ? body['message'] : null);
       }
     } catch (e) {
       rethrow;
@@ -38,10 +43,15 @@ class SettingsRemoteDataSourceImpl implements SettingsRemoteDataSource {
         ApiConstants.termsConditions,
         queryParameters: {'lang': lang},
       );
+      final body = response.data;
       if (response.statusCode == 200) {
-        return StaticPageModel.fromJson(response.data['data']);
+        final data = (body is Map) ? body['data'] : null;
+        if (data is! Map<String, dynamic>) {
+          throw Exception('Invalid terms response');
+        }
+        return StaticPageModel.fromJson(data);
       } else {
-        throw Exception(response.data['message']);
+        throw Exception((body is Map) ? body['message'] : null);
       }
     } catch (e) {
       rethrow;
@@ -52,10 +62,15 @@ class SettingsRemoteDataSourceImpl implements SettingsRemoteDataSource {
   Future<ContactInfoModel> getContactUs() async {
     try {
       final response = await dioClient.get(ApiConstants.contactUs);
+      final body = response.data;
       if (response.statusCode == 200) {
-        return ContactInfoModel.fromJson(response.data['data']);
+        final data = (body is Map) ? body['data'] : null;
+        if (data is! Map<String, dynamic>) {
+          throw Exception('Invalid contact-us response');
+        }
+        return ContactInfoModel.fromJson(data);
       } else {
-        throw Exception(response.data['message']);
+        throw Exception((body is Map) ? body['message'] : null);
       }
     } catch (e) {
       rethrow;

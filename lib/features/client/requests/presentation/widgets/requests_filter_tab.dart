@@ -17,17 +17,44 @@ class RequestsFilterTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 48.h,
+      height: 52.h,
       width: double.infinity,
+      padding: EdgeInsets.all(4.r),
       decoration: ShapeDecoration(
-        color: Colors.white,
+        color: AppColors.grey100,
         shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFFE5E5E5)),
-          borderRadius: BorderRadius.circular(12.r),
+          side: const BorderSide(width: 1, color: AppColors.grey200),
+          borderRadius: BorderRadius.circular(16.r),
         ),
       ),
       child: Stack(
         children: [
+          AnimatedAlign(
+            alignment: _getAlignment(selectedIndex),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            child: FractionallySizedBox(
+              widthFactor: 1 / 3,
+              heightFactor: 1,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.18),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.35),
+                    width: 1,
+                  ),
+                ),
+              ),
+            ),
+          ),
           Row(
             children: [
               _buildTabItem(
@@ -46,25 +73,6 @@ class RequestsFilterTab extends StatelessWidget {
                 title: AppStrings.myRequestsTabActive.tr(),
               ),
             ],
-          ),
-          AnimatedAlign(
-            alignment: _getAlignment(selectedIndex),
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            child: FractionallySizedBox(
-              widthFactor: 1 / 3,
-              child: Container(
-                height: 3.h,
-                margin: EdgeInsets.only(top: 45.h), // Position at bottom
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(4.r),
-                    topRight: Radius.circular(4.r),
-                  ),
-                ),
-              ),
-            ),
           ),
         ],
       ),
@@ -95,13 +103,37 @@ class RequestsFilterTab extends StatelessWidget {
         onTap: () => onTabSelected(index),
         behavior: HitTestBehavior.opaque,
         child: Center(
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: isSelected ? AppColors.primary : const Color(0xFF888888),
-              fontSize: 14.sp,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              height: 1.43,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4.w),
+            child: AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              style:
+                  Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: isSelected
+                        ? AppColors.primary
+                        : AppColors.textSecondary,
+                    fontSize: 14.sp,
+                    fontWeight: isSelected
+                        ? FontWeight.w700
+                        : FontWeight.w500,
+                    height: 1.43,
+                  ) ??
+                  TextStyle(
+                    color: isSelected
+                        ? AppColors.primary
+                        : AppColors.textSecondary,
+                    fontSize: 14.sp,
+                    fontWeight: isSelected
+                        ? FontWeight.w700
+                        : FontWeight.w500,
+                  ),
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
         ),

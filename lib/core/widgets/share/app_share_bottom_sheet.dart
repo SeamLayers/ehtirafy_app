@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/constants/app_links.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -129,17 +130,37 @@ class AppShareBottomSheet {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text(
-            message,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'Cairo',
-            ),
+          content: Row(
+            children: [
+              Icon(
+                isError
+                    ? Icons.error_outline_rounded
+                    : Icons.check_circle_outline_rounded,
+                color: isError ? AppColors.textLight : AppColors.gold,
+                size: 20.sp,
+              ),
+              SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  message,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: AppColors.textLight,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Cairo',
+                    fontSize: 13.sp,
+                  ),
+                ),
+              ),
+            ],
           ),
           behavior: SnackBarBehavior.floating,
           margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-          backgroundColor: isError ? AppColors.error : const Color(0xFF2B2B2B),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14.r),
+          ),
+          backgroundColor: isError ? AppColors.error : AppColors.dark,
         ),
       );
   }
@@ -167,6 +188,8 @@ class _ShareSheetContent extends StatelessWidget {
         ? const Color(0xFF282A25)
         : const Color(0xFFF9F9F9);
 
+    final onSurface = theme.colorScheme.onSurface;
+
     return SafeArea(
       top: false,
       child: Container(
@@ -177,7 +200,7 @@ class _ShareSheetContent extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.12),
-              blurRadius: 24,
+              blurRadius: 28,
               offset: const Offset(0, -8),
             ),
           ],
@@ -189,7 +212,7 @@ class _ShareSheetContent extends StatelessWidget {
               left: 0,
               right: 0,
               child: Container(
-                height: 150.h,
+                height: 160.h,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(28.r),
@@ -198,8 +221,8 @@ class _ShareSheetContent extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      AppColors.gold.withValues(alpha: isDark ? 0.25 : 0.18),
-                      Colors.transparent,
+                      AppColors.gold.withValues(alpha: isDark ? 0.22 : 0.16),
+                      AppColors.gold.withValues(alpha: 0.0),
                     ],
                   ),
                 ),
@@ -213,41 +236,67 @@ class _ShareSheetContent extends StatelessWidget {
                 children: [
                   Center(
                     child: Container(
-                      width: 52.w,
+                      width: 48.w,
                       height: 5.h,
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.onSurface.withValues(
-                          alpha: 0.2,
-                        ),
+                        color: onSurface.withValues(alpha: 0.18),
                         borderRadius: BorderRadius.circular(99.r),
                       ),
                     ),
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: AppSpacing.lg),
+                  Center(
+                    child: Container(
+                      width: 64.w,
+                      height: 64.w,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: AlignmentDirectional.topStart,
+                          end: AlignmentDirectional.bottomEnd,
+                          colors: [
+                            AppColors.gold,
+                            AppColors.gold.withValues(alpha: 0.78),
+                          ],
+                        ),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.gold.withValues(alpha: 0.32),
+                            blurRadius: 18,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        Icons.ios_share_rounded,
+                        size: 28.sp,
+                        color: AppColors.textLight,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: AppSpacing.md),
                   Text(
                     AppStrings.appShareTitle.tr(),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w800,
-                      color: theme.colorScheme.onSurface,
+                      color: onSurface,
                       fontFamily: 'Cairo',
                     ),
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: AppSpacing.sm),
                   Text(
                     AppStrings.appShareSubtitle.tr(),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 13.sp,
                       height: 1.6,
-                      color: theme.colorScheme.onSurface.withValues(
-                        alpha: 0.72,
-                      ),
+                      color: onSurface.withValues(alpha: 0.7),
                       fontFamily: 'Cairo',
                     ),
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: AppSpacing.lg),
                   Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: 12.w,
@@ -255,34 +304,32 @@ class _ShareSheetContent extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: cardColor,
-                      borderRadius: BorderRadius.circular(14.r),
+                      borderRadius: BorderRadius.circular(16.r),
                       border: Border.all(
-                        color: AppColors.gold.withValues(alpha: 0.35),
+                        color: AppColors.gold.withValues(alpha: 0.28),
                       ),
                     ),
                     child: Row(
                       children: [
                         Container(
-                          width: 30.w,
-                          height: 30.w,
+                          width: 32.w,
+                          height: 32.w,
                           decoration: BoxDecoration(
                             color: AppColors.gold.withValues(alpha: 0.14),
-                            borderRadius: BorderRadius.circular(8.r),
+                            borderRadius: BorderRadius.circular(10.r),
                           ),
                           child: Icon(
                             Icons.link_rounded,
-                            size: 17.sp,
+                            size: 18.sp,
                             color: AppColors.gold,
                           ),
                         ),
-                        SizedBox(width: 8.w),
+                        SizedBox(width: AppSpacing.sm),
                         Text(
                           AppStrings.appShareLinkLabel.tr(),
                           style: TextStyle(
                             fontSize: 11.sp,
-                            color: theme.colorScheme.onSurface.withValues(
-                              alpha: 0.65,
-                            ),
+                            color: onSurface.withValues(alpha: 0.6),
                             fontFamily: 'Cairo',
                           ),
                         ),
@@ -294,8 +341,8 @@ class _ShareSheetContent extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 11.sp,
-                              fontWeight: FontWeight.w600,
-                              color: theme.colorScheme.onSurface,
+                              fontWeight: FontWeight.w700,
+                              color: onSurface,
                               fontFamily: 'Cairo',
                             ),
                           ),
@@ -303,7 +350,7 @@ class _ShareSheetContent extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: AppSpacing.lg),
                   Row(
                     children: [
                       Expanded(
@@ -330,7 +377,7 @@ class _ShareSheetContent extends StatelessWidget {
                         child: _ShareActionCard(
                           label: AppStrings.appShareCopyLink.tr(),
                           icon: Icons.content_copy_rounded,
-                          accentColor: const Color(0xFF2F6FEB),
+                          accentColor: AppColors.info,
                           cardColor: cardColor,
                           onTap: onCopyLinkTap,
                         ),
@@ -367,42 +414,52 @@ class _ShareActionCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(14.r),
+        borderRadius: BorderRadius.circular(16.r),
+        splashColor: accentColor.withValues(alpha: 0.12),
+        highlightColor: accentColor.withValues(alpha: 0.06),
         onTap: () {
           HapticFeedback.selectionClick();
           onTap();
         },
         child: Ink(
-          height: 92.h,
+          height: 96.h,
           decoration: BoxDecoration(
             color: cardColor,
-            borderRadius: BorderRadius.circular(14.r),
-            border: Border.all(color: accentColor.withValues(alpha: 0.35)),
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(color: accentColor.withValues(alpha: 0.3)),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 36.w,
-                height: 36.w,
-                decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: 0.14),
-                  shape: BoxShape.circle,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 6.w),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 40.w,
+                  height: 40.w,
+                  decoration: BoxDecoration(
+                    color: accentColor.withValues(alpha: 0.14),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: accentColor.withValues(alpha: 0.18),
+                    ),
+                  ),
+                  child: Icon(icon, size: 20.sp, color: accentColor),
                 ),
-                child: Icon(icon, size: 19.sp, color: accentColor),
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w700,
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontFamily: 'Cairo',
+                SizedBox(height: AppSpacing.sm),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontFamily: 'Cairo',
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

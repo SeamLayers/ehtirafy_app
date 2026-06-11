@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,6 +7,8 @@ import '../../../../shared/auth/domain/entities/user_role.dart' as auth_role;
 import '../manager/profile_cubit.dart';
 import '../../../../shared/auth/presentation/cubits/role_cubit.dart';
 import '../../../../../core/di/service_locator.dart';
+import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/constants/app_spacing.dart';
 
 class RoleSwitcherCard extends StatefulWidget {
   final UserRole currentRole;
@@ -78,11 +81,16 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
     final isClient = widget.currentRole == UserRole.client;
 
     // Build the display text based on current role
-    final browsingText = isClient ? 'انت تتصفح كـ عميل' : 'انت تتصفح كـ مصور';
+    final browsingText = isClient
+        ? 'role_card.browsing_as_client'.tr()
+        : 'role_card.browsing_as_photographer'.tr();
 
     final switchText = isClient
-        ? 'التبديل إلى وضع المصور'
-        : 'التبديل إلى وضع العميل';
+        ? 'role_card.switch_to_photographer_mode'.tr()
+        : 'role_card.switch_to_client_mode'.tr();
+
+    // Per-role accent: gold for photographer, info-blue for client.
+    final Color roleAccent = isClient ? AppColors.info : AppColors.gold;
 
     return AnimatedBuilder(
       animation: _scaleAnimation,
@@ -90,20 +98,30 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
           Transform.scale(scale: _scaleAnimation.value, child: child),
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.all(AppSpacing.md),
         decoration: ShapeDecoration(
           gradient: LinearGradient(
             begin: const Alignment(-1.0, -1.0),
             end: const Alignment(1.0, 1.0),
             colors: [
-              const Color(0xFFC8A44F).withValues(alpha: 0.15),
-              const Color(0xFFC8A44F).withValues(alpha: 0.05),
-              Colors.transparent,
+              AppColors.gold.withValues(alpha: 0.14),
+              AppColors.gold.withValues(alpha: 0.04),
+              Colors.white,
             ],
           ),
+          shadows: [
+            BoxShadow(
+              color: AppColors.gold.withValues(alpha: 0.12),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
+            ),
+          ],
           shape: RoundedRectangleBorder(
-            side: const BorderSide(width: 2, color: Color(0xFFC8A44F)),
-            borderRadius: BorderRadius.circular(16.r),
+            side: BorderSide(
+              width: 1,
+              color: AppColors.gold.withValues(alpha: 0.45),
+            ),
+            borderRadius: BorderRadius.circular(20.r),
           ),
         ),
         child: Column(
@@ -126,13 +144,13 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          const Color(0xFFC8A44F).withValues(alpha: 0.3),
-                          const Color(0xFFC8A44F).withValues(alpha: 0.1),
+                          AppColors.gold.withValues(alpha: 0.28),
+                          AppColors.gold.withValues(alpha: 0.10),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(14.r),
                       border: Border.all(
-                        color: const Color(0xFFC8A44F).withValues(alpha: 0.3),
+                        color: AppColors.gold.withValues(alpha: 0.30),
                         width: 1,
                       ),
                     ),
@@ -140,12 +158,12 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
                       isClient
                           ? Icons.person_outline
                           : Icons.camera_alt_outlined,
-                      color: const Color(0xFFC8A44F),
+                      color: AppColors.gold,
                       size: 24.sp,
                     ),
                   ),
                 ),
-                SizedBox(width: 12.w),
+                SizedBox(width: AppSpacing.sm + 4.w),
                 // Text Column
                 Expanded(
                   child: Column(
@@ -154,26 +172,35 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
                       // Browsing as text
                       Text(
                         browsingText,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          color: const Color(0xFF2B2B2B),
+                          color: AppColors.textPrimary,
                           fontSize: 15.sp,
                           fontFamily: 'Cairo',
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
+                          height: 1.25,
                         ),
                       ),
-                      SizedBox(height: 2.h),
+                      SizedBox(height: AppSpacing.xs),
                       // Role badge with animated indicator
                       Row(
                         children: [
                           _buildAnimatedDot(isClient),
                           SizedBox(width: 6.w),
-                          Text(
-                            isClient ? 'عميل' : 'مصور',
-                            style: TextStyle(
-                              color: const Color(0xFF888888),
-                              fontSize: 13.sp,
-                              fontFamily: 'Cairo',
-                              fontWeight: FontWeight.w400,
+                          Flexible(
+                            child: Text(
+                              isClient
+                                  ? 'role_card.role_client'.tr()
+                                  : 'role_card.role_photographer'.tr(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 13.sp,
+                                fontFamily: 'Cairo',
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ],
@@ -181,56 +208,65 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
                     ],
                   ),
                 ),
+                SizedBox(width: AppSpacing.sm),
                 // Role Badge
                 Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: 10.w,
-                    vertical: 4.h,
+                    horizontal: 12.w,
+                    vertical: 5.h,
                   ),
                   decoration: BoxDecoration(
-                    color: isClient
-                        ? const Color(0xFF17A2B8)
-                        : const Color(0xFFC8A44F),
-                    borderRadius: BorderRadius.circular(8.r),
+                    color: roleAccent,
+                    borderRadius: BorderRadius.circular(10.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: roleAccent.withValues(alpha: 0.30),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Text(
-                    isClient ? 'عميل' : 'مصور',
+                    isClient
+                        ? 'role_card.role_client'.tr()
+                        : 'role_card.role_photographer'.tr(),
                     style: TextStyle(
-                      color: Colors.white,
+                      color: AppColors.textLight,
                       fontSize: 11.sp,
                       fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.md),
             // Switch Button with animation
             GestureDetector(
               onTap: _isSwitching ? null : _onSwitchTap,
-              child: Container(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
                 width: double.infinity,
-                height: 48.h,
+                height: 50.h,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                     colors: _isSwitching
                         ? [
-                            const Color(0xFFC8A44F).withValues(alpha: 0.6),
-                            const Color(0xFFD4B85A).withValues(alpha: 0.6)
+                            AppColors.gold.withValues(alpha: 0.6),
+                            const Color(0xFFD4B85A).withValues(alpha: 0.6),
                           ]
-                        : [const Color(0xFFC8A44F), const Color(0xFFD4B85A)],
+                        : [AppColors.gold, const Color(0xFFD4B85A)],
                   ),
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(14.r),
                   boxShadow: _isSwitching
                       ? []
                       : [
                           BoxShadow(
-                            color: const Color(0xFFC8A44F).withValues(alpha: 0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
+                            color: AppColors.gold.withValues(alpha: 0.35),
+                            blurRadius: 12,
+                            offset: const Offset(0, 6),
                           ),
                         ],
                 ),
@@ -243,24 +279,28 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
                         height: 20.sp,
                         child: const CircularProgressIndicator(
                           valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                              AlwaysStoppedAnimation<Color>(AppColors.textLight),
                           strokeWidth: 2,
                         ),
                       )
                     else
                       Icon(
                         Icons.swap_horiz_rounded,
-                        color: Colors.white,
+                        color: AppColors.textLight,
                         size: 22.sp,
                       ),
-                    SizedBox(width: 8.w),
-                    Text(
-                      _isSwitching ? 'جاري التبديل...' : switchText,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14.sp,
-                        fontFamily: 'Cairo',
-                        fontWeight: FontWeight.w600,
+                    SizedBox(width: AppSpacing.sm),
+                    Flexible(
+                      child: Text(
+                        _isSwitching ? 'role_card.switching'.tr() : switchText,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: AppColors.textLight,
+                          fontSize: 14.sp,
+                          fontFamily: 'Cairo',
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ],
@@ -279,19 +319,16 @@ class _RoleSwitcherCardState extends State<RoleSwitcherCard>
       duration: const Duration(milliseconds: 1000),
       curve: Curves.easeInOut,
       builder: (context, value, child) {
+        final Color dotColor = isClient ? AppColors.info : AppColors.gold;
         return Container(
           width: 8.w * value,
           height: 8.w * value,
           decoration: BoxDecoration(
-            color: isClient ? const Color(0xFF17A2B8) : const Color(0xFFC8A44F),
+            color: dotColor,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color:
-                    (isClient
-                            ? const Color(0xFF17A2B8)
-                            : const Color(0xFFC8A44F))
-                        .withValues(alpha: 0.5),
+                color: dotColor.withValues(alpha: 0.5),
                 blurRadius: 4,
                 spreadRadius: 1,
               ),

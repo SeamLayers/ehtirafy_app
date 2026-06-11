@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/category_entity.dart';
 
 class HomeCategoriesSection extends StatelessWidget {
@@ -47,43 +49,82 @@ class HomeCategoriesSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'الفئات',
-                    style: TextStyle(
-                      color: const Color(0xFF2B2B2B),
-                      fontSize: 18.sp,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w700,
+              Expanded(
+                child: Row(
+                  children: [
+                    Container(
+                      width: 4.w,
+                      height: 34.h,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            AppColors.gold,
+                            AppColors.gold.withValues(alpha: 0.4),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(999.r),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    'اختر نوع الخدمة المناسبة لمناسبتك',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: const Color(0xFF8D8D8D),
-                      fontWeight: FontWeight.w600,
+                    SizedBox(width: 10.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'home_categories.title'.tr(),
+                            style: TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 18.sp,
+                              fontFamily: 'Cairo',
+                              fontWeight: FontWeight.w800,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(height: 2.h),
+                          Text(
+                            'home_categories.subtitle'.tr(),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              SizedBox(width: AppSpacing.sm),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: AppColors.gold.withValues(alpha: 0.14),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.gold.withValues(alpha: 0.16),
+                      AppColors.gold.withValues(alpha: 0.08),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(999.r),
                   border: Border.all(
-                    color: AppColors.gold.withValues(alpha: 0.25),
+                    color: AppColors.gold.withValues(alpha: 0.28),
                   ),
                 ),
                 child: Text(
-                  '${categories.length} فئة',
+                  'home_categories.count_badge'.tr(
+                    namedArgs: {'count': '${categories.length}'},
+                  ),
                   style: TextStyle(
                     color: AppColors.gold,
                     fontSize: 11.sp,
@@ -95,7 +136,7 @@ class HomeCategoriesSection extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: AppSpacing.md),
         if (categories.isEmpty)
           _buildEmptyState()
         else
@@ -103,7 +144,7 @@ class HomeCategoriesSection extends StatelessWidget {
             height: 164.h,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(horizontal: 24.w),
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
               itemCount: categories.length,
               separatorBuilder: (_, __) => SizedBox(width: 12.w),
               itemBuilder: (context, index) {
@@ -125,32 +166,56 @@ class HomeCategoriesSection extends StatelessWidget {
     return Container(
       height: 154.h,
       width: double.infinity,
-      margin: EdgeInsets.symmetric(horizontal: 24.w),
+      margin: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [AppColors.gold.withValues(alpha: 0.09), Colors.white],
         ),
-        borderRadius: BorderRadius.circular(18.r),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
           color: AppColors.gold.withValues(alpha: 0.20),
           width: 1.5,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gold.withValues(alpha: 0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Center(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.category_rounded, size: 34.sp, color: AppColors.gold),
-            SizedBox(height: 8.h),
+            Container(
+              width: 56.w,
+              height: 56.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.gold.withValues(alpha: 0.12),
+                border: Border.all(
+                  color: AppColors.gold.withValues(alpha: 0.22),
+                ),
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.category_rounded,
+                size: 28.sp,
+                color: AppColors.gold,
+              ),
+            ),
+            SizedBox(height: AppSpacing.sm),
             Text(
-              'لا توجد فئات متاحة',
+              'home_categories.empty_state'.tr(),
               style: TextStyle(
-                color: const Color(0xFF6F6F6F),
+                color: AppColors.textSecondary,
                 fontSize: 14.sp,
                 fontFamily: 'Cairo',
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ],
@@ -201,7 +266,7 @@ class _CategoryCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: palette[0].withValues(alpha: 0.22),
+              color: palette[0].withValues(alpha: 0.24),
               blurRadius: 18,
               offset: const Offset(0, 10),
             ),
@@ -209,7 +274,7 @@ class _CategoryCard extends StatelessWidget {
         ),
         child: Container(
           margin: EdgeInsets.all(1.3.w),
-          padding: EdgeInsets.all(12.w),
+          padding: EdgeInsets.all(13.w),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(19.r),
@@ -232,7 +297,10 @@ class _CategoryCard extends StatelessWidget {
                           palette[1].withValues(alpha: 0.12),
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(13.r),
+                      borderRadius: BorderRadius.circular(14.r),
+                      border: Border.all(
+                        color: palette[0].withValues(alpha: 0.16),
+                      ),
                     ),
                     alignment: Alignment.center,
                     child: Text(
@@ -250,10 +318,19 @@ class _CategoryCard extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  Icon(
-                    Icons.north_west_rounded,
-                    color: palette[0],
-                    size: 18.sp,
+                  Container(
+                    width: 26.w,
+                    height: 26.w,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: palette[0].withValues(alpha: 0.10),
+                    ),
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Icons.north_west_rounded,
+                      color: palette[0],
+                      size: 16.sp,
+                    ),
                   ),
                 ],
               ),
@@ -263,7 +340,7 @@ class _CategoryCard extends StatelessWidget {
                   title,
                   textAlign: TextAlign.start,
                   style: TextStyle(
-                    color: const Color(0xFF2B2B2B),
+                    color: AppColors.textPrimary,
                     fontSize: 14.sp,
                     fontFamily: 'Cairo',
                     fontWeight: FontWeight.w700,
@@ -274,13 +351,16 @@ class _CategoryCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
                 decoration: BoxDecoration(
                   color: palette[0].withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(999.r),
+                  border: Border.all(
+                    color: palette[0].withValues(alpha: 0.18),
+                  ),
                 ),
                 child: Text(
-                  'استعرض',
+                  'home_categories.browse'.tr(),
                   style: TextStyle(
                     color: palette[0],
                     fontSize: 10.sp,

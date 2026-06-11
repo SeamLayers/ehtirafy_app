@@ -1,9 +1,10 @@
-import 'dart:ui' as ui;
-
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/di/service_locator.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
+import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import 'package:ehtirafy_app/features/client/contract/domain/entities/contract_details_entity.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/manager/contract_details_cubit.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/manager/contract_details_state.dart';
@@ -26,42 +27,55 @@ class ContractDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
+    final theme = Theme.of(context);
     return BlocProvider(
       create: (context) =>
           sl<ContractDetailsCubit>()..getContractDetails(contractId),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF9F9F9),
+        backgroundColor: AppColors.backgroundLight,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
+          backgroundColor: AppColors.backgroundLight,
+          surfaceTintColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
           title: Text(
             AppStrings.contractDetailsTitle.tr(),
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 16.sp,
-              fontWeight: FontWeight.bold,
-            ),
+            style: theme.textTheme.titleMedium?.copyWith(
+                  color: AppColors.textPrimary,
+                  fontSize: 17.sp,
+                  fontWeight: FontWeight.w700,
+                ) ??
+                TextStyle(
+                  color: AppColors.textPrimary,
+                  fontFamily: 'Cairo',
+                  fontSize: 17.sp,
+                  fontWeight: FontWeight.w700,
+                ),
           ),
-          leading: IconButton(
-            icon: Icon(
-              isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
-              color: AppColors.textPrimary,
+          leading: const RtlBackButton(),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(1.h),
+            child: Container(
+              height: 1.h,
+              color: AppColors.grey200,
             ),
-            onPressed: () => context.pop(),
           ),
         ),
         body: BlocBuilder<ContractDetailsCubit, ContractDetailsState>(
           builder: (context, state) {
             if (state is ContractDetailsLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is ContractDetailsError) {
-              return Center(
-                child: Text(
-                  state.message.tr(),
-                  style: const TextStyle(color: AppColors.textPrimary),
+              return const Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.gold),
                 ),
+              );
+            } else if (state is ContractDetailsError) {
+              return ErrorStateWidget(
+                message: state.message.tr(),
+                retryText: AppStrings.confirm.tr(),
+                onRetry: () => context
+                    .read<ContractDetailsCubit>()
+                    .getContractDetails(contractId),
               );
             } else if (state is ContractDetailsSuccess) {
               return _buildContent(context, state.contract);
@@ -82,7 +96,7 @@ class ContractDetailsScreen extends StatelessWidget {
     if (contract.status == ContractStatus.initiated ||
         contract.status == ContractStatus.pending) {
       return SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: ContractUnderReviewCard(contract: contract),
       );
     }
@@ -97,21 +111,21 @@ class ContractDetailsScreen extends StatelessWidget {
     }
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ContractHeader(contract: contract),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
           ContractThreeStatusCard(contract: contract),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
           ContractInfoCard(contract: contract),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.md),
           if (isActiveContract) ...[
             PaymentStatusCard(contract: contract),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.md),
             WorkStagesList(contract: contract),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.md),
             ContractInProgressActions(
               onChatPressed: () {
                 // Navigate to chat
@@ -129,14 +143,83 @@ class ContractDetailsScreen extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    title: Text(AppStrings.contractFinishService.tr()),
-                    content: const Text(
+                    backgroundColor: Colors.white,
+                    surfaceTintColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                    titlePadding: EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      AppSpacing.lg,
+                      AppSpacing.lg,
+                      AppSpacing.sm,
+                    ),
+                    contentPadding: EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      0,
+                      AppSpacing.lg,
+                      AppSpacing.sm,
+                    ),
+                    title: Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(8.w),
+                          decoration: BoxDecoration(
+                            color: AppColors.success.withValues(alpha: 0.12),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.check_circle_outline_rounded,
+                            color: AppColors.success,
+                            size: 22.sp,
+                          ),
+                        ),
+                        SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: Text(
+                            AppStrings.contractFinishService.tr(),
+                            style: TextStyle(
+                              color: AppColors.textPrimary,
+                              fontFamily: 'Cairo',
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    content: Text(
                       'هل أنت متأكد من إكمال هذا العقد؟ لا يمكن التراجع عن هذا الإجراء.',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontFamily: 'Cairo',
+                        fontSize: 14.sp,
+                        height: 1.5,
+                      ),
+                    ),
+                    actionsPadding: EdgeInsets.fromLTRB(
+                      AppSpacing.md,
+                      0,
+                      AppSpacing.md,
+                      AppSpacing.md,
                     ),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(ctx),
-                        child: Text(AppStrings.cancel.tr()),
+                        style: TextButton.styleFrom(
+                          foregroundColor: AppColors.textSecondary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                        ),
+                        child: Text(
+                          AppStrings.cancel.tr(),
+                          style: TextStyle(
+                            fontFamily: 'Cairo',
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                       TextButton(
                         onPressed: () {
@@ -145,9 +228,26 @@ class ContractDetailsScreen extends StatelessWidget {
                             contract.id.toString(),
                           );
                         },
+                        style: TextButton.styleFrom(
+                          foregroundColor: AppColors.error,
+                          backgroundColor:
+                              AppColors.error.withValues(alpha: 0.08),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: AppSpacing.md,
+                            vertical: AppSpacing.sm,
+                          ),
+                        ),
                         child: Text(
                           AppStrings.confirm.tr(),
-                          style: const TextStyle(color: Colors.red),
+                          style: TextStyle(
+                            color: AppColors.error,
+                            fontFamily: 'Cairo',
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ],
@@ -156,7 +256,7 @@ class ContractDetailsScreen extends StatelessWidget {
               },
             ),
           ],
-          SizedBox(height: 32.h),
+          SizedBox(height: AppSpacing.xl),
         ],
       ),
     );

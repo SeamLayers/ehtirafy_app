@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../../core/constants/app_spacing.dart';
 import '../widgets/settings_ui_components.dart';
 
 class TermsConditionsScreen extends StatelessWidget {
@@ -42,13 +42,13 @@ class TermsConditionsScreen extends StatelessWidget {
     return SettingsPageScaffold(
       appBarTitle: 'اتفاقية الاستخدام / Terms of Use',
       heroIcon: Icons.gavel_rounded,
-      heroTitle: 'اتفاقية استخدام منصة بطل',
+      heroTitle: 'اتفاقية استخدام منصة عدسة المناسبات',
       heroSubtitle:
           'تنظم هذه الاتفاقية حقوق والتزامات جميع الأطراف لضمان تجربة واضحة وآمنة داخل المنصة.',
       children: [
         Wrap(
-          spacing: 8.w,
-          runSpacing: 8.h,
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
           children: const [
             SettingsMetaChip(
               icon: Icons.menu_book_rounded,
@@ -64,21 +64,21 @@ class TermsConditionsScreen extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: AppSpacing.md),
         const SettingsLocaleSection(
           localeTitle: 'العربية',
           icon: Icons.translate_rounded,
           intro:
-              'تحدد هذه الاتفاقية الشروط والأحكام لاستخدام منصة بطل للتصوير والمناسبات. باستخدام المنصة فإنك توافق على الالتزام بما يلي:',
+              'تحدد هذه الاتفاقية الشروط والأحكام لاستخدام منصة عدسة المناسبات. باستخدام المنصة فإنك توافق على الالتزام بما يلي:',
           bullets: _arabicArticles,
           numbered: true,
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: AppSpacing.md),
         const SettingsLocaleSection(
           localeTitle: 'English',
           icon: Icons.language_rounded,
           intro:
-              'Introduction: This agreement defines the terms and conditions for using the Batal Photography & Events Platform. By using the platform, you agree to the following:',
+              'Introduction: This agreement defines the terms and conditions for using the Events Lens platform. By using the platform, you agree to the following:',
           bullets: _englishArticles,
           isEnglish: true,
           numbered: true,

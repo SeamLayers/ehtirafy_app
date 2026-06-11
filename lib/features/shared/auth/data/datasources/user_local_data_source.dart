@@ -17,6 +17,7 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
 
   static const String _userKey = 'cached_user';
   static const String _tokenKey = 'cached_token';
+  static const String _guestKey = 'is_guest_mode';
 
   @override
   Future<void> saveUser(User user) async {
@@ -96,6 +97,8 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
   @override
   Future<void> saveToken(String token) async {
     await sharedPreferences.setString(_tokenKey, token);
+    // The user is now authenticated, so they are no longer a guest.
+    await sharedPreferences.setBool(_guestKey, false);
   }
 
   @override
@@ -107,5 +110,7 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
   Future<void> clearUserData() async {
     await sharedPreferences.remove(_userKey);
     await sharedPreferences.remove(_tokenKey);
+    // Logging out returns the user to onboarding, not guest mode.
+    await sharedPreferences.setBool(_guestKey, false);
   }
 }

@@ -5,8 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
-import 'package:ehtirafy_app/core/constants/demo_images.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
+import 'package:ehtirafy_app/core/session/auth_guard.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
+import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
+import 'package:ehtirafy_app/core/widgets/primary_button.dart';
+import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import '../cubits/advertisement_details_cubit.dart';
 import '../cubits/advertisement_details_state.dart';
 
@@ -25,7 +29,7 @@ class AdvertisementDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F9F9),
+      backgroundColor: AppColors.backgroundLight,
       body: BlocBuilder<AdvertisementDetailsCubit, AdvertisementDetailsState>(
         builder: (context, state) {
           if (state is AdvertisementDetailsLoading) {
@@ -49,50 +53,19 @@ class AdvertisementDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildErrorState(BuildContext context, String message) {
-    return Center(
+    return SafeArea(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.error_outline, size: 64.sp, color: Colors.red.shade300),
-          SizedBox(height: 16.h),
-          Text(
-            'حدث خطأ',
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Cairo',
-            ),
-          ),
-          SizedBox(height: 8.h),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 32.w),
-            child: Text(
-              message,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: AppColors.textSecondary,
-                fontFamily: 'Cairo',
-              ),
-            ),
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+            child: RtlBackButton(onPressed: () => context.pop()),
           ),
-          SizedBox(height: 24.h),
-          ElevatedButton(
-            onPressed: () => context.pop(),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.gold,
-              padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-            ),
-            child: Text(
-              'العودة',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14.sp,
-                fontFamily: 'Cairo',
-              ),
+          Expanded(
+            child: ErrorStateWidget(
+              message: message.isNotEmpty ? message : 'حدث خطأ',
+              retryText: 'العودة',
+              onRetry: () => context.pop(),
             ),
           ),
         ],
@@ -102,9 +75,10 @@ class AdvertisementDetailsScreen extends StatelessWidget {
 
   Widget _buildContent(BuildContext context, AdvertisementDetailsLoaded state) {
     final ad = state.advertisementDetails;
-    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
-    final coverImage =
-        DemoImages.items[ad.id.hashCode.abs() % DemoImages.items.length];
+    // Real cover image from the API (first image / cover_image inserted at
+    // index 0 by the model). Empty string falls through to the branded
+    // placeholder in AppCachedNetworkImage — no demo/random fallback.
+    final coverImage = ad.images.isNotEmpty ? ad.images.first : '';
 
     return Stack(
       children: [
@@ -114,27 +88,21 @@ class AdvertisementDetailsScreen extends StatelessWidget {
             SliverAppBar(
               expandedHeight: 300.h,
               pinned: true,
-              backgroundColor: const Color(0xFF2B2B2B),
-              leading: GestureDetector(
-                onTap: () => context.pop(),
-                child: Container(
-                  margin: EdgeInsets.all(8.w),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    isRtl ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
-                    color: Colors.white,
-                    size: 18.sp,
-                  ),
+              backgroundColor: AppColors.dark,
+              leadingWidth: 64.w,
+              leading: Padding(
+                padding: EdgeInsetsDirectional.only(start: 8.w),
+                child: RtlBackButton(
+                  onPressed: () => context.pop(),
+                  color: AppColors.textLight,
+                  showBorder: true,
                 ),
               ),
               flexibleSpace: FlexibleSpaceBar(
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
-                    // Background Image (Demo)
+                    // Background Image (real ad cover)
                     AppCachedNetworkImage(
                       imageUrl: coverImage,
                       fit: BoxFit.cover,
@@ -178,9 +146,11 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                                 ),
                                 if (ad.categoryName.isNotEmpty) ...[
                                   SizedBox(width: 8.w),
-                                  _buildGlassBadge(
-                                    text: ad.categoryName,
-                                    icon: Icons.category_outlined,
+                                  Flexible(
+                                    child: _buildGlassBadge(
+                                      text: ad.categoryName,
+                                      icon: Icons.category_outlined,
+                                    ),
                                   ),
                                 ],
                               ],
@@ -189,8 +159,10 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                             // Title
                             Text(
                               ad.title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                color: Colors.white,
+                                color: AppColors.textLight,
                                 fontSize: 24.sp,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Cairo',
@@ -216,8 +188,9 @@ class AdvertisementDetailsScreen extends StatelessWidget {
             // Body Content
             SliverToBoxAdapter(
               child: Container(
+                transform: Matrix4.translationValues(0, -20.h, 0),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF9F9F9),
+                  color: AppColors.backgroundLight,
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(30.r),
                   ),
@@ -245,13 +218,14 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                               horizontal: 12.w,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16.r),
-                              boxShadow: [
+                              color: AppColors.textLight,
+                              borderRadius: BorderRadius.circular(18.r),
+                              border: Border.all(color: AppColors.grey200),
+                              boxShadow: const [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.03),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
+                                  color: AppColors.shadowLight,
+                                  blurRadius: 12,
+                                  offset: Offset(0, 4),
                                 ),
                               ],
                             ),
@@ -265,9 +239,9 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                                   ),
                                 ),
                                 Container(
-                                  height: 30.h,
+                                  height: 36.h,
                                   width: 1,
-                                  color: Colors.grey.withValues(alpha: 0.2),
+                                  color: AppColors.grey200,
                                 ),
                                 Expanded(
                                   child: _buildStatItem(
@@ -284,15 +258,7 @@ class AdvertisementDetailsScreen extends StatelessWidget {
 
                           // Days Availability
                           if (ad.daysAvailability.isNotEmpty) ...[
-                            Text(
-                              'أيام التوفر',
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Cairo',
-                                color: const Color(0xFF2B2B2B),
-                              ),
-                            ),
+                            _buildSectionTitle('أيام التوفر'),
                             SizedBox(height: 12.h),
                             Wrap(
                               spacing: 8.w,
@@ -304,31 +270,35 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                                     vertical: 10.h,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: AppColors.gold.withValues(
+                                      alpha: 0.08,
+                                    ),
                                     borderRadius: BorderRadius.circular(12.r),
                                     border: Border.all(
                                       color: AppColors.gold.withValues(
-                                        alpha: 0.2,
+                                        alpha: 0.25,
                                       ),
                                     ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: AppColors.gold.withValues(
-                                          alpha: 0.05,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.event_available_outlined,
+                                        size: 15.sp,
+                                        color: AppColors.gold,
+                                      ),
+                                      SizedBox(width: 6.w),
+                                      Text(
+                                        _translateDay(day),
+                                        style: TextStyle(
+                                          color: AppColors.gold,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: 'Cairo',
                                         ),
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 2),
                                       ),
                                     ],
-                                  ),
-                                  child: Text(
-                                    _translateDay(day),
-                                    style: TextStyle(
-                                      color: AppColors.gold,
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: 'Cairo',
-                                    ),
                                   ),
                                 );
                               }).toList(),
@@ -337,25 +307,22 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                           ],
 
                           // Description
-                          Text(
-                            'وصف الخدمة',
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Cairo',
-                              color: const Color(0xFF2B2B2B),
-                            ),
-                          ),
+                          _buildSectionTitle('وصف الخدمة'),
                           SizedBox(height: 12.h),
                           Container(
                             width: double.infinity,
                             padding: EdgeInsets.all(20.w),
                             decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16.r),
-                              border: Border.all(
-                                color: Colors.grey.withValues(alpha: 0.1),
-                              ),
+                              color: AppColors.textLight,
+                              borderRadius: BorderRadius.circular(18.r),
+                              border: Border.all(color: AppColors.grey200),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: AppColors.shadowLight,
+                                  blurRadius: 12,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
                             ),
                             child: Text(
                               ad.description.isNotEmpty
@@ -363,7 +330,7 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                                   : 'لا يوجد وصف متاح',
                               style: TextStyle(
                                 fontSize: 14.sp,
-                                color: const Color(0xFF555555),
+                                color: AppColors.textSecondary,
                                 fontFamily: 'Cairo',
                                 height: 1.8,
                               ),
@@ -387,67 +354,52 @@ class AdvertisementDetailsScreen extends StatelessWidget {
           left: 0,
           right: 0,
           child: Container(
-            padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 32.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.textLight,
               borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
+                  color: Colors.black.withValues(alpha: 0.08),
                   blurRadius: 20,
                   offset: const Offset(0, -5),
                 ),
               ],
             ),
-            child: ElevatedButton(
-              onPressed: () {
-                // Navigate to booking
-                if (freelancerId != null) {
-                  context.push(
-                    '/booking/request',
-                    extra: {
-                      'advertisementId': advertisementId,
-                      'photographerId': freelancerId,
-                      'photographerName': freelancerName ?? '',
-                      'serviceName': ad.title,
-                      'price': ad.price,
-                      'availableDays': ad.daysAvailability,
-                    },
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('لا يمكن الحجز حالياً')),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.gold,
-                padding: EdgeInsets.symmetric(vertical: 16.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.r),
+            child: SafeArea(
+              top: false,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 16.h),
+                child: PrimaryButton(
+                  text: 'احجز الآن',
+                  onPressed: () {
+                    // Booking is account-based: require login for guests.
+                    if (!AuthGuard.ensureAuth(context)) return;
+                    // The contract's publisher_id must be the advertisement
+                    // owner. Take it straight from the advertisement details
+                    // (`user_id`); the route-provided freelancerId is only a
+                    // fallback for older navigation paths.
+                    final publisherId = ad.userId.isNotEmpty
+                        ? ad.userId
+                        : (freelancerId ?? '');
+                    if (publisherId.isNotEmpty) {
+                      context.push(
+                        '/booking/request',
+                        extra: {
+                          'advertisementId': advertisementId,
+                          'photographerId': publisherId,
+                          'photographerName': freelancerName ?? '',
+                          'serviceName': ad.title,
+                          'price': ad.price,
+                          'availableDays': ad.daysAvailability,
+                        },
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('لا يمكن الحجز حالياً')),
+                      );
+                    }
+                  },
                 ),
-                elevation: 4,
-                shadowColor: AppColors.gold.withValues(alpha: 0.4),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'احجز الآن',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Cairo',
-                    ),
-                  ),
-                  SizedBox(width: 8.w),
-                  Icon(
-                    Icons.arrow_forward_rounded,
-                    color: Colors.white,
-                    size: 20.sp,
-                  ),
-                ],
               ),
             ),
           ),
@@ -465,30 +417,64 @@ class AdvertisementDetailsScreen extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: isSolid ? color : Colors.white.withValues(alpha: 0.2),
+        color: isSolid ? color : AppColors.textLight.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(30.r),
         border: isSolid
             ? null
-            : Border.all(color: Colors.white.withValues(alpha: 0.3)),
+            : Border.all(color: AppColors.textLight.withValues(alpha: 0.35)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            Icon(icon, color: Colors.white, size: 14.sp),
+            Icon(icon, color: AppColors.textLight, size: 14.sp),
             SizedBox(width: 6.w),
           ],
-          Text(
-            text,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12.sp,
-              fontFamily: 'Cairo',
-              fontWeight: FontWeight.w600,
+          Flexible(
+            child: Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: AppColors.textLight,
+                fontSize: 12.sp,
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: 4.w,
+          height: 18.h,
+          decoration: BoxDecoration(
+            color: AppColors.gold,
+            borderRadius: BorderRadius.circular(4.r),
+          ),
+        ),
+        SizedBox(width: 8.w),
+        Expanded(
+          child: Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Cairo',
+              color: AppColors.textPrimary,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -498,15 +484,20 @@ class AdvertisementDetailsScreen extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFD4AF37), Color(0xFFC5A028)],
+          colors: [
+            AppColors.gold.withValues(alpha: 0.95),
+            AppColors.gold,
+            const Color(0xFFB8923F),
+          ],
+          stops: const [0.0, 0.55, 1.0],
         ),
         borderRadius: BorderRadius.circular(24.r),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFD4AF37).withValues(alpha: 0.4),
+            color: AppColors.gold.withValues(alpha: 0.4),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -516,72 +507,79 @@ class AdvertisementDetailsScreen extends StatelessWidget {
       child: Stack(
         children: [
           // Background Decoration
-          Positioned(
-            right: -20,
+          PositionedDirectional(
+            end: -20,
             top: -20,
             child: Icon(
               Icons.monetization_on,
               size: 100.sp,
-              color: Colors.white.withValues(alpha: 0.1),
+              color: AppColors.textLight.withValues(alpha: 0.12),
             ),
           ),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'سعر الخدمة',
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.9),
-                      fontSize: 13.sp,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w500,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'سعر الخدمة',
+                      style: TextStyle(
+                        color: AppColors.textLight.withValues(alpha: 0.9),
+                        fontSize: 13.sp,
+                        fontFamily: 'Cairo',
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 4.h),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
-                    children: [
-                      Text(
-                        price.toStringAsFixed(0),
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 32.sp,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Cairo',
-                          height: 1,
+                    SizedBox(height: 4.h),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            price.toStringAsFixed(0),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: AppColors.textLight,
+                              fontSize: 32.sp,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Cairo',
+                              height: 1,
+                            ),
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 6.w),
-                      Text(
-                        'ر.س',
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.9),
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: 'Cairo',
+                        SizedBox(width: 6.w),
+                        Text(
+                          'ر.س',
+                          style: TextStyle(
+                            color: AppColors.textLight.withValues(alpha: 0.9),
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Cairo',
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
+              SizedBox(width: 12.w),
               Container(
                 padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: AppColors.textLight.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.3),
+                    color: AppColors.textLight.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Icon(
                   isRtl ? Icons.arrow_back : Icons.arrow_forward,
-                  color: Colors.white,
+                  color: AppColors.textLight,
                   size: 24.sp,
                 ),
               ),
@@ -600,10 +598,19 @@ class AdvertisementDetailsScreen extends StatelessWidget {
   }) {
     return Column(
       children: [
-        Icon(icon, color: iconColor ?? AppColors.textSecondary, size: 22.sp),
+        Container(
+          padding: EdgeInsets.all(8.w),
+          decoration: BoxDecoration(
+            color: AppColors.gold.withValues(alpha: 0.10),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: iconColor ?? AppColors.gold, size: 20.sp),
+        ),
         SizedBox(height: 6.h),
         Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: AppColors.textSecondary,
             fontSize: 11.sp,
@@ -613,8 +620,10 @@ class AdvertisementDetailsScreen extends StatelessWidget {
         SizedBox(height: 2.h),
         Text(
           value,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
-            color: const Color(0xFF2B2B2B),
+            color: AppColors.textPrimary,
             fontSize: 13.sp,
             fontWeight: FontWeight.w700,
             fontFamily: 'Cairo',
@@ -627,11 +636,11 @@ class AdvertisementDetailsScreen extends StatelessWidget {
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'published':
-        return Colors.green;
+        return AppColors.success;
       case 'pending':
-        return Colors.orange;
+        return AppColors.warning;
       case 'rejected':
-        return Colors.red;
+        return AppColors.error;
       default:
         return AppColors.gold;
     }

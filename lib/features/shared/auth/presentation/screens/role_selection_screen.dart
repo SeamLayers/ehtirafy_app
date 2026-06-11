@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/widgets/primary_button.dart';
 import 'package:ehtirafy_app/features/shared/auth/domain/entities/user_role.dart';
 import 'package:ehtirafy_app/features/shared/auth/presentation/cubits/role_cubit.dart';
@@ -42,28 +43,73 @@ class _RoleSelectionView extends StatelessWidget {
       backgroundColor: isDark ? AppColors.dark : AppColors.backgroundLight,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.lg,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                'roleSelection.title'.tr(),
-                style: theme.textTheme.titleLarge?.copyWith(fontSize: 24.sp),
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                'roleSelection.subtitle'.tr(),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: AppColors.grey600,
+              // ---- Header ----
+              Container(
+                width: 64.w,
+                height: 64.w,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.gold,
+                      AppColors.gold.withValues(alpha: 0.75),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(20.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.gold.withValues(alpha: 0.30),
+                      blurRadius: 18.r,
+                      offset: Offset(0, 8.h),
+                      spreadRadius: -4.r,
+                    ),
+                  ],
+                ),
+                alignment: Alignment.center,
+                child: Icon(
+                  Icons.workspace_premium_outlined,
+                  color: AppColors.textLight,
+                  size: 32.sp,
                 ),
               ),
-              SizedBox(height: 32.h),
+              SizedBox(height: AppSpacing.md),
+              Text(
+                'roleSelection.title'.tr(),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              SizedBox(height: AppSpacing.sm),
+              Text(
+                'roleSelection.subtitle'.tr(),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textSecondary,
+                  height: 1.4,
+                ),
+              ),
+              SizedBox(height: AppSpacing.xl),
               Expanded(
                 child: BlocBuilder<RoleCubit, RoleState>(
                   builder: (context, state) {
                     final cubit = context.read<RoleCubit>();
                     final selected = cubit.selected;
                     return SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
                       child: Column(
                         children: [
                           _RoleCard(
@@ -77,17 +123,28 @@ class _RoleSelectionView extends StatelessWidget {
                             onTap: () => cubit.select(UserRole.client),
                             gradient: (selected == UserRole.client)
                                 ? LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
                                     colors: [
-                                      AppColors.gold.withValues(alpha: 0.07),
-                                      Colors.transparent,
+                                      AppColors.gold.withValues(alpha: 0.10),
+                                      AppColors.gold.withValues(alpha: 0.02),
                                     ],
                                   )
-                                : const LinearGradient(
-                                    colors: [Colors.white, AppColors.grey100],
+                                : LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      isDark ? AppColors.grey900 : Colors.white,
+                                      isDark
+                                          ? AppColors.grey900
+                                          : AppColors.grey50,
+                                    ],
                                   ),
-                            borderColor: AppColors.grey300,
+                            borderColor: isDark
+                                ? AppColors.grey700
+                                : AppColors.grey200,
                           ),
-                          SizedBox(height: 16.h),
+                          SizedBox(height: AppSpacing.md),
                           _RoleCard(
                             role: UserRole.freelancer,
                             selected: selected == UserRole.freelancer,
@@ -99,15 +156,26 @@ class _RoleSelectionView extends StatelessWidget {
                             onTap: () => cubit.select(UserRole.freelancer),
                             gradient: (selected == UserRole.freelancer)
                                 ? LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
                                     colors: [
-                                      AppColors.gold.withValues(alpha: 0.07),
-                                      Colors.transparent,
+                                      AppColors.gold.withValues(alpha: 0.10),
+                                      AppColors.gold.withValues(alpha: 0.02),
                                     ],
                                   )
-                                : const LinearGradient(
-                                    colors: [Colors.white, AppColors.grey100],
+                                : LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      isDark ? AppColors.grey900 : Colors.white,
+                                      isDark
+                                          ? AppColors.grey900
+                                          : AppColors.grey50,
+                                    ],
                                   ),
-                            borderColor: AppColors.grey300,
+                            borderColor: isDark
+                                ? AppColors.grey700
+                                : AppColors.grey200,
                           ),
                         ],
                       ),
@@ -115,8 +183,7 @@ class _RoleSelectionView extends StatelessWidget {
                   },
                 ),
               ),
-              SizedBox(height: 24.h),
-              SizedBox(height: 24.h),
+              SizedBox(height: AppSpacing.lg),
               BlocConsumer<SignupCubit, SignupState>(
                 listener: (context, signupState) {
                   if (signupState is SignupSuccess) {
@@ -189,12 +256,28 @@ class _RoleSelectionView extends StatelessWidget {
                   );
                 },
               ),
-              SizedBox(height: 16.h),
-              Text(
-                'roleSelection.footerNote'.tr(),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.grey600,
-                ),
+              SizedBox(height: AppSpacing.md),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.lock_outline_rounded,
+                    size: 14.sp,
+                    color: AppColors.textSecondary,
+                  ),
+                  SizedBox(width: AppSpacing.xs),
+                  Flexible(
+                    child: Text(
+                      'roleSelection.footerNote'.tr(),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -232,89 +315,171 @@ class _RoleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16.r),
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(24.w),
-        decoration: BoxDecoration(
-          gradient: gradient,
-          border: Border.all(
-            color: selected ? AppColors.gold : borderColor,
-            width: 2.w,
-          ),
-          borderRadius: BorderRadius.circular(16.r),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(title, style: theme.textTheme.titleMedium),
-                      SizedBox(height: 4.h),
-                      Text(
-                        subtitle,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: AppColors.grey600,
-                        ),
-                      ),
-                    ],
-                  ),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeOut,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: selected
+            ? [
+                BoxShadow(
+                  color: AppColors.gold.withValues(alpha: 0.18),
+                  blurRadius: 22.r,
+                  offset: Offset(0, 10.h),
+                  spreadRadius: -6.r,
                 ),
-                Container(
-                  width: 64.w,
-                  height: 64.w,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: selected
-                          ? [
-                              AppColors.gold,
-                              AppColors.gold.withValues(alpha: 0.8),
-                            ]
-                          : [AppColors.grey100, AppColors.grey200],
-                    ),
-                    borderRadius: BorderRadius.circular(16.r),
-                  ),
-                  alignment: Alignment.center,
-                  child: Icon(
-                    role == UserRole.client
-                        ? Icons.person_search
-                        : Icons.camera_alt,
-                    color: selected ? Colors.white : AppColors.grey600,
-                    size: 32.sp,
-                  ),
+              ]
+            : [
+                BoxShadow(
+                  color: AppColors.shadowLight,
+                  blurRadius: 14.r,
+                  offset: Offset(0, 6.h),
+                  spreadRadius: -4.r,
                 ),
               ],
-            ),
-            SizedBox(height: 16.h),
-            Text(
-              description,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: AppColors.grey600,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(20.r),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20.r),
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(AppSpacing.lg),
+            decoration: BoxDecoration(
+              gradient: gradient,
+              border: Border.all(
+                color: selected ? AppColors.gold : borderColor,
+                width: selected ? 2.w : 1.w,
               ),
+              borderRadius: BorderRadius.circular(20.r),
             ),
-            SizedBox(height: 16.h),
-            Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: _Badge(label: badge1, highlight: selected),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 64.w,
+                      height: 64.w,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: selected
+                              ? [
+                                  AppColors.gold,
+                                  AppColors.gold.withValues(alpha: 0.8),
+                                ]
+                              : [AppColors.grey100, AppColors.grey200],
+                        ),
+                        borderRadius: BorderRadius.circular(16.r),
+                        boxShadow: selected
+                            ? [
+                                BoxShadow(
+                                  color: AppColors.gold.withValues(alpha: 0.30),
+                                  blurRadius: 12.r,
+                                  offset: Offset(0, 4.h),
+                                  spreadRadius: -2.r,
+                                ),
+                              ]
+                            : null,
+                      ),
+                      alignment: Alignment.center,
+                      child: Icon(
+                        role == UserRole.client
+                            ? Icons.person_search
+                            : Icons.camera_alt,
+                        color: selected ? AppColors.textLight : AppColors.grey600,
+                        size: 32.sp,
+                      ),
+                    ),
+                    SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: AppSpacing.xs),
+                          Text(
+                            title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: selected ? AppColors.gold : null,
+                            ),
+                          ),
+                          SizedBox(height: AppSpacing.xs),
+                          Text(
+                            subtitle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: AppColors.textSecondary,
+                              height: 1.3,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: AppSpacing.sm),
+                    _SelectIndicator(selected: selected),
+                  ],
                 ),
-                SizedBox(width: 8.w),
-                Expanded(
-                  child: _Badge(label: badge2, highlight: selected),
+                SizedBox(height: AppSpacing.md),
+                Text(
+                  description,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppColors.textSecondary,
+                    height: 1.4,
+                  ),
+                ),
+                SizedBox(height: AppSpacing.md),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _Badge(label: badge1, highlight: selected),
+                    ),
+                    SizedBox(width: AppSpacing.sm),
+                    Expanded(
+                      child: _Badge(label: badge2, highlight: selected),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+class _SelectIndicator extends StatelessWidget {
+  final bool selected;
+  const _SelectIndicator({required this.selected});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOut,
+      width: 24.w,
+      height: 24.w,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: selected ? AppColors.gold : Colors.transparent,
+        border: Border.all(
+          color: selected ? AppColors.gold : AppColors.grey300,
+          width: 2.w,
+        ),
+      ),
+      alignment: Alignment.center,
+      child: selected
+          ? Icon(Icons.check_rounded, size: 16.sp, color: AppColors.textLight)
+          : null,
     );
   }
 }
@@ -327,19 +492,46 @@ class _Badge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 8.h),
+      padding: EdgeInsets.symmetric(
+        vertical: AppSpacing.sm,
+        horizontal: AppSpacing.sm,
+      ),
       decoration: BoxDecoration(
         color: highlight
-            ? AppColors.gold.withValues(alpha: 0.1)
+            ? AppColors.gold.withValues(alpha: 0.12)
             : AppColors.grey100,
-        borderRadius: BorderRadius.circular(10.r),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: highlight
+              ? AppColors.gold.withValues(alpha: 0.30)
+              : AppColors.grey200,
+          width: 1.w,
+        ),
       ),
       alignment: Alignment.center,
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-          color: highlight ? AppColors.gold : AppColors.grey600,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.check_circle_rounded,
+            size: 14.sp,
+            color: highlight ? AppColors.gold : AppColors.grey500,
+          ),
+          SizedBox(width: AppSpacing.xs),
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: highlight ? AppColors.gold : AppColors.grey600,
+                fontWeight: highlight ? FontWeight.w600 : FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

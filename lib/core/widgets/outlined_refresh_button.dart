@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
@@ -9,42 +10,69 @@ class OutlinedRefreshButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final BorderRadius radius = BorderRadius.circular(20.r);
+
     return SizedBox(
       height: 32.h,
-      child: OutlinedButton(
-        onPressed: onPressed,
-        style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: AppColors.gold, width: 1.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.r),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: radius,
+          gradient: LinearGradient(
+            begin: AlignmentDirectional.topStart,
+            end: AlignmentDirectional.bottomEnd,
+            colors: [
+              AppColors.gold.withValues(alpha: 0.10),
+              AppColors.gold.withValues(alpha: 0.03),
+            ],
           ),
-          padding: EdgeInsets.symmetric(horizontal: 12.w),
-          backgroundColor: Colors.transparent,
-          // Removed minimumSize constraints to allow smaller height
-          minimumSize: Size.zero,
-          tapTargetSize:
-              MaterialTapTargetSize.shrinkWrap, // To reduce default padding
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.refresh_rounded, size: 14.sp, color: AppColors.gold),
-            SizedBox(width: 4.w),
-            Text(
-              // Using a generic refresh string or adding a new one if needed.
-              // Assuming AppStrings.refresh exists or we use a hardcoded fallback for now if it doesn't.
-              // Since I checked AppStrings before and it's large, I'll check if 'refresh' key exists in tr()
-              // or just use a safe fallback.
-              'تحديث', // "Refresh" in Arabic roughly, or use tr() key if available.
-              // Better to use tr('refresh') and ensure key exists or fallback.
-              style: TextStyle(
-                color: AppColors.gold,
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w500,
-                fontFamily: 'Cairo', // Assuming Cairo is the app font
-              ),
+          border: Border.all(
+            color: AppColors.gold.withValues(alpha: 0.55),
+            width: 1.0,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.gold.withValues(alpha: 0.12),
+              blurRadius: 8.r,
+              offset: Offset(0, 2.h),
             ),
           ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: radius,
+          child: InkWell(
+            onTap: onPressed,
+            borderRadius: radius,
+            splashColor: AppColors.gold.withValues(alpha: 0.18),
+            highlightColor: AppColors.gold.withValues(alpha: 0.08),
+            child: Padding(
+              padding: EdgeInsetsDirectional.symmetric(horizontal: 12.w),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.refresh_rounded,
+                    size: 15.sp,
+                    color: AppColors.gold,
+                  ),
+                  SizedBox(width: 6.w),
+                  Text(
+                    'refresh'.tr(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: AppColors.gold,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                      height: 1.0,
+                      letterSpacing: 0.2,
+                      fontFamily: 'Cairo',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

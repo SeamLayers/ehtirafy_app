@@ -3,6 +3,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../core/theme/app_colors.dart';
+
 class ProfileTile extends StatelessWidget {
   final String title;
   final IconData icon;
@@ -26,67 +28,91 @@ class ProfileTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        height: 58.h,
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        decoration: ShapeDecoration(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(
-              width: isDestructive ? 2 : 1,
-              color: isDestructive
-                  ? const Color(0xFFDC3545)
-                  : const Color(0xFFE5E5E5),
-            ),
-            borderRadius: BorderRadius.circular(14.r),
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(8.w),
-                    decoration: BoxDecoration(
-                      color: (iconColor ?? const Color(0xFFC8A44F)).withValues(alpha: 
-                        0.1,
-                      ),
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Icon(
-                      icon,
-                      color: iconColor ?? const Color(0xFFC8A44F),
-                      size: 20.sp,
-                    ),
-                  ),
-                  SizedBox(width: 16.w),
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: TextStyle(
-                        color: textColor ?? const Color(0xFF2B2B2B),
-                        fontSize: 14.sp,
-                        fontFamily: 'Cairo',
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
+
+    final Color accentColor =
+        iconColor ?? (isDestructive ? AppColors.error : AppColors.gold);
+    final Color labelColor =
+        textColor ?? (isDestructive ? AppColors.error : AppColors.textPrimary);
+    final Color borderColor = isDestructive
+        ? AppColors.error.withValues(alpha: 0.35)
+        : AppColors.grey200;
+    final BorderRadius radius = BorderRadius.circular(16.r);
+
+    return Material(
+      color: Colors.white,
+      borderRadius: radius,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        splashColor: accentColor.withValues(alpha: 0.08),
+        highlightColor: accentColor.withValues(alpha: 0.04),
+        child: Ink(
+          width: double.infinity,
+          height: 60.h,
+          padding: EdgeInsets.symmetric(horizontal: 14.w),
+          decoration: ShapeDecoration(
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                width: isDestructive ? 1.5 : 1,
+                color: borderColor,
               ),
+              borderRadius: radius,
             ),
-            Icon(
-              isRtl ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
-              color: isDestructive
-                  ? const Color(0xFFDC3545)
-                  : const Color(0xFF2B2B2B),
-              size: 16.sp,
-            ),
-          ],
+            shadows: [
+              BoxShadow(
+                color: AppColors.shadowLight,
+                blurRadius: 12.r,
+                offset: Offset(0, 4.h),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(9.w),
+                      decoration: BoxDecoration(
+                        color: accentColor.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Icon(
+                        icon,
+                        color: accentColor,
+                        size: 20.sp,
+                      ),
+                    ),
+                    SizedBox(width: 14.w),
+                    Expanded(
+                      child: Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: labelColor,
+                          fontSize: 14.sp,
+                          fontFamily: 'Cairo',
+                          fontWeight: FontWeight.w600,
+                          height: 1.2,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 8.w),
+              Icon(
+                isRtl ? Icons.arrow_back_ios_new : Icons.arrow_forward_ios,
+                color: isDestructive
+                    ? AppColors.error.withValues(alpha: 0.6)
+                    : AppColors.grey400,
+                size: 14.sp,
+              ),
+            ],
+          ),
         ),
       ),
     );

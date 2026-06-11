@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../theme/app_colors.dart';
+
 class UserAvatar extends StatelessWidget {
   final String name;
   final String? imageUrl;
@@ -32,11 +34,29 @@ class UserAvatar extends StatelessWidget {
     return Center(
       child: Text(
         _getInitials(name),
+        textAlign: TextAlign.center,
+        maxLines: 1,
+        overflow: TextOverflow.clip,
         style: TextStyle(
-          color: Colors.white,
+          color: AppColors.textLight,
           fontSize: fontSize ?? (size * 0.4).sp,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w700,
           fontFamily: 'Cairo',
+          letterSpacing: 0.5,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImageLoader() {
+    return Center(
+      child: SizedBox(
+        width: (size * 0.4).w,
+        height: (size * 0.4).w,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
+          backgroundColor: AppColors.gold.withValues(alpha: 0.15),
         ),
       ),
     );
@@ -44,6 +64,8 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double borderWidth = (size * 0.045).clamp(1.5, 3.0);
+
     return Container(
       width: size.w,
       height: size.w,
@@ -55,19 +77,27 @@ class UserAvatar extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFFC8A44F),
+                  AppColors.gold,
                   Color(0xFFD4AF37),
                 ],
               ),
-        color: _hasImage ? Colors.grey.shade100 : null,
+        color: _hasImage ? AppColors.grey100 : null,
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFD4AF37).withValues(alpha: 0.3),
-            blurRadius: 8,
+            color: AppColors.gold.withValues(alpha: 0.28),
+            blurRadius: 10,
             offset: const Offset(0, 4),
           ),
+          const BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 4,
+            offset: Offset(0, 1),
+          ),
         ],
-        border: Border.all(color: Colors.white, width: 2),
+        border: Border.all(
+          color: AppColors.textLight,
+          width: borderWidth,
+        ),
       ),
       child: ClipOval(
         child: _hasImage
@@ -76,6 +106,7 @@ class UserAvatar extends StatelessWidget {
                 fit: BoxFit.cover,
                 width: size.w,
                 height: size.w,
+                placeholder: (context, url) => _buildImageLoader(),
                 errorWidget: (context, url, error) => _buildInitials(),
               )
             : _buildInitials(),

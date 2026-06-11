@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import '../../domain/entities/gig_entity.dart';
 
@@ -20,197 +21,264 @@ class GigCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16.r),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x1A000000),
-              blurRadius: 12,
-              offset: Offset(0, 4),
-            ),
-          ],
-          border: Border.all(color: const Color(0xFFF2F2F2)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Cover image with status badge
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(16.r),
-                  ),
-                  child: AppCachedNetworkImage(
-                    imageUrl: gig.coverImage,
-                    width: double.infinity,
-                    height: 120.h,
-                    fit: BoxFit.cover,
-                    memCacheWidth: 640,
-                    memCacheHeight: 360,
-                    errorWidget: Icon(
-                      Icons.camera_alt,
-                      color: AppColors.primary,
-                      size: 40.sp,
-                    ),
-                  ),
-                ),
-                // Gradient overlay
-                Positioned.fill(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(16.r),
-                      ),
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          Colors.black.withValues(alpha: 0.3),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                // Status badge
-                Positioned(
-                  top: 10.h,
-                  right: 10.w,
-                  child: _buildStatusBadge(context),
-                ),
-              ],
-            ),
-            // Content
-            Padding(
-              padding: EdgeInsets.all(16.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(20.r),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20.r),
+        child: Ink(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.r),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withValues(alpha: 0.06),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
+              ),
+              const BoxShadow(
+                color: AppColors.shadowLight,
+                blurRadius: 12,
+                offset: Offset(0, 4),
+              ),
+            ],
+            border: Border.all(color: AppColors.grey200),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Cover image with status badge
+              Stack(
                 children: [
-                  // Title and actions row
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          gig.title,
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(
-                                color: const Color(0xFF2B2B2B),
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20.r),
+                    ),
+                    child: AppCachedNetworkImage(
+                      imageUrl: gig.coverImage,
+                      width: double.infinity,
+                      height: 130.h,
+                      fit: BoxFit.cover,
+                      memCacheWidth: 640,
+                      memCacheHeight: 360,
+                      errorWidget: Icon(
+                        Icons.camera_alt_rounded,
+                        color: AppColors.primary,
+                        size: 40.sp,
                       ),
-                      _buildActions(context),
-                    ],
+                    ),
                   ),
-                  SizedBox(height: 8.h),
-                  // Category and description
-                  if (gig.categoryName.isNotEmpty) ...[
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 8.w,
-                        vertical: 4.h,
-                      ),
+                  // Gradient overlay
+                  Positioned.fill(
+                    child: Container(
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(6.r),
-                      ),
-                      child: Text(
-                        gig.categoryName,
-                        style: TextStyle(
-                          color: AppColors.primary,
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.w500,
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(20.r),
+                        ),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            AppColors.dark.withValues(alpha: 0.35),
+                          ],
                         ),
                       ),
                     ),
-                    SizedBox(height: 8.h),
-                  ],
-                  // Description
-                  if (gig.description.isNotEmpty)
-                    Text(
-                      gig.description,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: const Color(0xFF888888),
-                        fontSize: 12.sp,
-                        height: 1.4,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  SizedBox(height: 12.h),
-                  // Days availability badges
-                  if (gig.availability.isNotEmpty) ...[
-                    Wrap(
-                      spacing: 6.w,
-                      runSpacing: 4.h,
-                      children: gig.availability
-                          .take(3)
-                          .map(
-                            (day) => Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 8.w,
-                                vertical: 4.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFF5F5F5),
-                                borderRadius: BorderRadius.circular(6.r),
-                              ),
-                              child: Text(
-                                _translateDay(day),
-                                style: TextStyle(
-                                  color: const Color(0xFF666666),
-                                  fontSize: 10.sp,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                    SizedBox(height: 12.h),
-                  ],
-                  // Price row
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.monetization_on_outlined,
-                        size: 18.sp,
-                        color: AppColors.gold,
-                      ),
-                      SizedBox(width: 6.w),
-                      Text(
-                        '${gig.price.toInt()}',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: AppColors.gold,
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      SizedBox(width: 4.w),
-                      Text(
-                        'ريال',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: const Color(0xFF888888),
-                          fontSize: 12.sp,
-                        ),
-                      ),
-                    ],
+                  ),
+                  // Status badge
+                  PositionedDirectional(
+                    top: 12.h,
+                    end: 12.w,
+                    child: _buildStatusBadge(context),
                   ),
                 ],
               ),
-            ),
-          ],
+              // Content
+              Padding(
+                padding: EdgeInsets.all(AppSpacing.md),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title and actions row
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsetsDirectional.only(top: 4.h),
+                            child: Text(
+                              gig.title,
+                              style: Theme.of(context).textTheme.bodyLarge
+                                  ?.copyWith(
+                                    color: AppColors.textPrimary,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.3,
+                                  ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                        _buildActions(context),
+                      ],
+                    ),
+                    SizedBox(height: AppSpacing.sm),
+                    // Category chip
+                    if (gig.categoryName.isNotEmpty) ...[
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10.w,
+                          vertical: 5.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8.r),
+                          border: Border.all(
+                            color: AppColors.primary.withValues(alpha: 0.2),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.local_offer_rounded,
+                              size: 12.sp,
+                              color: AppColors.primary,
+                            ),
+                            SizedBox(width: 5.w),
+                            Flexible(
+                              child: Text(
+                                gig.categoryName,
+                                style: TextStyle(
+                                  color: AppColors.primary,
+                                  fontSize: 11.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: AppSpacing.sm),
+                    ],
+                    // Description
+                    if (gig.description.isNotEmpty)
+                      Text(
+                        gig.description,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppColors.textSecondary,
+                          fontSize: 12.sp,
+                          height: 1.5,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    SizedBox(height: 12.h),
+                    // Days availability badges
+                    if (gig.availability.isNotEmpty) ...[
+                      Wrap(
+                        spacing: 6.w,
+                        runSpacing: 6.h,
+                        children: gig.availability
+                            .take(3)
+                            .map(
+                              (day) => Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 10.w,
+                                  vertical: 5.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.grey100,
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  border: Border.all(color: AppColors.grey200),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.calendar_today_rounded,
+                                      size: 10.sp,
+                                      color: AppColors.grey600,
+                                    ),
+                                    SizedBox(width: 4.w),
+                                    Text(
+                                      _translateDay(day),
+                                      style: TextStyle(
+                                        color: AppColors.grey700,
+                                        fontSize: 10.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                      SizedBox(height: 12.h),
+                    ],
+                    const Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: AppColors.grey100,
+                    ),
+                    SizedBox(height: 12.h),
+                    // Price row
+                    Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(7.r),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                AppColors.gold.withValues(alpha: 0.18),
+                                AppColors.gold.withValues(alpha: 0.08),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(10.r),
+                          ),
+                          child: Icon(
+                            Icons.payments_rounded,
+                            size: 16.sp,
+                            color: AppColors.gold,
+                          ),
+                        ),
+                        SizedBox(width: AppSpacing.sm),
+                        Text(
+                          '${gig.price.toInt()}',
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(
+                                color: AppColors.gold,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w800,
+                              ),
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          'ريال',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: AppColors.textSecondary,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -222,39 +290,54 @@ class GigCard extends StatelessWidget {
 
     switch (gig.status) {
       case GigStatus.active:
-        backgroundColor = const Color(0xFF28A745);
+        backgroundColor = AppColors.success;
         text = 'نشط';
         break;
       case GigStatus.pending:
-        backgroundColor = const Color(0xFF17A2B8);
+        backgroundColor = AppColors.info;
         text = 'قيد المراجعة';
         break;
       case GigStatus.inactive:
-        backgroundColor = const Color(0xFF6C757D);
+        backgroundColor = AppColors.grey500;
         text = 'غير نشط';
         break;
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(8.r),
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.6)),
         boxShadow: [
           BoxShadow(
             color: backgroundColor.withValues(alpha: 0.4),
-            blurRadius: 6,
+            blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: Colors.white,
-          fontSize: 11.sp,
-          fontWeight: FontWeight.w600,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6.w,
+            height: 6.w,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+          ),
+          SizedBox(width: 5.w),
+          Text(
+            text,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Colors.white,
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -264,22 +347,38 @@ class GigCard extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (onEdit != null)
-          IconButton(
-            onPressed: onEdit,
-            icon: Icon(Icons.edit_outlined, size: 20.sp),
+          _buildActionButton(
+            icon: Icons.edit_outlined,
             color: AppColors.primary,
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints(minWidth: 36.w, minHeight: 36.h),
+            onPressed: onEdit,
           ),
+        if (onEdit != null && onDelete != null) SizedBox(width: 6.w),
         if (onDelete != null)
-          IconButton(
+          _buildActionButton(
+            icon: Icons.delete_outline_rounded,
+            color: AppColors.error,
             onPressed: onDelete,
-            icon: Icon(Icons.delete_outline, size: 20.sp),
-            color: const Color(0xFFDC3545),
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints(minWidth: 36.w, minHeight: 36.h),
           ),
       ],
+    );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required Color color,
+    required VoidCallback? onPressed,
+  }) {
+    return Material(
+      color: color.withValues(alpha: 0.1),
+      borderRadius: BorderRadius.circular(10.r),
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(10.r),
+        child: Padding(
+          padding: EdgeInsets.all(8.r),
+          child: Icon(icon, size: 18.sp, color: color),
+        ),
+      ),
     );
   }
 

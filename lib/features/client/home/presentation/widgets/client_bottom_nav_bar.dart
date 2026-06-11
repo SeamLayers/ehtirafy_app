@@ -19,17 +19,30 @@ class ClientBottomNavBar extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+        border: Border(
+          top: BorderSide(
+            color: AppColors.grey200.withValues(alpha: 0.8),
+            width: 1,
+          ),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
+            color: AppColors.primary.withValues(alpha: 0.06),
+            blurRadius: 20.r,
+            offset: Offset(0, -6.h),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 10.r,
+            offset: Offset(0, -2.h),
           ),
         ],
       ),
       child: SafeArea(
+        top: false,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -77,36 +90,61 @@ class ClientBottomNavBar extends StatelessWidget {
   }) {
     final isActive = currentIndex == index;
 
-    return InkWell(
-      onTap: () => onTap(index),
-      borderRadius: BorderRadius.circular(12.r),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-        decoration: isActive
-            ? BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12.r),
-              )
-            : null,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              isActive ? activeIcon : icon,
-              color: isActive ? AppColors.primary : const Color(0xFF888888),
-              size: 24.sp,
-            ),
-            SizedBox(height: 4.h),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: isActive ? AppColors.primary : const Color(0xFF888888),
-                fontSize: 10.sp,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+    return Expanded(
+      child: InkWell(
+        onTap: () => onTap(index),
+        borderRadius: BorderRadius.circular(16.r),
+        splashColor: AppColors.primary.withValues(alpha: 0.08),
+        highlightColor: AppColors.primary.withValues(alpha: 0.04),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOut,
+          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 8.h),
+          decoration: isActive
+              ? BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      AppColors.primary.withValues(alpha: 0.14),
+                      AppColors.primary.withValues(alpha: 0.06),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(16.r),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.18),
+                    width: 1,
+                  ),
+                )
+              : null,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AnimatedScale(
+                duration: const Duration(milliseconds: 220),
+                curve: Curves.easeOut,
+                scale: isActive ? 1.08 : 1.0,
+                child: Icon(
+                  isActive ? activeIcon : icon,
+                  color: isActive ? AppColors.primary : AppColors.grey500,
+                  size: 24.sp,
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: 4.h),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: isActive ? AppColors.primary : AppColors.grey500,
+                  fontSize: 10.sp,
+                  fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                  height: 1.1,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

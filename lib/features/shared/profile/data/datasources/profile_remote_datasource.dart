@@ -27,7 +27,11 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       final response = await dioClient.get(ApiConstants.profileData);
 
       if (response.statusCode == 200) {
-        final data = response.data['data'];
+        final body = response.data;
+        final data = (body is Map) ? body['data'] : null;
+        if (data is! Map<String, dynamic>) {
+          throw Exception('فشل في تحميل الملف الشخصي');
+        }
         // We might need to merge with local role preference if needed,
         // but for now let's trust the API or local override.
         // The API returns 'user_type', model parses it.
@@ -41,8 +45,10 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         // Actually, the UI uses currentRole to toggle views.
         return profile.copyWith(currentRole: localRole);
       } else {
+        final body = response.data;
+        final message = (body is Map) ? body['message'] : null;
         throw Exception(
-          response.data['message'] ?? 'فشل في تحميل الملف الشخصي',
+          message?.toString() ?? 'فشل في تحميل الملف الشخصي',
         );
       }
     } catch (e) {
@@ -68,11 +74,17 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data['data'];
+        final body = response.data;
+        final data = (body is Map) ? body['data'] : null;
+        if (data is! Map<String, dynamic>) {
+          throw Exception('فشل في تحديث الملف الشخصي');
+        }
         return UserProfileModel.fromJson(data);
       } else {
+        final body = response.data;
+        final message = (body is Map) ? body['message'] : null;
         throw Exception(
-          response.data['message'] ?? 'فشل في تحديث الملف الشخصي',
+          message?.toString() ?? 'فشل في تحديث الملف الشخصي',
         );
       }
     } catch (e) {

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 
@@ -17,39 +18,60 @@ class FreelancerCustomTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 24.w),
+      margin: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      padding: EdgeInsets.all(AppSpacing.xs),
+      decoration: BoxDecoration(
+        color: AppColors.grey100,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: AppColors.grey200, width: 1),
+      ),
       child: Row(
         children: [
-          _buildTabItem(0, AppStrings.freelancerProfilePortfolio.tr()),
-          _buildTabItem(1, AppStrings.freelancerProfileServices.tr()),
-          _buildTabItem(2, AppStrings.freelancerProfileReviews.tr()),
+          _buildTabItem(context, 0, AppStrings.freelancerProfilePortfolio.tr()),
+          _buildTabItem(context, 1, AppStrings.freelancerProfileServices.tr()),
+          _buildTabItem(context, 2, AppStrings.freelancerProfileReviews.tr()),
         ],
       ),
     );
   }
 
-  Widget _buildTabItem(int index, String title) {
+  Widget _buildTabItem(BuildContext context, int index, String title) {
     final isSelected = selectedIndex == index;
     return Expanded(
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () => onTabSelected(index),
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 16.h),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOut,
+          padding: EdgeInsets.symmetric(vertical: 12.h),
           decoration: BoxDecoration(
-            border: isSelected
-                ? Border(
-                    bottom: BorderSide(color: AppColors.gold, width: 3.h),
-                  )
+            color: isSelected ? AppColors.gold : Colors.transparent,
+            borderRadius: BorderRadius.circular(12.r),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: AppColors.gold.withValues(alpha: 0.32),
+                      blurRadius: 12.r,
+                      offset: Offset(0, 4.h),
+                    ),
+                  ]
                 : null,
           ),
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
+          child: AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOut,
             style: TextStyle(
               fontSize: 14.sp,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-              color: isSelected ? AppColors.gold : AppColors.textSecondary,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+              color: isSelected ? AppColors.textLight : AppColors.textSecondary,
               fontFamily: 'Cairo',
+            ),
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ),

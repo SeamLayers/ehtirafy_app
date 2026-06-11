@@ -55,7 +55,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       );
 
       final data = response.data;
-      if (data['status'] == 200 || data['success'] == true) {
+      if (data is Map && (data['status'] == 200 || data['success'] == true)) {
         final dynamic responseData = data['data'];
         List list = [];
         if (responseData is List) {
@@ -64,7 +64,10 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           list = [];
         }
 
-        _cachedContracts = list.map((e) => ContractModel.fromJson(e)).toList();
+        _cachedContracts = list
+            .whereType<Map>()
+            .map((e) => ContractModel.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
 
         // Filter contracts where chat is allowed (only accepted contracts)
         final chatAllowedContracts = _cachedContracts
@@ -80,10 +83,10 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           if (contract.chatMessages != null &&
               contract.chatMessages!.isNotEmpty) {
             final lastMsg = contract.chatMessages!.last;
-            lastMessage = lastMsg['note'] ?? '';
+            lastMessage = lastMsg['note']?.toString() ?? '';
             try {
               lastMessageTime =
-                  DateTime.tryParse(lastMsg['date'] ?? '') ??
+                  DateTime.tryParse(lastMsg['date']?.toString() ?? '') ??
                   contract.updatedAt;
             } catch (_) {}
           }
@@ -109,7 +112,10 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           );
         }).toList();
       } else {
-        throw ServerException(data['message'] ?? 'فشل في جلب المحادثات');
+        throw ServerException(
+          (data is Map ? data['message']?.toString() : null) ??
+              'فشل في جلب المحادثات',
+        );
       }
     } catch (e) {
       if (e is ServerException) rethrow;
@@ -175,8 +181,8 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
 
             // Identify sender using user_type field (customer/freelancer)
             // and fallback to creator name matching
-            final msgUserType = msg['user_type'] ?? '';
-            final creator = msg['creator'] ?? '';
+            final msgUserType = msg['user_type']?.toString() ?? '';
+            final creator = msg['creator']?.toString() ?? '';
 
             // Primary: match by user_type field
             // Freelancer messages have user_type='freelancer', customer have user_type='customer'
@@ -193,7 +199,8 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
             DateTime timestamp;
             try {
               timestamp =
-                  DateTime.tryParse(msg['date'] ?? '') ?? DateTime.now();
+                  DateTime.tryParse(msg['date']?.toString() ?? '') ??
+                  DateTime.now();
             } catch (_) {
               timestamp = DateTime.now();
             }
@@ -204,7 +211,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
                   ? 'me'
                   : otherUserId, // Using 'me' simplifies UI logic
               receiverId: isFromMe ? otherUserId : 'me',
-              content: msg['note'] ?? '',
+              content: msg['note']?.toString() ?? '',
               timestamp: timestamp,
               isRead: true,
             );
@@ -268,14 +275,21 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       );
 
       final responseData = response.data;
-      if (responseData['success'] != true && responseData['status'] != 200) {
-        throw ServerException(responseData['message'] ?? 'فشل في إرسال الرسالة');
+      if (responseData is! Map ||
+          (responseData['success'] != true && responseData['status'] != 200)) {
+        throw ServerException(
+          (responseData is Map ? responseData['message']?.toString() : null) ??
+              'فشل في إرسال الرسالة',
+        );
       }
 
       // Update cache with the returned contract data
-      if (responseData['data'] != null) {
+      final updatedData = responseData['data'];
+      if (updatedData is Map) {
         try {
-          final updatedContract = ContractModel.fromJson(responseData['data']);
+          final updatedContract = ContractModel.fromJson(
+            Map<String, dynamic>.from(updatedData),
+          );
           final index = _cachedContracts.indexWhere(
             (c) => c.id == updatedContract.id,
           );

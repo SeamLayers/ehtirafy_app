@@ -48,7 +48,7 @@ Future<void> main() async {
   // Run the app immediately
   runApp(
     EasyLocalization(
-      supportedLocales: const [Locale('ar', 'SA')],
+      supportedLocales: const [Locale('ar', 'SA'), Locale('en', 'US')],
       path: 'assets/translations',
       fallbackLocale: const Locale('ar', 'SA'),
       startLocale: const Locale('ar', 'SA'),
@@ -81,6 +81,11 @@ String _getInitialRoute(SharedPreferences prefs) {
     if (roleString == 'freelancer') {
       return '/freelancer/dashboard';
     }
+    return '/home';
+  }
+  // Guest browsing (App Store guideline 5.1.1): if the user previously chose
+  // to continue as a guest, resume at home instead of onboarding.
+  if (prefs.getBool('is_guest_mode') == true) {
     return '/home';
   }
   return '/onboarding';
@@ -126,6 +131,11 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp.router(
+          // Re-key on locale so the whole tree (incl. go_router StatefulShell
+          // branches, which are otherwise preserved) rebuilds when the user
+          // switches language live — .tr() is a singleton lookup and only
+          // re-evaluates on rebuild.
+          key: ValueKey('app-${context.locale}'),
           title: 'app_name'.tr(),
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,

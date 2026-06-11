@@ -21,15 +21,17 @@ class NotificationsRemoteDataSourceImpl
 
       if (response.statusCode == 200) {
         final data = response.data;
-        if (data['data'] != null && data['data'] is List) {
+        if (data is Map<String, dynamic> && data['data'] is List) {
           return (data['data'] as List)
+              .whereType<Map<String, dynamic>>()
               .map((json) => NotificationModel.fromJson(_mapApiResponse(json)))
               .toList();
         }
         return [];
       } else {
+        final body = response.data;
         throw ServerException(
-          response.data['message'] ?? 'فشل في جلب الإشعارات',
+          (body is Map ? body['message'] : null) ?? 'فشل في جلب الإشعارات',
         );
       }
     } catch (e) {
@@ -45,8 +47,9 @@ class NotificationsRemoteDataSourceImpl
       if (response.statusCode == 200) {
         return;
       } else {
+        final body = response.data;
         throw ServerException(
-          response.data['message'] ?? 'فشل في تحديد الإشعار كمقروء',
+          (body is Map ? body['message'] : null) ?? 'فشل في تحديد الإشعار كمقروء',
         );
       }
     } catch (e) {
@@ -56,10 +59,12 @@ class NotificationsRemoteDataSourceImpl
 
   /// Maps API response fields to our model's expected format
   Map<String, dynamic> _mapApiResponse(Map<String, dynamic> json) {
+    final d = json['data'];
+    final dataMap = d is Map ? d : const {};
     return {
       'id': json['id']?.toString() ?? '',
-      'title': json['title'] ?? json['data']?['title'] ?? '',
-      'body': json['body'] ?? json['data']?['body'] ?? '',
+      'title': json['title'] ?? dataMap['title'] ?? '',
+      'body': json['body'] ?? dataMap['body'] ?? '',
       'time': json['created_at'] ?? json['time'] ?? '',
       'isUnread': json['read_at'] == null,
       'type': json['type'] ?? 'general',

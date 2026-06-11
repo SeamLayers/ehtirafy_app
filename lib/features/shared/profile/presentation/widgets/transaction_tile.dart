@@ -2,6 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../core/constants/app_spacing.dart';
+import '../../../../../core/theme/app_colors.dart';
+
 class TransactionTile extends StatelessWidget {
   final String title;
   final String date;
@@ -20,89 +23,111 @@ class TransactionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color accentColor = isCredit ? AppColors.success : AppColors.error;
+
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
-      padding: EdgeInsets.all(16.w),
-      decoration: ShapeDecoration(
+      padding: EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
         color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFFE5E5E5)),
-          borderRadius: BorderRadius.circular(14.r),
-        ),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(width: 1, color: AppColors.grey200),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 12.r,
+            offset: Offset(0, 4.h),
+          ),
+        ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Container(
-                width: 40.w,
-                height: 40.w,
-                decoration: ShapeDecoration(
-                  color: isCredit
-                      ? const Color(0xFFE8F5E9)
-                      : const Color(0xFFFFEBEE),
-                  shape: RoundedRectangleBorder(
+          Expanded(
+            child: Row(
+              children: [
+                Container(
+                  width: 44.w,
+                  height: 44.w,
+                  decoration: BoxDecoration(
+                    color: accentColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(12.r),
                   ),
-                ),
-                child: Icon(
-                  isCredit ? Icons.arrow_downward : Icons.arrow_upward,
-                  color: isCredit
-                      ? const Color(0xFF4CAF50)
-                      : const Color(0xFFF44336),
-                  size: 20.sp,
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: const Color(0xFF2B2B2B),
-                      fontSize: 14.sp,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w500,
-                    ),
+                  child: Icon(
+                    isCredit ? Icons.arrow_downward : Icons.arrow_upward,
+                    color: accentColor,
+                    size: 22.sp,
                   ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    date,
-                    style: TextStyle(
-                      color: const Color(0xFF888888),
-                      fontSize: 12.sp,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w400,
-                    ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 14.sp,
+                          fontFamily: 'Cairo',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: AppSpacing.xs),
+                      Text(
+                        date,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 12.sp,
+                          fontFamily: 'Cairo',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
+          SizedBox(width: 12.w),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
                 '${isCredit ? '+' : '-'} $amount ${'currency'.tr()}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  color: isCredit
-                      ? const Color(0xFF4CAF50)
-                      : const Color(0xFFF44336),
+                  color: accentColor,
                   fontSize: 14.sp,
                   fontFamily: 'Cairo',
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
-              SizedBox(height: 4.h),
-              Text(
-                status,
-                style: TextStyle(
-                  color: const Color(0xFF888888),
-                  fontSize: 12.sp,
-                  fontFamily: 'Cairo',
-                  fontWeight: FontWeight.w400,
+              SizedBox(height: 6.h),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: 3.h,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.grey100,
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Text(
+                  status,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 11.sp,
+                    fontFamily: 'Cairo',
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ],

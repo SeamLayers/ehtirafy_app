@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/constants/app_spacing.dart';
 
 class ErrorStateWidget extends StatelessWidget {
   final String message;
@@ -16,47 +17,80 @@ class ErrorStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Center(
-      child: Padding(
-        padding: EdgeInsets.all(24.w),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.all(AppSpacing.lg),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 48.sp, color: AppColors.error),
-            SizedBox(height: 16.h),
+            Container(
+              padding: EdgeInsets.all(20.r),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.error.withValues(alpha: 0.10),
+                border: Border.all(
+                  color: AppColors.error.withValues(alpha: 0.18),
+                  width: 1.r,
+                ),
+              ),
+              child: Icon(
+                Icons.error_outline_rounded,
+                size: 44.sp,
+                color: AppColors.error,
+              ),
+            ),
+            SizedBox(height: AppSpacing.lg),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: const Color(0xFF2B2B2B),
-                fontSize: 16.sp,
-                fontFamily: 'Cairo',
-                fontWeight: FontWeight.w500,
-              ),
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.titleMedium?.copyWith(
+                    color: AppColors.textPrimary,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    height: 1.4,
+                  ) ??
+                  TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 16.sp,
+                    fontFamily: 'Cairo',
+                    fontWeight: FontWeight.w600,
+                    height: 1.4,
+                  ),
             ),
-            SizedBox(height: 24.h),
+            SizedBox(height: AppSpacing.lg),
             OutlinedButton(
               onPressed: onRetry,
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: AppColors.gold, width: 1.0),
+                foregroundColor: AppColors.gold,
+                side: BorderSide(color: AppColors.gold, width: 1.4.r),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.r),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 8.h),
-                backgroundColor: Colors.transparent,
+                padding:
+                    EdgeInsets.symmetric(horizontal: 28.w, vertical: 12.h),
+                backgroundColor: AppColors.gold.withValues(alpha: 0.06),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.refresh, size: 16.sp, color: AppColors.gold),
-                  SizedBox(width: 8.w),
-                  Text(
-                    retryText,
-                    style: TextStyle(
-                      color: AppColors.gold,
-                      fontSize: 14.sp,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.bold,
+                  Icon(Icons.refresh_rounded, size: 18.sp, color: AppColors.gold),
+                  SizedBox(width: AppSpacing.sm),
+                  Flexible(
+                    child: Text(
+                      retryText,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: AppColors.gold,
+                        fontSize: 14.sp,
+                        fontFamily: 'Cairo',
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],

@@ -1,5 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../theme/app_colors.dart';
 
 class AppCachedNetworkImage extends StatelessWidget {
   final String imageUrl;
@@ -28,9 +31,18 @@ class AppCachedNetworkImage extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      color: Colors.grey.shade100,
       alignment: Alignment.center,
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12.r),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.grey100,
+            AppColors.grey200,
+          ],
+        ),
+      ),
       child: Image.asset(
         'assets/images/new_logo.png',
         fit: BoxFit.contain,
@@ -39,17 +51,30 @@ class AppCachedNetworkImage extends StatelessWidget {
     );
   }
 
+  /// Wraps a custom [errorWidget] in a subtle, consistent surface.
+  static Widget _buildErrorSurface({
+    required Widget child,
+    double? width,
+    double? height,
+  }) {
+    return Container(
+      width: width,
+      height: height,
+      color: AppColors.grey100,
+      alignment: Alignment.center,
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // If imageUrl is empty or invalid, show app logo placeholder directly
     if (imageUrl.isEmpty || !imageUrl.startsWith('http')) {
       final placeholder = errorWidget != null
-          ? Container(
+          ? _buildErrorSurface(
               width: width,
               height: height,
-              color: Colors.grey.shade100,
-              alignment: Alignment.center,
-              child: errorWidget,
+              child: errorWidget!,
             )
           : _buildLogoPlaceholder(width: width, height: height);
 
@@ -67,22 +92,26 @@ class AppCachedNetworkImage extends StatelessWidget {
       memCacheWidth: memCacheWidth,
       memCacheHeight: memCacheHeight,
       placeholder: (context, url) => Container(
-        color: Colors.grey.shade200,
+        width: width,
+        height: height,
+        color: AppColors.grey100,
         alignment: Alignment.center,
-        child: const SizedBox(
-          width: 20,
-          height: 20,
-          child: CircularProgressIndicator(strokeWidth: 2),
+        child: SizedBox(
+          width: 22.r,
+          height: 22.r,
+          child: const CircularProgressIndicator(
+            strokeWidth: 2.2,
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.gold),
+          ),
         ),
       ),
-      errorWidget: (context, url, error) =>
-          errorWidget != null
-              ? Container(
-                  color: Colors.grey.shade100,
-                  alignment: Alignment.center,
-                  child: errorWidget,
-                )
-              : _buildLogoPlaceholder(width: width, height: height),
+      errorWidget: (context, url, error) => errorWidget != null
+          ? _buildErrorSurface(
+              width: width,
+              height: height,
+              child: errorWidget!,
+            )
+          : _buildLogoPlaceholder(width: width, height: height),
     );
 
     if (borderRadius == null) {
