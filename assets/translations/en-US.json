@@ -519,7 +519,17 @@
     "requiredAmount": {
       "label": "Required Amount"
     },
-    "history": "Activity Log"
+    "history": "Activity Log",
+    "cancel": {
+      "button": "Cancel Request",
+      "title": "Cancel this request?",
+      "message": "Are you sure you want to cancel this request? This action cannot be undone.",
+      "confirm": "Yes, cancel it",
+      "keep": "Keep request",
+      "loading": "Cancelling your request...",
+      "success": "Your request has been cancelled",
+      "error": "Couldn't cancel the request, please try again"
+    }
   },
   "time": {
     "minute": "minute",

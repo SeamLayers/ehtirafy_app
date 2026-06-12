@@ -28,97 +28,64 @@ class ContractInfoCard extends StatelessWidget {
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(24.r),
         border: Border.all(color: AppColors.grey200),
         boxShadow: [
           BoxShadow(
-            color: AppColors.gold.withValues(alpha: 0.06),
-            blurRadius: 20.r,
-            offset: Offset(0, 8.h),
-          ),
-          BoxShadow(
             color: AppColors.shadowLight,
-            blurRadius: 8.r,
-            offset: Offset(0, 2.h),
+            blurRadius: 18.r,
+            offset: Offset(0, 6.h),
+            spreadRadius: -2.r,
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTitle(),
-          SizedBox(height: AppSpacing.md),
-          _buildInfoRow(
-            AppStrings.contractDescriptionLabel.tr(),
-            contract.description,
-            isDescription: true,
+          _buildSectionRow(
+            icon: Icons.calendar_today_rounded,
+            label: AppStrings.contractDateLabel.tr(),
+            value: DateFormat('d MMMM yyyy', localeCode).format(contract.date),
           ),
           _buildDivider(),
-          _buildInfoRow(
-            AppStrings.contractLocationLabel.tr(),
-            contract.location,
-            icon: Icons.location_on_outlined,
-          ),
-          SizedBox(height: AppSpacing.md),
-          _buildInfoRow(
-            AppStrings.contractDateLabel.tr(),
-            DateFormat('d MMMM yyyy', localeCode).format(contract.date),
-            icon: Icons.calendar_today_outlined,
+          _buildSectionRow(
+            icon: Icons.location_on_rounded,
+            label: AppStrings.contractLocationLabel.tr(),
+            value: contract.location,
           ),
           if (contract.daysAvailability.isNotEmpty) ...[
-            SizedBox(height: AppSpacing.md),
-            _buildInfoRow(
-              AppStrings.contractDaysAvailability.tr(),
-              contract.daysAvailability.join(', '),
-              icon: Icons.event_available,
+            _buildDivider(),
+            _buildSectionRow(
+              icon: Icons.event_available_rounded,
+              label: AppStrings.contractDaysAvailability.tr(),
+              value: contract.daysAvailability.join(', '),
             ),
           ],
-          SizedBox(height: AppSpacing.md),
-          _buildInfoRow(
-            AppStrings.contractBudgetLabel.tr(),
-            '${NumberFormat('#,###').format(contract.budget)} ${AppStrings.bookingCurrency.tr()}',
-            icon: Icons.monetization_on_outlined,
-            isBudget: true,
+          _buildDivider(),
+          _buildSectionRow(
+            icon: Icons.payments_rounded,
+            label: AppStrings.contractBudgetLabel.tr(),
+            value:
+                '${NumberFormat('#,###').format(contract.budget)} ${AppStrings.bookingCurrency.tr()}',
+            valueColor: AppColors.gold,
+            valueSize: 16.sp,
+            valueWeight: FontWeight.w700,
+            iconColor: AppColors.gold,
           ),
+          if (contract.description.trim().isNotEmpty) ...[
+            _buildDivider(),
+            _buildSectionRow(
+              icon: Icons.notes_rounded,
+              label: AppStrings.contractDescriptionLabel.tr(),
+              value: contract.description,
+              stacked: true,
+              maxLines: 6,
+            ),
+          ],
           _buildDivider(),
           _buildCounterpartyInfo(),
         ],
       ),
-    );
-  }
-
-  Widget _buildTitle() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 4.w,
-          height: 22.h,
-          margin: EdgeInsetsDirectional.only(end: AppSpacing.sm),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [AppColors.gold, Color(0xFFD4AF37)],
-            ),
-            borderRadius: BorderRadius.circular(4.r),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            contract.serviceTitle,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontFamily: 'Cairo',
-              fontSize: 17.sp,
-              fontWeight: FontWeight.bold,
-              height: 1.3,
-            ),
-          ),
-        ),
-      ],
     );
   }
 
@@ -129,61 +96,84 @@ class ContractInfoCard extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(
-    String label,
-    String value, {
-    bool isDescription = false,
-    IconData? icon,
-    bool isBudget = false,
+  /// A section row following the section pattern: a leading rounded icon
+  /// badge + label (textSecondary) + value (textPrimary). When [stacked] is
+  /// true the value is rendered below the label for long text (description).
+  Widget _buildSectionRow({
+    required IconData icon,
+    required String label,
+    required String value,
+    Color? valueColor,
+    Color iconColor = AppColors.gold,
+    double? valueSize,
+    FontWeight valueWeight = FontWeight.w600,
+    bool stacked = false,
+    int maxLines = 3,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: AppColors.textSecondary,
-            fontFamily: 'Cairo',
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.2,
-          ),
-        ),
-        SizedBox(height: AppSpacing.sm),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (icon != null) ...[
-              Container(
-                padding: EdgeInsets.all(7.r),
-                decoration: BoxDecoration(
-                  color: (isBudget ? AppColors.success : AppColors.gold)
-                      .withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-                child: Icon(
-                  icon,
-                  color: isBudget ? AppColors.success : AppColors.gold,
-                  size: 18.sp,
-                ),
-              ),
-              SizedBox(width: AppSpacing.sm),
-            ],
-            Expanded(
-              child: Text(
-                value,
-                maxLines: isDescription ? 5 : 3,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: isBudget ? AppColors.success : AppColors.textPrimary,
-                  fontFamily: 'Cairo',
-                  fontSize: isBudget ? 16.sp : 14.sp,
-                  fontWeight: isBudget ? FontWeight.bold : FontWeight.w500,
-                  height: 1.5,
-                ),
-              ),
+    final iconBadge = Container(
+      padding: EdgeInsets.all(8.w),
+      decoration: BoxDecoration(
+        color: iconColor.withValues(alpha: 0.10),
+        shape: BoxShape.circle,
+      ),
+      child: Icon(icon, color: iconColor, size: 18.sp),
+    );
+
+    final labelWidget = Text(
+      label,
+      style: TextStyle(
+        color: AppColors.textSecondary,
+        fontFamily: 'Cairo',
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w600,
+      ),
+    );
+
+    final valueWidget = Text(
+      value,
+      maxLines: maxLines,
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(
+        color: valueColor ?? AppColors.textPrimary,
+        fontFamily: 'Cairo',
+        fontSize: valueSize ?? 14.sp,
+        fontWeight: valueWeight,
+        height: 1.5,
+      ),
+    );
+
+    if (stacked) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          iconBadge,
+          SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                labelWidget,
+                SizedBox(height: AppSpacing.xs),
+                valueWidget,
+              ],
             ),
-          ],
+          ),
+        ],
+      );
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        iconBadge,
+        SizedBox(width: AppSpacing.sm),
+        labelWidget,
+        SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: valueWidget,
+          ),
         ),
       ],
     );
@@ -262,7 +252,7 @@ class ContractInfoCard extends StatelessWidget {
                 ),
               ),
               child: Icon(
-                Icons.chat_bubble_outline,
+                Icons.chat_bubble_rounded,
                 color: contract.isChatAllowed
                     ? AppColors.gold
                     : AppColors.grey400,

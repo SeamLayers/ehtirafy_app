@@ -264,6 +264,15 @@ class AppStrings {
   static const myRequestsRateService = 'myRequests.action.rateService';
   // Contract Details
   static const contractDetailsTitle = 'contract.details.title';
+  // Contract cancel (customer withdraws an Initiate request)
+  static const contractCancelButton = 'contract.cancel.button';
+  static const contractCancelTitle = 'contract.cancel.title';
+  static const contractCancelMessage = 'contract.cancel.message';
+  static const contractCancelConfirm = 'contract.cancel.confirm';
+  static const contractCancelKeep = 'contract.cancel.keep';
+  static const contractCancelLoading = 'contract.cancel.loading';
+  static const contractCancelSuccess = 'contract.cancel.success';
+  static const contractCancelError = 'contract.cancel.error';
   static const contractStatusInProgress = 'contract.status.inProgress';
   static const contractDescriptionLabel = 'contract.description.label';
   static const contractLocationLabel = 'contract.location.label';

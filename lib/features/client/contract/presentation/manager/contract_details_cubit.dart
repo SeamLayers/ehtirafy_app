@@ -58,6 +58,27 @@ class ContractDetailsCubit extends Cubit<ContractDetailsState> {
     await confirmPayment(id);
   }
 
+  /// Cancel a pending (Initiate) contract.
+  ///
+  /// The backend state machine does NOT accept `Closed`/`Cancelled` directly
+  /// from `Initiate` — the valid customer transition is `Rejected`, which the
+  /// backend then moves to the terminal `Closed` state. Verified live against
+  /// `front/contract/{id}/update`.
+  Future<void> cancelContract(String id, {bool isPhotographer = false}) async {
+    emit(ContractDetailsLoading());
+
+    final result = await updateContractStatusUseCase(
+      id: id,
+      status: 'Rejected',
+      isPhotographer: isPhotographer,
+    );
+
+    result.fold(
+      (failure) => emit(ContractDetailsError(failure.message)),
+      (_) async => await getContractDetails(id),
+    );
+  }
+
   // kept for backward compatibility if needed, or other status updates
   Future<void> completeContract(
     String id, {
