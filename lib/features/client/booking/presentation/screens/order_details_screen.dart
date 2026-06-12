@@ -13,7 +13,6 @@ import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contr
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contract_info_card.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contract_status_widgets.dart';
 import 'package:ehtirafy_app/features/client/booking/presentation/widgets/states/order_details_pending_view.dart';
-import 'package:ehtirafy_app/features/client/contract/presentation/widgets/payment_status_card.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/work_stages_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -143,8 +142,6 @@ class OrderDetailsScreen extends StatelessWidget {
             ContractHeader(contract: contract),
             SizedBox(height: AppSpacing.lg),
             ContractInfoCard(contract: contract, isFreelancer: isFreelancer),
-            SizedBox(height: AppSpacing.lg),
-            PaymentStatusCard(contract: contract),
             SizedBox(height: AppSpacing.lg),
             WorkStagesList(contract: contract),
             SizedBox(height: AppSpacing.lg),

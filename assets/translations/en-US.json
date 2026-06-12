@@ -529,7 +529,8 @@
       "loading": "Cancelling your request...",
       "success": "Your request has been cancelled",
       "error": "Couldn't cancel the request, please try again"
-    }
+    },
+    "daysAvailability": "Available Days"
   },
   "time": {
     "minute": "minute",

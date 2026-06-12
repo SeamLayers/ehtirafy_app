@@ -147,8 +147,6 @@ class _FreelancerOrderDetailsScreenState
                                   _buildDescriptionCard(context),
                                   SizedBox(height: 16.h),
                                   _buildDetailsCard(context),
-                                  SizedBox(height: 16.h),
-                                  _buildPaymentStatusCard(context),
                                 ],
                                 if (status == FreelancerOrderStatus.pending)
                                   _buildReminderCard(context),
@@ -1043,75 +1041,6 @@ class _FreelancerOrderDetailsScreenState
     );
   }
 
-  Widget _buildPaymentStatusCard(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.success.withValues(alpha: 0.06),
-        border: Border.all(
-          width: 1,
-          color: AppColors.success.withValues(alpha: 0.45),
-        ),
-        borderRadius: BorderRadius.circular(18.r),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 40.w,
-            height: 40.w,
-            decoration: BoxDecoration(
-              color: AppColors.success.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Icon(
-              Icons.check_circle_outline,
-              color: AppColors.success,
-              size: 22.sp,
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'حالة الدفع',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: AppColors.textPrimary,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w700,
-                    height: 1.50,
-                  ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  'تم إيداع المبلغ لدى عدسة المناسبات',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: AppColors.success,
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w700,
-                    height: 1.50,
-                  ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  'المبلغ محفوظ بشكل آمن وسيتم تحويله لك بعد تسليم الخدمة واستلام العميل.',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w400,
-                    height: 1.63,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildReminderCard(BuildContext context) {
     return Container(

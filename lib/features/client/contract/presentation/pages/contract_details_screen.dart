@@ -11,7 +11,6 @@ import 'package:ehtirafy_app/features/client/contract/presentation/manager/contr
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contract_header.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contract_info_card.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/contract_status_widgets.dart';
-import 'package:ehtirafy_app/features/client/contract/presentation/widgets/payment_status_card.dart';
 import 'package:ehtirafy_app/features/client/booking/presentation/widgets/states/order_details_completed_view.dart';
 import 'package:ehtirafy_app/features/client/booking/presentation/widgets/states/order_details_cancelled_view.dart';
 import 'package:ehtirafy_app/features/client/contract/presentation/widgets/work_stages_list.dart';
@@ -122,8 +121,6 @@ class ContractDetailsScreen extends StatelessWidget {
           ContractInfoCard(contract: contract),
           SizedBox(height: AppSpacing.md),
           if (isActiveContract) ...[
-            PaymentStatusCard(contract: contract),
-            SizedBox(height: AppSpacing.md),
             WorkStagesList(contract: contract),
             SizedBox(height: AppSpacing.md),
             ContractInProgressActions(
