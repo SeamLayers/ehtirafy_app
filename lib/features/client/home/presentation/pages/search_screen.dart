@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -86,7 +84,6 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return Container(
       decoration: BoxDecoration(
         color: AppColors.dark,
@@ -106,9 +103,7 @@ class _SearchScreenState extends State<SearchScreen> {
           child: Row(
             children: [
               _HeaderIconButton(
-                icon: isRtl
-                    ? Icons.arrow_forward_ios_rounded
-                    : Icons.arrow_back_ios_new_rounded,
+                icon: Icons.arrow_back_ios_new_rounded,
                 onTap: () => Navigator.pop(context),
               ),
               SizedBox(width: AppSpacing.sm),
@@ -335,7 +330,6 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildResultCard(BuildContext context, SearchResultEntity result) {
-    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -446,9 +440,7 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               SizedBox(width: 8.w),
               Icon(
-                isRtl
-                    ? Icons.arrow_back_ios_new_rounded
-                    : Icons.arrow_forward_ios_rounded,
+                Icons.arrow_forward_ios_rounded,
                 color: AppColors.grey400,
                 size: 16.w,
               ),

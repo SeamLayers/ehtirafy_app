@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -325,7 +323,6 @@ class _PremiumServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     final imageUrl = photographer.imageUrl;
     return GestureDetector(
       onTap: () {
@@ -545,10 +542,11 @@ class _PremiumServiceCard extends StatelessWidget {
                             ),
                           ],
                         ),
+                        // Single auto-mirroring icon: renders pointing right
+                        // in LTR and auto-mirrors to point left in RTL (the
+                        // natural "open/forward" direction in Arabic).
                         child: Icon(
-                          isRtl
-                              ? Icons.arrow_back_rounded
-                              : Icons.arrow_forward_rounded,
+                          Icons.arrow_forward_rounded,
                           color: AppColors.gold,
                           size: 20.sp,
                         ),

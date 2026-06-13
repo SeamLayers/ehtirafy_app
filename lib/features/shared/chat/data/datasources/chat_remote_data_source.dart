@@ -50,6 +50,9 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           extra: {
             'disableCache': true,
             'cache_ttl': Duration.zero,
+            // Chat owns its own friendly empty/retry UI — suppress the global
+            // error toast for this contracts-relative call.
+            'suppressErrorToast': true,
           },
         ),
       );
@@ -272,6 +275,9 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       final response = await dioClient.post(
         ApiConstants.updateContract(message.receiverId),
         data: data,
+        // Chat owns its own friendly UI — suppress the global error toast
+        // for the send-message (contract update) call.
+        options: Options(extra: const {'suppressErrorToast': true}),
       );
 
       final responseData = response.data;

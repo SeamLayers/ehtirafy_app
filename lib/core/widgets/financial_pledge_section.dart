@@ -427,29 +427,29 @@ class FinancialPledgeSection extends StatelessWidget {
       case FinancialPledgeRole.advertiser:
         return 'Advertiser Commitment\n'
             'I, the advertiser, hereby commit to:\n'
-            '• Pay Events Lens platform fees (1% of the value) upon publishing the ad.\n'
+            '• Pay Malam Events platform fees (1% of the value) upon publishing the ad.\n'
             '• Settle fees within 7 days of transaction completion.\n'
             '(Included Quranic verses emphasizing honesty, trust, and fulfilling covenants).\n\n'
-            'All rights reserved © Events Lens';
+            'All rights reserved © Malam Events';
       case FinancialPledgeRole.client:
         return 'Client Commitment\n'
             'I, the client, hereby commit to:\n'
-            '• Pay Events Lens platform fees (1% of the value) upon initiating the contract.\n'
+            '• Pay Malam Events platform fees (1% of the value) upon initiating the contract.\n'
             '• Settle fees within 7 days of transaction completion.\n'
             '(Included Quranic verses emphasizing honesty, trust, and fulfilling covenants).\n\n'
-            'All rights reserved © Events Lens';
+            'All rights reserved © Malam Events';
     }
   }
 
   String _arabicText() {
     return 'أتعهد أنا ${_arabicRoleLabel()} بما يلي:\n'
-        '• دفع رسوم منصة عدسة المناسبات والتي تبلغ 1% من قيمة كل إعلان عند نشر الإعلان على المنصة.\n'
+        '• دفع رسوم منصة ملم للمناسبات والتي تبلغ 1% من قيمة كل إعلان عند نشر الإعلان على المنصة.\n'
         '• دفع الرسوم خلال 7 أيام من تمام العملية أو استلام المبلغ كاملاً.\n\n'
         'الوفاء بالعهد: قال الله تعالى: "وَأَوْفُوا بِالْعَهْدِ إِنَّ الْعَهْدَ كَانَ مَسْؤُولًا" (الأنعام: 152)\n'
         'الأمانة وعدم الغش: قال الله تعالى: "إِنَّ اللَّهَ يَأْمُرُكُمْ أَنْ تُؤَدُّوا الْأَمَانَاتِ إِلَى أَهْلِهَا" (النساء: 58)\n'
         'عدم التعدي على الحقوق المالية للآخرين: قال الله تعالى: "وَلَا تَبْخَسُوا النَّاسَ أَشْيَاءَهُمْ" (المعارج: 85)\n'
         'الالتزام بالحق: قال الله تعالى: "يَا أَيُّهَا الَّذِينَ آمَنُوا كُونُوا قَوَّامِينَ بِالْقِسْطِ شُهَدَاءَ لِلَّهِ" (النساء: 135)\n\n'
-        'جميع الحقوق محفوظة © عدسة المناسبات';
+        'جميع الحقوق محفوظة © ملم للمناسبات';
   }
 }
 

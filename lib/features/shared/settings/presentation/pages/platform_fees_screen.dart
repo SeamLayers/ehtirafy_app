@@ -8,12 +8,12 @@ class PlatformFeesScreen extends StatelessWidget {
   const PlatformFeesScreen({super.key});
 
   static const List<String> _arabicFeeNotes = [
-    'تقوم منصة عدسة المناسبات بتحصيل رسوم قدرها 1% من قيمة كل إعلان يتم عرضه.',
+    'تقوم منصة ملم للمناسبات بتحصيل رسوم قدرها 1% من قيمة كل إعلان يتم عرضه.',
     'يتم تطبيق الرسوم بشكل واضح وموحد على الإعلانات المنشورة.',
   ];
 
   static const List<String> _englishFeeNotes = [
-    'Events Lens platform collects a fee of 1% from the value of each published advertisement.',
+    'Malam Events platform collects a fee of 1% from the value of each published advertisement.',
     'The fee policy is applied clearly and consistently across published ads.',
   ];
 

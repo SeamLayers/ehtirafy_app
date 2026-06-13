@@ -512,6 +512,8 @@ class OrderDetailsPendingView extends StatelessWidget {
                     localeCode,
                   ).format(contract.date),
                   icon: Icons.event_outlined,
+                  // Keep the full date + time on a single line; shrink to fit.
+                  singleLine: true,
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 10.h),
@@ -610,7 +612,36 @@ class OrderDetailsPendingView extends StatelessWidget {
     String label,
     String value, {
     IconData? icon,
+    bool singleLine = false,
   }) {
+    final valueStyle = TextStyle(
+      color: AppColors.textPrimary,
+      fontSize: 14.sp,
+      fontWeight: FontWeight.w600,
+      fontFamily: _fontFamily(context),
+    );
+    // When singleLine is requested (date + time), keep it on one line and
+    // shrink to fit the available width instead of wrapping to a second line.
+    final Widget valueWidget = singleLine
+        ? FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: AlignmentDirectional.centerEnd,
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              maxLines: 1,
+              softWrap: false,
+              style: valueStyle,
+            ),
+          )
+        : Text(
+            value,
+            textAlign: TextAlign.end,
+            style: valueStyle,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          );
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -632,20 +663,7 @@ class OrderDetailsPendingView extends StatelessWidget {
           ),
         ),
         SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: Text(
-            value,
-            textAlign: TextAlign.end,
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-              fontFamily: _fontFamily(context),
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
+        Expanded(child: valueWidget),
       ],
     );
   }

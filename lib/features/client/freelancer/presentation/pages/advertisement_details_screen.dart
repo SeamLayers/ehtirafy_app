@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -479,7 +477,6 @@ class AdvertisementDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildPremiumPriceCard(BuildContext context, double price) {
-    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
@@ -577,8 +574,10 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                     color: AppColors.textLight.withValues(alpha: 0.3),
                   ),
                 ),
+                // Single auto-mirroring icon: points right in LTR and
+                // auto-mirrors to point left in RTL (natural "open/forward").
                 child: Icon(
-                  isRtl ? Icons.arrow_back : Icons.arrow_forward,
+                  Icons.arrow_forward,
                   color: AppColors.textLight,
                   size: 24.sp,
                 ),

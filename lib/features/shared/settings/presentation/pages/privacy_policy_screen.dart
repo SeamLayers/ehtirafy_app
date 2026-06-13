@@ -28,7 +28,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     return SettingsPageScaffold(
       appBarTitle: 'الخصوصية وبيان سرية المعلومات / Privacy Policy',
       heroIcon: Icons.shield_moon_outlined,
-      heroTitle: 'خصوصيتك أولوية في منصة عدسة المناسبات',
+      heroTitle: 'خصوصيتك أولوية في منصة ملم للمناسبات',
       heroSubtitle:
           'نلتزم بمعايير واضحة لحماية البيانات، مع شفافية كاملة حول كيفية استخدام المعلومات.',
       children: [

@@ -54,14 +54,12 @@ class ProfileScreen extends StatelessWidget {
               _MenuItem(
                 icon: Icons.history_rounded,
                 title: AppStrings.profileTransactions.tr(),
-                isRtl: isRtl,
                 onTap: () {},
               ),
               _buildDivider(),
               _MenuItem(
                 icon: Icons.settings_outlined,
                 title: AppStrings.profileSettings.tr(),
-                isRtl: isRtl,
                 onTap: () {},
               ),
             ],
@@ -75,7 +73,6 @@ class ProfileScreen extends StatelessWidget {
               _MenuItem(
                 icon: Icons.logout_rounded,
                 title: AppStrings.profileLogout.tr(),
-                isRtl: isRtl,
                 isDestructive: true,
                 showTrailing: false,
                 onTap: () {},
@@ -234,7 +231,6 @@ class ProfileScreen extends StatelessWidget {
 class _MenuItem extends StatelessWidget {
   final IconData icon;
   final String title;
-  final bool isRtl;
   final bool isDestructive;
   final bool showTrailing;
   final VoidCallback onTap;
@@ -242,7 +238,6 @@ class _MenuItem extends StatelessWidget {
   const _MenuItem({
     required this.icon,
     required this.title,
-    required this.isRtl,
     required this.onTap,
     this.isDestructive = false,
     this.showTrailing = true,
@@ -292,9 +287,9 @@ class _MenuItem extends StatelessWidget {
               ),
               if (showTrailing)
                 Icon(
-                  isRtl
-                      ? Icons.chevron_left_rounded
-                      : Icons.chevron_right_rounded,
+                  // chevron_right_rounded auto-mirrors under RTL (points left),
+                  // so no manual isRtl swap is needed (avoids a double-flip).
+                  Icons.chevron_right_rounded,
                   color: AppColors.grey400,
                   size: 24.sp,
                 ),

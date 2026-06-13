@@ -206,17 +206,23 @@ class RequestCard extends StatelessWidget {
     );
   }
 
-  Widget _buildTimeAgo(BuildContext context) {
-    // Simple time ago logic for demo purposes
-    final difference = DateTime.now().difference(request.date);
-    String timeAgo;
+  /// Build a relative elapsed-duration phrase from a real DateTime (e.g.
+  /// created_at or approvedDate). Returns the bare duration without the
+  /// "منذ" prefix so callers can prepend their own ("منذ" / "تمت الموافقة منذ").
+  String _formatElapsed(DateTime dateTime) {
+    final difference = DateTime.now().difference(dateTime);
     if (difference.inDays > 0) {
-      timeAgo = 'منذ ${difference.inDays} أيام';
+      return '${difference.inDays} أيام';
     } else if (difference.inHours > 0) {
-      timeAgo = 'منذ ${difference.inHours} ساعات';
+      return '${difference.inHours} ساعات';
     } else {
-      timeAgo = 'منذ ${difference.inMinutes} دقيقة';
+      return '${difference.inMinutes} دقيقة';
     }
+  }
+
+  Widget _buildTimeAgo(BuildContext context) {
+    // Relative time computed from the real contract created_at date.
+    final timeAgo = 'منذ ${_formatElapsed(request.date)}';
 
     return Align(
       alignment: AlignmentDirectional.centerEnd,
@@ -263,7 +269,7 @@ class RequestCard extends StatelessWidget {
               SizedBox(width: 6.w),
               Flexible(
                 child: Text(
-                  '${AppStrings.myRequestsApprovedSince.tr()} 30 دقيقة', // Mocked time
+                  '${AppStrings.myRequestsApprovedSince.tr()} ${_formatElapsed(request.approvedDate!)}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(

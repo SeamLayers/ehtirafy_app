@@ -21,7 +21,7 @@ class ContactUsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SettingsPageScaffold(
-      appBarTitle: 'تواصل معنا – منصة عدسة المناسبات',
+      appBarTitle: 'تواصل معنا – منصة ملم للمناسبات',
       heroIcon: Icons.support_agent_outlined,
       heroTitle: 'فريق دعم جاهز لمساعدتك',
       heroSubtitle:

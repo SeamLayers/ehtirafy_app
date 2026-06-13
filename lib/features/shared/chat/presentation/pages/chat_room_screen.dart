@@ -75,9 +75,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             ),
           );
         } else if (state is ChatError) {
+          // Never surface the raw failure message (DioException / backend
+          // error text). Show a short, friendly localized notice instead.
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message),
+              content: const Text('تعذّر تحميل الرسائل، حاول مرة أخرى'),
               backgroundColor: AppColors.error,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
@@ -113,8 +115,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       ),
                     );
                   } else if (state is ChatError) {
+                    // Never surface the raw failure message (DioException /
+                    // backend error text). Show a friendly inline retry state.
                     return ErrorStateWidget(
-                      message: state.message,
+                      message: 'تعذّر تحميل الرسائل، حاول مرة أخرى',
                       onRetry: _reload,
                       retryText: 'إعادة المحاولة',
                     );
@@ -182,9 +186,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       leading: IconButton(
         splashRadius: 22.r,
         icon: Icon(
-          isRtl
-              ? Icons.arrow_forward_ios_rounded
-              : Icons.arrow_back_ios_new_rounded,
+          Icons.arrow_back_ios_new_rounded,
           color: AppColors.textLight,
           size: 20.sp,
         ),

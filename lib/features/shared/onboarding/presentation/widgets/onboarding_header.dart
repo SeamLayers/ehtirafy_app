@@ -14,8 +14,8 @@ class OnboardingHeader extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final isArabic = context.locale.languageCode == 'ar';
     final brandName = isArabic
-        ? 'عدسة المناسبات'
-        : 'Events Lens';
+        ? 'ملم للمناسبات'
+        : 'Malam Events';
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),

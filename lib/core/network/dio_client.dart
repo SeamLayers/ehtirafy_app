@@ -62,25 +62,34 @@ class DioClient {
           handler.next(options);
         },
         onResponse: (response, handler) {
-          // Check for message in success response
-          final data = response.data;
-          if (data is Map<String, dynamic>) {
-            // Handle "message" field
-            if (data['message'] != null) {
-              _showToast(data['message'].toString());
-            }
-            // Handle "data" -> "message" nested (sometimes backends do this)
-            // But user example shows "message" at root.
-          }
+          // Do NOT toast on successful responses. Showing the backend's
+          // "message" on every 2xx (e.g. "تم جلب الإعلانات بنجاح") is noise.
           handler.next(response);
         },
         onError: (e, handler) {
-          // Check for message in error response
+          // Callers that own their own error UI opt out of the global toast via
+          // options.extra['suppressErrorToast'] (e.g. chat, which runs on the
+          // shared contracts endpoints and shows a friendly empty/retry state).
+          if (e.requestOptions.extra['suppressErrorToast'] == true) {
+            handler.next(e);
+            return;
+          }
+          // Chat / message endpoints own their own friendly UI (empty/retry
+          // state). Never toast for them — not the backend message and not any
+          // raw exception text.
+          if (_isChatOrMessageEndpoint(e.requestOptions.path)) {
+            handler.next(e);
+            return;
+          }
+          // Surface ONLY the backend's friendly Arabic "message" string, and
+          // only when it is present and non-empty. Never toast raw exception
+          // text (DioException / stack / debug strings).
           final response = e.response;
           if (response != null && response.data is Map<String, dynamic>) {
-            final data = response.data;
-            if (data['message'] != null) {
-              _showToast(data['message'].toString());
+            final data = response.data as Map<String, dynamic>;
+            final message = data['message']?.toString().trim();
+            if (message != null && message.isNotEmpty) {
+              _showToast(message);
             }
           }
           handler.next(e);

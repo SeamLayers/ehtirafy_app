@@ -105,6 +105,17 @@ class ContractModel extends ContractEntity {
         ? json['customer'] as Map
         : const {};
 
+    // Contract photos are not yet part of the contracts-relative payload, so
+    // we source the display image from the nested advertisement's images list.
+    // The nested advertisement currently has NO "images" key, so this resolves
+    // to '' (branded placeholder) until the backend includes it. We never use a
+    // static asset or fake URL here.
+    final advertisementImages = advertisement['images'];
+    final String serviceImage =
+        (advertisementImages is List && advertisementImages.isNotEmpty)
+        ? advertisementImages.first?.toString() ?? ''
+        : '';
+
     return ContractModel(
       id: json['id'] is int
           ? json['id']
@@ -125,12 +136,17 @@ class ContractModel extends ContractEntity {
           DateTime.now(),
       // Service/Advertisement details - title can be String or Map with localized values
       serviceTitle: _parseLocalizedField(advertisement['title']),
-      // Photographer (freelancer) details
+      // Photographer (freelancer) details.
+      // publisher has NO avatar/image field in the contracts payload, so the
+      // card image comes from the advertisement images (currently '' = branded
+      // placeholder) rather than a non-existent publisher['image'].
       photographerName: _parseLocalizedField(publisher['name']),
-      photographerImage: publisher['image']?.toString() ?? '',
-      // Client (customer) details
+      photographerImage: serviceImage,
+      // Client (customer) details.
+      // customer also has NO avatar/image field; reuse the advertisement image
+      // (or '' branded placeholder) rather than a non-existent customer['image'].
       clientName: _parseLocalizedField(customer['name']),
-      clientImage: customer['image']?.toString() ?? '',
+      clientImage: serviceImage,
       // Chat messages from notes
       chatMessages: parsedMessages.isNotEmpty ? parsedMessages : null,
     );

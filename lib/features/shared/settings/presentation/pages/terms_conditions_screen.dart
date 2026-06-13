@@ -42,7 +42,7 @@ class TermsConditionsScreen extends StatelessWidget {
     return SettingsPageScaffold(
       appBarTitle: 'اتفاقية الاستخدام / Terms of Use',
       heroIcon: Icons.gavel_rounded,
-      heroTitle: 'اتفاقية استخدام منصة عدسة المناسبات',
+      heroTitle: 'اتفاقية استخدام منصة ملم للمناسبات',
       heroSubtitle:
           'تنظم هذه الاتفاقية حقوق والتزامات جميع الأطراف لضمان تجربة واضحة وآمنة داخل المنصة.',
       children: [
@@ -69,7 +69,7 @@ class TermsConditionsScreen extends StatelessWidget {
           localeTitle: 'العربية',
           icon: Icons.translate_rounded,
           intro:
-              'تحدد هذه الاتفاقية الشروط والأحكام لاستخدام منصة عدسة المناسبات. باستخدام المنصة فإنك توافق على الالتزام بما يلي:',
+              'تحدد هذه الاتفاقية الشروط والأحكام لاستخدام منصة ملم للمناسبات. باستخدام المنصة فإنك توافق على الالتزام بما يلي:',
           bullets: _arabicArticles,
           numbered: true,
         ),
@@ -78,7 +78,7 @@ class TermsConditionsScreen extends StatelessWidget {
           localeTitle: 'English',
           icon: Icons.language_rounded,
           intro:
-              'Introduction: This agreement defines the terms and conditions for using the Events Lens platform. By using the platform, you agree to the following:',
+              'Introduction: This agreement defines the terms and conditions for using the Malam Events platform. By using the platform, you agree to the following:',
           bullets: _englishArticles,
           isEnglish: true,
           numbered: true,

@@ -112,7 +112,7 @@ class HomeFeaturedPhotographers extends StatelessWidget {
                       ),
                       SizedBox(width: 3.w),
                       Icon(
-                        Icons.arrow_back_ios_new_rounded,
+                        Icons.arrow_forward_ios_rounded,
                         color: AppColors.gold,
                         size: 11.sp,
                       ),
@@ -469,7 +469,7 @@ class _PhotographerCard extends StatelessWidget {
                                     ),
                                     SizedBox(width: 4.w),
                                     Icon(
-                                      Icons.arrow_back_ios_new_rounded,
+                                      Icons.arrow_forward_ios_rounded,
                                       color: AppColors.textLight,
                                       size: 11.sp,
                                     ),

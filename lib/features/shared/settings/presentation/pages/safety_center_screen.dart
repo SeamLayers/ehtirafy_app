@@ -24,7 +24,7 @@ class SafetyCenterScreen extends StatelessWidget {
       heroIcon: Icons.health_and_safety_outlined,
       heroTitle: 'بيئة رقمية آمنة ومسؤولة',
       heroSubtitle:
-          'تعمل منصة عدسة المناسبات بالشراكة مع الجهات المختصة لتعزيز الحماية ومنع أي محتوى أو نشاط مخالف.',
+          'تعمل منصة ملم للمناسبات بالشراكة مع الجهات المختصة لتعزيز الحماية ومنع أي محتوى أو نشاط مخالف.',
       children: [
         Wrap(
           spacing: AppSpacing.sm,
@@ -49,7 +49,7 @@ class SafetyCenterScreen extends StatelessWidget {
           localeTitle: 'العربية',
           icon: Icons.translate_rounded,
           intro:
-              'الحماية من استغلال البشر\nنعمل في منصة عدسة المناسبات مع هيئة حقوق الإنسان في السعودية (https://www.hrc.gov.sa) لمكافحة الاتجار بالبشر وتعزيز بيئة رقمية آمنة للجميع.\n\nطريقة الإبلاغ عن محتوى مخالف:',
+              'الحماية من استغلال البشر\nنعمل في منصة ملم للمناسبات مع هيئة حقوق الإنسان في السعودية (https://www.hrc.gov.sa) لمكافحة الاتجار بالبشر وتعزيز بيئة رقمية آمنة للجميع.\n\nطريقة الإبلاغ عن محتوى مخالف:',
           bullets: _arabicReportingSteps,
           numbered: true,
         ),
@@ -58,7 +58,7 @@ class SafetyCenterScreen extends StatelessWidget {
           localeTitle: 'English',
           icon: Icons.language_rounded,
           intro:
-              'Protection Against Human Exploitation\nAt Events Lens platform, we work with the Human Rights Commission in Saudi Arabia (https://www.hrc.gov.sa) to combat human trafficking and maintain a safe digital environment for all users.\n\nHow to report violating content:',
+              'Protection Against Human Exploitation\nAt Malam Events platform, we work with the Human Rights Commission in Saudi Arabia (https://www.hrc.gov.sa) to combat human trafficking and maintain a safe digital environment for all users.\n\nHow to report violating content:',
           bullets: _englishReportingSteps,
           isEnglish: true,
           numbered: true,

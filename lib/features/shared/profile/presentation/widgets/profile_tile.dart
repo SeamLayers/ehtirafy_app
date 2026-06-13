@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -27,8 +25,6 @@ class ProfileTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
-
     final Color accentColor =
         iconColor ?? (isDestructive ? AppColors.error : AppColors.gold);
     final Color labelColor =
@@ -105,7 +101,7 @@ class ProfileTile extends StatelessWidget {
               ),
               SizedBox(width: 8.w),
               Icon(
-                isRtl ? Icons.arrow_back_ios_new : Icons.arrow_forward_ios,
+                Icons.arrow_forward_ios,
                 color: isDestructive
                     ? AppColors.error.withValues(alpha: 0.6)
                     : AppColors.grey400,

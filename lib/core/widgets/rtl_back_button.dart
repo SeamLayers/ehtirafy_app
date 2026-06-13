@@ -47,9 +47,10 @@ class RtlBackButton extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
         child: Icon(
-          isRtl
-              ? Icons.arrow_forward_ios_rounded
-              : Icons.arrow_back_ios_new_rounded,
+          // Directional icons in this SDK have matchTextDirection: true, so
+          // Flutter auto-mirrors them in RTL. Use the LTR glyph and let it
+          // flip (a manual isRtl swap would double-flip → wrong direction).
+          Icons.arrow_back_ios_new_rounded,
           color: iconColor,
           size: iconSize * 0.8,
         ),
@@ -68,7 +69,6 @@ class BackButtonRtl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return IconButton(
       splashRadius: 24.r,
       icon: Container(
@@ -78,9 +78,8 @@ class BackButtonRtl extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         child: Icon(
-          isRtl
-              ? Icons.arrow_forward_ios_rounded
-              : Icons.arrow_back_ios_new_rounded,
+          // Auto-mirrors in RTL (matchTextDirection: true) — no manual swap.
+          Icons.arrow_back_ios_new_rounded,
           color: AppColors.textPrimary,
           size: 18.sp,
         ),

@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
@@ -229,7 +227,6 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
   }
 
   Widget _buildBackButton() {
-    final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return GestureDetector(
       onTap: () => context.pop(),
       child: Container(
@@ -244,9 +241,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
           ),
         ),
         child: Icon(
-          isRtl
-              ? Icons.arrow_forward_ios_rounded
-              : Icons.arrow_back_ios_new_rounded,
+          Icons.arrow_back_ios_new_rounded,
           color: Colors.white,
           size: 18.sp,
         ),

@@ -54,8 +54,11 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
                       ),
                     );
                   } else if (state is ChatError) {
+                    // Never surface the raw failure message (DioException /
+                    // backend error text). Show a friendly, generic state.
                     return ErrorStateWidget(
-                      message: state.message,
+                      message: 'تعذّر تحميل المحادثات، حاول مرة أخرى',
+                      retryText: 'إعادة المحاولة',
                       onRetry: () {
                         context.read<ChatCubit>().loadConversations(
                           userType: widget.userType,

@@ -56,6 +56,17 @@ class ContractDetailsEntity extends Equatable {
     this.advertisementId = '',
   });
 
+  /// Latest non-empty message written by the customer (newest first, since
+  /// [notes] is already sorted by date descending). Null when there is none.
+  String? get customerMessage {
+    for (final n in notes) {
+      if (n.userType == 'customer' && (n.note ?? '').trim().isNotEmpty) {
+        return n.note;
+      }
+    }
+    return null;
+  }
+
   /// Chat allowed for active contracts
   /// Chat is NOT allowed for: cancelled, rejected, archived
   bool get isChatAllowed {

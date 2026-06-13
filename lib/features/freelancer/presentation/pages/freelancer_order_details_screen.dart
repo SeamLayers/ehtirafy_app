@@ -77,6 +77,8 @@ class _FreelancerOrderDetailsScreenState
   // We should check if we have customerImage in _details
   String get clientImage => _details?.customerImage ?? widget.order.clientImage;
   String get description => _details?.description ?? '';
+  // Real latest customer note from the contract; null when none exists.
+  String? get clientMessage => _details?.customerMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -136,10 +138,13 @@ class _FreelancerOrderDetailsScreenState
                                   SizedBox(height: 16.h),
                                 if (status == FreelancerOrderStatus.pending)
                                   _buildBookingDetailsCard(context),
+                                if (status == FreelancerOrderStatus.pending &&
+                                    clientMessage != null) ...[
+                                  SizedBox(height: 16.h),
+                                  _buildClientMessageCard(context),
+                                ],
                                 if (status == FreelancerOrderStatus.pending)
                                   SizedBox(height: 16.h),
-                                if (status == FreelancerOrderStatus.pending)
-                                  _buildClientMessageCard(context),
                                 _buildClientInfoCard(context),
                                 SizedBox(height: 16.h),
                                 if (status ==
@@ -587,6 +592,11 @@ class _FreelancerOrderDetailsScreenState
   }
 
   Widget _buildClientMessageCard(BuildContext context) {
+    final message = clientMessage;
+    // No real customer message -> hide the whole section.
+    if (message == null || message.trim().isEmpty) {
+      return const SizedBox.shrink();
+    }
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(bottom: 16.h),
@@ -635,7 +645,7 @@ class _FreelancerOrderDetailsScreenState
               border: Border.all(width: 1, color: AppColors.grey200),
             ),
             child: Text(
-              'السلام عليكم، نحتاج تغطية كاملة لحفل الزفاف من الساعة 6 مساءً حتى 12 منتصف الليل. الحفل سيكون في قاعة الأفراح الكبرى ونتوقع حضور 300 ضيف. نرغب في الحصول على صور عالية الجودة للحفل بالكامل بالإضافة إلى فيديو تريلر. شكراً لكم.',
+              message,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: AppColors.textPrimary,
                 fontSize: 15.sp,

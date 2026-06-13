@@ -1,5 +1,5 @@
 {
-  "app_name": "Events Lens",
+  "app_name": "Malam Events",
   "welcome": "Welcome",
   "login": "Log In",
   "signup": "Sign Up",
@@ -96,7 +96,7 @@
     "passwordLength": "Password must be at least 8 characters"
   },
   "splash": {
-    "tagline": "Events Lens, your gateway to the world of photography"
+    "tagline": "Malam Events, your gateway to the world of photography"
   },
   "nav": {
     "home": "Home",
@@ -115,8 +115,8 @@
     "switchedToFreelancer": "Switched to Photographer Mode"
   },
   "onboarding": {
-    "welcomeTitle": "Welcome to Events Lens",
-    "subtitle": "Events Lens, your gateway to the world of photography",
+    "welcomeTitle": "Welcome to Malam Events",
+    "subtitle": "Malam Events, your gateway to the world of photography",
     "login": "Log In",
     "signup": "Create New Account",
     "bannerTitle": "Join the largest platform",
@@ -372,7 +372,7 @@
   "growth": "Continuous Growth",
   "quality": "High Quality",
   "roleSelection": {
-    "title": "How would you like to use Events Lens?",
+    "title": "How would you like to use Malam Events?",
     "subtitle": "Choose the role that suits you",
     "clientTitle": "Client",
     "clientSubtitle": "Looking for photographers",
@@ -421,15 +421,15 @@
     "reviewsCount": "({count} reviews)"
   },
   "appShare": {
-    "title": "Share the Events Lens App",
+    "title": "Share the Malam Events App",
     "subtitle": "Quickly send the app link via WhatsApp or any social platform you prefer",
     "whatsapp": "WhatsApp",
     "moreOptions": "Other Platforms",
     "copyLink": "Copy Link",
     "copied": "App link copied",
     "whatsappUnavailable": "Couldn't open WhatsApp on this device",
-    "message": "Try the Events Lens app and easily book the best photographers:\n{link}",
-    "subject": "Try the Events Lens App",
+    "message": "Try the Malam Events app and easily book the best photographers:\n{link}",
+    "subject": "Try the Malam Events App",
     "linkLabel": "App Link"
   },
   "myRequests": {
@@ -491,7 +491,7 @@
     },
     "paymentStatus": {
       "label": "Payment Status",
-      "deposited": "The amount has been deposited with Events Lens",
+      "deposited": "The amount has been deposited with Malam Events",
       "secureMessage": "The amount is held securely and will be transferred to the photographer after completion"
     },
     "workStages": {

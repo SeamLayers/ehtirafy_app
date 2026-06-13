@@ -15,9 +15,13 @@ class ApiErrorHandler {
           final statusCode = error.response?.statusCode;
           final data = error.response?.data;
 
-          // Extract message from response for any status code
-          if (data is Map<String, dynamic> && data['message'] != null) {
-            return ServerFailure(data['message'].toString());
+          // Always prefer a non-empty backend "message" (friendly Arabic
+          // text) when present, for any status code.
+          if (data is Map<String, dynamic>) {
+            final message = data['message']?.toString().trim();
+            if (message != null && message.isNotEmpty) {
+              return ServerFailure(message);
+            }
           }
 
           if (statusCode != null) {

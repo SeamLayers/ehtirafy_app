@@ -77,9 +77,7 @@ class ProfileHeaderSection extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         _CircleIconButton(
-                          icon: isRtl
-                              ? Icons.arrow_forward_ios_rounded
-                              : Icons.arrow_back_ios_new_rounded,
+                          icon: Icons.arrow_back_ios_new_rounded,
                           onPressed: () => Navigator.pop(context),
                         ),
                         Expanded(
