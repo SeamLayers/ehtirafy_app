@@ -7,7 +7,6 @@ import '../../../../../core/constants/app_spacing.dart';
 import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/di/service_locator.dart';
 import '../../../../../core/theme/app_colors.dart';
-import '../../../../../core/widgets/financial_pledge_section.dart';
 import '../../../../../core/widgets/primary_button.dart';
 import '../../../../../core/widgets/rtl_back_button.dart';
 import '../../../../../core/widgets/user_avatar.dart';
@@ -48,7 +47,6 @@ class _RequestBookingScreenState extends State<RequestBookingScreen> {
   final _dateController = TextEditingController();
   final _timeController = TextEditingController();
   final _notesController = TextEditingController();
-  bool _hasAcceptedPledge = false;
 
   Widget _buildSummaryCard(ThemeData theme) {
     return Container(
@@ -279,7 +277,9 @@ class _RequestBookingScreenState extends State<RequestBookingScreen> {
         body: BlocConsumer<BookingCubit, BookingState>(
           listener: (context, state) {
             if (state is BookingSuccess) {
-              context.go('/my-requests');
+              // Land back inside the main shell (with bottom nav + back stack)
+              // instead of a stranded top-level route.
+              context.go('/home');
             } else if (state is BookingError) {
               ScaffoldMessenger.of(
                 context,
@@ -380,40 +380,24 @@ class _RequestBookingScreenState extends State<RequestBookingScreen> {
                       ),
                     ),
                     SizedBox(height: AppSpacing.xl),
-                    FinancialPledgeSection(
-                      role: FinancialPledgeRole.client,
-                      accepted: _hasAcceptedPledge,
-                      agreementAr:
-                          'أقر وأوافق على هذا التعهد المالي قبل إنشاء العقد.',
-                      agreementEn:
-                          'I confirm and agree to this financial pledge before creating the contract.',
-                      onAcceptedChanged: (value) {
-                        setState(() => _hasAcceptedPledge = value);
+                    // The financial pledge is shown ONLY when publishing a new
+                    // advertisement (see create_gig_screen). It is intentionally
+                    // not part of the booking flow.
+                    PrimaryButton(
+                      text: AppStrings.bookingSubmitButton.tr(),
+                      isLoading: isLoading,
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          context.read<BookingCubit>().submitBooking(
+                            advertisementId: widget.advertisementId,
+                            photographerId: widget.photographerId,
+                            price: widget.price,
+                            date: _dateController.text,
+                            time: _timeController.text,
+                            notes: _notesController.text,
+                          );
+                        }
                       },
-                    ),
-                    SizedBox(height: AppSpacing.lg),
-                    AnimatedOpacity(
-                      duration: const Duration(milliseconds: 200),
-                      opacity: !isLoading && !_hasAcceptedPledge ? 0.55 : 1,
-                      child: IgnorePointer(
-                        ignoring: isLoading || !_hasAcceptedPledge,
-                        child: PrimaryButton(
-                          text: AppStrings.bookingSubmitButton.tr(),
-                          isLoading: isLoading,
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              context.read<BookingCubit>().submitBooking(
-                                advertisementId: widget.advertisementId,
-                                photographerId: widget.photographerId,
-                                price: widget.price,
-                                date: _dateController.text,
-                                time: _timeController.text,
-                                notes: _notesController.text,
-                              );
-                            }
-                          },
-                        ),
-                      ),
                     ),
                   ],
                 ),

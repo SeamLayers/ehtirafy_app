@@ -77,10 +77,8 @@ void _initializeServicesAsync() {
 String _getInitialRoute(SharedPreferences prefs) {
   final token = prefs.getString('cached_token');
   if (token != null && token.isNotEmpty) {
-    final roleString = prefs.getString('user_role');
-    if (roleString == 'freelancer') {
-      return '/freelancer/dashboard';
-    }
+    // Role selection has been removed — every signed-in user (including
+    // previously-cached "freelancer" accounts) lands on the unified home shell.
     return '/home';
   }
   // Guest browsing (App Store guideline 5.1.1): if the user previously chose

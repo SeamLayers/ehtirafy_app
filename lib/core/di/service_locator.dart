@@ -31,6 +31,7 @@ import 'package:ehtirafy_app/features/client/home/domain/usecases/get_categories
 import 'package:ehtirafy_app/features/client/home/domain/usecases/get_advertisements_by_category_usecase.dart';
 import 'package:ehtirafy_app/features/client/home/domain/usecases/get_all_freelancers_usecase.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/home_cubit.dart';
+import 'package:ehtirafy_app/features/client/home/presentation/cubits/home_feed_cubit.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/category_advertisements_cubit.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/all_freelancers_cubit.dart';
 import 'package:ehtirafy_app/features/client/freelancer/data/datasources/freelancer_remote_data_source.dart';
@@ -143,6 +144,15 @@ Future<void> setupLocator() async {
   sl.registerLazySingleton(() => GetCategoriesUseCase(sl()));
   sl.registerLazySingleton(() => GetAppStatisticsUseCase(sl()));
   sl.registerLazySingleton(() => GetAdvertisementsByCategoryUseCase(sl()));
+  // Haraj-style home feed (category tab strip + advertisement list)
+  sl.registerFactory(
+    () => HomeFeedCubit(
+      getCategoriesUseCase: sl(),
+      getFeaturedPhotographersUseCase: sl(),
+      getAdvertisementsByCategoryUseCase: sl(),
+      userLocalDataSource: sl(),
+    ),
+  );
   sl.registerLazySingleton(() => GetAllFreelancersUseCase(sl()));
   sl.registerFactory(() => AllFreelancersCubit(getAllFreelancersUseCase: sl()));
   sl.registerLazySingleton<HomeRepository>(

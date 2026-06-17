@@ -480,7 +480,7 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
             SizedBox(width: AppSpacing.sm + 2.w),
             Expanded(
               child: Text(
-                'حذف الخدمة',
+                AppStrings.addAdDeleteTitle.tr(),
                 style: TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: 17.sp,
@@ -492,7 +492,7 @@ class _MyGigsScreenState extends State<MyGigsScreen> {
           ],
         ),
         content: Text(
-          'هل أنت متأكد من حذف هذه الخدمة؟',
+          AppStrings.addAdDeleteMessage.tr(),
           style: TextStyle(
             color: AppColors.textSecondary,
             fontSize: 14.sp,

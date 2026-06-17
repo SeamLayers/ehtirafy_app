@@ -143,13 +143,13 @@ class ServiceCard extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
-                              Icons.calendar_today_outlined,
+                              Icons.visibility_outlined,
                               color: AppColors.gold,
                               size: 14.sp,
                             ),
                             SizedBox(width: 6.w),
                             Text(
-                              'احجز الآن',
+                              'عرض الإعلان',
                               style: TextStyle(
                                 fontFamily: 'Cairo',
                                 color: AppColors.gold,

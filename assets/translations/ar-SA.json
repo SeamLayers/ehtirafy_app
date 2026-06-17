@@ -105,7 +105,11 @@
     "account": "حسابي",
     "dashboard": "لوحة التحكم",
     "myGigs": "خدماتي",
-    "orders": "الطلبات"
+    "orders": "الطلبات",
+    "search": "البحث",
+    "contractsChats": "العقود والمحادثات",
+    "profile": "حسابي",
+    "more": "المزيد"
   },
   "role": {
     "current": "الدور الحالي",
@@ -240,13 +244,13 @@
     "addFirstWork": "أضف أعمالك لجذب العملاء"
   },
   "freelancerGigs": {
-    "title": "إدارة خدماتي",
+    "title": "إعلاناتي",
     "createTitle": "إعلان جديد",
     "editTitle": "تعديل الإعلان",
     "titleLabel": "العنوان",
     "titleHint": "مثال: تصوير حفلات زفاف مميز",
-    "descriptionLabel": "وصف الخدمة",
-    "descriptionHint": "اكتب وصفاً تفصيلياً لخدمتك...",
+    "descriptionLabel": "وصف الإعلان",
+    "descriptionHint": "اكتب وصفاً تفصيلياً لإعلانك...",
     "priceLabel": "السعر",
     "priceHint": "0",
     "categoryLabel": "التصنيف",
@@ -258,9 +262,9 @@
     "submitForReview": "إرسال للمراجعة",
     "saveChanges": "حفظ التغييرات",
     "deleteGig": "حذف الإعلان",
-    "emptyState": "لا توجد خدمات بعد",
-    "emptyStateSubtitle": "أضف خدمتك الأولى لجذب العملاء",
-    "addFirstGig": "إضافة خدمة",
+    "emptyState": "لا توجد إعلانات بعد",
+    "emptyStateSubtitle": "أضف إعلانك الأول لجذب العملاء",
+    "addFirstGig": "إضافة إعلان",
     "charCount": "0/1000 حرف"
   },
   "freelancerPortfolio": {
@@ -397,7 +401,7 @@
   "search": {
     "recentSearches": "عمليات البحث الأخيرة",
     "mostSearched": "الأكثر بحثاً",
-    "hint": "ابحث عن خدمات التصوير...",
+    "hint": "ابحث عن إعلانات التصوير...",
     "filter": {
       "title": "تصفية النتائج",
       "priceRange": "نطاق السعر",
@@ -410,14 +414,14 @@
     "message": "مراسلة",
     "orderNow": "اطلب الآن",
     "reviews": "التقييمات",
-    "services": "الخدمات",
+    "services": "الإعلانات",
     "portfolio": "سابقة الأعمال",
     "projects": "مشروع",
     "response": "الرد",
     "withinHour": "خلال ساعة",
     "memberSince": "عضو منذ",
-    "bookNow": "احجز الآن",
-    "requestService": "طلب الخدمة",
+    "bookNow": "عرض الإعلان",
+    "requestService": "تواصل",
     "reviewsCount": "({count} تقييم)"
   },
   "appShare": {
@@ -643,5 +647,62 @@
     "role_photographer": "مصور",
     "switching": "جاري التبديل..."
   },
-  "refresh": "تحديث"
+  "refresh": "تحديث",
+  "home_feed": {
+    "all": "الكل",
+    "title": "أحدث الإعلانات",
+    "empty_title": "لا توجد إعلانات بعد",
+    "empty_message": "تصفّح فئة أخرى أو أضف إعلانك الآن",
+    "category_empty": "لا توجد إعلانات في هذه الفئة",
+    "ad_owner": "المعلِن",
+    "ad_fallback_title": "إعلان",
+    "now": "الآن"
+  },
+  "contracts_chats": {
+    "load_error": "تعذّر تحميل العقود والمحادثات، حاول مرة أخرى",
+    "retry": "إعادة المحاولة"
+  },
+  "contact_modal": {
+    "button": "تواصل",
+    "title": "اختر طريقة التواصل",
+    "subtitle": "تواصل مع المعلِن مباشرة",
+    "mobile": "التواصل عبر الجوال",
+    "mobile_subtitle": "اتصال مباشر عبر الهاتف",
+    "chat": "محادثة",
+    "chat_subtitle": "ابدأ محادثة داخل التطبيق",
+    "no_phone": "رقم الجوال غير متوفر حالياً",
+    "call_failed": "تعذّر فتح تطبيق الاتصال"
+  },
+  "more_menu": {
+    "title": "المزيد",
+    "add_ad_title": "إضافة إعلان / عرض",
+    "add_ad_subtitle": "انشر إعلانك وابدأ في استقبال الطلبات",
+    "my_ads": "إعلاناتي",
+    "edit_profile": "تعديل الملف الشخصي",
+    "settings": "الإعدادات",
+    "platform_fees": "رسوم المنصة",
+    "share_app": "مشاركة التطبيق",
+    "privacy": "سياسة الخصوصية",
+    "terms": "الشروط والأحكام",
+    "contact_us": "اتصل بنا",
+    "safety": "مركز الأمان",
+    "logout": "تسجيل الخروج",
+    "delete_account": "حذف الحساب",
+    "guest_browse": "أنت تتصفح كزائر",
+    "login_to_add": "سجّل الدخول لنشر إعلان والوصول إلى حسابك"
+  },
+  "add_ad": {
+    "create_title": "إضافة إعلان / عرض",
+    "edit_title": "تعديل الإعلان",
+    "create_subtitle": "أنشئ إعلاناً مميزاً لعرضك",
+    "edit_subtitle": "قم بتعديل تفاصيل إعلانك",
+    "info_card": "الإعلان الواحد = عرض واحد يمكن للعملاء طلبه",
+    "title_label": "عنوان الإعلان",
+    "title_hint": "مثال: تصوير حفل زفاف",
+    "image_required": "يرجى اختيار صورة للإعلان",
+    "success": "تم نشر إعلانك بنجاح وهو الآن في انتظار موافقة الإدارة",
+    "updated": "تم تحديث الإعلان بنجاح",
+    "delete_title": "حذف الإعلان",
+    "delete_message": "هل أنت متأكد من حذف هذا الإعلان؟"
+  }
 }

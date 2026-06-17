@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../domain/entities/conversation_entity.dart';
 import '../../domain/entities/message_entity.dart';
 import '../../domain/usecases/get_conversations_usecase.dart';
 import '../../domain/usecases/get_messages_usecase.dart';
@@ -23,6 +24,43 @@ class ChatCubit extends Cubit<ChatState> {
       (failure) => emit(ChatError(failure.message)),
       (conversations) => emit(ConversationsLoaded(conversations)),
     );
+  }
+
+  /// Loads BOTH sides of the user's conversations for the unified
+  /// "Contracts & Chats" tab: ones where the user is the buyer (customer) and
+  /// ones where the user is the advertiser (freelancer), merged and de-duped
+  /// by contract id. Everyone is a standard user now, so they may have both.
+  Future<void> loadAllConversations() async {
+    emit(ChatLoading());
+    final results = await Future.wait([
+      getConversationsUseCase(userType: 'customer'),
+      getConversationsUseCase(userType: 'freelancer'),
+    ]);
+
+    final merged = <String, ConversationEntity>{};
+    var anySuccess = false;
+    String? firstError;
+
+    for (final result in results) {
+      result.fold(
+        (failure) => firstError ??= failure.message,
+        (conversations) {
+          anySuccess = true;
+          for (final conv in conversations) {
+            merged.putIfAbsent(conv.id, () => conv);
+          }
+        },
+      );
+    }
+
+    if (!anySuccess) {
+      emit(ChatError(firstError ?? 'error'));
+      return;
+    }
+
+    final list = merged.values.toList()
+      ..sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+    emit(ConversationsLoaded(list));
   }
 
   Future<void> loadMessages(

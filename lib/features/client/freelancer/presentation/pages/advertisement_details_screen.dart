@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,9 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/session/auth_guard.dart';
+import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
 import 'package:ehtirafy_app/core/widgets/primary_button.dart';
+import 'package:ehtirafy_app/core/widgets/contact_options_sheet.dart';
 import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import '../cubits/advertisement_details_cubit.dart';
 import '../cubits/advertisement_details_state.dart';
@@ -305,7 +308,7 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                           ],
 
                           // Description
-                          _buildSectionTitle('وصف الخدمة'),
+                          _buildSectionTitle('وصف الإعلان'),
                           SizedBox(height: 12.h),
                           Container(
                             width: double.infinity,
@@ -368,34 +371,43 @@ class AdvertisementDetailsScreen extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 16.h),
                 child: PrimaryButton(
-                  text: 'احجز الآن',
+                  text: AppStrings.contactButton.tr(),
                   onPressed: () {
-                    // Booking is account-based: require login for guests.
-                    if (!AuthGuard.ensureAuth(context)) return;
-                    // The contract's publisher_id must be the advertisement
-                    // owner. Take it straight from the advertisement details
-                    // (`user_id`); the route-provided freelancerId is only a
-                    // fallback for older navigation paths.
+                    // The advertiser is the advertisement owner. Take the id
+                    // straight from the details (`user_id`); the route-provided
+                    // freelancerId is only a fallback for older nav paths.
                     final publisherId = ad.userId.isNotEmpty
                         ? ad.userId
                         : (freelancerId ?? '');
-                    if (publisherId.isNotEmpty) {
-                      context.push(
-                        '/booking/request',
-                        extra: {
-                          'advertisementId': advertisementId,
-                          'photographerId': publisherId,
-                          'photographerName': freelancerName ?? '',
-                          'serviceName': ad.title,
-                          'price': ad.price,
-                          'availableDays': ad.daysAvailability,
-                        },
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('لا يمكن الحجز حالياً')),
-                      );
-                    }
+                    final advertiserName =
+                        (freelancerName != null && freelancerName!.isNotEmpty)
+                        ? freelancerName!
+                        : ad.title;
+                    showContactOptionsSheet(
+                      context,
+                      phone: ad.ownerPhone,
+                      onChat: () {
+                        // Chatting is account-based: require login for guests.
+                        if (!AuthGuard.ensureAuth(context)) return;
+                        if (publisherId.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('تعذّر بدء المحادثة حالياً'),
+                            ),
+                          );
+                          return;
+                        }
+                        context.push(
+                          '/chat/conversation',
+                          extra: {
+                            'id': publisherId,
+                            'name': advertiserName,
+                            'image': '',
+                            'userType': 'customer',
+                          },
+                        );
+                      },
+                    );
                   },
                 ),
               ),
@@ -522,7 +534,7 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'سعر الخدمة',
+                      'السعر',
                       style: TextStyle(
                         color: AppColors.textLight.withValues(alpha: 0.9),
                         fontSize: 13.sp,

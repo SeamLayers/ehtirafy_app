@@ -15,6 +15,7 @@ class AdvertisementDetailsModel extends AdvertisementDetailsEntity {
     super.categoryName = '',
     super.daysAvailability,
     super.images,
+    super.ownerPhone = '',
   });
 
   factory AdvertisementDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -112,6 +113,30 @@ class AdvertisementDetailsModel extends AdvertisementDetailsEntity {
       return [];
     }
 
+    // Advertiser phone — parsed defensively from the common shapes the
+    // backend may use (top-level, nested user, or alternate keys). Stays
+    // empty until the API exposes it.
+    String getPhone() {
+      final candidates = <dynamic>[
+        json['phone'],
+        json['mobile'],
+        json['phone_number'],
+      ];
+      final user = json['user'];
+      if (user is Map) {
+        candidates.addAll([
+          user['phone'],
+          user['mobile'],
+          user['phone_number'],
+        ]);
+      }
+      for (final c in candidates) {
+        final value = c?.toString().trim() ?? '';
+        if (value.isNotEmpty) return value;
+      }
+      return '';
+    }
+
     final images = getImages(json['images']);
 
     // Add cover_image to images if needed
@@ -136,6 +161,7 @@ class AdvertisementDetailsModel extends AdvertisementDetailsEntity {
       categoryName: getCategoryName(json['category']),
       daysAvailability: getList(json['days_availability']),
       images: images,
+      ownerPhone: getPhone(),
     );
   }
 

@@ -133,6 +133,10 @@ class _SignupFormState extends State<_SignupForm> {
               'otp': state.otp,
             },
           );
+        } else if (state is SignupSuccess) {
+          // Role selection removed: every user registers as a standard user
+          // and lands on the unified home shell.
+          context.go('/home');
         } else if (state is SignupError) {
           ScaffoldMessenger.of(
             context,
@@ -335,19 +339,18 @@ class _SignupFormState extends State<_SignupForm> {
                 }
 
                 // If the user provided a phone number, verify it via OTP.
-                // Otherwise skip OTP and go straight to role selection so the
-                // account can be created without a phone number.
+                // Otherwise create the account directly. Role selection has
+                // been removed — everyone registers as a standard user.
                 if (_phoneController.text.trim().isEmpty) {
-                  context.push(
-                    '/auth/select-role',
-                    extra: {
-                      'fullName': _fullNameController.text,
-                      'email': _emailController.text,
-                      'phone': '',
-                      'password': _passwordController.text,
-                      'passwordConfirmation': _confirmPasswordController.text,
-                      'countryCode': _selectedCountry.dialCode,
-                    },
+                  context.read<SignupCubit>().signup(
+                    fullName: _fullNameController.text,
+                    email: _emailController.text,
+                    phone: '',
+                    password: _passwordController.text,
+                    passwordConfirmation: _confirmPasswordController.text,
+                    userType: 'client',
+                    countryCode: _selectedCountry.dialCode,
+                    deviceToken: '6666666',
                   );
                 } else {
                   context.read<SignupCubit>().sendOtp(

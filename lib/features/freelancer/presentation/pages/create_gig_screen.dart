@@ -100,7 +100,9 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              widget.gig != null ? 'تعديل الخدمة الحالية' : 'إضافة خدمة جديدة',
+              widget.gig != null
+                  ? AppStrings.addAdEditTitle.tr()
+                  : AppStrings.addAdCreateTitle.tr(),
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w700,
@@ -110,8 +112,8 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
             SizedBox(height: 2.h),
             Text(
               widget.gig != null
-                  ? 'قم بتعديل تفاصيل الخدمة الخاصة بك'
-                  : 'قم بإنشاء حزمة خدمية مميزة',
+                  ? AppStrings.addAdEditSubtitle.tr()
+                  : AppStrings.addAdCreateSubtitle.tr(),
               style: TextStyle(
                 fontSize: 12.sp,
                 color: AppColors.textSecondary,
@@ -168,9 +170,7 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
           } else if (state is FreelancerGigAdded) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: const Text(
-                  'تم إنشاء إعلانك بنجاح وهو الآن في انتظار موافقة الإدارة',
-                ),
+                content: Text(AppStrings.addAdSuccess.tr()),
                 backgroundColor: AppColors.success,
                 behavior: SnackBarBehavior.floating,
                 duration: const Duration(seconds: 3),
@@ -179,10 +179,12 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
                 ),
               ),
             );
-            context.go('/freelancer/dashboard');
+            // Return into the main shell (keeps the bottom navigation and a
+            // valid back stack) rather than a stranded top-level route.
+            context.go('/home');
           } else if (state is FreelancerGigUpdated) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('تم تحديث الخدمة بنجاح')),
+              SnackBar(content: Text(AppStrings.addAdUpdated.tr())),
             );
             context.pop(true);
           } else if (state is FreelancerGigAddError) {
@@ -264,7 +266,7 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
                           SizedBox(width: AppSpacing.sm + 4.w),
                           Expanded(
                             child: Text(
-                              'حزمة الخدمة الواحدة = عرض واحد يمكن للعملاء طلبه',
+                              AppStrings.addAdInfoCard.tr(),
                               style: TextStyle(
                                 fontSize: 13.sp,
                                 color: AppColors.textPrimary,
@@ -905,7 +907,7 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
       // Validate image is selected for new gigs
       if (widget.gig == null && _pickedImage == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('يرجى اختيار صورة للخدمة')),
+          SnackBar(content: Text(AppStrings.addAdImageRequired.tr())),
         );
         return;
       }

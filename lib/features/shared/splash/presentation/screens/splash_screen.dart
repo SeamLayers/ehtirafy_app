@@ -35,7 +35,8 @@ class _SplashView extends StatelessWidget {
         } else if (state is SplashNavigateToHome) {
           context.go('/home');
         } else if (state is SplashNavigateToFreelancerDashboard) {
-          context.go('/freelancer/dashboard');
+          // Role selection removed — all users land on the unified home shell.
+          context.go('/home');
         }
       },
       child: AnnotatedRegion<SystemUiOverlayStyle>(

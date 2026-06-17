@@ -76,6 +76,67 @@ class AppStrings {
   static const navDashboard = 'nav.dashboard';
   static const navMyGigs = 'nav.myGigs';
   static const navOrders = 'nav.orders';
+  static const navSearch = 'nav.search';
+  static const navContractsChats = 'nav.contractsChats';
+  static const navProfile = 'nav.profile';
+  static const navMore = 'nav.more';
+
+  // Home feed (Haraj-style)
+  static const homeFeedAll = 'home_feed.all';
+  static const homeFeedTitle = 'home_feed.title';
+  static const homeFeedEmptyTitle = 'home_feed.empty_title';
+  static const homeFeedEmptyMessage = 'home_feed.empty_message';
+  static const homeFeedCategoryEmpty = 'home_feed.category_empty';
+  static const homeFeedAdOwner = 'home_feed.ad_owner';
+  static const homeFeedAdFallbackTitle = 'home_feed.ad_fallback_title';
+  static const homeFeedNow = 'home_feed.now';
+
+  // Contracts & Chats (merged tab)
+  static const contractsChatsLoadError = 'contracts_chats.load_error';
+  static const contractsChatsRetry = 'contracts_chats.retry';
+
+  // Contact modal
+  static const contactButton = 'contact_modal.button';
+  static const contactTitle = 'contact_modal.title';
+  static const contactSubtitle = 'contact_modal.subtitle';
+  static const contactMobile = 'contact_modal.mobile';
+  static const contactMobileSubtitle = 'contact_modal.mobile_subtitle';
+  static const contactChat = 'contact_modal.chat';
+  static const contactChatSubtitle = 'contact_modal.chat_subtitle';
+  static const contactNoPhone = 'contact_modal.no_phone';
+  static const contactCallFailed = 'contact_modal.call_failed';
+
+  // More menu
+  static const moreTitle = 'more_menu.title';
+  static const moreAddAdTitle = 'more_menu.add_ad_title';
+  static const moreAddAdSubtitle = 'more_menu.add_ad_subtitle';
+  static const moreMyAds = 'more_menu.my_ads';
+  static const moreEditProfile = 'more_menu.edit_profile';
+  static const moreSettings = 'more_menu.settings';
+  static const morePlatformFees = 'more_menu.platform_fees';
+  static const moreShareApp = 'more_menu.share_app';
+  static const morePrivacy = 'more_menu.privacy';
+  static const moreTerms = 'more_menu.terms';
+  static const moreContactUs = 'more_menu.contact_us';
+  static const moreSafety = 'more_menu.safety';
+  static const moreLogout = 'more_menu.logout';
+  static const moreDeleteAccount = 'more_menu.delete_account';
+  static const moreGuestBrowse = 'more_menu.guest_browse';
+  static const moreLoginToAdd = 'more_menu.login_to_add';
+
+  // Add advertisement
+  static const addAdCreateTitle = 'add_ad.create_title';
+  static const addAdEditTitle = 'add_ad.edit_title';
+  static const addAdCreateSubtitle = 'add_ad.create_subtitle';
+  static const addAdEditSubtitle = 'add_ad.edit_subtitle';
+  static const addAdInfoCard = 'add_ad.info_card';
+  static const addAdTitleLabel = 'add_ad.title_label';
+  static const addAdTitleHint = 'add_ad.title_hint';
+  static const addAdImageRequired = 'add_ad.image_required';
+  static const addAdSuccess = 'add_ad.success';
+  static const addAdUpdated = 'add_ad.updated';
+  static const addAdDeleteTitle = 'add_ad.delete_title';
+  static const addAdDeleteMessage = 'add_ad.delete_message';
 
   // Role switcher
   static const roleCurrentLabel = 'role.current';

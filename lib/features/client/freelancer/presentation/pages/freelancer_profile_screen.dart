@@ -11,6 +11,7 @@ import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/session/auth_guard.dart';
 import 'package:ehtirafy_app/core/di/service_locator.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
+import 'package:ehtirafy_app/core/widgets/contact_options_sheet.dart';
 import 'package:ehtirafy_app/features/client/freelancer/presentation/cubits/freelancer_cubit.dart';
 import 'package:ehtirafy_app/features/client/freelancer/presentation/cubits/freelancer_state.dart';
 import 'package:ehtirafy_app/features/client/freelancer/presentation/widgets/freelancer_portfolio_grid.dart';
@@ -979,37 +980,27 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
               ),
               child: ElevatedButton(
                 onPressed: () {
-                // Booking is account-based: require login for guests.
-                if (!AuthGuard.ensureAuth(context)) return;
-                if (state is FreelancerLoaded) {
-                  final services = state.freelancer.services;
-                  if (services.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('لا توجد خدمات متاحة للحجز'),
-                      ),
-                    );
-                    return;
-                  }
-                  if (services.length == 1) {
-                    // Only one service, navigate directly
-                    final service = services.first;
-                    context.push(
-                      '/booking/request',
-                      extra: {
-                        'advertisementId': service.id,
-                        'photographerId': state.freelancer.id,
-                        'photographerName': state.freelancer.name,
-                        'serviceName': service.title,
-                        'price': service.price,
-                      },
-                    );
-                  } else {
-                    // Multiple services, show selection bottom sheet
-                    _showServiceSelectionSheet(context, state.freelancer);
-                  }
-                }
-              },
+                  if (state is! FreelancerLoaded) return;
+                  final freelancer = state.freelancer;
+                  // Classifieds contact model: same "تواصل" modal as the
+                  // advertisement details screen (call / chat) — no booking.
+                  showContactOptionsSheet(
+                    context,
+                    phone: '',
+                    onChat: () {
+                      if (!AuthGuard.ensureAuth(context)) return;
+                      context.push(
+                        '/chat/conversation',
+                        extra: {
+                          'id': freelancer.id,
+                          'name': freelancer.name,
+                          'image': freelancer.imageUrl,
+                          'userType': 'customer',
+                        },
+                      );
+                    },
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
@@ -1023,13 +1014,13 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      Icons.calendar_today_outlined,
+                      Icons.chat_bubble_outline_rounded,
                       color: Colors.white,
                       size: 16.sp,
                     ),
                     SizedBox(width: AppSpacing.sm),
                     Text(
-                      AppStrings.freelancerProfileOrderNow.tr(),
+                      AppStrings.contactButton.tr(),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 15.sp,
@@ -1047,132 +1038,4 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
     );
   }
 
-  void _showServiceSelectionSheet(
-    BuildContext context,
-    FreelancerEntity freelancer,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (bottomSheetContext) => Container(
-        padding: EdgeInsets.all(24.w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(
-              child: Container(
-                width: 44.w,
-                height: 4.h,
-                decoration: BoxDecoration(
-                  color: AppColors.grey300,
-                  borderRadius: BorderRadius.circular(4.r),
-                ),
-              ),
-            ),
-            SizedBox(height: AppSpacing.md),
-            Text(
-              'اختر الخدمة',
-              style: TextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Cairo',
-                color: AppColors.textPrimary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: AppSpacing.md),
-            ...freelancer.services.map(
-              (service) => GestureDetector(
-                onTap: () {
-                  Navigator.pop(bottomSheetContext);
-                  context.push(
-                    '/booking/request',
-                    extra: {
-                      'advertisementId': service.id,
-                      'photographerId': freelancer.id,
-                      'photographerName': freelancer.name,
-                      'serviceName': service.title,
-                      'price': service.price,
-                    },
-                  );
-                },
-                child: Container(
-                  margin: EdgeInsets.only(bottom: 12.h),
-                  padding: EdgeInsets.all(16.w),
-                  decoration: BoxDecoration(
-                    color: AppColors.backgroundLight,
-                    borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(color: AppColors.grey200),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              service.title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Cairo',
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-                            if (service.description.isNotEmpty) ...[
-                              SizedBox(height: 4.h),
-                              Text(
-                                service.description,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  color: AppColors.textSecondary,
-                                  fontFamily: 'Cairo',
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: AppSpacing.sm),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 10.w,
-                          vertical: 6.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.gold.withValues(alpha: 0.10),
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: Text(
-                          '${service.price} ر.س',
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.gold,
-                            fontFamily: 'Cairo',
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 8.h),
-          ],
-        ),
-      ),
-    );
-  }
 }

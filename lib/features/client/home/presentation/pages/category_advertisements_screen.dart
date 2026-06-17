@@ -171,7 +171,7 @@ class _CategoryAdvertisementsScreenState extends State<CategoryAdvertisementsScr
           ),
           SizedBox(height: 6.h),
           Text(
-            'اكتشف أفضل الخدمات المتاحة في هذه الفئة',
+            'اكتشف أفضل الإعلانات المتاحة في هذه الفئة',
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -202,7 +202,7 @@ class _CategoryAdvertisementsScreenState extends State<CategoryAdvertisementsScr
                 ),
                 SizedBox(width: 6.w),
                 Text(
-                  'خدمات مختارة بعناية',
+                  'إعلانات مختارة بعناية',
                   style: TextStyle(
                     color: AppColors.gold,
                     fontSize: 12.sp,
@@ -246,7 +246,7 @@ class _CategoryAdvertisementsScreenState extends State<CategoryAdvertisementsScr
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'الخدمات المتاحة',
+                      'الإعلانات المتاحة',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -258,7 +258,7 @@ class _CategoryAdvertisementsScreenState extends State<CategoryAdvertisementsScr
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      '${photographers.length} خدمة متوفرة',
+                      '${photographers.length} إعلان متوفر',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -294,7 +294,7 @@ class _CategoryAdvertisementsScreenState extends State<CategoryAdvertisementsScr
 
   Widget _buildEmptyState(BuildContext context) {
     return const CustomEmptyState(
-      title: 'لا توجد خدمات متاحة',
+      title: 'لا توجد إعلانات متاحة',
       message: 'جرب البحث في فئة أخرى',
       icon: Icons.search_off_rounded,
       iconSize: 44,

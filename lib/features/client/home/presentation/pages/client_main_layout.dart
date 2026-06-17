@@ -7,10 +7,11 @@ import '../widgets/client_bottom_nav_bar.dart';
 class ClientMainLayout extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
-  // Account-based tabs that require login: 1 (Messages) and 2 (My Requests).
-  // Home (3) and Profile (0) stay open to guests — the Profile screen shows
-  // settings/privacy plus a "login now" card instead of account data.
-  static const Set<int> _accountTabs = {1, 2};
+  // Account-based tabs that require login. With the new 5-tab layout only
+  // Contracts & Chats (index 2) is account-only. Home (0), Search (1),
+  // Profile (3) and More (4) stay open to guests — Profile shows a "login
+  // now" card and More gates the post-ad action behind its own auth check.
+  static const Set<int> _accountTabs = {2};
 
   const ClientMainLayout({super.key, required this.navigationShell});
 

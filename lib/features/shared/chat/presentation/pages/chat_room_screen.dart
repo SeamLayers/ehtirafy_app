@@ -62,19 +62,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
     return BlocListener<ChatCubit, ChatState>(
       listener: (context, state) {
-        if (state is MessagesLoaded) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('تم تحديث الرسائل'),
-              backgroundColor: AppColors.success,
-              behavior: SnackBarBehavior.floating,
-              duration: const Duration(seconds: 1),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-            ),
-          );
-        } else if (state is ChatError) {
+        // No success toast on (auto) message loads — it fired on every open
+        // and after every send, reading as a spurious confirmation.
+        if (state is ChatError) {
           // Never surface the raw failure message (DioException / backend
           // error text). Show a short, friendly localized notice instead.
           ScaffoldMessenger.of(context).showSnackBar(

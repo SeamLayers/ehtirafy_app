@@ -7,6 +7,8 @@ import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/widgets/primary_button.dart';
 import 'package:ehtirafy_app/features/shared/auth/presentation/widgets/auth_header.dart';
 import 'package:ehtirafy_app/features/shared/auth/presentation/cubits/otp_cubit.dart';
+import 'package:ehtirafy_app/features/shared/auth/presentation/cubits/signup_cubit.dart';
+import 'package:ehtirafy_app/features/shared/auth/presentation/cubits/signup_state.dart';
 import 'package:ehtirafy_app/core/di/service_locator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
@@ -437,9 +439,33 @@ class _OtpActions extends StatelessWidget {
                       if (s is OtpVerified) {
                         if (signupData != null &&
                             signupData!.containsKey('signupParams')) {
-                          // Signup flow: Proceed to role selection
-                          final params = signupData!['signupParams'];
-                          context.go('/auth/select-role', extra: params);
+                          // Signup flow: role selection removed — create the
+                          // account directly as a standard user, then land on
+                          // the unified home shell.
+                          final params = Map<String, dynamic>.from(
+                            signupData!['signupParams'] as Map,
+                          );
+                          final signupCubit = sl<SignupCubit>();
+                          await signupCubit.signup(
+                            fullName: params['fullName'] ?? '',
+                            email: params['email'] ?? '',
+                            phone: params['phone'] ?? '',
+                            password: params['password'] ?? '',
+                            passwordConfirmation:
+                                params['passwordConfirmation'] ?? '',
+                            userType: 'client',
+                            countryCode: params['countryCode'] ?? '',
+                            deviceToken: '6666666',
+                          );
+                          if (!context.mounted) return;
+                          final ss = signupCubit.state;
+                          if (ss is SignupSuccess) {
+                            context.go('/home');
+                          } else if (ss is SignupError) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(ss.failureKey.tr())),
+                            );
+                          }
                         } else {
                           // Other flows (e.g. Login)
                           context.go('/home');

@@ -14,6 +14,10 @@ class AdvertisementDetailsEntity extends Equatable {
   final List<String> daysAvailability;
   final List<String> images;
 
+  /// Advertiser mobile number used by the "Contact via Mobile" action.
+  /// Empty when the backend does not expose it yet.
+  final String ownerPhone;
+
   const AdvertisementDetailsEntity({
     required this.id,
     required this.categoryId,
@@ -27,6 +31,7 @@ class AdvertisementDetailsEntity extends Equatable {
     this.categoryName = '',
     this.daysAvailability = const [],
     this.images = const [],
+    this.ownerPhone = '',
   });
 
   @override
@@ -43,5 +48,6 @@ class AdvertisementDetailsEntity extends Equatable {
     categoryName,
     daysAvailability,
     images,
+    ownerPhone,
   ];
 }

@@ -45,34 +45,44 @@ class ClientBottomNavBar extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
+            // RTL: the first item (Home) renders right-most, the last (More)
+            // left-most — matching the required right-to-left tab order:
+            // Home · Search · Contracts & Chats · Profile · More.
             children: [
               _buildNavItem(
                 context: context,
-                index: 3,
+                index: 0,
                 icon: Icons.home_outlined,
                 activeIcon: Icons.home_filled,
                 label: AppStrings.navHome.tr(),
               ),
               _buildNavItem(
                 context: context,
-                index: 2,
-                icon: Icons.list_alt_outlined,
-                activeIcon: Icons.list_alt,
-                label: AppStrings.navRequests.tr(),
-              ),
-              _buildNavItem(
-                context: context,
                 index: 1,
-                icon: Icons.chat_bubble_outline,
-                activeIcon: Icons.chat_bubble,
-                label: AppStrings.navMessages.tr(),
+                icon: Icons.search_outlined,
+                activeIcon: Icons.search,
+                label: AppStrings.navSearch.tr(),
               ),
               _buildNavItem(
                 context: context,
-                index: 0,
+                index: 2,
+                icon: Icons.handshake_outlined,
+                activeIcon: Icons.handshake,
+                label: AppStrings.navContractsChats.tr(),
+              ),
+              _buildNavItem(
+                context: context,
+                index: 3,
                 icon: Icons.person_outline,
                 activeIcon: Icons.person,
-                label: AppStrings.navAccount.tr(),
+                label: AppStrings.navProfile.tr(),
+              ),
+              _buildNavItem(
+                context: context,
+                index: 4,
+                icon: Icons.more_horiz_outlined,
+                activeIcon: Icons.more_horiz,
+                label: AppStrings.navMore.tr(),
               ),
             ],
           ),
@@ -99,7 +109,7 @@ class ClientBottomNavBar extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 220),
           curve: Curves.easeOut,
-          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 8.h),
+          padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 8.h),
           decoration: isActive
               ? BoxDecoration(
                   gradient: LinearGradient(
@@ -127,18 +137,18 @@ class ClientBottomNavBar extends StatelessWidget {
                 child: Icon(
                   isActive ? activeIcon : icon,
                   color: isActive ? AppColors.primary : AppColors.grey500,
-                  size: 24.sp,
+                  size: 22.sp,
                 ),
               ),
               SizedBox(height: 4.h),
               Text(
                 label,
-                maxLines: 1,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: isActive ? AppColors.primary : AppColors.grey500,
-                  fontSize: 10.sp,
+                  fontSize: 9.5.sp,
                   fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                   height: 1.1,
                 ),

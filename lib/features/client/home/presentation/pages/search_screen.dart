@@ -102,11 +102,15 @@ class _SearchScreenState extends State<SearchScreen> {
           padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 18.h),
           child: Row(
             children: [
-              _HeaderIconButton(
-                icon: Icons.arrow_back_ios_new_rounded,
-                onTap: () => Navigator.pop(context),
-              ),
-              SizedBox(width: AppSpacing.sm),
+              // Search is a bottom-nav tab root, so only show a back button
+              // when this screen was actually pushed onto a navigator.
+              if (Navigator.of(context).canPop()) ...[
+                _HeaderIconButton(
+                  icon: Icons.arrow_back_ios_new_rounded,
+                  onTap: () => Navigator.pop(context),
+                ),
+                SizedBox(width: AppSpacing.sm),
+              ],
               Expanded(
                 child: Container(
                   height: 50.h,
@@ -196,7 +200,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildHistoryView(BuildContext context, SearchLoaded state) {
     if (state.searchHistory.isEmpty) {
       return const CustomEmptyState(
-        title: 'ابحث عن مصورين أو خدمات',
+        title: 'ابحث عن إعلانات أو معلِنين',
         icon: Icons.search_rounded,
         iconSize: 44,
       );

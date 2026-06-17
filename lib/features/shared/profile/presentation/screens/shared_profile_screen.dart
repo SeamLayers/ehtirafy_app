@@ -6,18 +6,13 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/di/service_locator.dart';
 import '../manager/profile_cubit.dart';
 import '../manager/profile_state.dart';
-import '../../domain/entities/user_profile_entity.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_menu.dart';
 import '../widgets/profile_tile.dart';
-import '../widgets/role_switcher_card.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
 import 'package:ehtirafy_app/core/session/guest_mode.dart';
-import 'package:ehtirafy_app/features/shared/auth/presentation/cubits/role_cubit.dart';
-import 'package:ehtirafy_app/features/shared/auth/domain/entities/user_role.dart'
-    as auth_role;
 
 /// Shared AppBar used across both the authenticated and guest profile views.
 /// Centered Cairo title on the dark brand surface with a soft rounded base and
@@ -75,8 +70,6 @@ class SharedProfileScreen extends StatefulWidget {
 }
 
 class _SharedProfileScreenState extends State<SharedProfileScreen> {
-  UserRole? _previousRole;
-
   @override
   Widget build(BuildContext context) {
     // Guests can open the profile to reach settings & privacy, but they have
@@ -88,28 +81,10 @@ class _SharedProfileScreenState extends State<SharedProfileScreen> {
       create: (context) => sl<ProfileCubit>()..loadUserProfile(),
       child: BlocListener<ProfileCubit, ProfileState>(
         listener: (context, state) {
+          // Role selection has been removed — every user is a standard user,
+          // so there is no role-based navigation here anymore.
           if (state is ProfileLoggedOut) {
             context.go('/auth/login');
-          } else if (state is ProfileLoaded) {
-            final newRole = state.userProfile.currentRole;
-
-            // Sync RoleCubit with the new role from profile
-            final authRole = newRole == UserRole.freelancer
-                ? auth_role.UserRole.freelancer
-                : auth_role.UserRole.client;
-
-            sl<RoleCubit>().select(authRole);
-
-            // Navigate if role changed (not first load)
-            if (_previousRole != null && _previousRole != newRole) {
-              if (newRole == UserRole.freelancer) {
-                context.go('/freelancer/dashboard');
-              } else {
-                context.go('/home');
-              }
-            }
-
-            _previousRole = newRole;
           }
         },
         child: Scaffold(
@@ -144,8 +119,6 @@ class _SharedProfileScreenState extends State<SharedProfileScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          RoleSwitcherCard(currentRole: user.currentRole),
-                          SizedBox(height: AppSpacing.lg),
                           ProfileHeader(user: user),
                           SizedBox(height: AppSpacing.lg),
                           ProfileMenu(currentRole: user.currentRole),

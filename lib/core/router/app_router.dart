@@ -3,8 +3,10 @@ import 'package:ehtirafy_app/main.dart' show initialRoute;
 import 'package:ehtirafy_app/features/shared/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:ehtirafy_app/features/shared/auth/presentation/screens/login_screen.dart';
 import 'package:ehtirafy_app/features/shared/auth/presentation/screens/signup_screen.dart';
-import 'package:ehtirafy_app/features/client/home/presentation/pages/client_home_screen.dart';
+import 'package:ehtirafy_app/features/client/home/presentation/pages/haraj_home_screen.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/pages/client_main_layout.dart';
+import 'package:ehtirafy_app/features/client/more/presentation/pages/more_screen.dart';
+import 'package:ehtirafy_app/features/shared/chat/presentation/pages/contracts_chats_screen.dart';
 import 'package:ehtirafy_app/features/freelancer/domain/entities/gig_entity.dart';
 import 'package:ehtirafy_app/features/client/notifications/presentation/pages/notifications_screen.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/pages/search_screen.dart';
@@ -20,7 +22,6 @@ import 'package:ehtirafy_app/features/shared/profile/presentation/screens/edit_p
 import 'package:ehtirafy_app/features/shared/profile/presentation/screens/settings_screen.dart';
 
 import 'package:ehtirafy_app/features/shared/auth/presentation/screens/otp_screen.dart';
-import 'package:ehtirafy_app/features/shared/auth/presentation/screens/role_selection_screen.dart';
 import 'package:ehtirafy_app/features/client/freelancer/presentation/pages/freelancer_profile_screen.dart';
 import 'package:ehtirafy_app/features/client/booking/presentation/screens/request_booking_screen.dart';
 import 'package:ehtirafy_app/features/client/booking/presentation/screens/booking_success_screen.dart';
@@ -45,7 +46,6 @@ import 'package:ehtirafy_app/features/freelancer/presentation/pages/freelancer_o
 import 'package:ehtirafy_app/features/freelancer/domain/entities/freelancer_order_entity.dart';
 import 'package:ehtirafy_app/features/freelancer/domain/entities/portfolio_item_entity.dart';
 import 'package:ehtirafy_app/features/shared/auth/presentation/cubits/role_cubit.dart';
-import 'package:ehtirafy_app/features/shared/auth/domain/entities/user_role.dart';
 import 'package:ehtirafy_app/features/shared/profile/presentation/manager/profile_cubit.dart';
 import 'package:ehtirafy_app/core/notifications/token_debug_screen.dart';
 import 'package:ehtirafy_app/core/router/utils/go_router_refresh_stream.dart';
@@ -64,64 +64,25 @@ import 'package:ehtirafy_app/features/client/payment/presentation/cubit/payment_
 import 'package:ehtirafy_app/features/client/payment/presentation/pages/bank_details_screen.dart';
 import 'package:ehtirafy_app/features/client/payment/presentation/pages/payment_proof_screen.dart';
 
+/// Minimal placeholder conversation used when a chat route is opened without
+/// its [ConversationEntity] in `extra` (e.g. a deep link or state restoration
+/// after process death), so the route degrades gracefully instead of throwing
+/// an unchecked-cast error.
+ConversationEntity _fallbackConversation(String? id) => ConversationEntity(
+  id: id ?? '',
+  otherUserName: '',
+  otherUserImage: '',
+  lastMessage: '',
+  unreadCount: 0,
+  lastMessageTime: DateTime.now(),
+);
+
 /// GoRouter configuration for the app
 final appRouter = GoRouter(
   initialLocation: initialRoute,
   refreshListenable: GoRouterRefreshStream(sl<RoleCubit>().stream),
-  redirect: (context, state) {
-    // Get current role state
-    final roleState = sl<RoleCubit>().state;
-    UserRole currentRole = UserRole.client;
-
-    if (roleState is RoleLoaded) {
-      currentRole = roleState.role;
-    } else if (roleState is RoleSaved) {
-      currentRole = roleState.role;
-    } else if (sl<RoleCubit>().selected != UserRole.client) {
-      // Fallback to locally selected role if state isn't emitted yet but value is set
-      currentRole = sl<RoleCubit>().selected;
-    }
-
-    final path = state.uri.path;
-    final isFreelancerRoute = path.startsWith('/freelancer');
-
-    // List of freelancer management routes that should be blocked for clients
-    final freelancerManagementRoutes = [
-      '/freelancer/dashboard',
-      '/freelancer/gigs',
-      '/freelancer/orders',
-      '/freelancer/messages',
-      '/freelancer/account',
-      '/freelancer/portfolio',
-    ];
-
-    // Role-based redirection
-    if (currentRole == UserRole.freelancer) {
-      // If user is freelancer but tries to access client routes, redirect to freelancer dashboard
-      // Allow access to common routes like /profile, /settings etc if they are shared
-      // But assuming client shell branches are "isClientRoute" roughly
-
-      // Explicit check for client home
-      if (path == '/home' || path == '/') {
-        return '/freelancer/dashboard';
-      }
-    } else {
-      // If user is client but tries to access freelancer management routes, redirect to home
-      // BUT allow viewing freelancer profiles at /freelancer/:id
-      if (isFreelancerRoute) {
-        // Check if it's a management route (not a profile view)
-        final isManagementRoute = freelancerManagementRoutes.any(
-          (route) => path.startsWith(route),
-        );
-        if (isManagementRoute) {
-          return '/home';
-        }
-        // Allow /freelancer/:id for viewing freelancer profiles
-      }
-    }
-
-    return null;
-  },
+  // Role selection has been removed — every user is a standard user who can
+  // browse and post advertisements, so there is no role-based redirection.
   routes: [
     // Onboarding screen
     GoRoute(
@@ -156,21 +117,63 @@ final appRouter = GoRouter(
         return OtpScreen(phone: phone, signupData: signupData);
       },
     ),
-    GoRoute(
-      path: '/auth/select-role',
-      builder: (context, state) {
-        final signupData = state.extra as Map<String, dynamic>?;
-        return RoleSelectionScreen(signupData: signupData);
-      },
-    ),
 
-    // Shell Route for Client Bottom Navigation
+    // Shell Route for Client Bottom Navigation.
+    // Branch order is the RTL visual order (right-to-left): the first branch
+    // (Home) renders right-most, the last (More) left-most.
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         return ClientMainLayout(navigationShell: navigationShell);
       },
       branches: [
-        // Tab 0: Profile
+        // Tab 0: Home
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/home',
+              builder: (context, state) => const HarajHomeScreen(),
+            ),
+          ],
+        ),
+        // Tab 1: Search
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/search',
+              builder: (context, state) => const SearchScreen(),
+            ),
+          ],
+        ),
+        // Tab 2: Contracts & Chats (the merged communications tab)
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/contracts-chats',
+              builder: (context, state) => BlocProvider(
+                create: (_) => sl<ChatCubit>()..loadAllConversations(),
+                child: const ContractsChatsScreen(),
+              ),
+              routes: [
+                GoRoute(
+                  path: 'chat/:id',
+                  builder: (context, state) {
+                    final conversation = state.extra is ConversationEntity
+                        ? state.extra as ConversationEntity
+                        : _fallbackConversation(state.pathParameters['id']);
+                    return BlocProvider(
+                      create: (_) => sl<ChatCubit>(),
+                      child: ChatRoomScreen(
+                        conversation: conversation,
+                        userType: 'customer',
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+        // Tab 3: Profile (account)
         StatefulShellBranch(
           routes: [
             GoRoute(
@@ -188,54 +191,16 @@ final appRouter = GoRouter(
                     child: const SettingsScreen(),
                   ),
                 ),
-
               ],
             ),
           ],
         ),
-        // Tab 1: Messages
+        // Tab 4: More
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/messages',
-              builder: (context, state) => BlocProvider(
-                create: (_) =>
-                    sl<ChatCubit>()..loadConversations(userType: 'customer'),
-                child: const ConversationsScreen(userType: 'customer'),
-              ),
-              routes: [
-                GoRoute(
-                  path: 'chat/:id',
-                  builder: (context, state) {
-                    final conversation = state.extra as ConversationEntity;
-                    return BlocProvider(
-                      create: (_) => sl<ChatCubit>(),
-                      child: ChatRoomScreen(
-                        conversation: conversation,
-                        userType: 'customer',
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-        // Tab 2: My Requests
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/my-requests',
-              builder: (context, state) => const MyRequestsScreen(),
-            ),
-          ],
-        ),
-        // Tab 3: Home
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/home',
-              builder: (context, state) => const ClientHomeContent(),
+              path: '/more',
+              builder: (context, state) => const MoreScreen(),
             ),
           ],
         ),
@@ -274,7 +239,9 @@ final appRouter = GoRouter(
                 GoRoute(
                   path: 'chat/:id',
                   builder: (context, state) {
-                    final conversation = state.extra as ConversationEntity;
+                    final conversation = state.extra is ConversationEntity
+                        ? state.extra as ConversationEntity
+                        : _fallbackConversation(state.pathParameters['id']);
                     return BlocProvider(
                       create: (_) => sl<ChatCubit>(),
                       child: ChatRoomScreen(
@@ -380,9 +347,11 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/chat/conversation',
       builder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>;
+        final extra = state.extra is Map<String, dynamic>
+            ? state.extra as Map<String, dynamic>
+            : const <String, dynamic>{};
         final conversation = ConversationEntity(
-          id: extra['id'].toString(),
+          id: extra['id']?.toString() ?? '',
           otherUserName: extra['name'] ?? '',
           otherUserImage: extra['image'] ?? '',
           lastMessage: '',
@@ -397,7 +366,28 @@ final appRouter = GoRouter(
         );
       },
     ),
-    GoRoute(path: '/search', builder: (context, state) => const SearchScreen()),
+    // My contracts/requests (payment lifecycle) — kept reachable as a
+    // standalone route (e.g. after a booking) outside the bottom nav.
+    GoRoute(
+      path: '/my-requests',
+      builder: (context, state) => const MyRequestsScreen(),
+    ),
+    // Post a new advertisement / offer (terminology: إعلان / عرض, never خدمة).
+    GoRoute(
+      path: '/add-advertisement',
+      builder: (context, state) => BlocProvider(
+        create: (_) => sl<FreelancerGigsCubit>(),
+        child: const CreateGigScreen(),
+      ),
+    ),
+    // Manage my advertisements.
+    GoRoute(
+      path: '/my-ads',
+      builder: (context, state) => BlocProvider(
+        create: (_) => sl<FreelancerGigsCubit>(),
+        child: const MyGigsScreen(),
+      ),
+    ),
     // Category advertisements screen
     GoRoute(
       path: '/category/:id',

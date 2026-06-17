@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
-import 'package:ehtirafy_app/core/widgets/financial_pledge_section.dart';
 import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import 'package:ehtirafy_app/core/widgets/user_avatar.dart';
 import '../../domain/entities/freelancer_order_entity.dart';
@@ -1099,17 +1098,9 @@ class _FreelancerOrderDetailsScreenState
     );
   }
 
-  Future<void> _acceptOrderWithPledge(BuildContext context) async {
-    final accepted = await showFinancialPledgeAgreementDialog(
-      context,
-      role: FinancialPledgeRole.advertiser,
-      agreementAr: 'أقر وأوافق على هذا التعهد المالي قبل قبول العقد.',
-      agreementEn:
-          'I confirm and agree to this financial pledge before accepting the contract.',
-    );
-
-    if (!context.mounted || !accepted) return;
-
+  // The financial pledge is shown ONLY when publishing a new advertisement,
+  // not when accepting an order. Accept directly here.
+  void _acceptOrder(BuildContext context) {
     context.read<FreelancerOrdersCubit>().acceptOrder(widget.order.id);
     context.pop();
   }
@@ -1140,7 +1131,7 @@ class _FreelancerOrderDetailsScreenState
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: () => _acceptOrderWithPledge(context),
+                onTap: () => _acceptOrder(context),
                 child: Container(
                   height: 50.h,
                   decoration: BoxDecoration(

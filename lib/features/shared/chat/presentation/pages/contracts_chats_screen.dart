@@ -1,31 +1,25 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:ehtirafy_app/core/constants/app_strings.dart';
-import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/constants/app_spacing.dart';
-
-import '../cubit/chat_cubit.dart';
-import '../cubit/chat_state.dart';
-import '../widgets/conversation_tile.dart';
+import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/widgets/custom_empty_state.dart';
 import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
 import 'package:ehtirafy_app/core/widgets/outlined_refresh_button.dart';
+import '../cubit/chat_cubit.dart';
+import '../cubit/chat_state.dart';
+import '../widgets/conversation_tile.dart';
 
-class ConversationsScreen extends StatefulWidget {
-  final String userType;
+/// Merged "Contracts & Chats" tab. Each row is a contract that also acts as a
+/// conversation; tapping it opens the chat room with the associated customer
+/// or freelancer directly.
+class ContractsChatsScreen extends StatelessWidget {
+  const ContractsChatsScreen({super.key});
 
-  const ConversationsScreen({super.key, this.userType = 'customer'});
-
-  @override
-  State<ConversationsScreen> createState() => _ConversationsScreenState();
-}
-
-class _ConversationsScreenState extends State<ConversationsScreen> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -45,32 +39,34 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
                     current is ChatError,
                 builder: (context, state) {
                   if (state is ChatLoading) {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(
-                        strokeWidth: 2.5.w,
-                        valueColor: const AlwaysStoppedAnimation<Color>(
+                        strokeWidth: 2.5,
+                        valueColor: AlwaysStoppedAnimation<Color>(
                           AppColors.gold,
                         ),
                       ),
                     );
                   } else if (state is ChatError) {
-                    // Never surface the raw failure message (DioException /
-                    // backend error text). Show a friendly, generic state.
                     return ErrorStateWidget(
-                      message: 'تعذّر تحميل المحادثات، حاول مرة أخرى',
-                      retryText: 'إعادة المحاولة',
-                      onRetry: () {
-                        context.read<ChatCubit>().loadConversations(
-                          userType: widget.userType,
-                        );
-                      },
+                      message: AppStrings.contractsChatsLoadError.tr(),
+                      retryText: AppStrings.contractsChatsRetry.tr(),
+                      onRetry: () =>
+                          context.read<ChatCubit>().loadAllConversations(),
                     );
                   } else if (state is ConversationsLoaded) {
                     if (state.conversations.isEmpty) {
                       return Column(
                         children: [
                           _buildRefreshBar(context),
-                          Expanded(child: _buildEmptyState()),
+                          Expanded(
+                            child: CustomEmptyState(
+                              title: AppStrings.chatNoMessages.tr(),
+                              message: AppStrings.chatStartConversation.tr(),
+                              icon: Icons.forum_outlined,
+                              iconSize: 44,
+                            ),
+                          ),
                         ],
                       );
                     }
@@ -92,12 +88,10 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
                               final conv = state.conversations[index];
                               return ConversationTile(
                                 conversation: conv,
-                                onTap: () {
-                                  final path = widget.userType == 'freelancer'
-                                      ? '/freelancer/messages/chat/${conv.id}'
-                                      : '/contracts-chats/chat/${conv.id}';
-                                  context.push(path, extra: conv);
-                                },
+                                onTap: () => context.push(
+                                  '/contracts-chats/chat/${conv.id}',
+                                  extra: conv,
+                                ),
                               );
                             },
                           ),
@@ -139,10 +133,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
             gradient: LinearGradient(
               begin: AlignmentDirectional.topStart,
               end: AlignmentDirectional.bottomEnd,
-              colors: [
-                AppColors.dark,
-                AppColors.dark.withValues(alpha: 0.92),
-              ],
+              colors: [AppColors.dark, AppColors.dark.withValues(alpha: 0.92)],
             ),
             border: Border(
               bottom: BorderSide(
@@ -160,21 +151,21 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      Icons.forum_rounded,
+                      Icons.handshake_outlined,
                       color: AppColors.gold,
                       size: 18.sp,
                     ),
                     SizedBox(width: AppSpacing.sm),
                     Flexible(
                       child: Text(
-                        AppStrings.chatListTitle.tr(),
+                        AppStrings.navContractsChats.tr(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        style: TextStyle(
                           color: Colors.white,
                           fontSize: 16.sp,
+                          fontFamily: 'Cairo',
                           fontWeight: FontWeight.w600,
-                          height: 1.50,
                           letterSpacing: 0.2,
                         ),
                       ),
@@ -201,39 +192,10 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           OutlinedRefreshButton(
-            onPressed: () {
-              context.read<ChatCubit>().loadConversations(
-                userType: widget.userType,
-              );
-            },
+            onPressed: () =>
+                context.read<ChatCubit>().loadAllConversations(),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    final isFreelancer = widget.userType == 'freelancer';
-
-    return Center(
-      child: EmptyStateWidget(
-        message: isFreelancer
-            ? AppStrings.chatFreelancerNoMessages.tr()
-            : AppStrings.chatNoMessages.tr(),
-        subMessage: isFreelancer
-            ? AppStrings.chatFreelancerStartConversation.tr()
-            : AppStrings.chatStartConversation.tr(),
-        icon: isFreelancer ? Icons.work_outline : Icons.chat_bubble_outline,
-        retryText: isFreelancer
-            ? AppStrings.chatFreelancerExploreGigs.tr()
-            : AppStrings.chatFindPhotographer.tr(),
-        onRetry: () {
-          if (isFreelancer) {
-            context.push('/freelancer/gigs');
-          } else {
-            context.push('/home');
-          }
-        },
       ),
     );
   }
