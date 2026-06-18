@@ -12,6 +12,8 @@ class PhotographerModel extends PhotographerEntity {
     required super.imageUrl,
     super.daysAvailability,
     required super.freelancerId,
+    super.cityAr,
+    super.cityEn,
   });
 
   factory PhotographerModel.fromJson(Map<String, dynamic> json) {
@@ -104,6 +106,22 @@ class PhotographerModel extends PhotographerEntity {
       }
     }
 
+    // City may be a {ar,en} object at the row root (new /front/advertisements
+    // feed) or on the nested advertisement; tolerate a plain string or null.
+    String cityAr = '';
+    String cityEn = '';
+    final cityRaw = json['city'] ?? advertisement?['city'];
+    if (cityRaw is Map) {
+      cityAr = cityRaw['ar']?.toString() ?? '';
+      cityEn = cityRaw['en']?.toString() ?? '';
+    } else if (cityRaw != null) {
+      final s = cityRaw.toString();
+      if (s.isNotEmpty && s != 'null') {
+        cityAr = s;
+        cityEn = s;
+      }
+    }
+
     return PhotographerModel(
       id: entityId,
       name: name,
@@ -115,6 +133,8 @@ class PhotographerModel extends PhotographerEntity {
       imageUrl: finalImageUrl,
       daysAvailability: daysAvailability,
       freelancerId: userId,
+      cityAr: cityAr,
+      cityEn: cityEn,
     );
   }
 

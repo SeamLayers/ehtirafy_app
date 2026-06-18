@@ -14,6 +14,7 @@ import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_e
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/home_feed_cubit.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/home_feed_state.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/widgets/haraj_ad_card.dart';
+import 'package:ehtirafy_app/features/shared/cities/presentation/widgets/city_picker_sheet.dart';
 
 /// Haraj-style home: a branded top bar, a pinned scrollable category tab
 /// strip, and a list of advertisement cards. The "All" tab shows every ad;
@@ -70,6 +71,7 @@ class _HarajHomeView extends StatelessWidget {
                         if (state.freelancers.isNotEmpty)
                           _FreelancersRail(freelancers: state.freelancers),
                         _CategoryStrip(state: state),
+                        _RegionFilterBar(state: state),
                         Expanded(child: _buildList(context, state)),
                       ],
                     );
@@ -307,6 +309,113 @@ class _FreelancersRail extends StatelessWidget {
               },
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Haraj-style "المنطقة" (region) filter bar. Tapping opens the searchable
+/// city picker; selecting a city filters the ads client-side. Shows a clear
+/// affordance while a city is active.
+class _RegionFilterBar extends StatelessWidget {
+  final HomeFeedLoaded state;
+
+  const _RegionFilterBar({required this.state});
+
+  Future<void> _openPicker(BuildContext context) async {
+    final cubit = context.read<HomeFeedCubit>();
+    final picked = await showCityPickerSheet(
+      context,
+      selected: state.selectedCity,
+      includeAllOption: true,
+    );
+    if (picked == null) return; // dismissed
+    if (picked == kAllCities) {
+      cubit.selectCity(null);
+    } else {
+      cubit.selectCity(picked);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = context.locale.languageCode;
+    final city = state.selectedCity;
+    final hasCity = city != null;
+    final label = hasCity
+        ? city.getLocalizedName(locale)
+        : AppStrings.homeFeedRegionAll.tr();
+
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 8.h),
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () => _openPicker(context),
+            borderRadius: BorderRadius.circular(999.r),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+              decoration: BoxDecoration(
+                color: hasCity
+                    ? AppColors.gold.withValues(alpha: 0.12)
+                    : AppColors.grey100,
+                borderRadius: BorderRadius.circular(999.r),
+                border: Border.all(
+                  color: hasCity ? AppColors.gold : AppColors.grey200,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.location_on_outlined,
+                    size: 16.sp,
+                    color: hasCity ? AppColors.gold : AppColors.grey600,
+                  ),
+                  SizedBox(width: 5.w),
+                  Text(
+                    '${AppStrings.homeFeedRegion.tr()}: $label',
+                    style: TextStyle(
+                      color: hasCity ? AppColors.gold : AppColors.textPrimary,
+                      fontSize: 12.5.sp,
+                      fontFamily: 'Cairo',
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(width: 4.w),
+                  Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    size: 16.sp,
+                    color: hasCity ? AppColors.gold : AppColors.grey600,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (hasCity)
+            // Dedicated clear-filter affordance: resets to all regions.
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => context.read<HomeFeedCubit>().selectCity(null),
+              child: Padding(
+                padding: EdgeInsetsDirectional.only(start: 6.w),
+                child: Container(
+                  padding: EdgeInsets.all(5.w),
+                  decoration: const BoxDecoration(
+                    color: AppColors.grey100,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.close_rounded,
+                    size: 14.sp,
+                    color: AppColors.grey600,
+                  ),
+                ),
+              ),
+            ),
+          const Spacer(),
         ],
       ),
     );

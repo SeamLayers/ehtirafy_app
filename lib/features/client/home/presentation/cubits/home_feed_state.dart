@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/category_entity.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_entity.dart';
+import 'package:ehtirafy_app/features/shared/cities/domain/entities/city_entity.dart';
 
 abstract class HomeFeedState extends Equatable {
   const HomeFeedState();
@@ -32,6 +33,10 @@ class HomeFeedLoaded extends HomeFeedState {
   /// rail at the top of the home feed.
   final List<PhotographerEntity> freelancers;
   final int? selectedCategoryId;
+
+  /// Active city ("المنطقة") filter; null means all regions. Filtering is
+  /// applied client-side over the current category's ads.
+  final CityEntity? selectedCity;
   final bool isAdsLoading;
   final String userName;
 
@@ -40,6 +45,7 @@ class HomeFeedLoaded extends HomeFeedState {
     required this.ads,
     this.freelancers = const [],
     required this.selectedCategoryId,
+    this.selectedCity,
     this.isAdsLoading = false,
     this.userName = '',
   });
@@ -50,6 +56,8 @@ class HomeFeedLoaded extends HomeFeedState {
     List<PhotographerEntity>? freelancers,
     int? selectedCategoryId,
     bool clearSelectedCategory = false,
+    CityEntity? selectedCity,
+    bool clearSelectedCity = false,
     bool? isAdsLoading,
     String? userName,
   }) {
@@ -60,6 +68,9 @@ class HomeFeedLoaded extends HomeFeedState {
       selectedCategoryId: clearSelectedCategory
           ? null
           : (selectedCategoryId ?? this.selectedCategoryId),
+      selectedCity: clearSelectedCity
+          ? null
+          : (selectedCity ?? this.selectedCity),
       isAdsLoading: isAdsLoading ?? this.isAdsLoading,
       userName: userName ?? this.userName,
     );
@@ -71,6 +82,7 @@ class HomeFeedLoaded extends HomeFeedState {
     ads,
     freelancers,
     selectedCategoryId,
+    selectedCity,
     isAdsLoading,
     userName,
   ];

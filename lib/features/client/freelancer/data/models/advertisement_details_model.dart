@@ -16,6 +16,8 @@ class AdvertisementDetailsModel extends AdvertisementDetailsEntity {
     super.daysAvailability,
     super.images,
     super.ownerPhone = '',
+    super.cityAr = '',
+    super.cityEn = '',
   });
 
   factory AdvertisementDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -137,6 +139,21 @@ class AdvertisementDetailsModel extends AdvertisementDetailsEntity {
       return '';
     }
 
+    // City may be a {ar,en} object, a plain string, or null/absent.
+    String cityAr = '';
+    String cityEn = '';
+    final cityRaw = json['city'];
+    if (cityRaw is Map) {
+      cityAr = cityRaw['ar']?.toString() ?? '';
+      cityEn = cityRaw['en']?.toString() ?? '';
+    } else if (cityRaw != null) {
+      final s = cityRaw.toString();
+      if (s.isNotEmpty && s != 'null') {
+        cityAr = s;
+        cityEn = s;
+      }
+    }
+
     final images = getImages(json['images']);
 
     // Add cover_image to images if needed
@@ -162,6 +179,8 @@ class AdvertisementDetailsModel extends AdvertisementDetailsEntity {
       daysAvailability: getList(json['days_availability']),
       images: images,
       ownerPhone: getPhone(),
+      cityAr: cityAr,
+      cityEn: cityEn,
     );
   }
 

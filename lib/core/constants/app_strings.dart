@@ -92,6 +92,15 @@ class AppStrings {
   static const homeFeedNow = 'home_feed.now';
   static const homeFeedFreelancersTitle = 'home_feed.freelancers_title';
   static const homeFeedViewAll = 'view_all';
+  static const homeFeedRegion = 'home_feed.region';
+  static const homeFeedRegionAll = 'home_feed.region_all';
+
+  // City picker (shared searchable bottom sheet)
+  static const cityPickerTitle = 'city_picker.title';
+  static const cityPickerSearchHint = 'city_picker.search_hint';
+  static const cityPickerError = 'city_picker.error';
+  static const cityPickerNoResults = 'city_picker.no_results';
+  static const cityPickerAll = 'city_picker.all';
 
   // Contracts & Chats (merged tab)
   static const contractsChatsLoadError = 'contracts_chats.load_error';
@@ -142,6 +151,9 @@ class AppStrings {
   static const addAdTitleLabel = 'add_ad.title_label';
   static const addAdTitleHint = 'add_ad.title_hint';
   static const addAdImageRequired = 'add_ad.image_required';
+  static const addAdCityLabel = 'add_ad.city_label';
+  static const addAdCityHint = 'add_ad.city_hint';
+  static const addAdCityRequired = 'add_ad.city_required';
   static const addAdSuccess = 'add_ad.success';
   static const addAdUpdated = 'add_ad.updated';
   static const addAdDeleteTitle = 'add_ad.delete_title';

@@ -118,6 +118,8 @@ class FreelancerGigsRemoteDataSourceImpl
       'en_description': data['en_description'] ?? '',
       'category_id': data['category_id'] ?? '',
       'price': data['price'] ?? 0,
+      'ar_city': data['ar_city'] ?? '',
+      'en_city': data['en_city'] ?? '',
     };
 
     // Handle images - API expects indexed format: images[0], images[1], etc.
@@ -213,6 +215,8 @@ class FreelancerGigsRemoteDataSourceImpl
       'en_description': data['en_description'] ?? '',
       'category_id': data['category_id'] ?? '',
       'price': data['price'] ?? 0,
+      'ar_city': data['ar_city'] ?? '',
+      'en_city': data['en_city'] ?? '',
     };
 
     // Handle images - API expects indexed format: images[0], images[1], etc.

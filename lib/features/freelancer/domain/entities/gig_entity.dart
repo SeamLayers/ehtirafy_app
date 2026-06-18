@@ -14,6 +14,8 @@ class GigEntity extends Equatable {
   final DateTime? createdAt;
   final List<String> availability;
   final List<String> images;
+  final String? cityAr;
+  final String? cityEn;
 
   const GigEntity({
     required this.id,
@@ -27,6 +29,8 @@ class GigEntity extends Equatable {
     this.createdAt,
     this.availability = const [],
     this.images = const [],
+    this.cityAr,
+    this.cityEn,
   });
 
   @override
@@ -42,5 +46,7 @@ class GigEntity extends Equatable {
     createdAt,
     availability,
     images,
+    cityAr,
+    cityEn,
   ];
 }

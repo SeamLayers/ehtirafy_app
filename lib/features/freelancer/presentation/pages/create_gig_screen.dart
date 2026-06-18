@@ -12,6 +12,8 @@ import 'package:ehtirafy_app/core/widgets/financial_pledge_section.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/category_entity.dart';
+import 'package:ehtirafy_app/features/shared/cities/domain/entities/city_entity.dart';
+import 'package:ehtirafy_app/features/shared/cities/presentation/widgets/city_picker_sheet.dart';
 import '../cubit/freelancer_gigs_cubit.dart';
 import '../cubit/freelancer_gigs_state.dart';
 import 'package:ehtirafy_app/features/freelancer/domain/entities/gig_entity.dart';
@@ -31,6 +33,7 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
   CategoryEntity? _selectedCategory;
+  CityEntity? _selectedCity;
   bool _hasAcceptedPledge = false;
 
   // Days availability - Arabic day names
@@ -153,6 +156,18 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
               _selectedDays.clear();
               _selectedDays.addAll(state.gig.availability);
             });
+
+            // Pre-select city from the loaded ad (if the backend returned one).
+            // We don't have the cities list here, so construct a CityEntity
+            // straight from the ad's city names.
+            if (state.gig.cityAr != null && state.gig.cityAr!.isNotEmpty) {
+              setState(() {
+                _selectedCity = CityEntity(
+                  nameAr: state.gig.cityAr!,
+                  nameEn: state.gig.cityEn ?? state.gig.cityAr!,
+                );
+              });
+            }
 
             // Set category
             if (state.categories.isNotEmpty) {
@@ -407,6 +422,14 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
                           ),
                           SizedBox(height: AppSpacing.md + 4.h),
 
+                          // City selection (required) - long list, so we use a
+                          // tappable field that opens a searchable bottom sheet
+                          // instead of a dropdown.
+                          _buildLabel(AppStrings.addAdCityLabel.tr()),
+                          SizedBox(height: AppSpacing.sm),
+                          _buildCityField(),
+                          SizedBox(height: AppSpacing.md + 4.h),
+
                           // Days Availability
                           _buildLabel('أيام التوفر'),
                           SizedBox(height: AppSpacing.sm),
@@ -558,6 +581,71 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
           'I confirm and agree to this financial pledge before publishing the ad.',
       onAcceptedChanged: (value) {
         setState(() => _hasAcceptedPledge = value);
+      },
+    );
+  }
+
+  Widget _buildCityField() {
+    return FormField<CityEntity>(
+      initialValue: _selectedCity,
+      validator: (value) {
+        if (value == null) {
+          return AppStrings.addAdCityRequired.tr();
+        }
+        return null;
+      },
+      builder: (field) {
+        final hasError = field.hasError;
+        final localeCode = context.locale.languageCode;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            InkWell(
+              onTap: () async {
+                final city = await showCityPickerSheet(
+                  context,
+                  selected: _selectedCity,
+                  includeAllOption: false,
+                );
+                if (city != null) {
+                  setState(() => _selectedCity = city);
+                  field.didChange(city);
+                }
+              },
+              borderRadius: BorderRadius.circular(12.r),
+              child: InputDecorator(
+                isEmpty: _selectedCity == null,
+                decoration: _buildInputDecoration(
+                  AppStrings.addAdCityHint.tr(),
+                  prefixIcon: Icons.location_on_outlined,
+                ).copyWith(
+                  errorText: hasError ? field.errorText : null,
+                  suffixIcon: Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: AppColors.gold,
+                    size: 24.sp,
+                  ),
+                  suffixIconConstraints: const BoxConstraints(),
+                ),
+                child: Text(
+                  _selectedCity != null
+                      ? _selectedCity!.getLocalizedName(localeCode)
+                      : AppStrings.addAdCityHint.tr(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontFamily: 'Cairo',
+                    fontWeight: FontWeight.w500,
+                    color: _selectedCity != null
+                        ? AppColors.textPrimary
+                        : AppColors.grey400,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
       },
     );
   }
@@ -922,6 +1010,14 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
         return;
       }
 
+      // Validate a city is selected (required)
+      if (_selectedCity == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppStrings.addAdCityRequired.tr())),
+        );
+        return;
+      }
+
       // Prepare images list
       final List<String> images = [];
       if (_pickedImage != null) {
@@ -935,6 +1031,8 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
           description: _descriptionController.text,
           price: double.parse(_priceController.text),
           category: _selectedCategory!.id.toString(),
+          cityAr: _selectedCity!.nameAr,
+          cityEn: _selectedCity!.nameEn,
           coverImage: _pickedImage?.path,
           availability: _selectedDays.toList(),
           images: images,
@@ -945,6 +1043,8 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
           description: _descriptionController.text,
           price: double.parse(_priceController.text),
           category: _selectedCategory!.id.toString(),
+          cityAr: _selectedCity!.nameAr,
+          cityEn: _selectedCity!.nameEn,
           coverImage: _pickedImage?.path,
           availability: _selectedDays.toList(),
           images: images,

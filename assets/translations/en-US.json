@@ -666,7 +666,16 @@
     "ad_owner": "Advertiser",
     "ad_fallback_title": "Advertisement",
     "now": "Now",
-    "freelancers_title": "Featured Advertisers"
+    "freelancers_title": "Featured Advertisers",
+    "region": "Region",
+    "region_all": "All regions"
+  },
+  "city_picker": {
+    "title": "Choose a city",
+    "search_hint": "Search for a city",
+    "error": "Couldn't load cities, please try again",
+    "no_results": "No matching city",
+    "all": "All regions"
   },
   "contracts_chats": {
     "load_error": "Couldn't load contracts & chats, please try again",
@@ -716,6 +725,9 @@
     "info_card": "One advertisement = one offer customers can request",
     "title_label": "Advertisement title",
     "title_hint": "e.g. Wedding photography",
+    "city_label": "City",
+    "city_hint": "Choose a city",
+    "city_required": "Please select a city",
     "image_required": "Please select an image for the advertisement",
     "success": "Your ad was published successfully and is awaiting admin approval",
     "updated": "Advertisement updated successfully",

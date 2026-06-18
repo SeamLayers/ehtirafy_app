@@ -8,6 +8,10 @@ import 'package:ehtirafy_app/core/errors/exceptions.dart';
 abstract class HomeRemoteDataSource {
   Future<List<PhotographerModel>> getFeaturedPhotographers();
   Future<List<PhotographerModel>> getAllFreelancers();
+
+  /// All published advertisements (the home "All" tab feed). Each ad carries a
+  /// `city` field used for the client-side region filter.
+  Future<List<PhotographerModel>> getAllAdvertisements();
   Future<List<CategoryModel>> getCategories();
   Future<AppStatisticsModel> getAppStatistics();
   Future<List<PhotographerModel>> getAdvertisementsByCategory(
@@ -51,6 +55,29 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
         final data = response.data;
         if (data is Map && data['data'] != null && data['data'] is List) {
           // Return ALL entries, including those without advertisement
+          return (data['data'] as List)
+              .whereType<Map<String, dynamic>>()
+              .map((json) => PhotographerModel.fromJson(json))
+              .toList();
+        }
+      }
+      return [];
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<List<PhotographerModel>> getAllAdvertisements() async {
+    try {
+      final response = await dioClient.get(
+        ApiConstants.advertisements,
+        queryParameters: const {'user_type': 'customer'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map && data['data'] != null && data['data'] is List) {
           return (data['data'] as List)
               .whereType<Map<String, dynamic>>()
               .map((json) => PhotographerModel.fromJson(json))

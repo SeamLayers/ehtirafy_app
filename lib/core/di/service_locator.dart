@@ -30,6 +30,7 @@ import 'package:ehtirafy_app/features/client/home/domain/usecases/get_app_statis
 import 'package:ehtirafy_app/features/client/home/domain/usecases/get_categories_usecase.dart';
 import 'package:ehtirafy_app/features/client/home/domain/usecases/get_advertisements_by_category_usecase.dart';
 import 'package:ehtirafy_app/features/client/home/domain/usecases/get_all_freelancers_usecase.dart';
+import 'package:ehtirafy_app/features/client/home/domain/usecases/get_all_advertisements_usecase.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/home_cubit.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/home_feed_cubit.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/category_advertisements_cubit.dart';
@@ -88,6 +89,11 @@ import 'package:ehtirafy_app/features/shared/reviews/domain/repositories/reviews
 import 'package:ehtirafy_app/features/shared/reviews/domain/usecases/add_rate_usecase.dart';
 import 'package:ehtirafy_app/features/shared/reviews/domain/usecases/get_user_rates_usecase.dart';
 import 'package:ehtirafy_app/features/shared/reviews/presentation/cubits/reviews_cubit.dart';
+import 'package:ehtirafy_app/features/shared/cities/data/datasources/cities_remote_data_source.dart';
+import 'package:ehtirafy_app/features/shared/cities/data/repositories/cities_repository_impl.dart';
+import 'package:ehtirafy_app/features/shared/cities/domain/repositories/cities_repository.dart';
+import 'package:ehtirafy_app/features/shared/cities/domain/usecases/get_cities_usecase.dart';
+import 'package:ehtirafy_app/features/shared/cities/presentation/cubits/cities_cubit.dart';
 import 'package:ehtirafy_app/core/di/locators/shared_chat_locator.dart';
 import 'package:ehtirafy_app/core/di/locators/client_payment_locator.dart';
 import 'package:ehtirafy_app/core/di/locators/auth_locator.dart';
@@ -145,11 +151,12 @@ Future<void> setupLocator() async {
   sl.registerLazySingleton(() => GetCategoriesUseCase(sl()));
   sl.registerLazySingleton(() => GetAppStatisticsUseCase(sl()));
   sl.registerLazySingleton(() => GetAdvertisementsByCategoryUseCase(sl()));
+  sl.registerLazySingleton(() => GetAllAdvertisementsUseCase(sl()));
   // Haraj-style home feed (category tab strip + advertisement list)
   sl.registerFactory(
     () => HomeFeedCubit(
       getCategoriesUseCase: sl(),
-      getFeaturedPhotographersUseCase: sl(),
+      getAllAdvertisementsUseCase: sl(),
       getAllFreelancersUseCase: sl(),
       getAdvertisementsByCategoryUseCase: sl(),
       userLocalDataSource: sl(),
@@ -325,6 +332,16 @@ Future<void> setupLocator() async {
   );
   sl.registerLazySingleton<ReviewsRemoteDataSource>(
     () => ReviewsRemoteDataSourceImpl(dioClient: sl()),
+  );
+
+  // Features - Cities (Saudi cities for add-ad picker + home region filter)
+  sl.registerFactory(() => CitiesCubit(getCitiesUseCase: sl()));
+  sl.registerLazySingleton(() => GetCitiesUseCase(sl()));
+  sl.registerLazySingleton<CitiesRepository>(
+    () => CitiesRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton<CitiesRemoteDataSource>(
+    () => CitiesRemoteDataSourceImpl(dioClient: sl()),
   );
 
   // Features - Payment (Bank Details & Payment Proof)

@@ -122,7 +122,7 @@ class HarajAdCard extends StatelessWidget {
                             fontFamily: 'Cairo',
                           ),
                         ),
-                        if (ad.location.isNotEmpty) ...[
+                        if (ad.displayLocation.isNotEmpty) ...[
                           SizedBox(width: 10.w),
                           Icon(
                             Icons.location_on_outlined,
@@ -132,7 +132,7 @@ class HarajAdCard extends StatelessWidget {
                           SizedBox(width: 3.w),
                           Flexible(
                             child: Text(
-                              ad.location,
+                              ad.displayLocation,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(

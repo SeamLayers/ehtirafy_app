@@ -18,6 +18,10 @@ class AdvertisementDetailsEntity extends Equatable {
   /// Empty when the backend does not expose it yet.
   final String ownerPhone;
 
+  /// Localized ad city ({ar,en}); empty when the backend did not provide one.
+  final String cityAr;
+  final String cityEn;
+
   const AdvertisementDetailsEntity({
     required this.id,
     required this.categoryId,
@@ -32,7 +36,16 @@ class AdvertisementDetailsEntity extends Equatable {
     this.daysAvailability = const [],
     this.images = const [],
     this.ownerPhone = '',
+    this.cityAr = '',
+    this.cityEn = '',
   });
+
+  /// Localized display city (Arabic-first, English fallback); empty if none.
+  String get displayCity {
+    if (cityAr.trim().isNotEmpty) return cityAr.trim();
+    if (cityEn.trim().isNotEmpty) return cityEn.trim();
+    return '';
+  }
 
   @override
   List<Object?> get props => [
@@ -49,5 +62,7 @@ class AdvertisementDetailsEntity extends Equatable {
     daysAvailability,
     images,
     ownerPhone,
+    cityAr,
+    cityEn,
   ];
 }

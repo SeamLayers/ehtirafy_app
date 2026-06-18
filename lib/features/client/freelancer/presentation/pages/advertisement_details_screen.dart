@@ -156,6 +156,15 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ],
+                                if (ad.displayCity.isNotEmpty) ...[
+                                  SizedBox(width: 8.w),
+                                  Flexible(
+                                    child: _buildGlassBadge(
+                                      text: ad.displayCity,
+                                      icon: Icons.location_on_outlined,
+                                    ),
+                                  ),
+                                ],
                               ],
                             ),
                             SizedBox(height: 16.h),

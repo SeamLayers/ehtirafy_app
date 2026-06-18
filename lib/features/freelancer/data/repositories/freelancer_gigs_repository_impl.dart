@@ -41,6 +41,8 @@ class FreelancerGigsRepositoryImpl implements FreelancerGigsRepository {
     required String description,
     required double price,
     required String category,
+    required String cityAr,
+    required String cityEn,
     String? coverImage,
     List<String> availability = const [],
     List<String> images = const [],
@@ -53,6 +55,8 @@ class FreelancerGigsRepositoryImpl implements FreelancerGigsRepository {
         'en_description': description,
         'category_id': category,
         'price': price,
+        'ar_city': cityAr,
+        'en_city': cityEn,
       };
 
       // Pass image paths directly to RemoteDataSource to handle conversion
@@ -80,6 +84,8 @@ class FreelancerGigsRepositoryImpl implements FreelancerGigsRepository {
     required String description,
     required double price,
     required String category,
+    required String cityAr,
+    required String cityEn,
     String? coverImage,
     List<String> availability = const [],
     List<String> images = const [],
@@ -92,6 +98,8 @@ class FreelancerGigsRepositoryImpl implements FreelancerGigsRepository {
         'en_description': description,
         'category_id': category,
         'price': price,
+        'ar_city': cityAr,
+        'en_city': cityEn,
       };
 
       if (images.isNotEmpty) {

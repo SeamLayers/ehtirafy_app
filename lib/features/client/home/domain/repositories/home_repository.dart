@@ -7,6 +7,7 @@ import 'package:ehtirafy_app/features/client/home/domain/entities/app_statistics
 abstract class HomeRepository {
   Future<Either<Failure, List<PhotographerEntity>>> getFeaturedPhotographers();
   Future<Either<Failure, List<PhotographerEntity>>> getAllFreelancers();
+  Future<Either<Failure, List<PhotographerEntity>>> getAllAdvertisements();
   Future<Either<Failure, List<CategoryEntity>>> getCategories();
   Future<Either<Failure, AppStatistics>> getAppStatistics();
   Future<Either<Failure, List<PhotographerEntity>>> getAdvertisementsByCategory(

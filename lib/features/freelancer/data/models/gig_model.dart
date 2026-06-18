@@ -13,6 +13,8 @@ class GigModel extends GigEntity {
     super.createdAt,
     super.availability,
     super.images,
+    super.cityAr,
+    super.cityEn,
   });
 
   factory GigModel.fromJson(Map<String, dynamic> json) {
@@ -95,6 +97,34 @@ class GigModel extends GigEntity {
       return [];
     }
 
+    // Parse city which may be a {ar, en} Map, a plain string, or null.
+    // Returns (cityAr, cityEn) — null when absent.
+    String? parseCityAr() {
+      final city = json['city'];
+      if (city == null) return null;
+      if (city is Map) {
+        final ar = city['ar']?.toString();
+        if (ar != null && ar.isNotEmpty) return ar;
+        final en = city['en']?.toString();
+        return (en != null && en.isNotEmpty) ? en : null;
+      }
+      final s = city.toString();
+      return s.isNotEmpty ? s : null;
+    }
+
+    String? parseCityEn() {
+      final city = json['city'];
+      if (city == null) return null;
+      if (city is Map) {
+        final en = city['en']?.toString();
+        if (en != null && en.isNotEmpty) return en;
+        final ar = city['ar']?.toString();
+        return (ar != null && ar.isNotEmpty) ? ar : null;
+      }
+      final s = city.toString();
+      return s.isNotEmpty ? s : null;
+    }
+
     return GigModel(
       id: json['id']?.toString() ?? '',
       title: parseTitle(),
@@ -109,6 +139,8 @@ class GigModel extends GigEntity {
           : DateTime.now(),
       availability: parseAvailability(),
       images: parseImages(),
+      cityAr: parseCityAr(),
+      cityEn: parseCityEn(),
     );
   }
 

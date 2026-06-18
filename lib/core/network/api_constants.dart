@@ -48,6 +48,9 @@ class ApiConstants {
   // Categories Endpoint
   static const String categories = '$baseUrl/api/$version/categories';
 
+  // Cities Endpoint (Saudi cities; each item is {name:{en,ar}}, no id)
+  static const String cities = '$baseUrl/api/$version/cities';
+
   // Contract Endpoints
   static const String initialContract =
       '$baseUrl/api/$version/front/initial-contract';

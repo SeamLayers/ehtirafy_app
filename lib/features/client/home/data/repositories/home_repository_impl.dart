@@ -33,6 +33,17 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   @override
+  Future<Either<Failure, List<PhotographerEntity>>>
+  getAllAdvertisements() async {
+    try {
+      final result = await remoteDataSource.getAllAdvertisements();
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, List<CategoryEntity>>> getCategories() async {
     try {
       final result = await remoteDataSource.getCategories();
