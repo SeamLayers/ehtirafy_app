@@ -27,6 +27,10 @@ class HomeFeedError extends HomeFeedState {
 class HomeFeedLoaded extends HomeFeedState {
   final List<CategoryEntity> categories;
   final List<PhotographerEntity> ads;
+
+  /// Freelancers directory (from all-freelancers-data) shown as a horizontal
+  /// rail at the top of the home feed.
+  final List<PhotographerEntity> freelancers;
   final int? selectedCategoryId;
   final bool isAdsLoading;
   final String userName;
@@ -34,6 +38,7 @@ class HomeFeedLoaded extends HomeFeedState {
   const HomeFeedLoaded({
     required this.categories,
     required this.ads,
+    this.freelancers = const [],
     required this.selectedCategoryId,
     this.isAdsLoading = false,
     this.userName = '',
@@ -42,6 +47,7 @@ class HomeFeedLoaded extends HomeFeedState {
   HomeFeedLoaded copyWith({
     List<CategoryEntity>? categories,
     List<PhotographerEntity>? ads,
+    List<PhotographerEntity>? freelancers,
     int? selectedCategoryId,
     bool clearSelectedCategory = false,
     bool? isAdsLoading,
@@ -50,6 +56,7 @@ class HomeFeedLoaded extends HomeFeedState {
     return HomeFeedLoaded(
       categories: categories ?? this.categories,
       ads: ads ?? this.ads,
+      freelancers: freelancers ?? this.freelancers,
       selectedCategoryId: clearSelectedCategory
           ? null
           : (selectedCategoryId ?? this.selectedCategoryId),
@@ -62,6 +69,7 @@ class HomeFeedLoaded extends HomeFeedState {
   List<Object?> get props => [
     categories,
     ads,
+    freelancers,
     selectedCategoryId,
     isAdsLoading,
     userName,

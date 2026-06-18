@@ -24,6 +24,16 @@ class FreelancerRepositoryImpl implements FreelancerRepository {
   }
 
   @override
+  Future<Either<Failure, String>> getFreelancerPhone(String id) async {
+    try {
+      final phone = await remoteDataSource.getFreelancerPhone(id);
+      return Right(phone);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, WorkDetailsEntity>> getWorkDetails(String id) async {
     try {
       final result = await remoteDataSource.getWorkDetails(id);

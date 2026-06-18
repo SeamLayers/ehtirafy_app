@@ -19,14 +19,15 @@ class SearchCubit extends Cubit<SearchState> {
     );
   }
 
-  Future<void> search(String query) async {
+  Future<void> search(String query, {String? type}) async {
     if (query.trim().isEmpty) return;
 
     if (state is SearchLoaded) {
       final currentState = state as SearchLoaded;
-      emit(currentState.copyWith(isSearching: true));
+      final effectiveType = type ?? currentState.selectedType;
+      emit(currentState.copyWith(isSearching: true, selectedType: effectiveType));
 
-      final result = await searchUseCase.search(query);
+      final result = await searchUseCase.search(query, type: effectiveType);
 
       result.fold(
         (failure) => emit(SearchError(_mapFailureToMessage(failure))),
@@ -42,10 +43,27 @@ class SearchCubit extends Cubit<SearchState> {
               searchHistory: updatedHistory,
               searchResults: results,
               isSearching: false,
+              selectedType: effectiveType,
+              lastQuery: query,
             ),
           );
         },
       );
+    }
+  }
+
+  /// Switches the active result type. If there's an active query, re-runs the
+  /// search against the new type.
+  Future<void> setType(String type) async {
+    if (state is SearchLoaded) {
+      final currentState = state as SearchLoaded;
+      if (currentState.selectedType == type) return;
+      emit(currentState.copyWith(selectedType: type));
+
+      final query = currentState.lastQuery;
+      if (query != null && query.trim().isNotEmpty) {
+        await search(query, type: type);
+      }
     }
   }
 

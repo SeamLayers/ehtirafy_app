@@ -56,14 +56,28 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     );
                   } else if (state is SearchLoaded) {
-                    if (state.isSearching) {
-                      return _buildLoading();
-                    }
-                    if (state.searchResults != null &&
-                        state.searchResults!.isNotEmpty) {
-                      return _buildSearchResults(context, state.searchResults!);
-                    }
-                    return _buildHistoryView(context, state);
+                    final hasActiveSearch = state.searchResults != null;
+                    return Column(
+                      children: [
+                        if (hasActiveSearch) _buildTypeTabs(context, state),
+                        Expanded(
+                          child: Builder(
+                            builder: (context) {
+                              if (state.isSearching) {
+                                return _buildLoading();
+                              }
+                              if (hasActiveSearch) {
+                                return _buildSearchResults(
+                                  context,
+                                  state.searchResults!,
+                                );
+                              }
+                              return _buildHistoryView(context, state);
+                            },
+                          ),
+                        ),
+                      ],
+                    );
                   }
                   return const SizedBox.shrink();
                 },
@@ -311,13 +325,93 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
+  Widget _buildTypeTabs(BuildContext context, SearchLoaded state) {
+    const tabs = <MapEntry<String, String>>[
+      MapEntry('all', AppStrings.searchTypeAll),
+      MapEntry('freelancer', AppStrings.searchTypeFreelancer),
+      MapEntry('service', AppStrings.searchTypeService),
+      MapEntry('work', AppStrings.searchTypeWork),
+    ];
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 12.h),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            for (final tab in tabs) ...[
+              _buildTypeTab(
+                context,
+                label: tab.value.tr(),
+                isActive: state.selectedType == tab.key,
+                onTap: () => context.read<SearchCubit>().setType(tab.key),
+              ),
+              SizedBox(width: AppSpacing.sm),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTypeTab(
+    BuildContext context, {
+    required String label,
+    required bool isActive,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20.r),
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 9.h),
+          decoration: BoxDecoration(
+            color: isActive ? AppColors.gold : Colors.white,
+            borderRadius: BorderRadius.circular(20.r),
+            border: Border.all(
+              color: isActive ? AppColors.gold : AppColors.grey200,
+            ),
+            boxShadow: isActive
+                ? [
+                    BoxShadow(
+                      color: AppColors.gold.withValues(alpha: 0.25),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ]
+                : const [
+                    BoxShadow(
+                      color: AppColors.shadowLight,
+                      blurRadius: 4,
+                      offset: Offset(0, 1),
+                    ),
+                  ],
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: isActive ? Colors.white : AppColors.textSecondary,
+              fontSize: 13.sp,
+              fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
+              fontFamily: 'Cairo',
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildSearchResults(
     BuildContext context,
     List<SearchResultEntity> results,
   ) {
     if (results.isEmpty) {
-      return const CustomEmptyState(
-        title: 'لا توجد نتائج',
+      return CustomEmptyState(
+        title: AppStrings.searchNoResults.tr(),
         icon: Icons.search_off_rounded,
         iconSize: 44,
       );
@@ -333,12 +427,38 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
+  void _onResultTap(BuildContext context, SearchResultEntity result) {
+    switch (result.type) {
+      case 'freelancer':
+        context.push('/freelancer/${result.freelancerId ?? result.id}');
+        break;
+      case 'service':
+        context.push(
+          '/advertisement/${result.id}',
+          extra: {
+            'freelancerId': result.freelancerId,
+            'freelancerName': result.title,
+          },
+        );
+        break;
+      case 'work':
+        context.push('/work/${result.id}');
+        break;
+      case 'history':
+        _searchController.text = result.title;
+        context.read<SearchCubit>().search(result.title);
+        break;
+      default:
+        context.push('/freelancer/${result.freelancerId ?? result.id}');
+    }
+  }
+
   Widget _buildResultCard(BuildContext context, SearchResultEntity result) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(18.r),
-        onTap: () => context.push('/freelancer/${result.id}'),
+        onTap: () => _onResultTap(context, result),
         child: Container(
           padding: EdgeInsets.all(16.w),
           decoration: BoxDecoration(
@@ -424,7 +544,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                 fontFamily: 'Cairo',
                               ),
                             ),
-                            if (result.reviewsCount != null) ...[
+                            if (result.reviewsCount != null &&
+                                result.reviewsCount! > 0) ...[
                               SizedBox(width: 4.w),
                               Text(
                                 '(${result.reviewsCount})',
@@ -436,6 +557,18 @@ class _SearchScreenState extends State<SearchScreen> {
                               ),
                             ],
                           ],
+                        ),
+                      ),
+                    ],
+                    if (result.type == 'service' && result.price != null) ...[
+                      SizedBox(height: 8.h),
+                      Text(
+                        '${result.price}',
+                        style: TextStyle(
+                          color: AppColors.gold,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w800,
+                          fontFamily: 'Cairo',
                         ),
                       ),
                     ],

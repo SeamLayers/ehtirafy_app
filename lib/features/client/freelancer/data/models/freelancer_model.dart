@@ -26,6 +26,7 @@ class FreelancerModel extends FreelancerEntity {
     required super.memberSince,
     required super.imageUrl,
     required List<PortfolioItemModel> super.portfolio,
+    super.phone = '',
     List<ServiceModel> super.services = const [],
     List<ReviewModel> super.reviews = const [],
   });
@@ -70,6 +71,11 @@ class FreelancerModel extends FreelancerEntity {
       }
     }
 
+    // Phone may arrive under several keys; absent/null → empty string.
+    final phone =
+        (json['phone'] ?? json['mobile'] ?? json['phone_number'])?.toString() ??
+        '';
+
     return FreelancerModel(
       id: json['id']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
@@ -86,6 +92,7 @@ class FreelancerModel extends FreelancerEntity {
       memberSince: memberSince,
       imageUrl:
           json['avatar']?.toString() ?? json['imageUrl']?.toString() ?? '',
+      phone: phone,
       portfolio: rawPortfolio is List
           ? rawPortfolio
                 .whereType<Map>()

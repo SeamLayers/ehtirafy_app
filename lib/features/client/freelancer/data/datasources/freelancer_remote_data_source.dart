@@ -7,6 +7,7 @@ import 'package:ehtirafy_app/features/client/freelancer/data/models/advertisemen
 
 abstract class FreelancerRemoteDataSource {
   Future<FreelancerModel> getFreelancerProfile(String id);
+  Future<String> getFreelancerPhone(String id);
   Future<WorkDetailsModel> getWorkDetails(String id);
   Future<AdvertisementDetailsModel> getAdvertisementDetails(String id);
 }
@@ -28,6 +29,31 @@ class FreelancerRemoteDataSourceImpl implements FreelancerRemoteDataSource {
           throw const ServerException('Invalid response format');
         }
         return FreelancerModel.fromJson(data);
+      } else {
+        final body = response.data;
+        final message = (body is Map) ? body['message'] : null;
+        throw ServerException(message?.toString() ?? 'Unknown error');
+      }
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<String> getFreelancerPhone(String id) async {
+    try {
+      final response = await dioClient.get(ApiConstants.freelancerProfile(id));
+
+      if (response.statusCode == 200) {
+        final body = response.data;
+        final data = (body is Map) ? body['data'] : null;
+        if (data is! Map<String, dynamic>) {
+          throw const ServerException('Invalid response format');
+        }
+        // Phone may arrive under several keys; absent/null → empty string.
+        return (data['phone'] ?? data['mobile'] ?? data['phone_number'])
+                ?.toString() ??
+            '';
       } else {
         final body = response.data;
         final message = (body is Map) ? body['message'] : null;

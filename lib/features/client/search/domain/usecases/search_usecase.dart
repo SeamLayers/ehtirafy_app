@@ -12,10 +12,13 @@ class SearchUseCase {
     return await repository.getSearchHistory();
   }
 
-  Future<Either<Failure, List<SearchResultEntity>>> search(String query) async {
+  Future<Either<Failure, List<SearchResultEntity>>> search(
+    String query, {
+    String type = 'all',
+  }) async {
     // Save to history before searching
     await repository.saveSearchToHistory(query);
-    return await repository.search(query);
+    return await repository.search(query, type: type);
   }
 
   Future<Either<Failure, void>> deleteFromHistory(String query) async {

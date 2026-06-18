@@ -12,6 +12,8 @@ import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
 import 'package:ehtirafy_app/core/widgets/primary_button.dart';
 import 'package:ehtirafy_app/core/widgets/contact_options_sheet.dart';
 import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
+import 'package:ehtirafy_app/core/di/service_locator.dart';
+import 'package:ehtirafy_app/features/client/freelancer/domain/usecases/get_freelancer_phone_usecase.dart';
 import '../cubits/advertisement_details_cubit.dart';
 import '../cubits/advertisement_details_state.dart';
 
@@ -385,7 +387,15 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                         : ad.title;
                     showContactOptionsSheet(
                       context,
-                      phone: ad.ownerPhone,
+                      // The ad payload doesn't carry the owner's phone, so fetch
+                      // it on demand from the freelancer profile when tapped.
+                      phoneResolver: () async {
+                        if (publisherId.isEmpty) return null;
+                        final result = await sl<GetFreelancerPhoneUseCase>()(
+                          publisherId,
+                        );
+                        return result.fold((_) => null, (phone) => phone);
+                      },
                       onChat: () {
                         // Chatting is account-based: require login for guests.
                         if (!AuthGuard.ensureAuth(context)) return;

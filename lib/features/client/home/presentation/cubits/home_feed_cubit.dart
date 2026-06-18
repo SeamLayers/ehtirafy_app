@@ -3,6 +3,7 @@ import 'package:ehtirafy_app/features/client/home/domain/entities/category_entit
 import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_entity.dart';
 import 'package:ehtirafy_app/features/client/home/domain/usecases/get_categories_usecase.dart';
 import 'package:ehtirafy_app/features/client/home/domain/usecases/get_featured_photographers_usecase.dart';
+import 'package:ehtirafy_app/features/client/home/domain/usecases/get_all_freelancers_usecase.dart';
 import 'package:ehtirafy_app/features/client/home/domain/usecases/get_advertisements_by_category_usecase.dart';
 import 'package:ehtirafy_app/features/shared/auth/data/datasources/user_local_data_source.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/home_feed_state.dart';
@@ -13,12 +14,14 @@ import 'package:ehtirafy_app/features/client/home/presentation/cubits/home_feed_
 class HomeFeedCubit extends Cubit<HomeFeedState> {
   final GetCategoriesUseCase getCategoriesUseCase;
   final GetFeaturedPhotographersUseCase getFeaturedPhotographersUseCase;
+  final GetAllFreelancersUseCase getAllFreelancersUseCase;
   final GetAdvertisementsByCategoryUseCase getAdvertisementsByCategoryUseCase;
   final UserLocalDataSource userLocalDataSource;
 
   HomeFeedCubit({
     required this.getCategoriesUseCase,
     required this.getFeaturedPhotographersUseCase,
+    required this.getAllFreelancersUseCase,
     required this.getAdvertisementsByCategoryUseCase,
     required this.userLocalDataSource,
   }) : super(HomeFeedInitial());
@@ -38,15 +41,20 @@ class HomeFeedCubit extends Cubit<HomeFeedState> {
       getFeaturedPhotographersUseCase().then(
         (r) => r.fold((_) => <PhotographerEntity>[], (list) => list),
       ),
+      getAllFreelancersUseCase().then(
+        (r) => r.fold((_) => <PhotographerEntity>[], (list) => list),
+      ),
     ]);
 
     final categories = results[0] as List<CategoryEntity>;
     _allAds = results[1] as List<PhotographerEntity>;
+    final freelancers = results[2] as List<PhotographerEntity>;
 
     emit(
       HomeFeedLoaded(
         categories: categories,
         ads: _allAds,
+        freelancers: freelancers,
         selectedCategoryId: null,
         userName: user?.name ?? '',
       ),
@@ -105,9 +113,13 @@ class HomeFeedCubit extends Cubit<HomeFeedState> {
       getFeaturedPhotographersUseCase().then(
         (r) => r.fold((_) => _allAds, (list) => list),
       ),
+      getAllFreelancersUseCase().then(
+        (r) => r.fold((_) => current.freelancers, (list) => list),
+      ),
     ]);
     final categories = results[0] as List<CategoryEntity>;
     _allAds = results[1] as List<PhotographerEntity>;
+    final freelancers = results[2] as List<PhotographerEntity>;
 
     final selectedId = current.selectedCategoryId;
     if (selectedId == null) {
@@ -115,6 +127,7 @@ class HomeFeedCubit extends Cubit<HomeFeedState> {
         current.copyWith(
           categories: categories,
           ads: _allAds,
+          freelancers: freelancers,
           isAdsLoading: false,
         ),
       );
@@ -129,9 +142,20 @@ class HomeFeedCubit extends Cubit<HomeFeedState> {
       return;
     }
     result.fold(
-      (_) => emit(latest.copyWith(categories: categories, isAdsLoading: false)),
+      (_) => emit(
+        latest.copyWith(
+          categories: categories,
+          freelancers: freelancers,
+          isAdsLoading: false,
+        ),
+      ),
       (ads) => emit(
-        latest.copyWith(categories: categories, ads: ads, isAdsLoading: false),
+        latest.copyWith(
+          categories: categories,
+          ads: ads,
+          freelancers: freelancers,
+          isAdsLoading: false,
+        ),
       ),
     );
   }

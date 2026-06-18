@@ -41,6 +41,19 @@ class UserProfileEntity {
     this.bio,
   });
 
+  /// Whether the user has provided a phone number. A null phone is mapped to
+  /// an empty string by [UserProfileModel.fromJson], so we detect "no phone"
+  /// via an empty/whitespace check rather than a null check.
+  bool get hasPhone => phone.trim().isNotEmpty;
+
+  /// Profile completion as a percentage, driven by a simple 2-field model:
+  /// the account base (name + email, always present after signup) covers 50%,
+  /// and a present phone number adds the remaining 50%.
+  int get completionPercent => hasPhone ? 100 : 50;
+
+  /// Whether every tracked profile field is filled in.
+  bool get isProfileComplete => completionPercent >= 100;
+
   UserProfileEntity copyWith({
     String? id,
     String? name,

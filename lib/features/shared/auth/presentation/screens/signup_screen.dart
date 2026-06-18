@@ -111,14 +111,9 @@ class _SignupFormState extends State<_SignupForm> {
     return BlocConsumer<SignupCubit, SignupState>(
       listener: (context, state) {
         if (state is SignupOtpSent) {
-          // Show OTP if available (for debugging/fake backend)
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('OTP: ${state.otp}'),
-              duration: const Duration(seconds: 10),
-            ),
-          );
-
+          // Do NOT surface the OTP code in a toast. It is passed silently to
+          // the OTP screen via `extra` for auto-fill; the user never sees the
+          // raw code in a snackbar.
           context.push(
             '/auth/otp?phone=${Uri.encodeComponent(_phoneController.text)}',
             extra: {

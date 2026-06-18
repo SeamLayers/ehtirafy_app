@@ -14,6 +14,7 @@ class FreelancerEntity extends Equatable {
   final String responseTime;
   final String memberSince;
   final String imageUrl;
+  final String phone;
   final List<PortfolioItemEntity> portfolio;
   final List<ServiceEntity> services;
   final List<ReviewEntity> reviews;
@@ -31,6 +32,7 @@ class FreelancerEntity extends Equatable {
     required this.memberSince,
     required this.imageUrl,
     required this.portfolio,
+    this.phone = '',
     this.services = const [],
     this.reviews = const [],
   });
@@ -48,6 +50,7 @@ class FreelancerEntity extends Equatable {
     responseTime,
     memberSince,
     imageUrl,
+    phone,
     portfolio,
     services,
     reviews,

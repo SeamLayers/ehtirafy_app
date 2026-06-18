@@ -61,6 +61,7 @@ class FreelancerCubit extends Cubit<FreelancerState> {
           responseTime: freelancer.responseTime,
           memberSince: freelancer.memberSince,
           imageUrl: freelancer.imageUrl,
+          phone: freelancer.phone,
           portfolio: freelancer.portfolio.cast(),
           services: freelancer.services.cast(),
           reviews: reviews,

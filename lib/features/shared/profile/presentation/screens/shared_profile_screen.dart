@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/di/service_locator.dart';
 import '../manager/profile_cubit.dart';
 import '../manager/profile_state.dart';
+import '../widgets/profile_completion_card.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_menu.dart';
 import '../widgets/profile_tile.dart';
@@ -119,6 +120,13 @@ class _SharedProfileScreenState extends State<SharedProfileScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          if (!user.hasPhone) ...[
+                            ProfileCompletionCard(
+                              user: user,
+                              onTap: () => context.push('/profile/edit'),
+                            ),
+                            SizedBox(height: AppSpacing.lg),
+                          ],
                           ProfileHeader(user: user),
                           SizedBox(height: AppSpacing.lg),
                           ProfileMenu(currentRole: user.currentRole),

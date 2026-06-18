@@ -29,9 +29,12 @@ class SearchRepositoryImpl implements SearchRepository {
   }
 
   @override
-  Future<Either<Failure, List<SearchResultEntity>>> search(String query) async {
+  Future<Either<Failure, List<SearchResultEntity>>> search(
+    String query, {
+    String type = 'all',
+  }) async {
     try {
-      final result = await remoteDataSource.search(query);
+      final result = await remoteDataSource.search(query, type: type);
       return Right(result);
     } catch (e) {
       return Left(ServerFailure(e.toString()));

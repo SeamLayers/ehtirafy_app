@@ -8,39 +8,86 @@ import 'package:ehtirafy_app/core/theme/app_colors.dart';
 /// Shows the "تواصل" (Contact) modal with two options:
 ///  - Contact via Mobile → opens the phone dialer (tel:)
 ///  - Chat → invokes [onChat] (typically opens the in-app chat room)
+///
+/// The phone number can be supplied two ways:
+///  - [phone]: a number already on hand (e.g. from a loaded profile).
+///  - [phoneResolver]: an async lookup invoked on tap when no number is known
+///    up front (e.g. the ad-details screen, which must fetch it on demand).
+/// When [phone] is empty/null and a [phoneResolver] is given, the resolver runs
+/// behind a brief loading indicator before deciding whether to dial.
 Future<void> showContactOptionsSheet(
   BuildContext context, {
-  required String phone,
+  String? phone,
+  Future<String?> Function()? phoneResolver,
   required VoidCallback onChat,
 }) {
   return showModalBottomSheet<void>(
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
-    builder: (sheetContext) =>
-        _ContactOptionsSheet(phone: phone, onChat: onChat),
+    builder: (sheetContext) => _ContactOptionsSheet(
+      phone: phone,
+      phoneResolver: phoneResolver,
+      onChat: onChat,
+    ),
   );
 }
 
 class _ContactOptionsSheet extends StatelessWidget {
-  final String phone;
+  final String? phone;
+  final Future<String?> Function()? phoneResolver;
   final VoidCallback onChat;
 
-  const _ContactOptionsSheet({required this.phone, required this.onChat});
+  const _ContactOptionsSheet({
+    this.phone,
+    this.phoneResolver,
+    required this.onChat,
+  });
 
   Future<void> _callMobile(BuildContext context) async {
+    // Capture the messenger of the underlying screen before popping the sheet
+    // so the toast still has a place to render.
     final messenger = ScaffoldMessenger.of(context);
-    Navigator.of(context).pop();
-    final trimmed = phone.trim();
-    // No number on file → tell the user it's unavailable.
-    if (trimmed.isEmpty) {
+    final navigator = Navigator.of(context);
+    navigator.pop();
+
+    // Resolve the phone: prefer a number passed up front; otherwise look it up
+    // on demand behind a tiny loading dialog.
+    String resolved = (phone ?? '').trim();
+    if (resolved.isEmpty && phoneResolver != null) {
+      final overlay = navigator.overlay;
+      // Capture the root navigator now so we can pop the dialog after the await
+      // without touching a BuildContext across the async gap.
+      final rootNavigator = overlay != null
+          ? Navigator.of(overlay.context, rootNavigator: true)
+          : null;
+      if (overlay != null) {
+        showDialog<void>(
+          context: overlay.context,
+          barrierDismissible: false,
+          builder: (_) => const Center(child: CircularProgressIndicator()),
+        );
+      }
+      String? fetched;
+      try {
+        fetched = await phoneResolver!();
+      } catch (_) {
+        fetched = null;
+      }
+      // Dismiss the loading dialog.
+      rootNavigator?.pop();
+      resolved = (fetched ?? '').trim();
+    }
+
+    // No number on file → tell the user the advertiser hasn't added one.
+    if (resolved.isEmpty) {
       messenger.showSnackBar(
-        SnackBar(content: Text(AppStrings.contactNoPhone.tr())),
+        SnackBar(content: Text(AppStrings.contactFreelancerNoPhone.tr())),
       );
       return;
     }
     // A number exists but the dialer couldn't be opened → distinct message.
-    final uri = Uri(scheme: 'tel', path: trimmed);
+    final uri = Uri(scheme: 'tel', path: resolved);
     bool launched = false;
     try {
       launched = await launchUrl(uri);

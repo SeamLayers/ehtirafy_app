@@ -38,6 +38,7 @@ import 'package:ehtirafy_app/features/client/freelancer/data/datasources/freelan
 import 'package:ehtirafy_app/features/client/freelancer/data/repositories/freelancer_repository_impl.dart';
 import 'package:ehtirafy_app/features/client/freelancer/domain/repositories/freelancer_repository.dart';
 import 'package:ehtirafy_app/features/client/freelancer/domain/usecases/get_freelancer_profile_usecase.dart';
+import 'package:ehtirafy_app/features/client/freelancer/domain/usecases/get_freelancer_phone_usecase.dart';
 import 'package:ehtirafy_app/features/client/freelancer/domain/usecases/get_work_details_usecase.dart';
 import 'package:ehtirafy_app/features/client/freelancer/domain/usecases/get_advertisement_details_usecase.dart';
 import 'package:ehtirafy_app/features/client/freelancer/presentation/cubits/freelancer_cubit.dart';
@@ -149,6 +150,7 @@ Future<void> setupLocator() async {
     () => HomeFeedCubit(
       getCategoriesUseCase: sl(),
       getFeaturedPhotographersUseCase: sl(),
+      getAllFreelancersUseCase: sl(),
       getAdvertisementsByCategoryUseCase: sl(),
       userLocalDataSource: sl(),
     ),
@@ -173,6 +175,7 @@ Future<void> setupLocator() async {
     ),
   );
   sl.registerLazySingleton(() => GetFreelancerProfileUseCase(sl()));
+  sl.registerLazySingleton(() => GetFreelancerPhoneUseCase(sl()));
   sl.registerLazySingleton<FreelancerRepository>(
     () => FreelancerRepositoryImpl(remoteDataSource: sl()),
   );

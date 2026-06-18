@@ -13,7 +13,9 @@ class ApiConstants {
   static String deleteAccount(String id) => '/api/$version/auth/delete-account/$id';
 
   // Notifications Endpoint
-  static const String notifications = '/api/$version/notifications';
+  // Collection exposes `notifications-firebase` for the list; mark-as-read
+  // stays at notifications/{id}/read.
+  static const String notifications = '/api/$version/notifications-firebase';
   static String readNotification(String id) =>
       '/api/$version/notifications/$id/read';
 
@@ -53,8 +55,6 @@ class ApiConstants {
       '$baseUrl/api/$version/front/contracts-relative';
   static String updateContract(String id) =>
       '$baseUrl/api/$version/front/contract/$id/update';
-  static String confirmPayment(String id) =>
-      '$baseUrl/api/$version/front/contract/$id/confirm-payment';
   static String contractDetail(String id) =>
       '$baseUrl/api/$version/contract-detail/$id';
 
@@ -66,6 +66,18 @@ class ApiConstants {
   static const String search = '$baseUrl/api/$version/search';
   static const String bestFreelancers =
       '$baseUrl/api/$version/best-freelancers';
+
+  /// All freelancers (full directory) — used by the home freelancers rail and
+  /// the "All Freelancers" screen. Distinct from [bestFreelancers].
+  static const String allFreelancersData =
+      '$baseUrl/api/$version/all-freelancers-data';
+
+  // App-wide settings / metadata
+  static const String appStatistics = '/api/$version/app/statistics';
+  static const String globalConstants = '/api/$version/global-constants';
+
+  // Reviews / ratings
+  static const String addRate = '$baseUrl/api/$version/front/add-rate';
 
   // Detail Endpoints
   /// Get advertisement/service details by ID
@@ -81,14 +93,6 @@ class ApiConstants {
       '/api/$version/front/user-rates/$userId';
 
   // Payment Endpoints
-  static const String bankAccountDetails =
-      '$baseUrl/api/$version/front/payment/bank-details';
   static const String submitPaymentProof =
       '$baseUrl/api/$version/front/create-transaction';
-
-  // Dashboard Payment Review
-  static const String reviewPayTransactions =
-      '$baseUrl/api/$version/dashboard/review-pay-transactions';
-  static const String updateTransaction =
-      '$baseUrl/api/$version/dashboard/update-transaction';
 }

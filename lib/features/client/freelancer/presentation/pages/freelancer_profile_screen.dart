@@ -986,7 +986,7 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                   // advertisement details screen (call / chat) — no booking.
                   showContactOptionsSheet(
                     context,
-                    phone: '',
+                    phone: freelancer.phone,
                     onChat: () {
                       if (!AuthGuard.ensureAuth(context)) return;
                       context.push(

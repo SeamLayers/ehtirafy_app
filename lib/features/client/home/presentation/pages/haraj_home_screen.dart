@@ -8,7 +8,9 @@ import 'package:ehtirafy_app/core/di/service_locator.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/widgets/custom_empty_state.dart';
+import 'package:ehtirafy_app/core/widgets/user_avatar.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/category_entity.dart';
+import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_entity.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/home_feed_cubit.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/home_feed_state.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/widgets/haraj_ad_card.dart';
@@ -65,6 +67,8 @@ class _HarajHomeView extends StatelessWidget {
                   if (state is HomeFeedLoaded) {
                     return Column(
                       children: [
+                        if (state.freelancers.isNotEmpty)
+                          _FreelancersRail(freelancers: state.freelancers),
                         _CategoryStrip(state: state),
                         Expanded(child: _buildList(context, state)),
                       ],
@@ -191,6 +195,124 @@ class _HeaderIconButton extends StatelessWidget {
   }
 }
 
+/// Haraj-style horizontal freelancers rail shown above the category tabs.
+/// Each item opens that freelancer's profile; "view all" opens the full list.
+class _FreelancersRail extends StatelessWidget {
+  final List<PhotographerEntity> freelancers;
+
+  const _FreelancersRail({required this.freelancers});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.only(top: 12.h, bottom: 4.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.workspace_premium_outlined,
+                  color: AppColors.gold,
+                  size: 18.sp,
+                ),
+                SizedBox(width: 6.w),
+                Text(
+                  AppStrings.homeFeedFreelancersTitle.tr(),
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 14.sp,
+                    fontFamily: 'Cairo',
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const Spacer(),
+                InkWell(
+                  onTap: () => context.push('/all-freelancers'),
+                  borderRadius: BorderRadius.circular(8.r),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 6.w,
+                      vertical: 2.h,
+                    ),
+                    child: Text(
+                      AppStrings.homeFeedViewAll.tr(),
+                      style: TextStyle(
+                        color: AppColors.gold,
+                        fontSize: 12.sp,
+                        fontFamily: 'Cairo',
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 10.h),
+          SizedBox(
+            height: 92.h,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              itemCount: freelancers.length,
+              separatorBuilder: (_, __) => SizedBox(width: 14.w),
+              itemBuilder: (context, index) {
+                final f = freelancers[index];
+                return GestureDetector(
+                  onTap: () {
+                    final id = f.freelancerId.isNotEmpty ? f.freelancerId : f.id;
+                    if (id.isNotEmpty) context.push('/freelancer/$id');
+                  },
+                  child: SizedBox(
+                    width: 64.w,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppColors.gold.withValues(alpha: 0.6),
+                              width: 2,
+                            ),
+                          ),
+                          child: UserAvatar(
+                            name: f.name,
+                            imageUrl: f.imageUrl.isEmpty ? null : f.imageUrl,
+                            size: 56,
+                          ),
+                        ),
+                        SizedBox(height: 6.h),
+                        Text(
+                          f.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 11.sp,
+                            fontFamily: 'Cairo',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _CategoryStrip extends StatelessWidget {
   final HomeFeedLoaded state;
 
@@ -201,15 +323,15 @@ class _CategoryStrip extends StatelessWidget {
     final locale = context.locale.languageCode;
     final cubit = context.read<HomeFeedCubit>();
 
-    // Build chip list: "All" first, then every category.
-    final chips = <Widget>[
-      _CategoryChip(
+    // Build tab list: "All" first, then every category.
+    final tabs = <Widget>[
+      _CategoryTab(
         label: AppStrings.homeFeedAll.tr(),
         selected: state.selectedCategoryId == null,
         onTap: () => cubit.selectCategory(null),
       ),
       ...state.categories.map(
-        (CategoryEntity c) => _CategoryChip(
+        (CategoryEntity c) => _CategoryTab(
           label: c.getLocalizedName(locale),
           selected: state.selectedCategoryId == c.id,
           onTap: () => cubit.selectCategory(c.id),
@@ -218,27 +340,34 @@ class _CategoryStrip extends StatelessWidget {
     ];
 
     return Container(
-      color: Colors.white,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(color: AppColors.grey200, width: 1),
+        ),
+      ),
       child: SizedBox(
-        height: 52.h,
+        height: 46.h,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-          itemCount: chips.length,
-          separatorBuilder: (_, __) => SizedBox(width: 8.w),
-          itemBuilder: (context, index) => chips[index],
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          itemCount: tabs.length,
+          separatorBuilder: (_, __) => SizedBox(width: 4.w),
+          itemBuilder: (context, index) => tabs[index],
         ),
       ),
     );
   }
 }
 
-class _CategoryChip extends StatelessWidget {
+/// Haraj-style category tab: text label with a gold underline indicator for
+/// the active tab (no pill background).
+class _CategoryTab extends StatelessWidget {
   final String label;
   final bool selected;
   final VoidCallback onTap;
 
-  const _CategoryChip({
+  const _CategoryTab({
     required this.label,
     required this.selected,
     required this.onTap,
@@ -248,27 +377,33 @@ class _CategoryChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(horizontal: 18.w),
-        decoration: BoxDecoration(
-          color: selected ? AppColors.gold : AppColors.grey100,
-          borderRadius: BorderRadius.circular(999.r),
-          border: Border.all(
-            color: selected
-                ? AppColors.gold
-                : AppColors.grey200,
-          ),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: selected ? Colors.white : AppColors.textPrimary,
-            fontSize: 13.sp,
-            fontFamily: 'Cairo',
-            fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
-          ),
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                color: selected ? AppColors.gold : AppColors.textSecondary,
+                fontSize: 14.sp,
+                fontFamily: 'Cairo',
+                fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: 6.h),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              height: 3.h,
+              width: 22.w,
+              decoration: BoxDecoration(
+                color: selected ? AppColors.gold : Colors.transparent,
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+          ],
         ),
       ),
     );

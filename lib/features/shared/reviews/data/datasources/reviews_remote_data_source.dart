@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:ehtirafy_app/core/network/api_constants.dart';
 import 'package:ehtirafy_app/core/network/dio_client.dart';
 import 'package:ehtirafy_app/core/errors/exceptions.dart';
 import 'package:ehtirafy_app/features/shared/reviews/data/models/review_model.dart';
@@ -34,7 +35,7 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
       });
 
       final response = await dioClient.post(
-        '/api/v1/front/add-rate',
+        ApiConstants.addRate,
         data: formData,
       );
 
@@ -58,7 +59,7 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
   @override
   Future<List<ReviewModel>> getUserRates({required String userId}) async {
     try {
-      final response = await dioClient.get('/api/v1/front/user-rates/$userId');
+      final response = await dioClient.get(ApiConstants.userRates(userId));
 
       if (response.statusCode == 200) {
         final body = response.data;

@@ -90,6 +90,8 @@ class AppStrings {
   static const homeFeedAdOwner = 'home_feed.ad_owner';
   static const homeFeedAdFallbackTitle = 'home_feed.ad_fallback_title';
   static const homeFeedNow = 'home_feed.now';
+  static const homeFeedFreelancersTitle = 'home_feed.freelancers_title';
+  static const homeFeedViewAll = 'view_all';
 
   // Contracts & Chats (merged tab)
   static const contractsChatsLoadError = 'contracts_chats.load_error';
@@ -105,6 +107,13 @@ class AppStrings {
   static const contactChatSubtitle = 'contact_modal.chat_subtitle';
   static const contactNoPhone = 'contact_modal.no_phone';
   static const contactCallFailed = 'contact_modal.call_failed';
+  static const contactFreelancerNoPhone = 'contact_modal.freelancer_no_phone';
+
+  // Profile completion card (phone-not-added prompt)
+  static const profileCompletionBadge = 'profile_completion.badge_incomplete';
+  static const profileCompletionTitle = 'profile_completion.title';
+  static const profileCompletionPrompt = 'profile_completion.add_phone_prompt';
+  static const profileCompletionCta = 'profile_completion.cta';
 
   // More menu
   static const moreTitle = 'more_menu.title';
@@ -270,6 +279,12 @@ class AppStrings {
   static const searchRecentSearches = 'search.recentSearches';
   static const searchMostSearched = 'search.mostSearched';
   static const searchHint = 'search.hint';
+  // Search type tabs (server types: freelancer|service|work; "all" merges them)
+  static const searchTypeAll = 'search.types.all';
+  static const searchTypeFreelancer = 'search.types.freelancer';
+  static const searchTypeService = 'search.types.service';
+  static const searchTypeWork = 'search.types.work';
+  static const searchNoResults = 'search.no_results';
   static const searchFilterTitle = 'search.filter.title';
   static const searchFilterPriceRange = 'search.filter.priceRange';
   static const searchFilterRating = 'search.filter.rating';

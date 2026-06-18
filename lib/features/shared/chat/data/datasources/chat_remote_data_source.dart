@@ -44,7 +44,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       // Fetch contracts from API
       // Query param user_type determines if we are looking as customer or freelancer
       final response = await dioClient.get(
-        '/api/v1/front/contracts-relative',
+        ApiConstants.contractsRelative,
         queryParameters: {'user_type': userType},
         options: Options(
           extra: {

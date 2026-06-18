@@ -35,6 +35,8 @@
     "passwordLabel": "كلمة المرور",
     "passwordHint": "••••••••",
     "forgotPassword": "نسيت كلمة المرور؟",
+    "forgotPasswordSubtitle": "أدخل بريدك الإلكتروني وسنرسل لك رمز التحقق لإعادة تعيين كلمة المرور",
+    "sendResetLink": "إرسال رمز التحقق",
     "loginButton": "تسجيل الدخول",
     "noAccount": "ليس لديك حساب؟",
     "createAccount": "إنشاء حساب جديد",
@@ -402,6 +404,13 @@
     "recentSearches": "عمليات البحث الأخيرة",
     "mostSearched": "الأكثر بحثاً",
     "hint": "ابحث عن إعلانات التصوير...",
+    "no_results": "لا توجد نتائج مطابقة",
+    "types": {
+      "all": "الكل",
+      "freelancer": "المعلِنون",
+      "service": "الإعلانات",
+      "work": "الأعمال"
+    },
     "filter": {
       "title": "تصفية النتائج",
       "priceRange": "نطاق السعر",
@@ -656,7 +665,8 @@
     "category_empty": "لا توجد إعلانات في هذه الفئة",
     "ad_owner": "المعلِن",
     "ad_fallback_title": "إعلان",
-    "now": "الآن"
+    "now": "الآن",
+    "freelancers_title": "المعلِنون المميّزون"
   },
   "contracts_chats": {
     "load_error": "تعذّر تحميل العقود والمحادثات، حاول مرة أخرى",
@@ -671,7 +681,14 @@
     "chat": "محادثة",
     "chat_subtitle": "ابدأ محادثة داخل التطبيق",
     "no_phone": "رقم الجوال غير متوفر حالياً",
-    "call_failed": "تعذّر فتح تطبيق الاتصال"
+    "call_failed": "تعذّر فتح تطبيق الاتصال",
+    "freelancer_no_phone": "لم يقم المعلِن بإضافة رقم هاتفه بعد"
+  },
+  "profile_completion": {
+    "badge_incomplete": "غير مكتمل",
+    "title": "أكمل ملفك الشخصي",
+    "add_phone_prompt": "أضف رقم هاتفك لتوثيق حسابك وبناء الثقة مع العملاء",
+    "cta": "إضافة رقم الهاتف"
   },
   "more_menu": {
     "title": "المزيد",

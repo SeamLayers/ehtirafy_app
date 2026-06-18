@@ -35,6 +35,8 @@
     "passwordLabel": "Password",
     "passwordHint": "••••••••",
     "forgotPassword": "Forgot password?",
+    "forgotPasswordSubtitle": "Enter your email and we'll send you a verification code to reset your password",
+    "sendResetLink": "Send Verification Code",
     "loginButton": "Log In",
     "noAccount": "Don't have an account?",
     "createAccount": "Create New Account",
@@ -402,6 +404,13 @@
     "recentSearches": "Recent Searches",
     "mostSearched": "Most Searched",
     "hint": "Search for photography ads...",
+    "no_results": "No matching results",
+    "types": {
+      "all": "All",
+      "freelancer": "Advertisers",
+      "service": "Ads",
+      "work": "Works"
+    },
     "filter": {
       "title": "Filter Results",
       "priceRange": "Price Range",
@@ -656,7 +665,8 @@
     "category_empty": "No ads in this category",
     "ad_owner": "Advertiser",
     "ad_fallback_title": "Advertisement",
-    "now": "Now"
+    "now": "Now",
+    "freelancers_title": "Featured Advertisers"
   },
   "contracts_chats": {
     "load_error": "Couldn't load contracts & chats, please try again",
@@ -671,7 +681,14 @@
     "chat": "Chat",
     "chat_subtitle": "Start an in-app conversation",
     "no_phone": "Mobile number is not available",
-    "call_failed": "Couldn't open the dialer"
+    "call_failed": "Couldn't open the dialer",
+    "freelancer_no_phone": "This advertiser hasn't added their phone number yet"
+  },
+  "profile_completion": {
+    "badge_incomplete": "Incomplete",
+    "title": "Complete your profile",
+    "add_phone_prompt": "Add your phone number to verify your account and build trust with clients",
+    "cta": "Add phone number"
   },
   "more_menu": {
     "title": "More",

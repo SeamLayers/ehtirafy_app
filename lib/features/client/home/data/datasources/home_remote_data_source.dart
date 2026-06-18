@@ -45,7 +45,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   @override
   Future<List<PhotographerModel>> getAllFreelancers() async {
     try {
-      final response = await dioClient.get(ApiConstants.bestFreelancers);
+      final response = await dioClient.get(ApiConstants.allFreelancersData);
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -87,7 +87,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   @override
   Future<AppStatisticsModel> getAppStatistics() async {
     try {
-      final response = await dioClient.get('/api/v1/app/statistics');
+      final response = await dioClient.get(ApiConstants.appStatistics);
 
       // Check both HTTP status and API status
       final data = response.data;

@@ -6,6 +6,7 @@ import 'package:ehtirafy_app/features/client/freelancer/domain/entities/advertis
 
 abstract class FreelancerRepository {
   Future<Either<Failure, FreelancerEntity>> getFreelancerProfile(String id);
+  Future<Either<Failure, String>> getFreelancerPhone(String id);
   Future<Either<Failure, WorkDetailsEntity>> getWorkDetails(String id);
   Future<Either<Failure, AdvertisementDetailsEntity>> getAdvertisementDetails(
     String id,
