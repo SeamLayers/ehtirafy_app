@@ -94,7 +94,6 @@ import 'package:ehtirafy_app/features/shared/cities/data/repositories/cities_rep
 import 'package:ehtirafy_app/features/shared/cities/domain/repositories/cities_repository.dart';
 import 'package:ehtirafy_app/features/shared/cities/domain/usecases/get_cities_usecase.dart';
 import 'package:ehtirafy_app/features/shared/cities/presentation/cubits/cities_cubit.dart';
-import 'package:ehtirafy_app/core/di/locators/shared_chat_locator.dart';
 import 'package:ehtirafy_app/core/di/locators/client_payment_locator.dart';
 import 'package:ehtirafy_app/core/di/locators/auth_locator.dart';
 
@@ -226,8 +225,6 @@ Future<void> setupLocator() async {
     () => ContractRemoteDataSourceImpl(sl()),
   );
 
-  // Features - Chat
-  sl.registerSharedChatDependencies();
   sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
   sl.registerLazySingleton(() => DeleteAccountUseCase(sl()));
