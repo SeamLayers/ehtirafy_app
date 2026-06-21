@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/app_spacing.dart';
-import 'package:ehtirafy_app/core/session/auth_guard.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/core/widgets/error_state_widget.dart';
@@ -390,10 +389,6 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                     final publisherId = ad.userId.isNotEmpty
                         ? ad.userId
                         : (freelancerId ?? '');
-                    final advertiserName =
-                        (freelancerName != null && freelancerName!.isNotEmpty)
-                        ? freelancerName!
-                        : ad.title;
                     showContactOptionsSheet(
                       context,
                       // The ad payload doesn't carry the owner's phone, so fetch
@@ -404,27 +399,6 @@ class AdvertisementDetailsScreen extends StatelessWidget {
                           publisherId,
                         );
                         return result.fold((_) => null, (phone) => phone);
-                      },
-                      onChat: () {
-                        // Chatting is account-based: require login for guests.
-                        if (!AuthGuard.ensureAuth(context)) return;
-                        if (publisherId.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('تعذّر بدء المحادثة حالياً'),
-                            ),
-                          );
-                          return;
-                        }
-                        context.push(
-                          '/chat/conversation',
-                          extra: {
-                            'id': publisherId,
-                            'name': advertiserName,
-                            'image': '',
-                            'userType': 'customer',
-                          },
-                        );
                       },
                     );
                   },

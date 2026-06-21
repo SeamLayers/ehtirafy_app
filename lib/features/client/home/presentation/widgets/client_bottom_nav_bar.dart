@@ -68,7 +68,7 @@ class ClientBottomNavBar extends StatelessWidget {
                 index: 2,
                 icon: Icons.handshake_outlined,
                 activeIcon: Icons.handshake,
-                label: AppStrings.navContractsChats.tr(),
+                label: AppStrings.navContracts.tr(),
               ),
               _buildNavItem(
                 context: context,

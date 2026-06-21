@@ -17,7 +17,6 @@ import 'package:ehtirafy_app/features/client/contract/presentation/widgets/work_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 
 class ContractDetailsScreen extends StatelessWidget {
   final String contractId;
@@ -124,18 +123,6 @@ class ContractDetailsScreen extends StatelessWidget {
             WorkStagesList(contract: contract),
             SizedBox(height: AppSpacing.md),
             ContractInProgressActions(
-              onChatPressed: () {
-                // Navigate to chat
-                context.push(
-                  '/chat/conversation',
-                  extra: {
-                    'id': contract.id.toString(),
-                    'name': contract.photographerName,
-                    'image': contract.photographerImage,
-                    'userType': 'customer',
-                  },
-                );
-              },
               onCompletePressed: () {
                 showDialog(
                   context: context,

@@ -5,12 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
-import 'package:ehtirafy_app/core/widgets/user_avatar.dart';
 import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_entity.dart';
 
 /// Haraj-style horizontal advertisement card: a square thumbnail on the
-/// leading (image) side, with title, price, location/time and the advertiser
-/// row on the content side. Tapping opens the advertisement details screen.
+/// leading (image) side, with title, price and location/time on the content
+/// side. Tapping opens the advertisement details screen.
 class HarajAdCard extends StatelessWidget {
   final PhotographerEntity ad;
 
@@ -143,28 +142,6 @@ class HarajAdCard extends StatelessWidget {
                             ),
                           ),
                         ],
-                      ],
-                    ),
-                    SizedBox(height: 8.h),
-                    Row(
-                      children: [
-                        UserAvatar(name: ad.name, size: 24),
-                        SizedBox(width: 6.w),
-                        Expanded(
-                          child: Text(
-                            ad.name.isNotEmpty
-                                ? ad.name
-                                : AppStrings.homeFeedAdOwner.tr(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: AppColors.textSecondary,
-                              fontSize: 12.sp,
-                              fontFamily: 'Cairo',
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ],

@@ -1237,51 +1237,6 @@ class _FreelancerOrderDetailsScreenState
         children: [
           GestureDetector(
             onTap: () {
-              // Chat with client
-              context.push(
-                '/chat/conversation',
-                extra: {
-                  'id': widget.order.id,
-                  'name': clientName,
-                  'image': clientImage,
-                  'userType': 'freelancer',
-                },
-              );
-            },
-            child: Container(
-              width: double.infinity,
-              height: 50.h,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.06),
-                borderRadius: BorderRadius.circular(14.r),
-                border: Border.all(width: 1.5, color: AppColors.primary),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.chat_bubble_outline,
-                    color: AppColors.primary,
-                    size: 18.sp,
-                  ),
-                  SizedBox(width: 8.w),
-                  Text(
-                    'مراسلة العميل',
-                    style: TextStyle(
-                      color: AppColors.primary,
-                      fontSize: 15.sp,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w700,
-                      height: 1.43,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: 12.h),
-          GestureDetector(
-            onTap: () {
               // Show confirmation dialog
               showDialog(
                 context: context,

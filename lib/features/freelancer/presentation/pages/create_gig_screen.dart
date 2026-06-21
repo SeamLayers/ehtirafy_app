@@ -984,6 +984,10 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
   }
 
   void _submitForm() {
+    // Dismiss the keyboard first so Form.validate() doesn't auto-focus the
+    // price field and pop the numeric keyboard while we're publishing.
+    FocusScope.of(context).unfocus();
+
     if (widget.gig == null && !_hasAcceptedPledge) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('يرجى الموافقة على التعهد قبل النشر')),

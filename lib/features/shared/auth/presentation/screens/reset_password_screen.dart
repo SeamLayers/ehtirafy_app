@@ -98,16 +98,8 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
                   BlocConsumer<ResetPasswordCubit, ResetPasswordState>(
                     listener: (context, state) {
                       if (state is ResetPasswordSuccess) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(state.message),
-                            backgroundColor: AppColors.success,
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                          ),
-                        );
+                        // No success toast — navigating to login is the feedback,
+                        // and the server message must not be echoed to the user.
                         context.go('/auth/login');
                       } else if (state is ResetPasswordError) {
                         ScaffoldMessenger.of(context).showSnackBar(

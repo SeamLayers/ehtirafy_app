@@ -105,17 +105,10 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
                     BlocConsumer<ForgotPasswordCubit, ForgotPasswordState>(
                       listener: (context, state) {
                         if (state is ForgotPasswordSuccess) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(state.message),
-                              backgroundColor: AppColors.success,
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                            ),
-                          );
-                          // Optionally navigate back or to verify code screen if that flow existed
+                          // No success toast: the server echoes the user object
+                          // (incl. the OTP) in its message/data, which must never
+                          // be shown. Navigating to the reset screen is the
+                          // success feedback.
                           context.push(
                             '/auth/reset-password',
                             extra: _emailController.text.trim(),

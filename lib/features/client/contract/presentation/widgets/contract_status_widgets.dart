@@ -862,12 +862,10 @@ class ContractAwaitingPaymentCard extends StatelessWidget {
 }
 
 class ContractInProgressActions extends StatelessWidget {
-  final VoidCallback? onChatPressed;
   final VoidCallback? onCompletePressed;
 
   const ContractInProgressActions({
     super.key,
-    this.onChatPressed,
     this.onCompletePressed,
   });
 
@@ -875,31 +873,6 @@ class ContractInProgressActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          width: double.infinity,
-          height: 52.h,
-          child: OutlinedButton.icon(
-            onPressed: onChatPressed,
-            icon: Icon(Icons.chat_bubble_outline, size: 18.sp),
-            label: Text(
-              AppStrings.contractContactPhotographer.tr(),
-              style: TextStyle(
-                fontFamily: 'Cairo',
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: AppColors.primary, width: 1.5),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14.r),
-              ),
-              foregroundColor: AppColors.primary,
-              backgroundColor: AppColors.gold.withValues(alpha: 0.05),
-            ),
-          ),
-        ),
-        SizedBox(height: AppSpacing.sm),
         SizedBox(
           width: double.infinity,
           height: 52.h,

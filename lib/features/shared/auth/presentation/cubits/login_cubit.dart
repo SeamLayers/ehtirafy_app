@@ -9,6 +9,13 @@ class LoginCubit extends Cubit<LoginState> {
 
   LoginCubit(this.loginUseCase) : super(LoginInitial());
 
+  /// Flips the button into its loading state the instant the user taps, before
+  /// the screen's ~1-2s async device-token resolution runs. Without this the
+  /// spinner only appears once login() is reached, ~2s late.
+  void beginLoading() {
+    if (state is! LoginLoading) emit(LoginLoading());
+  }
+
   Future<void> login(String email, String password, String deviceToken) async {
     emit(LoginLoading());
     final result = await loginUseCase(

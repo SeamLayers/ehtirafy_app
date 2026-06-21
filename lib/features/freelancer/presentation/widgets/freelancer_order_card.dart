@@ -378,30 +378,6 @@ class FreelancerOrderCard extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: OutlinedButton.icon(
-                onPressed: onChat,
-                icon: Icon(Icons.chat_outlined, size: 16.sp),
-                label: Text(
-                  'محادثة',
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                  side: BorderSide(
-                    color: AppColors.primary.withValues(alpha: 0.50),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 12.h),
-                ),
-              ),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
               child: ElevatedButton.icon(
                 onPressed: onViewDetails,
                 icon: Icon(Icons.visibility_outlined, size: 16.sp),

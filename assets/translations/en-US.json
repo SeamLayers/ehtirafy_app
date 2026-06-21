@@ -110,6 +110,7 @@
     "orders": "Orders",
     "search": "Search",
     "contractsChats": "Contracts & Chats",
+    "contracts": "Contracts",
     "profile": "Account",
     "more": "More"
   },
@@ -691,7 +692,10 @@
     "chat_subtitle": "Start an in-app conversation",
     "no_phone": "Mobile number is not available",
     "call_failed": "Couldn't open the dialer",
-    "freelancer_no_phone": "This advertiser hasn't added their phone number yet"
+    "freelancer_no_phone": "This advertiser hasn't added their phone number yet",
+    "whatsapp": "WhatsApp",
+    "whatsapp_subtitle": "Chat on WhatsApp",
+    "whatsapp_failed": "Couldn't open WhatsApp"
   },
   "profile_completion": {
     "badge_incomplete": "Incomplete",

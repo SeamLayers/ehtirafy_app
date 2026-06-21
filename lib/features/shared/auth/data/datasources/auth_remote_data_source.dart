@@ -132,13 +132,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
       final baseResponse = BaseResponse<String>.fromJson(
         raw,
-        (json) => json
-            .toString(),
+        (json) => json.toString(),
       );
 
-      if (baseResponse.data != null) {
-        return baseResponse.data!;
-      }
+      // SECURITY: never surface baseResponse.data here — for this endpoint the
+      // server returns the full user object (incl. reset_otp, email, phone) in
+      // `data`, and returning it leaks the OTP/PII into the success toast.
+      // Only the short server `message` is safe to pass up.
       return baseResponse.message;
     } catch (e) {
       rethrow;

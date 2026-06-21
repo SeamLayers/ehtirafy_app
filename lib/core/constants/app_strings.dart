@@ -78,6 +78,7 @@ class AppStrings {
   static const navOrders = 'nav.orders';
   static const navSearch = 'nav.search';
   static const navContractsChats = 'nav.contractsChats';
+  static const navContracts = 'nav.contracts';
   static const navProfile = 'nav.profile';
   static const navMore = 'nav.more';
 
@@ -117,6 +118,9 @@ class AppStrings {
   static const contactNoPhone = 'contact_modal.no_phone';
   static const contactCallFailed = 'contact_modal.call_failed';
   static const contactFreelancerNoPhone = 'contact_modal.freelancer_no_phone';
+  static const contactWhatsapp = 'contact_modal.whatsapp';
+  static const contactWhatsappSubtitle = 'contact_modal.whatsapp_subtitle';
+  static const contactWhatsappFailed = 'contact_modal.whatsapp_failed';
 
   // Profile completion card (phone-not-added prompt)
   static const profileCompletionBadge = 'profile_completion.badge_incomplete';

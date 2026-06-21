@@ -987,18 +987,6 @@ class _FreelancerProfileScreenState extends State<FreelancerProfileScreen>
                   showContactOptionsSheet(
                     context,
                     phone: freelancer.phone,
-                    onChat: () {
-                      if (!AuthGuard.ensureAuth(context)) return;
-                      context.push(
-                        '/chat/conversation',
-                        extra: {
-                          'id': freelancer.id,
-                          'name': freelancer.name,
-                          'image': freelancer.imageUrl,
-                          'userType': 'customer',
-                        },
-                      );
-                    },
                   );
                 },
                 style: ElevatedButton.styleFrom(

@@ -124,6 +124,9 @@ class _LoginFormState extends State<_LoginForm> {
     final currentState = cubit.state;
     if (currentState is LoginLoading) return;
 
+    // Show the button spinner immediately, before the ~1-2s device-token work.
+    cubit.beginLoading();
+
     // Get device token for push notifications
     String deviceToken = '';
     try {

@@ -110,6 +110,7 @@
     "orders": "الطلبات",
     "search": "البحث",
     "contractsChats": "العقود والمحادثات",
+    "contracts": "العقود",
     "profile": "حسابي",
     "more": "المزيد"
   },
@@ -691,7 +692,10 @@
     "chat_subtitle": "ابدأ محادثة داخل التطبيق",
     "no_phone": "رقم الجوال غير متوفر حالياً",
     "call_failed": "تعذّر فتح تطبيق الاتصال",
-    "freelancer_no_phone": "لم يقم المعلِن بإضافة رقم هاتفه بعد"
+    "freelancer_no_phone": "لم يقم المعلِن بإضافة رقم هاتفه بعد",
+    "whatsapp": "واتساب",
+    "whatsapp_subtitle": "تواصل عبر واتساب",
+    "whatsapp_failed": "تعذّر فتح تطبيق واتساب"
   },
   "profile_completion": {
     "badge_incomplete": "غير مكتمل",

@@ -55,21 +55,14 @@ class FreelancerBottomNavBar extends StatelessWidget {
               ),
               _buildNavItem(
                 context: context,
-                index: 2,
+                index: 1,
                 icon: Icons.assignment_outlined,
                 activeIcon: Icons.assignment,
                 label: AppStrings.navOrders.tr(),
               ),
               _buildNavItem(
                 context: context,
-                index: 1,
-                icon: Icons.chat_bubble_outline,
-                activeIcon: Icons.chat_bubble,
-                label: AppStrings.navMessages.tr(),
-              ),
-              _buildNavItem(
-                context: context,
-                index: 3,
+                index: 2,
                 icon: Icons.person_outline,
                 activeIcon: Icons.person,
                 label: AppStrings.navAccount.tr(),

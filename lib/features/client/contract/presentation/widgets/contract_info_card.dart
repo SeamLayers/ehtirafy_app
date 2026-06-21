@@ -231,36 +231,6 @@ class ContractInfoCard extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(width: AppSpacing.sm),
-        Material(
-          color: Colors.transparent,
-          shape: const CircleBorder(),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: contract.isChatAllowed ? onChat : null,
-            child: Container(
-              padding: EdgeInsets.all(10.w),
-              decoration: BoxDecoration(
-                color: contract.isChatAllowed
-                    ? AppColors.gold.withValues(alpha: 0.12)
-                    : AppColors.grey200,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: contract.isChatAllowed
-                      ? AppColors.gold.withValues(alpha: 0.30)
-                      : Colors.transparent,
-                ),
-              ),
-              child: Icon(
-                Icons.chat_bubble_rounded,
-                color: contract.isChatAllowed
-                    ? AppColors.gold
-                    : AppColors.grey400,
-                size: 20.sp,
-              ),
-            ),
-          ),
-        ),
       ],
     );
   }

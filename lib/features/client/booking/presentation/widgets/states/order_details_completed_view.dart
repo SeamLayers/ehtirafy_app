@@ -36,9 +36,6 @@ class OrderDetailsCompletedView extends StatelessWidget {
           SizedBox(height: AppSpacing.md),
           // Rate Service Button
           _buildRateButton(context, isArabic: isArabic),
-          SizedBox(height: AppSpacing.sm + AppSpacing.xs),
-          // Chat with photographer
-          _buildChatButton(context, isArabic: isArabic),
         ],
       ),
     );
@@ -401,42 +398,4 @@ class OrderDetailsCompletedView extends StatelessWidget {
     );
   }
 
-  Widget _buildChatButton(BuildContext context, {required bool isArabic}) {
-    return SizedBox(
-      width: double.infinity,
-      height: 50.h,
-      child: OutlinedButton.icon(
-        onPressed: () {
-          context.push(
-            '/chat/conversation',
-            extra: {
-              'id': contract.id.toString(),
-              'name': contract.photographerName,
-              'image': contract.photographerImage,
-              'userType': 'customer',
-            },
-          );
-        },
-        icon: Icon(Icons.chat_bubble_outline, size: 20.sp),
-        label: Text(
-          isArabic ? 'محادثة المصور' : 'Chat With Photographer',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
-            fontFamily: _fontFamily(context),
-          ),
-        ),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.gold,
-          backgroundColor: AppColors.gold.withValues(alpha: 0.04),
-          side: BorderSide(color: AppColors.gold.withValues(alpha: 0.6)),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14.r),
-          ),
-        ),
-      ),
-    );
-  }
 }

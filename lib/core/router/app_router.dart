@@ -6,16 +6,11 @@ import 'package:ehtirafy_app/features/shared/auth/presentation/screens/signup_sc
 import 'package:ehtirafy_app/features/client/home/presentation/pages/haraj_home_screen.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/pages/client_main_layout.dart';
 import 'package:ehtirafy_app/features/client/more/presentation/pages/more_screen.dart';
-import 'package:ehtirafy_app/features/shared/chat/presentation/pages/contracts_chats_screen.dart';
 import 'package:ehtirafy_app/features/freelancer/domain/entities/gig_entity.dart';
 import 'package:ehtirafy_app/features/client/notifications/presentation/pages/notifications_screen.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/pages/search_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ehtirafy_app/core/di/service_locator.dart';
-import 'package:ehtirafy_app/features/shared/chat/presentation/cubit/chat_cubit.dart';
-import 'package:ehtirafy_app/features/shared/chat/presentation/pages/conversations_screen.dart';
-import 'package:ehtirafy_app/features/shared/chat/presentation/pages/chat_room_screen.dart';
-import 'package:ehtirafy_app/features/shared/chat/domain/entities/conversation_entity.dart';
 
 import 'package:ehtirafy_app/features/shared/profile/presentation/screens/shared_profile_screen.dart';
 import 'package:ehtirafy_app/features/shared/profile/presentation/screens/edit_profile_screen.dart';
@@ -63,19 +58,6 @@ import 'package:ehtirafy_app/features/client/payment/presentation/cubit/bank_det
 import 'package:ehtirafy_app/features/client/payment/presentation/cubit/payment_proof_cubit.dart';
 import 'package:ehtirafy_app/features/client/payment/presentation/pages/bank_details_screen.dart';
 import 'package:ehtirafy_app/features/client/payment/presentation/pages/payment_proof_screen.dart';
-
-/// Minimal placeholder conversation used when a chat route is opened without
-/// its [ConversationEntity] in `extra` (e.g. a deep link or state restoration
-/// after process death), so the route degrades gracefully instead of throwing
-/// an unchecked-cast error.
-ConversationEntity _fallbackConversation(String? id) => ConversationEntity(
-  id: id ?? '',
-  otherUserName: '',
-  otherUserImage: '',
-  lastMessage: '',
-  unreadCount: 0,
-  lastMessageTime: DateTime.now(),
-);
 
 /// GoRouter configuration for the app
 final appRouter = GoRouter(
@@ -144,32 +126,12 @@ final appRouter = GoRouter(
             ),
           ],
         ),
-        // Tab 2: Contracts & Chats (the merged communications tab)
+        // Tab 2: Contracts (the user's contracts / requests list)
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/contracts-chats',
-              builder: (context, state) => BlocProvider(
-                create: (_) => sl<ChatCubit>()..loadAllConversations(),
-                child: const ContractsChatsScreen(),
-              ),
-              routes: [
-                GoRoute(
-                  path: 'chat/:id',
-                  builder: (context, state) {
-                    final conversation = state.extra is ConversationEntity
-                        ? state.extra as ConversationEntity
-                        : _fallbackConversation(state.pathParameters['id']);
-                    return BlocProvider(
-                      create: (_) => sl<ChatCubit>(),
-                      child: ChatRoomScreen(
-                        conversation: conversation,
-                        userType: 'customer',
-                      ),
-                    );
-                  },
-                ),
-              ],
+              builder: (context, state) => const MyRequestsScreen(),
             ),
           ],
         ),
@@ -225,37 +187,7 @@ final appRouter = GoRouter(
             ),
           ],
         ),
-        // Tab 1: Messages
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/freelancer/messages',
-              builder: (context, state) => BlocProvider(
-                create: (_) =>
-                    sl<ChatCubit>()..loadConversations(userType: 'freelancer'),
-                child: const ConversationsScreen(userType: 'freelancer'),
-              ),
-              routes: [
-                GoRoute(
-                  path: 'chat/:id',
-                  builder: (context, state) {
-                    final conversation = state.extra is ConversationEntity
-                        ? state.extra as ConversationEntity
-                        : _fallbackConversation(state.pathParameters['id']);
-                    return BlocProvider(
-                      create: (_) => sl<ChatCubit>(),
-                      child: ChatRoomScreen(
-                        conversation: conversation,
-                        userType: 'freelancer',
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-        // Tab 2: Orders
+        // Tab 1: Orders
         StatefulShellBranch(
           routes: [
             GoRoute(
@@ -267,7 +199,7 @@ final appRouter = GoRouter(
             ),
           ],
         ),
-        // Tab 3: Profile (reuse shared profile)
+        // Tab 2: Profile (reuse shared profile)
         StatefulShellBranch(
           routes: [
             GoRoute(
@@ -343,28 +275,6 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/notifications',
       builder: (context, state) => const NotificationsScreen(),
-    ),
-    GoRoute(
-      path: '/chat/conversation',
-      builder: (context, state) {
-        final extra = state.extra is Map<String, dynamic>
-            ? state.extra as Map<String, dynamic>
-            : const <String, dynamic>{};
-        final conversation = ConversationEntity(
-          id: extra['id']?.toString() ?? '',
-          otherUserName: extra['name'] ?? '',
-          otherUserImage: extra['image'] ?? '',
-          lastMessage: '',
-          unreadCount: 0,
-          lastMessageTime: DateTime.now(),
-        );
-        final userType = extra['userType'] ?? 'customer';
-
-        return BlocProvider(
-          create: (_) => sl<ChatCubit>(),
-          child: ChatRoomScreen(conversation: conversation, userType: userType),
-        );
-      },
     ),
     // My contracts/requests (payment lifecycle) — kept reachable as a
     // standalone route (e.g. after a booking) outside the bottom nav.

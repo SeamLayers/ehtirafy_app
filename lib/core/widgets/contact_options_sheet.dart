@@ -7,19 +7,20 @@ import 'package:ehtirafy_app/core/theme/app_colors.dart';
 
 /// Shows the "تواصل" (Contact) modal with two options:
 ///  - Contact via Mobile → opens the phone dialer (tel:)
-///  - Chat → invokes [onChat] (typically opens the in-app chat room)
+///  - WhatsApp → opens a WhatsApp chat via a wa.me deep link
+///
+/// The in-app chat was removed; contacting is now phone-based only.
 ///
 /// The phone number can be supplied two ways:
 ///  - [phone]: a number already on hand (e.g. from a loaded profile).
 ///  - [phoneResolver]: an async lookup invoked on tap when no number is known
 ///    up front (e.g. the ad-details screen, which must fetch it on demand).
 /// When [phone] is empty/null and a [phoneResolver] is given, the resolver runs
-/// behind a brief loading indicator before deciding whether to dial.
+/// behind a brief loading indicator before deciding what to do.
 Future<void> showContactOptionsSheet(
   BuildContext context, {
   String? phone,
   Future<String?> Function()? phoneResolver,
-  required VoidCallback onChat,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -28,7 +29,6 @@ Future<void> showContactOptionsSheet(
     builder: (sheetContext) => _ContactOptionsSheet(
       phone: phone,
       phoneResolver: phoneResolver,
-      onChat: onChat,
     ),
   );
 }
@@ -36,23 +36,21 @@ Future<void> showContactOptionsSheet(
 class _ContactOptionsSheet extends StatelessWidget {
   final String? phone;
   final Future<String?> Function()? phoneResolver;
-  final VoidCallback onChat;
 
   const _ContactOptionsSheet({
     this.phone,
     this.phoneResolver,
-    required this.onChat,
   });
 
-  Future<void> _callMobile(BuildContext context) async {
-    // Capture the messenger of the underlying screen before popping the sheet
-    // so the toast still has a place to render.
+  /// Pops the sheet, then resolves the phone — preferring a number passed up
+  /// front, otherwise looking it up on demand behind a tiny loading dialog.
+  /// Returns the trimmed number, or null (after showing the "no phone"
+  /// snackbar) when none is available. Shared by both Call and WhatsApp.
+  Future<String?> _resolvePhone(BuildContext context) async {
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
     navigator.pop();
 
-    // Resolve the phone: prefer a number passed up front; otherwise look it up
-    // on demand behind a tiny loading dialog.
     String resolved = (phone ?? '').trim();
     if (resolved.isEmpty && phoneResolver != null) {
       final overlay = navigator.overlay;
@@ -84,9 +82,16 @@ class _ContactOptionsSheet extends StatelessWidget {
       messenger.showSnackBar(
         SnackBar(content: Text(AppStrings.contactFreelancerNoPhone.tr())),
       );
-      return;
+      return null;
     }
-    // A number exists but the dialer couldn't be opened → distinct message.
+    return resolved;
+  }
+
+  Future<void> _callMobile(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final resolved = await _resolvePhone(context);
+    if (resolved == null) return;
+
     final uri = Uri(scheme: 'tel', path: resolved);
     bool launched = false;
     try {
@@ -101,9 +106,35 @@ class _ContactOptionsSheet extends StatelessWidget {
     }
   }
 
-  void _openChat(BuildContext context) {
-    Navigator.of(context).pop();
-    onChat();
+  Future<void> _openWhatsApp(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final resolved = await _resolvePhone(context);
+    if (resolved == null) return;
+
+    final uri = Uri.parse('https://wa.me/${_toWhatsappNumber(resolved)}');
+    bool launched = false;
+    try {
+      launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      launched = false;
+    }
+    if (!launched) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(AppStrings.contactWhatsappFailed.tr())),
+      );
+    }
+  }
+
+  /// Normalises a phone number into the wa.me international form (country code +
+  /// national number, digits only). Handles a leading +, a 00 prefix, a leading
+  /// 0, and an already-present 966 country code; defaults to the Saudi country
+  /// code (966) when no country code is present.
+  String _toWhatsappNumber(String raw) {
+    var d = raw.replaceAll(RegExp(r'[^0-9]'), '');
+    if (d.startsWith('00')) d = d.substring(2);
+    if (d.startsWith('966')) return d;
+    d = d.replaceFirst(RegExp(r'^0+'), '');
+    return '966$d';
   }
 
   @override
@@ -161,11 +192,11 @@ class _ContactOptionsSheet extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             _ContactOption(
-              icon: Icons.chat_bubble_rounded,
-              title: AppStrings.contactChat.tr(),
-              subtitle: AppStrings.contactChatSubtitle.tr(),
-              color: AppColors.gold,
-              onTap: () => _openChat(context),
+              icon: Icons.chat_rounded,
+              title: AppStrings.contactWhatsapp.tr(),
+              subtitle: AppStrings.contactWhatsappSubtitle.tr(),
+              color: const Color(0xFF25D366),
+              onTap: () => _openWhatsApp(context),
             ),
           ],
         ),
