@@ -123,16 +123,24 @@
   },
   "onboarding": {
     "welcomeTitle": "مرحباً بك في ملم للمناسبات",
-    "subtitle": "بوابة ملم للمناسبات لعالم التصوير الفوتوغرافي",
+    "subtitle": "منصتك المتكاملة لجميع خدمات المناسبات: تصوير، حجز قاعات، تنسيق وتنظيم وأكثر — في مكان واحد",
     "login": "تسجيل الدخول",
     "signup": "إنشاء حساب جديد",
-    "bannerTitle": "انضم إلى أكبر منصة",
-    "bannerSubtitle": "للمصورين المحترفين في المملكة العربية السعودية",
+    "bannerTitle": "نحوّل رؤيتك إلى واقع",
+    "bannerSubtitle": "نخطّط وننظّم مناسبتك باحترافية تامة لنجعلها لحظة لا تُنسى",
     "disclaimer": "بالمتابعة، أنت توافق على شروط الخدمة وسياسة الخصوصية",
     "servicesSubtitle": "جميع المجالات",
     "photographersSubtitle": "+500 مصور",
     "growthSubtitle": "آلاف المشاريع",
     "qualitySubtitle": "4.8+ تقييم",
+    "feature1Title": "تصوير احترافي",
+    "feature1Subtitle": "لحظاتك بأعلى جودة",
+    "feature2Title": "حجز قاعات",
+    "feature2Subtitle": "سهولة البحث والحجز",
+    "feature3Title": "تنسيق وتنظيم",
+    "feature3Subtitle": "بأدقّ التفاصيل",
+    "feature4Title": "ضيافة وتموين",
+    "feature4Subtitle": "خيارات متنوّعة وراقية",
     "continueAsGuest": "تصفح كزائر"
   },
   "guest": {
@@ -670,6 +678,9 @@
     "freelancers_title": "المعلِنون المميّزون",
     "region": "المنطقة",
     "region_all": "كل المناطق"
+  },
+  "category_filter": {
+    "title": "تصفّح حسب الفئة"
   },
   "city_picker": {
     "title": "اختر المدينة",

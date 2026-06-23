@@ -23,25 +23,25 @@ class OnboardingFeatureGrid extends StatelessWidget {
       childAspectRatio: 0.92,
       children: [
         FeatureCard(
-          icon: _svgIcon('assets/icons/icon_services.svg', iconColor),
-          title: AppStrings.services.tr(),
-          subtitle: AppStrings.onboardingServicesSubtitle.tr(),
+          icon: _svgIcon('assets/icons/icon_photographers.svg', iconColor),
+          title: AppStrings.onboardingFeature1Title.tr(),
+          subtitle: AppStrings.onboardingFeature1Subtitle.tr(),
           hasShadow: false,
         ),
         FeatureCard(
-          icon: _svgIcon('assets/icons/icon_photographers.svg', iconColor),
-          title: AppStrings.roleFreelancer.tr(),
-          subtitle: AppStrings.onboardingPhotographersSubtitle.tr(),
+          icon: _svgIcon('assets/icons/icon_services.svg', iconColor),
+          title: AppStrings.onboardingFeature2Title.tr(),
+          subtitle: AppStrings.onboardingFeature2Subtitle.tr(),
         ),
         FeatureCard(
           icon: _svgIcon('assets/icons/icon_growth.svg', iconColor),
-          title: AppStrings.growth.tr(),
-          subtitle: AppStrings.onboardingGrowthSubtitle.tr(),
+          title: AppStrings.onboardingFeature3Title.tr(),
+          subtitle: AppStrings.onboardingFeature3Subtitle.tr(),
         ),
         FeatureCard(
           icon: _svgIcon('assets/icons/icon_quality.svg', iconColor),
-          title: AppStrings.quality.tr(),
-          subtitle: AppStrings.onboardingQualitySubtitle.tr(),
+          title: AppStrings.onboardingFeature4Title.tr(),
+          subtitle: AppStrings.onboardingFeature4Subtitle.tr(),
         ),
       ],
     );

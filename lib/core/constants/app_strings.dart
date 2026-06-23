@@ -96,6 +96,9 @@ class AppStrings {
   static const homeFeedRegion = 'home_feed.region';
   static const homeFeedRegionAll = 'home_feed.region_all';
 
+  // Browse / filter by category (home header grid icon)
+  static const categoryFilterTitle = 'category_filter.title';
+
   // City picker (shared searchable bottom sheet)
   static const cityPickerTitle = 'city_picker.title';
   static const cityPickerSearchHint = 'city_picker.search_hint';
@@ -184,6 +187,15 @@ class AppStrings {
       'onboarding.photographersSubtitle';
   static const onboardingGrowthSubtitle = 'onboarding.growthSubtitle';
   static const onboardingQualitySubtitle = 'onboarding.qualitySubtitle';
+  // Onboarding feature cards (events-platform pillars).
+  static const onboardingFeature1Title = 'onboarding.feature1Title';
+  static const onboardingFeature1Subtitle = 'onboarding.feature1Subtitle';
+  static const onboardingFeature2Title = 'onboarding.feature2Title';
+  static const onboardingFeature2Subtitle = 'onboarding.feature2Subtitle';
+  static const onboardingFeature3Title = 'onboarding.feature3Title';
+  static const onboardingFeature3Subtitle = 'onboarding.feature3Subtitle';
+  static const onboardingFeature4Title = 'onboarding.feature4Title';
+  static const onboardingFeature4Subtitle = 'onboarding.feature4Subtitle';
 
   // General
   static const success = 'success';

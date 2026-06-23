@@ -123,16 +123,24 @@
   },
   "onboarding": {
     "welcomeTitle": "Welcome to Malam Events",
-    "subtitle": "Malam Events, your gateway to the world of photography",
+    "subtitle": "Your all-in-one platform for events: photography, hall bookings, planning & more — in one place",
     "login": "Log In",
     "signup": "Create New Account",
-    "bannerTitle": "Join the largest platform",
-    "bannerSubtitle": "for professional photographers in Saudi Arabia",
+    "bannerTitle": "We turn your vision into reality",
+    "bannerSubtitle": "We plan and organize your event with full professionalism to make it unforgettable",
     "disclaimer": "By continuing, you agree to the Terms of Service and Privacy Policy",
     "servicesSubtitle": "All Categories",
     "photographersSubtitle": "+500 Photographers",
     "growthSubtitle": "Thousands of Projects",
     "qualitySubtitle": "4.8+ Rating",
+    "feature1Title": "Professional Photography",
+    "feature1Subtitle": "Your moments in top quality",
+    "feature2Title": "Hall Booking",
+    "feature2Subtitle": "Easy search & booking",
+    "feature3Title": "Planning & Coordination",
+    "feature3Subtitle": "Down to the last detail",
+    "feature4Title": "Catering & Hospitality",
+    "feature4Subtitle": "Diverse, premium options",
     "continueAsGuest": "Browse as Guest"
   },
   "guest": {
@@ -670,6 +678,9 @@
     "freelancers_title": "Featured Advertisers",
     "region": "Region",
     "region_all": "All regions"
+  },
+  "category_filter": {
+    "title": "Browse by category"
   },
   "city_picker": {
     "title": "Choose a city",

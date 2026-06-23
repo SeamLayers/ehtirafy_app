@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ehtirafy_app/core/di/service_locator.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/session/auth_guard.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/widgets/custom_empty_state.dart';
 import 'package:ehtirafy_app/core/widgets/user_avatar.dart';
@@ -13,6 +14,7 @@ import 'package:ehtirafy_app/features/client/home/domain/entities/category_entit
 import 'package:ehtirafy_app/features/client/home/domain/entities/photographer_entity.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/home_feed_cubit.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/cubits/home_feed_state.dart';
+import 'package:ehtirafy_app/features/client/home/presentation/widgets/category_filter_sheet.dart';
 import 'package:ehtirafy_app/features/client/home/presentation/widgets/haraj_ad_card.dart';
 import 'package:ehtirafy_app/features/shared/cities/presentation/widgets/city_picker_sheet.dart';
 
@@ -117,7 +119,7 @@ class _HarajHomeView extends StatelessWidget {
       onRefresh: () => context.read<HomeFeedCubit>().refresh(),
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 20.h),
+        padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 20.h),
         itemCount: state.ads.length,
         separatorBuilder: (_, __) => SizedBox(height: 12.h),
         itemBuilder: (context, index) => HarajAdCard(ad: state.ads[index]),
@@ -125,6 +127,9 @@ class _HarajHomeView extends StatelessWidget {
     );
   }
 
+  /// Haraj-style top bar: a prominent "+" add-advertisement button (right /
+  /// RTL-start), the brand logo + name centered, and a grid (browse categories)
+  /// + notifications cluster on the left (RTL-end).
   Widget _buildHeader(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -145,29 +150,80 @@ class _HarajHomeView extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 14.h),
-          child: Row(
-            children: [
-              Icon(Icons.camera_alt_rounded, color: AppColors.gold, size: 22.sp),
-              SizedBox(width: 8.w),
-              Text(
-                'app_name'.tr(),
-                style: TextStyle(
-                  color: AppColors.textLight,
-                  fontSize: 18.sp,
-                  fontFamily: 'Cairo',
-                  fontWeight: FontWeight.w800,
+          padding: EdgeInsets.fromLTRB(12.w, 10.h, 12.w, 14.h),
+          child: SizedBox(
+            height: 44.h,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // Centered brand lockup: the logo mark + a crisp wordmark so
+                // the app name stays legible at header size.
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/images/new_logo.png',
+                      height: 36.h,
+                      fit: BoxFit.contain,
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      'app_name'.tr(),
+                      style: TextStyle(
+                        color: AppColors.textLight,
+                        fontSize: 16.sp,
+                        fontFamily: 'Cairo',
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              const Spacer(),
-              _HeaderIconButton(
-                icon: Icons.notifications_none_rounded,
-                onTap: () => context.push('/notifications'),
-              ),
-            ],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // RTL-start (right): add a new advertisement.
+                    _HeaderAddButton(
+                      onTap: () {
+                        if (!AuthGuard.ensureAuth(context)) return;
+                        context.push('/add-advertisement');
+                      },
+                    ),
+                    // RTL-end (left): notifications + browse-by-category grid.
+                    Row(
+                      children: [
+                        _HeaderIconButton(
+                          icon: Icons.notifications_none_rounded,
+                          onTap: () => context.push('/notifications'),
+                        ),
+                        SizedBox(width: 8.w),
+                        _HeaderIconButton(
+                          icon: Icons.grid_view_rounded,
+                          onTap: () => _openCategoryFilter(context),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  /// Opens the "browse / filter by category" sheet using the home feed's
+  /// loaded categories; selecting one filters the feed in place (same effect
+  /// as tapping a tab in the pinned strip).
+  void _openCategoryFilter(BuildContext context) {
+    final cubit = context.read<HomeFeedCubit>();
+    final state = cubit.state;
+    if (state is! HomeFeedLoaded) return;
+    showCategoryFilterSheet(
+      context,
+      categories: state.categories,
+      selectedId: state.selectedCategoryId,
+      onSelect: cubit.selectCategory,
     );
   }
 }
@@ -192,6 +248,44 @@ class _HeaderIconButton extends StatelessWidget {
           border: Border.all(color: AppColors.gold.withValues(alpha: 0.30)),
         ),
         child: Icon(icon, color: AppColors.gold, size: 20.sp),
+      ),
+    );
+  }
+}
+
+/// Prominent gold "+" button (Haraj-style) for posting a new advertisement.
+class _HeaderAddButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _HeaderAddButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(13.r),
+      child: Container(
+        width: 40.w,
+        height: 40.w,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.gold,
+              AppColors.gold.withValues(alpha: 0.82),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(13.r),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.gold.withValues(alpha: 0.40),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Icon(Icons.add_rounded, color: Colors.white, size: 26.sp),
       ),
     );
   }
@@ -349,7 +443,7 @@ class _RegionFilterBar extends StatelessWidget {
 
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 8.h),
+      padding: EdgeInsets.fromLTRB(16.w, 6.h, 16.w, 6.h),
       child: Row(
         children: [
           InkWell(
@@ -456,7 +550,7 @@ class _CategoryStrip extends StatelessWidget {
         ),
       ),
       child: SizedBox(
-        height: 46.h,
+        height: 44.h,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           padding: EdgeInsets.symmetric(horizontal: 12.w),
@@ -497,16 +591,16 @@ class _CategoryTab extends StatelessWidget {
               label,
               style: TextStyle(
                 color: selected ? AppColors.gold : AppColors.textSecondary,
-                fontSize: 14.sp,
+                fontSize: 15.sp,
                 fontFamily: 'Cairo',
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
+                fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
               ),
             ),
-            SizedBox(height: 6.h),
+            SizedBox(height: 5.h),
             AnimatedContainer(
               duration: const Duration(milliseconds: 180),
               height: 3.h,
-              width: 22.w,
+              width: 24.w,
               decoration: BoxDecoration(
                 color: selected ? AppColors.gold : Colors.transparent,
                 borderRadius: BorderRadius.circular(2.r),
