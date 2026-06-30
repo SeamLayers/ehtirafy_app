@@ -158,6 +158,7 @@ class AppStrings {
   static const addAdTitleLabel = 'add_ad.title_label';
   static const addAdTitleHint = 'add_ad.title_hint';
   static const addAdImageRequired = 'add_ad.image_required';
+  static const addAdBannedWords = 'add_ad.banned_words';
   static const addAdCityLabel = 'add_ad.city_label';
   static const addAdCityHint = 'add_ad.city_hint';
   static const addAdCityRequired = 'add_ad.city_required';

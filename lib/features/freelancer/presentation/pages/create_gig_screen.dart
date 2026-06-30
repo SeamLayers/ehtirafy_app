@@ -2,12 +2,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:ehtirafy_app/core/theme/app_colors.dart';
 import 'package:ehtirafy_app/core/constants/app_spacing.dart';
 import 'package:ehtirafy_app/core/constants/app_strings.dart';
+import 'package:ehtirafy_app/core/utils/banned_words.dart';
 import 'package:ehtirafy_app/core/widgets/financial_pledge_section.dart';
 import 'package:ehtirafy_app/core/widgets/images/app_cached_network_image.dart';
 import 'package:ehtirafy_app/core/widgets/rtl_back_button.dart';
@@ -996,6 +998,21 @@ class _CreateGigScreenState extends State<CreateGigScreen> {
     }
 
     if (_formKey.currentState!.validate()) {
+      // Block ads that contain restricted/banned words (title or description).
+      final bannedWord = BannedWords.firstMatch(
+        '${_titleController.text} ${_descriptionController.text}',
+      );
+      if (bannedWord != null) {
+        Fluttertoast.showToast(
+          msg: AppStrings.addAdBannedWords.tr(),
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: AppColors.error,
+          textColor: Colors.white,
+        );
+        return;
+      }
+
       // Validate image is selected for new gigs
       if (widget.gig == null && _pickedImage == null) {
         ScaffoldMessenger.of(context).showSnackBar(
